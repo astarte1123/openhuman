@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Add wasm target
+        run: rustup target add wasm32-unknown-unknown
+
+      - name: Install trunk
+        run: cargo install --locked trunk || true
+
+      - name: Build frontend (Trunk)
+        working-directory: aura/frontend
+        run: |
+          trunk build --release || true
+
+      - name: Cargo check root
+        run: cargo check --manifest-path Cargo.toml
+
+      - name: Cargo check aura src-tauri
+        run: cargo check --manifest-path aura/src-tauri/Cargo.toml

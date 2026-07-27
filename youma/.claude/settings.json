@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -o '\"content\":\"1\\\\\\\\\\\\\\\\timport.*useTTS' \"C:\\\\Users\\\\ipezzoli\\\\.claude\\\\projects\\\\c--Users-ipezzoli-Downloads-openhuman-main-youma\\\\74bbabdd-45d8-46f4-abc2-f2a6a7ecaf64.jsonl\" 2>&1 | head -c 500)",
+      "Read(//c/Users/ipezzoli/.claude/projects/c--Users-ipezzoli-Downloads-openhuman-main-youma/**)"
+    ]
+  }
+}
