@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "pack_id": "founder-weekly",
+  "title": "Founder Weekly Loop",
+  "description": "A compact founder/operator pack for preparing for conversations, recording them, debriefing the result, and ending the week with a synthesized brief.",
+  "recommended_surface": "claude-code-plugin",
+  "recommended_for": {
+    "roles": ["founder", "operator"],
+    "contexts": ["meeting-soon", "weekly-review", "post-meeting"]
+  },
+  "skill_names": [
+    "minutes-brief",
+    "minutes-prep",
+    "minutes-record",
+    "minutes-debrief",
+    "minutes-weekly",
+    "minutes-ideas"
+  ],
+  "entrypoints": [
+    {
+      "trigger": "Meeting in the next hour",
+      "skill_name": "minutes-brief"
+    },
+    {
+      "trigger": "Need a deeper prep before a high-stakes call",
+      "skill_name": "minutes-prep"
+    },
+    {
+      "trigger": "End of week synthesis",
+      "skill_name": "minutes-weekly"
+    }
+  ],
+  "notes": [
+    "Optimized for fast founder/operator loops rather than deep analytics.",
+    "Pairs well with the SessionStart reminder hook."
+  ]
+}

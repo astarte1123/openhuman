@@ -1,0 +1,161 @@
+import { configureStore } from '@reduxjs/toolkit';
+import { createLogger } from 'redux-logger';
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  persistReducer,
+  persistStore,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+} from 'redux-persist';
+
+import { IS_DEV } from '../utils/config';
+import accountsReducer from './accountsSlice';
+import agentProfileReducer from './agentProfileSlice';
+import channelConnectionsReducer from './channelConnectionsSlice';
+import chatRuntimeReducer from './chatRuntimeSlice';
+import connectivityReducer from './connectivitySlice';
+import coreModeReducer from './coreModeSlice';
+import localeReducer from './localeSlice';
+import mascotReducer from './mascotSlice';
+import notificationReducer from './notificationSlice';
+import providerSurfacesReducer from './providerSurfaceSlice';
+import socketReducer from './socketSlice';
+import threadReducer from './threadSlice';
+import { userScopedStorage } from './userScopedStorage';
+
+// Persisted slices write through `userScopedStorage` so each user's blob
+// lives at `${userId}:persist:<key>` instead of a single per-device blob
+// that leaks across users on logout/login (#900).
+const storage = userScopedStorage;
+
+// coreMode is pre-login and not user-scoped — use plain localStorage so the
+// setting survives across user switches without leaking per-user state.
+// Inline adapter rather than `redux-persist/lib/storage`'s default export,
+// which Vite's CJS dep-pre-bundling can resolve to the module namespace
+// (then `storage.getItem` is undefined and rehydrate throws on cold boot).
+const localStorageAdapter = {
+  getItem: (key: string) =>
+    Promise.resolve(
+      (() => {
+        try {
+          return localStorage.getItem(key);
+        } catch {
+          return null;
+        }
+      })()
+    ),
+  setItem: (key: string, value: string) =>
+    Promise.resolve(
+      (() => {
+        try {
+          localStorage.setItem(key, value);
+        } catch {
+          /* ignore quota / unavailable */
+        }
+      })()
+    ),
+  removeItem: (key: string) =>
+    Promise.resolve(
+      (() => {
+        try {
+          localStorage.removeItem(key);
+        } catch {
+          /* ignore */
+        }
+      })()
+    ),
+};
+const coreModePersistConfig = {
+  key: 'coreMode',
+  storage: localStorageAdapter,
+  whitelist: ['mode'],
+};
+const persistedCoreModeReducer = persistReducer(coreModePersistConfig, coreModeReducer);
+
+const localePersistConfig = { key: 'locale', storage: localStorageAdapter, whitelist: ['current'] };
+const persistedLocaleReducer = persistReducer(localePersistConfig, localeReducer);
+
+const channelConnectionsPersistConfig = {
+  key: 'channelConnections',
+  storage,
+  whitelist: ['schemaVersion', 'migrationCompleted', 'defaultMessagingChannel', 'connections'],
+};
+const persistedChannelConnectionsReducer = persistReducer(
+  channelConnectionsPersistConfig,
+  channelConnectionsReducer
+);
+
+// Persist only the account list (not the live message stream / logs which
+// are re-ingested every time we open an account).
+const accountsPersistConfig = {
+  key: 'accounts',
+  storage,
+  whitelist: ['accounts', 'order', 'activeAccountId', 'lastActiveAccountId'],
+};
+const persistedAccountsReducer = persistReducer(accountsPersistConfig, accountsReducer);
+
+const notificationPersistConfig = {
+  key: 'notifications',
+  storage,
+  whitelist: ['items', 'preferences'],
+};
+const persistedNotificationReducer = persistReducer(notificationPersistConfig, notificationReducer);
+
+// Persist only the user's last-viewed thread id so a reload resumes where
+// they were instead of falling through to "create a new thread". The
+// thread list and per-thread message caches are re-fetched from the core
+// on boot, so we deliberately don't persist them.
+const threadPersistConfig = { key: 'thread', storage, whitelist: ['selectedThreadId'] };
+const persistedThreadReducer = persistReducer(threadPersistConfig, threadReducer);
+
+// Mascot appearance + voice — color and voiceId preferences are per-user
+// so they travel with the account on logout/login rather than leaking
+// across users. `voiceId` is the user's chosen ElevenLabs voice for
+// reply speech (issue #1762); `null` falls back to the build-time
+// default in `app/src/utils/config.ts::MASCOT_VOICE_ID`.
+const mascotPersistConfig = { key: 'mascot', storage, whitelist: ['color', 'voiceId'] };
+const persistedMascotReducer = persistReducer(mascotPersistConfig, mascotReducer);
+
+export const store = configureStore({
+  reducer: {
+    socket: socketReducer,
+    connectivity: connectivityReducer,
+    thread: persistedThreadReducer,
+    chatRuntime: chatRuntimeReducer,
+    agentProfiles: agentProfileReducer,
+    channelConnections: persistedChannelConnectionsReducer,
+    accounts: persistedAccountsReducer,
+    notifications: persistedNotificationReducer,
+    providerSurfaces: providerSurfacesReducer,
+    coreMode: persistedCoreModeReducer,
+    locale: persistedLocaleReducer,
+    mascot: persistedMascotReducer,
+  },
+  middleware: getDefaultMiddleware => {
+    const middleware = getDefaultMiddleware({
+      serializableCheck: { ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER] },
+    });
+
+    // Add redux-logger in development with collapsed groups
+    if (IS_DEV) {
+      return middleware.concat(createLogger({ collapsed: true, duration: true, timestamp: true }));
+    }
+    return middleware;
+  },
+});
+
+export const persistor = persistStore(store);
+
+// Expose the store on `window` so WDIO E2E specs can read Redux state directly
+// to assert backing-state changes (see app/test/e2e/specs/*.spec.ts). The store
+// holds no secrets that aren't already in the renderer's memory; this only
+// surfaces the existing handle under a stable, namespaced key.
+if (typeof window !== 'undefined') {
+  (window as unknown as { __OPENHUMAN_STORE__?: typeof store }).__OPENHUMAN_STORE__ = store;
+}
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

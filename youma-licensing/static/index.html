@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Youma Licensing Admin</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f8fafc; --sidebar: #1e293b; --sidebar-text: #cbd5e1;
+    --sidebar-active: #6366f1; --sidebar-hover: #334155;
+    --white: #ffffff; --border: #e2e8f0; --text: #0f172a;
+    --muted: #64748b; --accent: #6366f1; --accent2: #818cf8;
+    --green: #10b981; --red: #ef4444; --yellow: #f59e0b;
+    --blue: #3b82f6; --radius: 8px; --shadow: 0 1px 3px rgba(0,0,0,.1);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+  #sidebar { width: 240px; background: var(--sidebar); display: flex; flex-direction: column; padding: 0; flex-shrink: 0; }
+  #sidebar .logo { padding: 24px 20px 20px; border-bottom: 1px solid #334155; }
+  #sidebar .logo h1 { color: white; font-size: 1.1rem; font-weight: 700; letter-spacing: -.02em; }
+  #sidebar .logo span { color: var(--accent2); }
+  #sidebar nav { padding: 12px 0; flex: 1; }
+  #sidebar nav a { display: flex; align-items: center; gap: 10px; padding: 10px 20px; color: var(--sidebar-text); text-decoration: none; font-size: .875rem; font-weight: 500; transition: background .15s; cursor: pointer; }
+  #sidebar nav a:hover { background: var(--sidebar-hover); color: white; }
+  #sidebar nav a.active { background: var(--sidebar-active); color: white; }
+  #sidebar nav a svg { width: 16px; height: 16px; flex-shrink: 0; }
+  #sidebar .logout { padding: 16px 20px; border-top: 1px solid #334155; }
+  #sidebar .logout button { width: 100%; padding: 8px; background: #334155; color: #cbd5e1; border: none; border-radius: 6px; cursor: pointer; font-size: .8rem; }
+  #sidebar .logout button:hover { background: #475569; color: white; }
+  #main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+  #topbar { background: white; border-bottom: 1px solid var(--border); padding: 12px 28px; display: flex; align-items: center; justify-content: space-between; }
+  #topbar h2 { font-size: 1rem; font-weight: 600; color: var(--text); }
+  #topbar .topbar-right { display: flex; align-items: center; gap: 12px; }
+  #topbar .user { font-size: .8rem; color: var(--muted); }
+  /* Language selector */
+  #lang-selector { display: flex; gap: 4px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 2px; }
+  #lang-selector button { padding: 3px 8px; border: none; background: none; border-radius: 4px; font-size: .75rem; font-weight: 600; cursor: pointer; color: var(--muted); transition: all .15s; }
+  #lang-selector button.active { background: var(--accent); color: white; }
+  #lang-selector button:hover:not(.active) { background: var(--border); color: var(--text); }
+  #content { padding: 28px; flex: 1; }
+  .card { background: white; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .card-header h3 { font-size: .9rem; font-weight: 600; }
+  .card-body { padding: 20px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .stat-card { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+  .stat-card .label { font-size: .75rem; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: .05em; }
+  .stat-card .value { font-size: 1.75rem; font-weight: 700; margin-top: 4px; color: var(--text); }
+  .stat-card .sub { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+  .stat-card.green .value { color: var(--green); }
+  .stat-card.red .value { color: var(--red); }
+  .stat-card.yellow .value { color: var(--yellow); }
+  .stat-card.blue .value { color: var(--blue); }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  th { text-align: left; padding: 10px 12px; background: #f8fafc; border-bottom: 2px solid var(--border); font-size: .75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f8fafc; }
+  .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 99px; font-size: .7rem; font-weight: 600; }
+  .badge.active { background: #dcfce7; color: #166534; }
+  .badge.inactive { background: #f1f5f9; color: var(--muted); }
+  .badge.expired { background: #fee2e2; color: #991b1b; }
+  .badge.suspended { background: #fef9c3; color: #854d0e; }
+  .badge.revoked { background: #fce7f3; color: #9d174d; }
+  .badge.trial { background: #ede9fe; color: #5b21b6; }
+  .badge.seat { background: #dbeafe; color: #1e40af; }
+  .badge.floating { background: #fef3c7; color: #92400e; }
+  .badge.subscription { background: #d1fae5; color: #065f46; }
+  .badge.perpetual { background: #e0e7ff; color: #3730a3; }
+  .badge.oem { background: #fce7f3; color: #9d174d; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 6px; font-size: .8rem; font-weight: 500; border: none; cursor: pointer; transition: all .15s; }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #4f46e5; }
+  .btn-secondary { background: white; color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--bg); }
+  .btn-danger { background: var(--red); color: white; }
+  .btn-danger:hover { background: #dc2626; }
+  .btn-success { background: var(--green); color: white; }
+  .btn-sm { padding: 4px 10px; font-size: .75rem; }
+  .btn-warning { background: var(--yellow); color: white; }
+  input, select, textarea { font-family: inherit; font-size: .875rem; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; background: white; color: var(--text); width: 100%; outline: none; transition: border-color .15s; }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,102,241,.1); }
+  label { font-size: .8rem; font-weight: 500; color: var(--muted); display: block; margin-bottom: 4px; }
+  .form-group { margin-bottom: 14px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+  .toolbar input[type=text] { max-width: 280px; }
+  .toolbar select { max-width: 180px; }
+  .pagination { display: flex; align-items: center; gap: 8px; margin-top: 16px; font-size: .8rem; color: var(--muted); }
+  .pagination button { padding: 4px 10px; border: 1px solid var(--border); background: white; border-radius: 4px; cursor: pointer; font-size: .8rem; }
+  .pagination button:hover:not(:disabled) { background: var(--bg); }
+  .pagination button:disabled { opacity: .4; cursor: default; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .overlay.hidden { display: none; }
+  .modal { background: white; border-radius: var(--radius); width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.2); }
+  .modal-header { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .modal-header h3 { font-size: .95rem; font-weight: 600; }
+  .modal-header button { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--muted); line-height: 1; }
+  .modal-body { padding: 20px; }
+  .modal-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+  #login-screen { position: fixed; inset: 0; background: var(--sidebar); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  #login-screen.hidden { display: none; }
+  .login-box { background: white; border-radius: 12px; padding: 36px; width: 360px; }
+  .login-box h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; }
+  .login-box p { color: var(--muted); font-size: .875rem; margin-bottom: 24px; }
+  .login-box .error { color: var(--red); font-size: .8rem; margin-top: 8px; }
+  /* Language switcher on login */
+  .login-lang { display: flex; justify-content: flex-end; gap: 4px; margin-bottom: 20px; }
+  .login-lang button { padding: 3px 8px; border: 1px solid var(--border); background: white; border-radius: 4px; font-size: .75rem; font-weight: 600; cursor: pointer; color: var(--muted); }
+  .login-lang button.active { background: var(--accent); color: white; border-color: var(--accent); }
+  .detail-panel { background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-top: 16px; }
+  .detail-panel h4 { font-size: .85rem; font-weight: 600; margin-bottom: 12px; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; }
+  .detail-item label { font-size: .7rem; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+  .detail-item span { font-size: .8rem; color: var(--text); font-family: monospace; word-break: break-all; }
+  .actions-bar { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+  .chip { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: .7rem; font-weight: 600; background: #ede9fe; color: #5b21b6; }
+  #toast { position: fixed; bottom: 24px; right: 24px; z-index: 999; display: flex; flex-direction: column; gap: 8px; }
+  .toast-msg { padding: 12px 18px; border-radius: 8px; font-size: .85rem; font-weight: 500; color: white; box-shadow: 0 4px 12px rgba(0,0,0,.15); animation: slideIn .2s ease; }
+  .toast-msg.success { background: var(--green); }
+  .toast-msg.error { background: var(--red); }
+  .toast-msg.info { background: var(--blue); }
+  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: none; opacity: 1; } }
+  .empty { text-align: center; padding: 48px 24px; color: var(--muted); font-size: .875rem; }
+  .code { font-family: 'JetBrains Mono', monospace; font-size: .8rem; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #334155; }
+</style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-lang">
+      <button onclick="setLang('en')" id="login-lang-en">EN</button>
+      <button onclick="setLang('it')" id="login-lang-it">IT</button>
+    </div>
+    <h2>Youma Licensing</h2>
+    <p data-i18n="login_subtitle"></p>
+    <div class="form-group">
+      <label data-i18n="login_label"></label>
+      <input type="password" id="login-token" data-i18n-placeholder="login_placeholder" />
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="doLogin()" data-i18n="login_btn"></button>
+    <div class="error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<div id="sidebar">
+  <div class="logo"><h1>Youma <span>Licensing</span></h1></div>
+  <nav>
+    <a class="active" onclick="nav('dashboard')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <span data-i18n="nav_dashboard"></span>
+    </a>
+    <a onclick="nav('orgs')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span data-i18n="nav_orgs"></span>
+    </a>
+    <a onclick="nav('pools')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      <span data-i18n="nav_pools"></span>
+    </a>
+    <a onclick="nav('licenses')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <span data-i18n="nav_licenses"></span>
+    </a>
+    <a onclick="nav('audit')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span data-i18n="nav_audit"></span>
+    </a>
+    <a onclick="nav('webhooks')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+      <span data-i18n="nav_webhooks"></span>
+    </a>
+  </nav>
+  <div class="logout"><button onclick="doLogout()" data-i18n="logout_btn"></button></div>
+</div>
+
+<!-- Main -->
+<div id="main">
+  <div id="topbar">
+    <h2 id="page-title"></h2>
+    <div class="topbar-right">
+      <div id="lang-selector">
+        <button id="tb-lang-en" onclick="setLang('en')">EN</button>
+        <button id="tb-lang-it" onclick="setLang('it')">IT</button>
+      </div>
+      <div class="user" id="user-label"></div>
+    </div>
+  </div>
+  <div id="content">
+
+    <!-- Dashboard -->
+    <div class="section active" id="sec-dashboard">
+      <div class="stats-grid" id="stat-cards"></div>
+      <div class="card">
+        <div class="card-header"><h3 data-i18n="recent_activations"></h3></div>
+        <div class="card-body" style="padding:0">
+          <table><thead><tr>
+            <th data-i18n="col_event"></th>
+            <th data-i18n="col_license_key"></th>
+            <th data-i18n="col_org"></th>
+            <th data-i18n="col_time"></th>
+          </tr></thead>
+          <tbody id="recent-activations"><tr><td colspan="4" class="empty" data-i18n="loading"></td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Organizations -->
+    <div class="section" id="sec-orgs">
+      <div class="toolbar">
+        <input type="text" id="org-search" data-i18n-placeholder="search_orgs" oninput="loadOrgs()" style="max-width:300px"/>
+        <button class="btn btn-primary" onclick="openModal('org-modal')" data-i18n="btn_new_org"></button>
+      </div>
+      <div class="card">
+        <div class="card-body" style="padding:0">
+          <table><thead><tr>
+            <th data-i18n="col_name"></th><th data-i18n="col_email"></th>
+            <th data-i18n="col_country"></th><th data-i18n="col_type"></th>
+            <th data-i18n="col_created"></th><th></th>
+          </tr></thead>
+          <tbody id="orgs-table"><tr><td colspan="6" class="empty" data-i18n="loading"></td></tr></tbody></table>
+        </div>
+      </div>
+      <div class="pagination" id="orgs-pagination"></div>
+    </div>
+
+    <!-- Pools -->
+    <div class="section" id="sec-pools">
+      <div class="toolbar">
+        <select id="pool-org-filter" onchange="loadPools()"><option value="" data-i18n="all_orgs"></option></select>
+        <select id="pool-model-filter" onchange="loadPools()">
+          <option value="" data-i18n="all_models"></option>
+          <option>seat</option><option>floating</option><option>trial</option>
+          <option>subscription</option><option>perpetual</option><option>oem</option>
+        </select>
+        <button class="btn btn-primary" onclick="openModal('pool-modal')" data-i18n="btn_new_pool"></button>
+      </div>
+      <div class="card">
+        <div class="card-body" style="padding:0">
+          <table><thead><tr>
+            <th data-i18n="col_pool_name"></th><th data-i18n="col_pool_org"></th>
+            <th data-i18n="col_model"></th><th data-i18n="col_plan"></th>
+            <th data-i18n="col_seats"></th><th data-i18n="col_used"></th>
+            <th data-i18n="col_created"></th><th></th>
+          </tr></thead>
+          <tbody id="pools-table"><tr><td colspan="8" class="empty" data-i18n="loading"></td></tr></tbody></table>
+        </div>
+      </div>
+      <div class="pagination" id="pools-pagination"></div>
+    </div>
+
+    <!-- Licenses -->
+    <div class="section" id="sec-licenses">
+      <div class="toolbar">
+        <input type="text" id="lic-key-filter" data-i18n-placeholder="search_key" oninput="loadLicenses()" style="max-width:200px"/>
+        <input type="text" id="lic-org-filter" data-i18n-placeholder="search_org_lic" oninput="loadLicenses()" style="max-width:180px"/>
+        <select id="lic-status-filter" onchange="loadLicenses()">
+          <option value="" data-i18n="all_status"></option>
+          <option>inactive</option><option>active</option><option>suspended</option><option>expired</option><option>revoked</option>
+        </select>
+        <select id="lic-model-filter" onchange="loadLicenses()">
+          <option value="" data-i18n="all_models2"></option>
+          <option>seat</option><option>floating</option><option>trial</option>
+          <option>subscription</option><option>perpetual</option><option>oem</option>
+        </select>
+      </div>
+      <div class="card">
+        <div class="card-body" style="padding:0">
+          <table><thead><tr>
+            <th data-i18n="col_key"></th><th data-i18n="col_org"></th><th data-i18n="col_model"></th>
+            <th data-i18n="col_status"></th><th data-i18n="col_plan"></th>
+            <th data-i18n="col_expires"></th><th data-i18n="col_machine"></th><th></th>
+          </tr></thead>
+          <tbody id="licenses-table"><tr><td colspan="8" class="empty" data-i18n="loading"></td></tr></tbody></table>
+        </div>
+      </div>
+      <div class="pagination" id="licenses-pagination"></div>
+      <div id="license-detail" class="detail-panel" style="display:none"></div>
+    </div>
+
+    <!-- Audit -->
+    <div class="section" id="sec-audit">
+      <div class="toolbar">
+        <input type="text" id="audit-key-filter" data-i18n-placeholder="search_key2" oninput="loadAudit()" style="max-width:200px"/>
+        <select id="audit-event-filter" onchange="loadAudit()">
+          <option value="" data-i18n="all_events"></option>
+          <option>license.activated</option><option>license.validated</option><option>license.deactivated</option>
+          <option>license.expired</option><option>license.suspended</option><option>license.revoked</option>
+          <option>license.extended</option><option>trial.started</option>
+          <option>org.created</option><option>pool.created</option><option>webhook.delivered</option>
+        </select>
+        <input type="date" id="audit-from" onchange="loadAudit()" data-i18n-title="from_date"/>
+        <input type="date" id="audit-to" onchange="loadAudit()" data-i18n-title="to_date"/>
+      </div>
+      <div class="card">
+        <div class="card-body" style="padding:0">
+          <table><thead><tr>
+            <th data-i18n="col_time"></th><th data-i18n="col_event"></th>
+            <th data-i18n="col_license_key"></th><th data-i18n="col_ip"></th>
+            <th data-i18n="col_details"></th>
+          </tr></thead>
+          <tbody id="audit-table"><tr><td colspan="5" class="empty" data-i18n="loading"></td></tr></tbody></table>
+        </div>
+      </div>
+      <div class="pagination" id="audit-pagination"></div>
+    </div>
+
+    <!-- Webhooks -->
+    <div class="section" id="sec-webhooks">
+      <div class="toolbar">
+        <button class="btn btn-primary" onclick="openModal('webhook-modal')" data-i18n="btn_new_webhook"></button>
+      </div>
+      <div class="card">
+        <div class="card-body" style="padding:0">
+          <table><thead><tr>
+            <th data-i18n="col_url"></th><th data-i18n="col_events"></th>
+            <th data-i18n="col_active"></th><th data-i18n="col_failures"></th>
+            <th data-i18n="col_last_delivery"></th><th></th>
+          </tr></thead>
+          <tbody id="webhooks-table"><tr><td colspan="6" class="empty" data-i18n="loading"></td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- Org Modal -->
+<div class="overlay hidden" id="org-modal">
+  <div class="modal">
+    <div class="modal-header"><h3 data-i18n="modal_new_org"></h3><button onclick="closeModal('org-modal')">&times;</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label data-i18n="lbl_name"></label><input id="org-name" type="text" data-i18n-placeholder="ph_org_name"/></div>
+      <div class="form-row">
+        <div class="form-group"><label data-i18n="lbl_email"></label><input id="org-email" type="email" data-i18n-placeholder="ph_org_email"/></div>
+        <div class="form-group"><label data-i18n="lbl_country"></label><input id="org-country" type="text" placeholder="IT"/></div>
+      </div>
+      <div class="form-group"><label data-i18n="lbl_notes"></label><textarea id="org-notes" rows="2"></textarea></div>
+      <div class="form-group"><label><input type="checkbox" id="org-reseller" style="width:auto;margin-right:6px"/><span data-i18n="lbl_reseller"></span></label></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('org-modal')" data-i18n="btn_cancel"></button>
+      <button class="btn btn-primary" onclick="submitOrg()" data-i18n="btn_create"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Pool Modal -->
+<div class="overlay hidden" id="pool-modal">
+  <div class="modal">
+    <div class="modal-header"><h3 data-i18n="modal_new_pool"></h3><button onclick="closeModal('pool-modal')">&times;</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label data-i18n="lbl_org"></label><select id="pool-org-select"></select></div>
+      <div class="form-row">
+        <div class="form-group"><label data-i18n="lbl_pool_name"></label><input id="pool-name" type="text" data-i18n-placeholder="ph_pool_name"/></div>
+        <div class="form-group"><label data-i18n="lbl_license_model"></label>
+          <select id="pool-model">
+            <option>seat</option><option>floating</option><option>trial</option>
+            <option>subscription</option><option>perpetual</option><option>oem</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label data-i18n="lbl_total_seats"></label><input id="pool-seats" type="number" value="10" min="1"/></div>
+        <div class="form-group"><label data-i18n="lbl_plan"></label>
+          <select id="pool-plan"><option>starter</option><option selected>pro</option><option>enterprise</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label data-i18n="lbl_duration"></label><input id="pool-duration" type="number" data-i18n-placeholder="ph_duration"/></div>
+        <div class="form-group"><label data-i18n="lbl_grace"></label><input id="pool-grace" type="number" value="72"/></div>
+      </div>
+      <div class="form-group"><label data-i18n="lbl_concurrent"></label><input id="pool-concurrent" type="number" data-i18n-placeholder="ph_concurrent"/></div>
+      <div class="form-group"><label data-i18n="lbl_notes"></label><textarea id="pool-notes" rows="2"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('pool-modal')" data-i18n="btn_cancel"></button>
+      <button class="btn btn-primary" onclick="submitPool()" data-i18n="btn_create"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Webhook Modal -->
+<div class="overlay hidden" id="webhook-modal">
+  <div class="modal">
+    <div class="modal-header"><h3 data-i18n="modal_new_webhook"></h3><button onclick="closeModal('webhook-modal')">&times;</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label data-i18n="lbl_url"></label><input id="wh-url" type="url" placeholder="https://example.com/hook"/></div>
+      <div class="form-group"><label data-i18n="lbl_events_wh"></label>
+        <input id="wh-events" type="text" value="license.activated,license.expired,license.suspended"/>
+      </div>
+      <div class="form-group"><label data-i18n="lbl_secret"></label><input id="wh-secret" type="text" data-i18n-placeholder="ph_secret"/></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('webhook-modal')" data-i18n="btn_cancel"></button>
+      <button class="btn btn-primary" onclick="submitWebhook()" data-i18n="btn_create"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Generate Keys Modal -->
+<div class="overlay hidden" id="gen-modal">
+  <div class="modal">
+    <div class="modal-header"><h3 data-i18n="modal_gen_keys"></h3><button onclick="closeModal('gen-modal')">&times;</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="gen-pool-id"/>
+      <div class="form-group"><label data-i18n="lbl_gen_count"></label><input id="gen-count" type="number" value="10" min="1" max="10000"/></div>
+      <div id="gen-result" style="display:none">
+        <div class="form-group" style="margin-top:12px">
+          <label data-i18n="lbl_gen_result"></label>
+          <textarea id="gen-keys-text" rows="6" readonly style="font-family:monospace;font-size:.75rem"></textarea>
+        </div>
+        <div id="gen-count-label" style="font-size:.8rem;color:var(--muted)"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('gen-modal')" data-i18n="btn_cancel"></button>
+      <button class="btn btn-primary" id="gen-btn" onclick="submitGenerate()" data-i18n="btn_generate"></button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── i18n ─────────────────────────────────────────────────────────────────────
+
+const LANGS = {
+  en: {
+    nav_dashboard:'Dashboard', nav_orgs:'Organizations', nav_pools:'Pools',
+    nav_licenses:'Licenses', nav_audit:'Audit Log', nav_webhooks:'Webhooks',
+    login_subtitle:'Sign in with your admin token', login_label:'Admin Token',
+    login_placeholder:'Enter your admin token', login_btn:'Sign in',
+    login_err_required:'Token required', login_err_invalid:'Invalid token',
+    logout_btn:'Sign out', admin_user:'Admin',
+    stat_total:'Total Licenses', stat_active:'Active', stat_expiring:'Expiring Soon',
+    stat_expired:'Expired', stat_trials:'Trials', stat_orgs:'Orgs', stat_pools:'Pools',
+    stat_today:'Activations Today', stat_today_sub:'Week: {0} · Month: {1}',
+    recent_activations:'Recent Activations',
+    col_event:'Event', col_license_key:'License Key', col_org:'Org', col_time:'Time',
+    col_name:'Name', col_email:'Email', col_country:'Country', col_type:'Type',
+    col_created:'Created', col_pool_name:'Name', col_pool_org:'Org', col_model:'Model',
+    col_plan:'Plan', col_seats:'Seats', col_used:'Used', col_key:'Key', col_status:'Status',
+    col_expires:'Expires', col_machine:'Machine', col_ip:'IP', col_details:'Details',
+    col_url:'URL', col_events:'Events', col_active:'Active', col_failures:'Failures',
+    col_last_delivery:'Last Delivery',
+    no_recent:'No recent activations', no_orgs:'No organizations found',
+    no_pools:'No pools found', no_licenses:'No licenses found',
+    no_audit:'No audit entries found', no_webhooks:'No webhooks configured',
+    loading:'Loading...',
+    search_orgs:'Search organizations...', search_key:'Search key...', search_key2:'License key...', search_org_lic:'Org name...',
+    all_orgs:'All Orgs', all_models:'All Models', all_models2:'All Models',
+    all_status:'All Status', all_events:'All Events',
+    from_date:'From date', to_date:'To date',
+    type_reseller:'Reseller', type_customer:'Customer',
+    btn_view:'View', btn_detail:'Detail', btn_cancel:'Cancel', btn_create:'Create',
+    btn_new_org:'+ New Organization', btn_new_pool:'+ New Pool',
+    btn_new_webhook:'+ New Webhook', btn_gen_keys:'Gen Keys',
+    btn_generate:'Generate', btn_gen_more:'Generate More', generating:'Generating…',
+    btn_test:'Test', btn_delete:'Delete', btn_prev:'← Prev', btn_next:'Next →',
+    btn_suspend:'Suspend', btn_unsuspend:'Unsuspend', btn_revoke:'Revoke',
+    btn_extend:'Extend', btn_transfer:'Transfer',
+    modal_new_org:'New Organization', modal_new_pool:'New Pool',
+    modal_new_webhook:'New Webhook', modal_gen_keys:'Generate License Keys',
+    lbl_name:'Name *', lbl_email:'Email', lbl_country:'Country', lbl_notes:'Notes',
+    lbl_reseller:'Reseller / OEM Partner', lbl_org:'Organization *',
+    lbl_pool_name:'Pool Name *', lbl_license_model:'License Model *',
+    lbl_total_seats:'Total Seats *', lbl_plan:'Plan',
+    lbl_duration:'Duration (days, blank=perpetual)', lbl_grace:'Grace Period (hours)',
+    lbl_concurrent:'Concurrent Limit (floating)', lbl_url:'URL *',
+    lbl_events_wh:'Events (comma-separated, blank=all)',
+    lbl_secret:'Secret (blank=auto-generated)', lbl_gen_count:'Number of Keys to Generate',
+    lbl_gen_result:'Generated Keys (copy or download CSV)',
+    ph_org_name:'Acme Corp', ph_org_email:'admin@acme.com', ph_pool_name:'Enterprise Q1',
+    ph_duration:'365', ph_concurrent:'Same as seats', ph_secret:'Leave blank to auto-generate',
+    lbl_detail_title:'License Detail',
+    lbl_status:'Status', lbl_model:'Model', lbl_pool:'Pool', lbl_org2:'Org',
+    lbl_machine:'Machine Hash', lbl_label:'Label', lbl_transfers:'Transfers',
+    lbl_activated:'Activated', lbl_expires:'Expires', lbl_last_val:'Last Validated',
+    lbl_created:'Created', lbl_revoke_reason:'Revoke Reason', lbl_audit_trail:'Audit Trail',
+    prompt_suspend:'Suspension reason:', prompt_revoke:'Revocation reason:',
+    prompt_extend:'Extend by how many days?',
+    confirm_transfer:'Reset machine binding and increment transfer count?',
+    confirm_delete_webhook:'Delete this webhook?',
+    action_applied:'{0} applied', org_created:'Organization created',
+    pool_created:'Pool created', webhook_created:'Webhook created. Secret: {0}',
+    keys_generated:'{0} keys generated', deleted:'Deleted',
+    test_delivery:'Test delivery: HTTP {0}',
+    page_info:'Page {0} of {1} — {2} total', never:'Never',
+    err_load_dashboard:'Failed to load dashboard', err_load_orgs:'Failed to load orgs',
+    err_load_pools:'Failed to load pools', err_load_licenses:'Failed to load licenses',
+    err_load_audit:'Failed to load audit', err_load_webhooks:'Failed to load webhooks',
+    name_required:'Name is required', url_required:'URL is required',
+    name_org_pool:'Name and org are required', count_invalid:'Enter a valid count',
+  },
+  it: {
+    nav_dashboard:'Dashboard', nav_orgs:'Organizzazioni', nav_pools:'Pool',
+    nav_licenses:'Licenze', nav_audit:'Log Audit', nav_webhooks:'Webhook',
+    login_subtitle:'Accedi con il token admin', login_label:'Token Admin',
+    login_placeholder:'Inserisci il token admin', login_btn:'Accedi',
+    login_err_required:'Token obbligatorio', login_err_invalid:'Token non valido',
+    logout_btn:'Esci', admin_user:'Admin',
+    stat_total:'Licenze Totali', stat_active:'Attive', stat_expiring:'In Scadenza',
+    stat_expired:'Scadute', stat_trials:'Trial', stat_orgs:'Organizzazioni', stat_pools:'Pool',
+    stat_today:'Attivazioni Oggi', stat_today_sub:'Settimana: {0} · Mese: {1}',
+    recent_activations:'Attivazioni Recenti',
+    col_event:'Evento', col_license_key:'Chiave Licenza', col_org:'Org', col_time:'Orario',
+    col_name:'Nome', col_email:'Email', col_country:'Paese', col_type:'Tipo',
+    col_created:'Creata', col_pool_name:'Nome', col_pool_org:'Org', col_model:'Modello',
+    col_plan:'Piano', col_seats:'Seat', col_used:'Usati', col_key:'Chiave', col_status:'Stato',
+    col_expires:'Scadenza', col_machine:'Macchina', col_ip:'IP', col_details:'Dettagli',
+    col_url:'URL', col_events:'Eventi', col_active:'Attivo', col_failures:'Errori',
+    col_last_delivery:'Ultima Consegna',
+    no_recent:'Nessuna attivazione recente', no_orgs:'Nessuna organizzazione trovata',
+    no_pools:'Nessun pool trovato', no_licenses:'Nessuna licenza trovata',
+    no_audit:'Nessuna voce audit trovata', no_webhooks:'Nessun webhook configurato',
+    loading:'Caricamento...',
+    search_orgs:'Cerca organizzazioni...', search_key:'Cerca chiave...', search_key2:'Chiave licenza...', search_org_lic:'Nome organizzazione...',
+    all_orgs:'Tutte le Org', all_models:'Tutti i Modelli', all_models2:'Tutti i Modelli',
+    all_status:'Tutti gli Stati', all_events:'Tutti gli Eventi',
+    from_date:'Data inizio', to_date:'Data fine',
+    type_reseller:'Rivenditore', type_customer:'Cliente',
+    btn_view:'Dettaglio', btn_detail:'Dettaglio', btn_cancel:'Annulla', btn_create:'Crea',
+    btn_new_org:'+ Nuova Organizzazione', btn_new_pool:'+ Nuovo Pool',
+    btn_new_webhook:'+ Nuovo Webhook', btn_gen_keys:'Gen Chiavi',
+    btn_generate:'Genera', btn_gen_more:'Genera Altre', generating:'Generazione…',
+    btn_test:'Test', btn_delete:'Elimina', btn_prev:'← Prec', btn_next:'Succ →',
+    btn_suspend:'Sospendi', btn_unsuspend:'Riattiva', btn_revoke:'Revoca',
+    btn_extend:'Estendi', btn_transfer:'Trasferisci',
+    modal_new_org:'Nuova Organizzazione', modal_new_pool:'Nuovo Pool',
+    modal_new_webhook:'Nuovo Webhook', modal_gen_keys:'Genera Chiavi Licenza',
+    lbl_name:'Nome *', lbl_email:'Email', lbl_country:'Paese', lbl_notes:'Note',
+    lbl_reseller:'Rivenditore / Partner OEM', lbl_org:'Organizzazione *',
+    lbl_pool_name:'Nome Pool *', lbl_license_model:'Modello Licenza *',
+    lbl_total_seats:'Seat Totali *', lbl_plan:'Piano',
+    lbl_duration:'Durata (giorni, vuoto=perpetuo)', lbl_grace:'Periodo di Grazia (ore)',
+    lbl_concurrent:'Limite Concorrente (floating)', lbl_url:'URL *',
+    lbl_events_wh:'Eventi (separati da virgola, vuoto=tutti)',
+    lbl_secret:'Secret (vuoto=auto-generato)', lbl_gen_count:'Numero di Chiavi da Generare',
+    lbl_gen_result:'Chiavi Generate (copia o scarica CSV)',
+    ph_org_name:'Acme Italia', ph_org_email:'admin@acme.it', ph_pool_name:'Enterprise Q1',
+    ph_duration:'365', ph_concurrent:'Uguale ai seat', ph_secret:'Lascia vuoto per auto-generare',
+    lbl_detail_title:'Dettaglio Licenza',
+    lbl_status:'Stato', lbl_model:'Modello', lbl_pool:'Pool', lbl_org2:'Org',
+    lbl_machine:'Hash Macchina', lbl_label:'Etichetta', lbl_transfers:'Trasferimenti',
+    lbl_activated:'Attivata', lbl_expires:'Scadenza', lbl_last_val:'Ultima Validazione',
+    lbl_created:'Creata', lbl_revoke_reason:'Motivo Revoca', lbl_audit_trail:'Cronologia Audit',
+    prompt_suspend:'Motivo sospensione:', prompt_revoke:'Motivo revoca:',
+    prompt_extend:'Estendi di quanti giorni?',
+    confirm_transfer:'Resettare il binding macchina e incrementare il contatore trasferimenti?',
+    confirm_delete_webhook:'Eliminare questo webhook?',
+    action_applied:'{0} applicato', org_created:'Organizzazione creata',
+    pool_created:'Pool creato', webhook_created:'Webhook creato. Secret: {0}',
+    keys_generated:'{0} chiavi generate', deleted:'Eliminato',
+    test_delivery:'Test consegna: HTTP {0}',
+    page_info:'Pagina {0} di {1} — {2} totali', never:'Mai',
+    err_load_dashboard:'Errore caricamento dashboard', err_load_orgs:'Errore caricamento organizzazioni',
+    err_load_pools:'Errore caricamento pool', err_load_licenses:'Errore caricamento licenze',
+    err_load_audit:'Errore caricamento audit', err_load_webhooks:'Errore caricamento webhook',
+    name_required:'Il nome è obbligatorio', url_required:"L'URL è obbligatorio",
+    name_org_pool:'Nome e organizzazione sono obbligatori', count_invalid:'Inserisci un numero valido',
+  }
+};
+
+let lang = localStorage.getItem('youma_lang') || 'en';
+
+function t(key, ...args) {
+  let s = (LANGS[lang] || LANGS.en)[key] || key;
+  args.forEach((a, i) => { s = s.replace('{' + i + '}', a); });
+  return s;
+}
+
+function setLang(l) {
+  lang = l;
+  localStorage.setItem('youma_lang', l);
+  document.documentElement.lang = l;
+  applyTranslations();
+  // Refresh active section labels
+  const active = document.querySelector('.section.active');
+  if (active) {
+    const sec = active.id.replace('sec-','');
+    document.getElementById('page-title').textContent = t('nav_' + sec);
+  }
+}
+
+function applyTranslations() {
+  // Update lang buttons
+  ['en','it'].forEach(l => {
+    document.getElementById('tb-lang-' + l).classList.toggle('active', lang === l);
+    const lb = document.getElementById('login-lang-' + l);
+    if (lb) lb.classList.toggle('active', lang === l);
+  });
+
+  // data-i18n: textContent
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  // data-i18n-placeholder
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.placeholder = t(el.dataset.i18nPlaceholder);
+  });
+  // data-i18n-title
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    el.title = t(el.dataset.i18nTitle);
+  });
+  // Dynamic first option selects
+  const allOrgsOpt = document.querySelector('#pool-org-filter option[data-i18n="all_orgs"]');
+  if (allOrgsOpt) allOrgsOpt.textContent = t('all_orgs');
+  const allModOpt = document.querySelector('#pool-model-filter option[data-i18n="all_models"]');
+  if (allModOpt) allModOpt.textContent = t('all_models');
+}
+
+// ─── Core API ─────────────────────────────────────────────────────────────────
+
+const BASE = '';
+let token = sessionStorage.getItem('admin_token') || '';
+let currentPage = {dashboard:1, orgs:1, pools:1, licenses:1, audit:1};
+let orgMap = {};
+
+async function api(method, path, body) {
+  const opts = { method, headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' } };
+  if (body !== undefined) opts.body = JSON.stringify(body);
+  const r = await fetch(BASE + path, opts);
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.error || 'Request failed');
+  return data;
+}
+
+function toast(msg, type = 'info') {
+  const el = document.createElement('div');
+  el.className = 'toast-msg ' + type;
+  el.textContent = msg;
+  document.getElementById('toast').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+function badge(text, cls) { return `<span class="badge ${cls||text}">${text}</span>`; }
+
+function fmt(ts) {
+  if (!ts) return '—';
+  try { return new Date(ts).toLocaleString(lang === 'it' ? 'it-IT' : 'en-US', {year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); } catch { return ts; }
+}
+
+function nav(section) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + section).classList.add('active');
+  document.querySelectorAll('#sidebar nav a').forEach(a => a.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('page-title').textContent = t('nav_' + section);
+  if (section === 'dashboard') loadDashboard();
+  else if (section === 'orgs') loadOrgs();
+  else if (section === 'pools') loadPools();
+  else if (section === 'licenses') loadLicenses();
+  else if (section === 'audit') loadAudit();
+  else if (section === 'webhooks') loadWebhooks();
+}
+
+async function doLogin() {
+  const tok = document.getElementById('login-token').value.trim();
+  if (!tok) { document.getElementById('login-error').textContent = t('login_err_required'); return; }
+  token = tok;
+  try {
+    await api('GET', '/api/v1/admin/dashboard');
+    sessionStorage.setItem('admin_token', token);
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('user-label').textContent = t('admin_user');
+    loadDashboard();
+  } catch (e) {
+    token = '';
+    document.getElementById('login-error').textContent = t('login_err_invalid') + ': ' + e.message;
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem('admin_token');
+  token = '';
+  location.reload();
+}
+
+// ─── Dashboard ────────────────────────────────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const stats = await api('GET', '/api/v1/admin/dashboard');
+    document.getElementById('stat-cards').innerHTML = `
+      <div class="stat-card blue"><div class="label">${t('stat_total')}</div><div class="value">${stats.total_licenses}</div></div>
+      <div class="stat-card green"><div class="label">${t('stat_active')}</div><div class="value">${stats.active_licenses}</div></div>
+      <div class="stat-card yellow"><div class="label">${t('stat_expiring')}</div><div class="value">${stats.expiring_soon}</div></div>
+      <div class="stat-card red"><div class="label">${t('stat_expired')}</div><div class="value">${stats.expired_licenses}</div></div>
+      <div class="stat-card"><div class="label">${t('stat_trials')}</div><div class="value">${stats.trial_licenses}</div></div>
+      <div class="stat-card"><div class="label">${t('stat_orgs')}</div><div class="value">${stats.total_orgs}</div></div>
+      <div class="stat-card"><div class="label">${t('stat_pools')}</div><div class="value">${stats.total_pools}</div></div>
+      <div class="stat-card"><div class="label">${t('stat_today')}</div><div class="value">${stats.activations_today}</div><div class="sub">${t('stat_today_sub', stats.activations_week, stats.activations_month)}</div></div>
+    `;
+    const audit = await api('GET', '/api/v1/admin/audit?limit=10&event=license.activated');
+    const tb = document.getElementById('recent-activations');
+    if (!audit.data || !audit.data.length) { tb.innerHTML = `<tr><td colspan="4" class="empty">${t('no_recent')}</td></tr>`; return; }
+    tb.innerHTML = audit.data.map(e => `<tr>
+      <td><span class="chip">${e.event}</span></td>
+      <td><code class="code">${e.license_key || '—'}</code></td>
+      <td>${e.org_id ? e.org_id.slice(0,8)+'…' : '—'}</td>
+      <td>${fmt(e.ts)}</td>
+    </tr>`).join('');
+  } catch (e) { toast(t('err_load_dashboard') + ': ' + e.message, 'error'); }
+}
+
+// ─── Organizations ────────────────────────────────────────────────────────────
+async function loadOrgs(page) {
+  if (page) currentPage.orgs = page;
+  const q = document.getElementById('org-search').value;
+  try {
+    const data = await api('GET', `/api/v1/admin/orgs?page=${currentPage.orgs}&limit=20${q ? '&q='+encodeURIComponent(q) : ''}`);
+    orgMap = {};
+    data.data.forEach(o => orgMap[o.id] = o.name);
+    const tb = document.getElementById('orgs-table');
+    if (!data.data.length) { tb.innerHTML = `<tr><td colspan="6" class="empty">${t('no_orgs')}</td></tr>`; renderPagination('orgs-pagination', data, loadOrgs); return; }
+    tb.innerHTML = data.data.map(o => `<tr>
+      <td><strong>${o.name}</strong></td>
+      <td>${o.email || '—'}</td>
+      <td>${o.country || '—'}</td>
+      <td>${o.reseller ? badge(t('type_reseller'),'subscription') : badge(t('type_customer'),'active')}</td>
+      <td>${fmt(o.created_at)}</td>
+      <td><button class="btn btn-sm btn-secondary" onclick="viewOrg('${o.id}')">${t('btn_view')}</button></td>
+    </tr>`).join('');
+    renderPagination('orgs-pagination', data, loadOrgs);
+    const sel = document.getElementById('pool-org-filter');
+    const cur = sel.value;
+    sel.innerHTML = `<option value="">${t('all_orgs')}</option>` + data.data.map(o => `<option value="${o.id}">${o.name}</option>`).join('');
+    sel.value = cur;
+    const psel = document.getElementById('pool-org-select');
+    psel.innerHTML = data.data.map(o => `<option value="${o.id}">${o.name}</option>`).join('');
+  } catch (e) { toast(t('err_load_orgs') + ': ' + e.message, 'error'); }
+}
+
+async function viewOrg(id) {
+  try {
+    const data = await api('GET', `/api/v1/admin/orgs/${id}`);
+    toast(`${data.org.name} — ${data.pools.length} pool(s)`, 'info');
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function submitOrg() {
+  const name = document.getElementById('org-name').value.trim();
+  if (!name) { toast(t('name_required'), 'error'); return; }
+  try {
+    await api('POST', '/api/v1/admin/orgs', {
+      name, email: document.getElementById('org-email').value || null,
+      country: document.getElementById('org-country').value || null,
+      notes: document.getElementById('org-notes').value || null,
+      reseller: document.getElementById('org-reseller').checked,
+    });
+    closeModal('org-modal');
+    toast(t('org_created'), 'success');
+    loadOrgs();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+// ─── Pools ────────────────────────────────────────────────────────────────────
+async function loadPools(page) {
+  if (page) currentPage.pools = page;
+  const org = document.getElementById('pool-org-filter').value;
+  const model = document.getElementById('pool-model-filter').value;
+  try {
+    let url = `/api/v1/admin/pools?page=${currentPage.pools}&limit=20`;
+    if (org) url += '&org_id=' + org;
+    if (model) url += '&model=' + model;
+    const data = await api('GET', url);
+    const tb = document.getElementById('pools-table');
+    if (!data.data.length) { tb.innerHTML = `<tr><td colspan="8" class="empty">${t('no_pools')}</td></tr>`; renderPagination('pools-pagination', data, loadPools); return; }
+    tb.innerHTML = data.data.map(p => `<tr>
+      <td><strong>${p.name}</strong></td>
+      <td>${orgMap[p.org_id] || p.org_id.slice(0,8)+'…'}</td>
+      <td>${badge(p.license_model)}</td>
+      <td><span class="badge inactive">${p.plan}</span></td>
+      <td>${p.total_seats}</td>
+      <td>${p.used_seats} <small style="color:var(--muted)">(${Math.round(p.used_seats/Math.max(1,p.total_seats)*100)}%)</small></td>
+      <td>${fmt(p.created_at)}</td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-sm btn-secondary" onclick="openGenModal('${p.id}')">${t('btn_gen_keys')}</button>
+        <a class="btn btn-sm btn-secondary" href="/api/v1/admin/pools/${p.id}/export" download>CSV</a>
+      </td>
+    </tr>`).join('');
+    renderPagination('pools-pagination', data, loadPools);
+  } catch (e) { toast(t('err_load_pools') + ': ' + e.message, 'error'); }
+}
+
+async function submitPool() {
+  const name = document.getElementById('pool-name').value.trim();
+  const org_id = document.getElementById('pool-org-select').value;
+  if (!name || !org_id) { toast(t('name_org_pool'), 'error'); return; }
+  const dur = parseInt(document.getElementById('pool-duration').value);
+  const conc = parseInt(document.getElementById('pool-concurrent').value);
+  try {
+    await api('POST', '/api/v1/admin/pools', {
+      org_id, name,
+      license_model: document.getElementById('pool-model').value,
+      total_seats: parseInt(document.getElementById('pool-seats').value) || 10,
+      plan: document.getElementById('pool-plan').value,
+      duration_days: isNaN(dur) ? null : dur,
+      grace_period_hours: parseInt(document.getElementById('pool-grace').value) || 72,
+      concurrent_limit: isNaN(conc) ? null : conc,
+      notes: document.getElementById('pool-notes').value || null,
+    });
+    closeModal('pool-modal');
+    toast(t('pool_created'), 'success');
+    loadPools();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+function openGenModal(poolId) {
+  document.getElementById('gen-pool-id').value = poolId;
+  document.getElementById('gen-result').style.display = 'none';
+  document.getElementById('gen-count').value = '10';
+  document.getElementById('gen-btn').textContent = t('btn_generate');
+  openModal('gen-modal');
+}
+
+async function submitGenerate() {
+  const poolId = document.getElementById('gen-pool-id').value;
+  const count = parseInt(document.getElementById('gen-count').value);
+  if (!count || count < 1) { toast(t('count_invalid'), 'error'); return; }
+  document.getElementById('gen-btn').textContent = t('generating');
+  try {
+    const data = await api('POST', `/api/v1/admin/pools/${poolId}/generate`, { count });
+    document.getElementById('gen-keys-text').value = data.keys.join('\n');
+    document.getElementById('gen-count-label').textContent = t('keys_generated', data.generated);
+    document.getElementById('gen-result').style.display = 'block';
+    document.getElementById('gen-btn').textContent = t('btn_gen_more');
+    toast(t('keys_generated', data.generated), 'success');
+    loadPools();
+  } catch (e) { toast(e.message, 'error'); document.getElementById('gen-btn').textContent = t('btn_generate'); }
+}
+
+// ─── Licenses ─────────────────────────────────────────────────────────────────
+async function loadLicenses(page) {
+  if (page) currentPage.licenses = page;
+  const key = document.getElementById('lic-key-filter').value;
+  const org = document.getElementById('lic-org-filter').value;
+  const status = document.getElementById('lic-status-filter').value;
+  const model = document.getElementById('lic-model-filter').value;
+  let url = `/api/v1/admin/licenses?page=${currentPage.licenses}&limit=20`;
+  if (key) url += '&key=' + encodeURIComponent(key);
+  if (org) url += '&org=' + encodeURIComponent(org);
+  if (status) url += '&status=' + status;
+  if (model) url += '&model=' + model;
+  try {
+    const data = await api('GET', url);
+    const tb = document.getElementById('licenses-table');
+    document.getElementById('license-detail').style.display = 'none';
+    if (!data.data.length) { tb.innerHTML = `<tr><td colspan="8" class="empty">${t('no_licenses')}</td></tr>`; renderPagination('licenses-pagination', data, loadLicenses); return; }
+    tb.innerHTML = data.data.map(l => `<tr style="cursor:pointer" onclick="viewLicense('${l.key}')">
+      <td><code class="code">${l.key}</code></td>
+      <td style="font-size:.8rem;color:var(--muted)">${l.org_name || l.org_id?.slice(0,8)+'…'}</td>
+      <td>${badge(l.license_model)}</td>
+      <td>${badge(l.status)}</td>
+      <td><span class="badge inactive">${l.metadata?.plan || '—'}</span></td>
+      <td style="font-size:.8rem">${l.expires_at ? fmt(l.expires_at) : t('never')}</td>
+      <td style="font-size:.75rem;color:var(--muted)">${l.machine_id_hash ? l.machine_id_hash.slice(0,12)+'…' : '—'}</td>
+      <td><button class="btn btn-sm btn-secondary" onclick="event.stopPropagation();viewLicense('${l.key}')">${t('btn_detail')}</button></td>
+    </tr>`).join('');
+    renderPagination('licenses-pagination', data, loadLicenses);
+  } catch (e) { toast(t('err_load_licenses') + ': ' + e.message, 'error'); }
+}
+
+async function viewLicense(key) {
+  try {
+    const data = await api('GET', `/api/v1/admin/licenses/${encodeURIComponent(key)}`);
+    const l = data.license;
+    const panel = document.getElementById('license-detail');
+    panel.style.display = 'block';
+    panel.innerHTML = `
+      <h4>${t('lbl_detail_title')} — <code class="code">${l.key}</code></h4>
+      <div class="actions-bar">
+        ${l.status !== 'suspended' && l.status !== 'revoked' ? `<button class="btn btn-sm btn-warning" onclick="actionLicense('suspend','${l.key}')">${t('btn_suspend')}</button>` : ''}
+        ${l.status === 'suspended' ? `<button class="btn btn-sm btn-success" onclick="actionLicense('unsuspend','${l.key}')">${t('btn_unsuspend')}</button>` : ''}
+        ${l.status !== 'revoked' ? `<button class="btn btn-sm btn-danger" onclick="actionLicense('revoke','${l.key}')">${t('btn_revoke')}</button>` : ''}
+        <button class="btn btn-sm btn-secondary" onclick="actionLicense('extend','${l.key}')">${t('btn_extend')}</button>
+        <button class="btn btn-sm btn-secondary" onclick="actionLicense('transfer','${l.key}')">${t('btn_transfer')}</button>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-item"><label>${t('lbl_status')}</label><span>${badge(l.status)}</span></div>
+        <div class="detail-item"><label>${t('lbl_model')}</label><span>${badge(l.license_model)}</span></div>
+        <div class="detail-item"><label>${t('lbl_pool')}</label><span>${l.pool_id}</span></div>
+        <div class="detail-item"><label>${t('lbl_org2')}</label><span>${l.org_id}</span></div>
+        <div class="detail-item"><label>${t('lbl_email')}</label><span>${l.email || '—'}</span></div>
+        <div class="detail-item"><label>${t('lbl_machine')}</label><span>${l.machine_id_hash || '—'}</span></div>
+        <div class="detail-item"><label>${t('lbl_label')}</label><span>${l.machine_label || '—'}</span></div>
+        <div class="detail-item"><label>${t('lbl_transfers')}</label><span>${l.transfer_count} / ${l.max_transfers}</span></div>
+        <div class="detail-item"><label>${t('lbl_activated')}</label><span>${fmt(l.activated_at)}</span></div>
+        <div class="detail-item"><label>${t('lbl_expires')}</label><span>${l.expires_at ? fmt(l.expires_at) : t('never')}</span></div>
+        <div class="detail-item"><label>${t('lbl_last_val')}</label><span>${fmt(l.last_validated_at)}</span></div>
+        <div class="detail-item"><label>${t('lbl_created')}</label><span>${fmt(l.created_at)}</span></div>
+        ${l.revoke_reason ? `<div class="detail-item" style="grid-column:1/-1"><label>${t('lbl_revoke_reason')}</label><span>${l.revoke_reason}</span></div>` : ''}
+      </div>
+      <div style="margin-top:16px"><h4 style="margin-bottom:8px">${t('lbl_audit_trail')}</h4>
+      <table><thead><tr><th>${t('col_time')}</th><th>${t('col_event')}</th><th>${t('col_ip')}</th><th>${t('col_details')}</th></tr></thead>
+      <tbody>${(data.audit||[]).map(e=>`<tr>
+        <td style="font-size:.75rem">${fmt(e.ts)}</td>
+        <td><span class="chip">${e.event}</span></td>
+        <td style="font-size:.75rem">${e.ip||'—'}</td>
+        <td style="font-size:.75rem;color:var(--muted)">${JSON.stringify(e.details).slice(0,80)}</td>
+      </tr>`).join('')}
+      </tbody></table></div>
+    `;
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function actionLicense(action, key) {
+  let body = {};
+  if (action === 'suspend') {
+    const reason = prompt(t('prompt_suspend')); if (reason === null) return; body = { reason };
+  } else if (action === 'revoke') {
+    const reason = prompt(t('prompt_revoke')); if (reason === null) return; body = { reason };
+  } else if (action === 'extend') {
+    const d = prompt(t('prompt_extend')); if (!d) return; body = { days: parseInt(d) };
+  } else if (action === 'transfer') {
+    if (!confirm(t('confirm_transfer'))) return;
+  }
+  try {
+    await api('POST', `/api/v1/admin/licenses/${encodeURIComponent(key)}/${action}`, body);
+    toast(t('action_applied', action), 'success');
+    viewLicense(key);
+    loadLicenses();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+// ─── Audit ────────────────────────────────────────────────────────────────────
+async function loadAudit(page) {
+  if (page) currentPage.audit = page;
+  const key = document.getElementById('audit-key-filter').value;
+  const event = document.getElementById('audit-event-filter').value;
+  const from = document.getElementById('audit-from').value;
+  const to = document.getElementById('audit-to').value;
+  let url = `/api/v1/admin/audit?page=${currentPage.audit}&limit=50`;
+  if (key) url += '&license_key=' + encodeURIComponent(key);
+  if (event) url += '&event=' + event;
+  if (from) url += '&from=' + from;
+  if (to) url += '&to=' + to + 'T23:59:59Z';
+  try {
+    const data = await api('GET', url);
+    const tb = document.getElementById('audit-table');
+    if (!data.data.length) { tb.innerHTML = `<tr><td colspan="5" class="empty">${t('no_audit')}</td></tr>`; renderPagination('audit-pagination', data, loadAudit); return; }
+    tb.innerHTML = data.data.map(e => `<tr>
+      <td style="font-size:.75rem;white-space:nowrap">${fmt(e.ts)}</td>
+      <td><span class="chip">${e.event}</span></td>
+      <td><code class="code" style="font-size:.7rem">${e.license_key || '—'}</code></td>
+      <td style="font-size:.75rem">${e.ip || '—'}</td>
+      <td style="font-size:.75rem;color:var(--muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${JSON.stringify(e.details)}</td>
+    </tr>`).join('');
+    renderPagination('audit-pagination', data, loadAudit);
+  } catch (e) { toast(t('err_load_audit') + ': ' + e.message, 'error'); }
+}
+
+// ─── Webhooks ─────────────────────────────────────────────────────────────────
+async function loadWebhooks() {
+  try {
+    const data = await api('GET', '/api/v1/admin/webhooks');
+    const tb = document.getElementById('webhooks-table');
+    if (!data.length) { tb.innerHTML = `<tr><td colspan="6" class="empty">${t('no_webhooks')}</td></tr>`; return; }
+    tb.innerHTML = data.map(w => `<tr>
+      <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis">${w.url}</td>
+      <td style="font-size:.75rem">${(w.events||[]).join(', ')}</td>
+      <td>${w.active ? badge(t('col_active'),'active') : badge('—','inactive')}</td>
+      <td>${w.failure_count > 0 ? `<span style="color:var(--red)">${w.failure_count}</span>` : '0'}</td>
+      <td style="font-size:.75rem">${fmt(w.last_delivery_at)}</td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-sm btn-secondary" onclick="testWebhook('${w.id}')">${t('btn_test')}</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteWebhook('${w.id}')">${t('btn_delete')}</button>
+      </td>
+    </tr>`).join('');
+  } catch (e) { toast(t('err_load_webhooks') + ': ' + e.message, 'error'); }
+}
+
+async function submitWebhook() {
+  const url = document.getElementById('wh-url').value.trim();
+  if (!url) { toast(t('url_required'), 'error'); return; }
+  const eventsStr = document.getElementById('wh-events').value.trim();
+  const events = eventsStr ? eventsStr.split(',').map(s => s.trim()).filter(Boolean) : null;
+  const secret = document.getElementById('wh-secret').value.trim() || null;
+  try {
+    const data = await api('POST', '/api/v1/admin/webhooks', { url, events: events || null, secret });
+    closeModal('webhook-modal');
+    toast(t('webhook_created', data.secret), 'success');
+    loadWebhooks();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function testWebhook(id) {
+  try {
+    const data = await api('POST', `/api/v1/admin/webhooks/${id}/test`, {});
+    toast(t('test_delivery', data.status) + ' ' + (data.ok ? '✓' : '✗'), data.ok ? 'success' : 'error');
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function deleteWebhook(id) {
+  if (!confirm(t('confirm_delete_webhook'))) return;
+  try { await api('DELETE', `/api/v1/admin/webhooks/${id}`, {}); toast(t('deleted'), 'success'); loadWebhooks(); }
+  catch (e) { toast(e.message, 'error'); }
+}
+
+// ─── Pagination ───────────────────────────────────────────────────────────────
+function renderPagination(id, data, loadFn) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const cur = data.page, total = data.pages;
+  el.innerHTML = `
+    <button onclick="${loadFn.name}(${cur - 1})" ${cur <= 1 ? 'disabled' : ''}>${t('btn_prev')}</button>
+    <span>${t('page_info', cur, total, data.total)}</span>
+    <button onclick="${loadFn.name}(${cur + 1})" ${cur >= total ? 'disabled' : ''}>${t('btn_next')}</button>
+  `;
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  applyTranslations();
+  document.getElementById('page-title').textContent = t('nav_dashboard');
+
+  if (token) {
+    api('GET', '/api/v1/admin/dashboard').then(() => {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('user-label').textContent = t('admin_user');
+      loadDashboard();
+      loadOrgs();
+    }).catch(() => {
+      token = ''; sessionStorage.removeItem('admin_token');
+    });
+  }
+});
+</script>
+</body>
+</html>
