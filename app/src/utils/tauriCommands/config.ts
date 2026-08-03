@@ -49,6 +49,8 @@ export interface CloudProviderCreds {
   client_id?: string | null;
   /** The youworker end-user UUID presented as `subject_token`. */
   subject_uuid?: string | null;
+  /** `'webhook'` (default) or `'websocket'` — which leg carries the reply. */
+  youworker_transport?: string | null;
 }
 
 export interface ModelSettingsUpdate {

@@ -37,6 +37,12 @@ pub fn build_core_http_router(socketio_enabled: bool) -> Router {
         .route("/rpc", post(rpc_handler))
         .route("/ws/dictation", get(dictation_ws_handler))
         .route("/auth/telegram", get(telegram_auth_handler))
+        // youworker.ai YouWorkForce outbound webhook (async reply leg of
+        // the youworker cloud provider — see inference::provider::youworker).
+        .route(
+            "/channels/{channel}/outbound/message",
+            post(crate::aura::inference::provider::youworker_webhook::youworker_outbound_message_handler),
+        )
         // OpenAI-compatible inference endpoint (/v1/chat/completions, /v1/models)
         .nest("/v1", crate::aura::inference::http::router())
         .fallback(not_found_handler)

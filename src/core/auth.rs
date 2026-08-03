@@ -24,6 +24,10 @@
 //! - `GET /events`        — SSE stream; browser `EventSource` cannot set headers
 //! - `GET /events/webhooks` — webhook SSE; same browser constraint
 //! - `GET /ws/dictation`  — WebSocket upgrade; browser WS API cannot set headers
+//! - `POST /channels/{youmessage,youtalkie}/outbound/message` — youworker.ai's
+//!   webhook callback; authenticated by Standard-Webhooks HMAC instead of our
+//!   bearer (see `inference::provider::youworker_webhook`), and youworker.ai
+//!   sends no `Authorization` header at all
 //! - `OPTIONS *`          — CORS preflight (handled by outer CORS middleware)
 //!
 //! Only `POST /rpc` carries executable commands and requires the bearer token.
@@ -57,6 +61,8 @@ const PUBLIC_PATHS: &[&str] = &[
     "/events",
     "/events/webhooks",
     "/ws/dictation",
+    "/channels/youmessage/outbound/message",
+    "/channels/youtalkie/outbound/message",
 ];
 
 /// The environment variable the Tauri shell sets before spawning the core.
@@ -238,6 +244,14 @@ mod tests {
         let back = std::fs::read_to_string(&path).unwrap();
         assert_eq!(back, token);
         std::fs::remove_dir_all(&tmp).ok();
+    }
+
+    #[test]
+    fn youworker_outbound_webhook_paths_bypass_bearer_auth() {
+        // youworker.ai's callback carries a Standard-Webhooks HMAC, never our
+        // bearer — regression guard for the exact-match PUBLIC_PATHS list.
+        assert!(PUBLIC_PATHS.contains(&"/channels/youmessage/outbound/message"));
+        assert!(PUBLIC_PATHS.contains(&"/channels/youtalkie/outbound/message"));
     }
 
     #[cfg(unix)]

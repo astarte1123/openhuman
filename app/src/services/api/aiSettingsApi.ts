@@ -145,6 +145,16 @@ function authKeyForSlug(slug: string): string {
 }
 
 /**
+ * Auth-profile key for the youworker outbound-webhook HMAC secret (matches
+ * Rust `youworker_webhook::outbound_hmac_key_for_slug`). Distinct from
+ * `authKeyForSlug` — the client_secret (inbound auth) and the outbound HMAC
+ * secret are different secrets with different rotation lifecycles.
+ */
+function outboundHmacKeyForSlug(slug: string): string {
+  return `provider:${slug}:outbound-hmac`;
+}
+
+/**
  * Loads the full AI settings view by joining:
  *  - the core's client-config snapshot (cloud_providers + *_provider fields)
  *  - the auth profiles list (to derive `has_api_key` per cloud provider)
@@ -211,7 +221,8 @@ export async function saveAISettings(prev: AISettings, next: AISettings): Promis
         n.autentika_url !== p.autentika_url ||
         n.persona !== p.persona ||
         n.client_id !== p.client_id ||
-        n.subject_uuid !== p.subject_uuid
+        n.subject_uuid !== p.subject_uuid ||
+        n.youworker_transport !== p.youworker_transport
       );
     })
   ) {
@@ -226,6 +237,7 @@ export async function saveAISettings(prev: AISettings, next: AISettings): Promis
         persona,
         client_id,
         subject_uuid,
+        youworker_transport,
       }) => ({
         id,
         slug,
@@ -236,6 +248,7 @@ export async function saveAISettings(prev: AISettings, next: AISettings): Promis
         persona,
         client_id,
         subject_uuid,
+        youworker_transport,
       })
     );
   }
@@ -282,6 +295,28 @@ export async function clearCloudProviderKey(slug: string): Promise<void> {
   // Clear the new-style key. Legacy bare-slug entries are left as-is
   // since we can't be sure they aren't used by other things.
   await authRemoveProviderCredentials({ provider: authKeyForSlug(slug), profile: 'default' });
+}
+
+/**
+ * Store the youworker outbound-webhook HMAC secret (encrypted at rest, same
+ * store as the API key but under a distinct auth-profile key so the two
+ * secrets rotate independently).
+ */
+export async function setYouWorkerOutboundSecret(slug: string, secret: string): Promise<void> {
+  await authStoreProviderCredentials({
+    provider: outboundHmacKeyForSlug(slug),
+    profile: 'default',
+    token: secret,
+    setActive: true,
+  });
+}
+
+/** Clear the stored youworker outbound-webhook HMAC secret. */
+export async function clearYouWorkerOutboundSecret(slug: string): Promise<void> {
+  await authRemoveProviderCredentials({
+    provider: outboundHmacKeyForSlug(slug),
+    profile: 'default',
+  });
 }
 
 /**
