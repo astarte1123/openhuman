@@ -65,7 +65,10 @@ const MIN_RECOGNITION_MODEL_BYTES: u64 = 4 * 1024 * 1024;
 /// this with the CPU-bound [`extract_text`] on a blocking thread (see
 /// `ops::meetings_append_screenshot`).
 pub async fn ensure_models_downloaded(models_dir: &Path) -> Result<(PathBuf, PathBuf)> {
-    log::debug!("{LOG_PREFIX} ensure_models_downloaded: dir={}", models_dir.display());
+    log::debug!(
+        "{LOG_PREFIX} ensure_models_downloaded: dir={}",
+        models_dir.display()
+    );
 
     std::fs::create_dir_all(models_dir)
         .with_context(|| format!("failed to create OCR models dir: {}", models_dir.display()))?;
@@ -106,7 +109,10 @@ async fn ensure_model_file(
             .map(|m| m.len() >= min_bytes)
             .unwrap_or(false);
         if size_ok {
-            log::debug!("{LOG_PREFIX} model already present at {}", final_path.display());
+            log::debug!(
+                "{LOG_PREFIX} model already present at {}",
+                final_path.display()
+            );
             return Ok(final_path);
         }
         log::warn!(
@@ -205,7 +211,10 @@ pub fn extract_text(png_bytes: &[u8], models_dir: &Path) -> Result<String> {
         .get_text(&ocr_input)
         .map_err(|e| anyhow!("OCR text extraction failed: {e}"))?;
 
-    log::debug!("{LOG_PREFIX} extract_text: extracted {} char(s)", text.len());
+    log::debug!(
+        "{LOG_PREFIX} extract_text: extracted {} char(s)",
+        text.len()
+    );
     Ok(text)
 }
 

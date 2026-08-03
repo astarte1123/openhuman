@@ -94,7 +94,10 @@ impl Resampler16k {
     }
 }
 
-fn drain_full_chunks(resampler: &mut SincFixedIn<f32>, input_buffer: &mut Vec<f32>) -> Result<Vec<f32>> {
+fn drain_full_chunks(
+    resampler: &mut SincFixedIn<f32>,
+    input_buffer: &mut Vec<f32>,
+) -> Result<Vec<f32>> {
     let mut out = Vec::new();
     while input_buffer.len() >= RESAMPLE_CHUNK_FRAMES {
         let chunk: Vec<f32> = input_buffer.drain(..RESAMPLE_CHUNK_FRAMES).collect();

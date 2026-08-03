@@ -216,7 +216,17 @@ export async function saveAISettings(prev: AISettings, next: AISettings): Promis
     })
   ) {
     patch.cloud_providers = next.cloudProviders.map(
-      ({ id, slug, label, endpoint, auth_style, autentika_url, persona, client_id, subject_uuid }) => ({
+      ({
+        id,
+        slug,
+        label,
+        endpoint,
+        auth_style,
+        autentika_url,
+        persona,
+        client_id,
+        subject_uuid,
+      }) => ({
         id,
         slug,
         label,

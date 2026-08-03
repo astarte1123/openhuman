@@ -11,7 +11,9 @@
 //! see [`search_transcripts`] and [`backfill_missing_fts_rows`].
 
 use crate::openhuman::config::Config;
-use crate::openhuman::meetings::types::{Meeting, MeetingScreenshot, MeetingStatus, TranscriptChunk};
+use crate::openhuman::meetings::types::{
+    Meeting, MeetingScreenshot, MeetingStatus, TranscriptChunk,
+};
 use anyhow::{Context, Result};
 use chrono::Utc;
 use rusqlite::{params, Connection};
@@ -406,8 +408,9 @@ fn map_screenshot_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<MeetingScreen
 fn with_connection<T>(config: &Config, f: impl FnOnce(&Connection) -> Result<T>) -> Result<T> {
     let db_path = config.workspace_dir.join("meetings").join("meetings.db");
     if let Some(parent) = db_path.parent() {
-        std::fs::create_dir_all(parent)
-            .with_context(|| format!("Failed to create meetings directory: {}", parent.display()))?;
+        std::fs::create_dir_all(parent).with_context(|| {
+            format!("Failed to create meetings directory: {}", parent.display())
+        })?;
     }
 
     let conn = Connection::open(&db_path)

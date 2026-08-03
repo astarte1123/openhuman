@@ -79,8 +79,8 @@ const YouWorkerProviderDialog = ({
             {initial ? 'Edit YouWorker' : 'Connect YouWorker'}
           </div>
           <div className="mt-0.5 text-xs text-stone-500">
-            Native WebSocket transport. Params come from your youworker.ai deployment's
-            integration handoff doc — the client secret is encrypted at rest in{' '}
+            Native WebSocket transport. Params come from your youworker.ai deployment's integration
+            handoff doc — the client secret is encrypted at rest in{' '}
             <span className="font-mono">auth-profiles.json</span>.
           </div>
         </div>
@@ -166,7 +166,10 @@ const YouWorkerProviderDialog = ({
                     label: label.trim() || 'YouWorker',
                     endpoint: ywBase.trim(),
                     authStyle: 'youworker',
-                    maskedKey: hasExistingSecret || clientSecret.trim() ? '•••• configured' : 'Not configured',
+                    maskedKey:
+                      hasExistingSecret || clientSecret.trim()
+                        ? '•••• configured'
+                        : 'Not configured',
                     autentikaUrl: autentikaUrl.trim(),
                     persona: persona.trim(),
                     clientId: clientId.trim(),

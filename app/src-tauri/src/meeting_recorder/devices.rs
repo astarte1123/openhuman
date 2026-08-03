@@ -58,7 +58,9 @@ pub fn configure_platform_audio(host: &cpal::Host) -> Result<Vec<AudioDevice>> {
 
 /// Resolve a cpal `Device` + negotiated `SupportedStreamConfig` for the
 /// given logical [`AudioDevice`].
-pub fn get_device(audio_device: &AudioDevice) -> Result<(cpal::Device, cpal::SupportedStreamConfig)> {
+pub fn get_device(
+    audio_device: &AudioDevice,
+) -> Result<(cpal::Device, cpal::SupportedStreamConfig)> {
     #[cfg(target_os = "windows")]
     {
         get_windows_device(audio_device)
@@ -95,7 +97,9 @@ fn configure_windows_audio(default_host: &cpal::Host) -> Result<Vec<AudioDevice>
     };
 
     if devices.is_empty() {
-        log::warn!("{LOG_PREFIX} no devices found via host enumeration, falling back to system defaults");
+        log::warn!(
+            "{LOG_PREFIX} no devices found via host enumeration, falling back to system defaults"
+        );
         if let Some(d) = default_host.default_input_device() {
             if let Ok(name) = d.name() {
                 devices.push(AudioDevice {
@@ -209,7 +213,10 @@ fn get_windows_device(
 }
 
 #[cfg(target_os = "windows")]
-fn find_device_by_name<I>(devices: Result<I, cpal::DevicesError>, name: &str) -> Option<cpal::Device>
+fn find_device_by_name<I>(
+    devices: Result<I, cpal::DevicesError>,
+    name: &str,
+) -> Option<cpal::Device>
 where
     I: Iterator<Item = cpal::Device>,
 {
@@ -236,7 +243,8 @@ fn resolve_input_config(device: &cpal::Device) -> Result<cpal::SupportedStreamCo
         .supported_input_configs()
         .map_err(|e| anyhow!("supported_input_configs failed: {e}"))?
         .collect();
-    pick_preferred_config(&mut configs).ok_or_else(|| anyhow!("no usable input stream config found"))
+    pick_preferred_config(&mut configs)
+        .ok_or_else(|| anyhow!("no usable input stream config found"))
 }
 
 #[cfg(target_os = "windows")]
@@ -248,7 +256,8 @@ fn resolve_output_config(device: &cpal::Device) -> Result<cpal::SupportedStreamC
         .supported_output_configs()
         .map_err(|e| anyhow!("supported_output_configs failed: {e}"))?
         .collect();
-    pick_preferred_config(&mut configs).ok_or_else(|| anyhow!("no usable output stream config found"))
+    pick_preferred_config(&mut configs)
+        .ok_or_else(|| anyhow!("no usable output stream config found"))
 }
 
 /// Prefer F32 stereo, then F32 mono, then whatever's first.

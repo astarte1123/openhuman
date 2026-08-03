@@ -46,8 +46,7 @@ pub async fn list_configured_models(
         .cloned()
         .ok_or_else(|| format!("no cloud provider with id '{}' found", provider_id))?;
 
-    if entry.auth_style == crate::openhuman::config::schema::cloud_providers::AuthStyle::YouWorker
-    {
+    if entry.auth_style == crate::openhuman::config::schema::cloud_providers::AuthStyle::YouWorker {
         // youworker.ai has no OpenAI-style `/models` listing — model choice
         // is server-side, driven by the configured `persona`, not a
         // client-selectable id.

@@ -216,9 +216,7 @@ impl YouWorkerProvider {
         let session_id = create_result
             .get("session_id")
             .and_then(Value::as_str)
-            .ok_or_else(|| {
-                anyhow::anyhow!("[youworker] session.create.result missing session_id")
-            });
+            .ok_or_else(|| anyhow::anyhow!("[youworker] session.create.result missing session_id"));
         let session_id = match session_id {
             Ok(id) => id.to_string(),
             Err(e) => {

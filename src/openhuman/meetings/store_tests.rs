@@ -86,15 +86,9 @@ fn append_transcript_chunk_and_list_orders_by_start_ms() {
         "second chunk",
     )
     .unwrap();
-    let first = append_transcript_chunk(
-        &config,
-        &meeting.id,
-        0,
-        4_000,
-        Some("alice"),
-        "first chunk",
-    )
-    .unwrap();
+    let first =
+        append_transcript_chunk(&config, &meeting.id, 0, 4_000, Some("alice"), "first chunk")
+            .unwrap();
 
     let chunks = list_transcript_chunks(&config, &meeting.id).unwrap();
     assert_eq!(chunks.len(), 2);
@@ -146,7 +140,9 @@ fn delete_meeting_cascades_transcript_chunks() {
 
     assert!(get_meeting(&config, &meeting.id).is_err());
     assert!(
-        list_transcript_chunks(&config, &meeting.id).unwrap().is_empty(),
+        list_transcript_chunks(&config, &meeting.id)
+            .unwrap()
+            .is_empty(),
         "transcript chunks must cascade-delete with their meeting"
     );
 }
@@ -177,10 +173,22 @@ fn insert_screenshot_and_list_orders_by_captured_at_ms() {
 
     // Insert out of order to prove the read path sorts by captured_at_ms,
     // not insertion order.
-    let second =
-        insert_screenshot(&config, &meeting.id, 40_000, "/tmp/40000.png", "Second slide").unwrap();
-    let first =
-        insert_screenshot(&config, &meeting.id, 20_000, "/tmp/20000.png", "First slide").unwrap();
+    let second = insert_screenshot(
+        &config,
+        &meeting.id,
+        40_000,
+        "/tmp/40000.png",
+        "Second slide",
+    )
+    .unwrap();
+    let first = insert_screenshot(
+        &config,
+        &meeting.id,
+        20_000,
+        "/tmp/20000.png",
+        "First slide",
+    )
+    .unwrap();
 
     let screenshots = list_screenshots(&config, &meeting.id).unwrap();
     assert_eq!(screenshots.len(), 2);
@@ -356,8 +364,15 @@ fn search_transcripts_malformed_query_degrades_to_zero_results_instead_of_errori
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
     let meeting = create_meeting(&config, "Punctuation test", "manual").unwrap();
-    append_transcript_chunk(&config, &meeting.id, 0, 1_000, None, "This mentions a quote mark.")
-        .unwrap();
+    append_transcript_chunk(
+        &config,
+        &meeting.id,
+        0,
+        1_000,
+        None,
+        "This mentions a quote mark.",
+    )
+    .unwrap();
 
     // Bare FTS5 operators / dangling punctuation would otherwise be a MATCH
     // syntax error; verify the literal-phrase retry recovers instead of
@@ -377,9 +392,15 @@ fn search_transcripts_backfills_rows_missing_from_fts_index() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
     let meeting = create_meeting(&config, "Backfill check", "manual").unwrap();
-    let chunk =
-        append_transcript_chunk(&config, &meeting.id, 0, 1_000, None, "backfill sentinel text")
-            .unwrap();
+    let chunk = append_transcript_chunk(
+        &config,
+        &meeting.id,
+        0,
+        1_000,
+        None,
+        "backfill sentinel text",
+    )
+    .unwrap();
 
     // Simulate rows written before the FTS5 table/triggers existed by
     // stripping this chunk back out of the FTS index directly, bypassing the

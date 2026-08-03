@@ -44,7 +44,9 @@ pub(crate) fn event_timestamp_rfc3339(ts_ms: Option<i64>) -> String {
         .to_rfc3339()
 }
 
-pub(crate) fn normalize_provider_surfaces_event(args: &RecipeEventArgs) -> Option<serde_json::Value> {
+pub(crate) fn normalize_provider_surfaces_event(
+    args: &RecipeEventArgs,
+) -> Option<serde_json::Value> {
     if args.kind != "ingest" {
         return None;
     }

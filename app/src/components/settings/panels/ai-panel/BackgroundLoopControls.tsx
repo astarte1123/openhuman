@@ -2,7 +2,11 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { listConnections as listComposioConnections } from '../../../../lib/composio/composioApi';
 import type { ComposioConnection } from '../../../../lib/composio/types';
-import { creditsApi, type CreditTransaction, type TeamUsage } from '../../../../services/api/creditsApi';
+import {
+  creditsApi,
+  type CreditTransaction,
+  type TeamUsage,
+} from '../../../../services/api/creditsApi';
 import {
   type HeartbeatPlannerSummary,
   type HeartbeatSettings,

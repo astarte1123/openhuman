@@ -170,7 +170,8 @@ fn build_stream(
         SampleFormat::I32 => device.build_input_stream(
             &stream_config,
             move |data: &[i32], _: &cpal::InputCallbackInfo| {
-                let converted: Vec<f32> = data.iter().map(|&s| s as f32 / i32::MAX as f32).collect();
+                let converted: Vec<f32> =
+                    data.iter().map(|&s| s as f32 / i32::MAX as f32).collect();
                 push_samples(&mut producer, &converted, device_type);
             },
             err_fn,

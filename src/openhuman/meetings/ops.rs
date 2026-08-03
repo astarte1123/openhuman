@@ -11,7 +11,9 @@ use crate::openhuman::meetings::export;
 use crate::openhuman::meetings::ocr;
 use crate::openhuman::meetings::store;
 use crate::openhuman::meetings::store::SearchResult;
-use crate::openhuman::meetings::types::{Meeting, MeetingScreenshot, MeetingStatus, TranscriptChunk};
+use crate::openhuman::meetings::types::{
+    Meeting, MeetingScreenshot, MeetingStatus, TranscriptChunk,
+};
 use crate::rpc::RpcOutcome;
 use base64::{engine::general_purpose::STANDARD as BASE64, Engine as _};
 use serde::Serialize;
@@ -41,7 +43,10 @@ pub async fn meetings_create(
         .unwrap_or_else(|| "manual".to_string());
 
     let meeting = store::create_meeting(config, &title, &source).map_err(|e| e.to_string())?;
-    log::debug!("[meetings] meetings_create id={} source={source}", meeting.id);
+    log::debug!(
+        "[meetings] meetings_create id={} source={source}",
+        meeting.id
+    );
     Ok(RpcOutcome::new(
         meeting.clone(),
         vec![format!("meeting created: {}", meeting.id)],
@@ -109,7 +114,9 @@ pub async fn meetings_delete(
     let deleted = store::delete_meeting(config, meeting_id).map_err(|e| e.to_string())?;
     Ok(RpcOutcome::new(
         json!({ "deleted": deleted }),
-        vec![format!("meeting delete requested: {meeting_id} (deleted={deleted})")],
+        vec![format!(
+            "meeting delete requested: {meeting_id} (deleted={deleted})"
+        )],
     ))
 }
 
@@ -143,7 +150,9 @@ pub async fn meetings_append_transcript_chunk(
 
     Ok(RpcOutcome::new(
         chunk,
-        vec![format!("transcript chunk appended to meeting: {meeting_id}")],
+        vec![format!(
+            "transcript chunk appended to meeting: {meeting_id}"
+        )],
     ))
 }
 
@@ -273,7 +282,13 @@ pub async fn meetings_summarize(
 
     let transcript = chunks
         .iter()
-        .map(|c| format!("[{}]: {}", c.speaker.as_deref().unwrap_or("unknown"), c.text))
+        .map(|c| {
+            format!(
+                "[{}]: {}",
+                c.speaker.as_deref().unwrap_or("unknown"),
+                c.text
+            )
+        })
         .collect::<Vec<_>>()
         .join("\n");
 
@@ -314,7 +329,9 @@ pub async fn meetings_search(
 
     Ok(RpcOutcome::new(
         results,
-        vec![format!("transcript search: {count} result(s) for {query:?}")],
+        vec![format!(
+            "transcript search: {count} result(s) for {query:?}"
+        )],
     ))
 }
 
@@ -336,7 +353,9 @@ pub async fn meetings_export(
     log::debug!("[meetings] meetings_export: start meeting_id={meeting_id} format={format:?}");
 
     if format != "pdf" && format != "docx" {
-        return Err(format!("unsupported export format '{format}': expected 'pdf' or 'docx'"));
+        return Err(format!(
+            "unsupported export format '{format}': expected 'pdf' or 'docx'"
+        ));
     }
 
     let meeting = store::get_meeting(config, meeting_id).map_err(|e| e.to_string())?;
@@ -367,7 +386,10 @@ pub async fn meetings_export(
 
     Ok(RpcOutcome::new(
         json!({ "path": output_path.display().to_string() }),
-        vec![format!("meeting exported: {meeting_id} -> {}", output_path.display())],
+        vec![format!(
+            "meeting exported: {meeting_id} -> {}",
+            output_path.display()
+        )],
     ))
 }
 

@@ -249,13 +249,20 @@ fn empty_prompt_is_allowed() {
 fn lone_zero_width_char_without_other_signal_is_allowed() {
     // A single obfuscation trait (zero-width space) with no override/exfiltration
     // intent is a weak signal on its own and must not push past Allow.
-    let decision = enforce("Please\u{200b} summarize this document for me.", "zwsp-only");
+    let decision = enforce(
+        "Please\u{200b} summarize this document for me.",
+        "zwsp-only",
+    );
     assert_eq!(
         decision.verdict,
         PromptInjectionVerdict::Allow,
         "expected Allow for lone zwsp signal, got score={:.3} reasons={:?}",
         decision.score,
-        decision.reasons.iter().map(|r| r.code.as_str()).collect::<Vec<_>>()
+        decision
+            .reasons
+            .iter()
+            .map(|r| r.code.as_str())
+            .collect::<Vec<_>>()
     );
 }
 

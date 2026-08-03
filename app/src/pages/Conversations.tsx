@@ -63,10 +63,18 @@ import {
   getComposerBlockedSendFeedback,
   handleComposerSlashCommand,
 } from './conversations/composerSendDecision';
-import { DEFAULT_PROFILE_DRAFT, useAgentProfileDraft } from './conversations/hooks/useAgentProfileDraft';
+import {
+  DEFAULT_PROFILE_DRAFT,
+  useAgentProfileDraft,
+} from './conversations/hooks/useAgentProfileDraft';
 import { useInlineAutocomplete } from './conversations/hooks/useInlineAutocomplete';
 import { useSilenceTimer } from './conversations/hooks/useSilenceTimer';
 import { useVoiceInput } from './conversations/hooks/useVoiceInput';
+import {
+  formatThreadLoadError,
+  isComposerInteractionBlocked,
+  isImeCompositionKeyEvent,
+} from './conversations/threadHelpers';
 import {
   type AgentBubblePosition,
   buildAcceptedInlineCompletion,
@@ -75,11 +83,6 @@ import {
   getInlineCompletionSuffix,
 } from './conversations/utils/format';
 import { isThreadVisibleInTab, WORKERS_TAB_VALUE } from './conversations/utils/threadFilter';
-import {
-  formatThreadLoadError,
-  isComposerInteractionBlocked,
-  isImeCompositionKeyEvent,
-} from './conversations/threadHelpers';
 
 // Chat uses the reasoning model; `agentic-v1` is reserved for sub-agents
 // that execute tool calls, not the primary user-facing conversation.

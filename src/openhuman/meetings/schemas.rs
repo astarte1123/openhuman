@@ -468,8 +468,13 @@ fn handle_append_screenshot(params: Map<String, Value>) -> ControllerFuture {
         let captured_at_ms = read_required::<i64>(&params, "captured_at_ms")?;
         let image_base64 = read_required::<String>(&params, "image_base64")?;
         to_json(
-            ops::meetings_append_screenshot(&config, meeting_id.trim(), captured_at_ms, &image_base64)
-                .await?,
+            ops::meetings_append_screenshot(
+                &config,
+                meeting_id.trim(),
+                captured_at_ms,
+                &image_base64,
+            )
+            .await?,
         )
     })
 }

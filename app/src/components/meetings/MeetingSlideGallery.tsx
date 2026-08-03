@@ -18,13 +18,17 @@ function SlideCard({ screenshot }: { screenshot: MeetingScreenshot }) {
 
   const ocrText = screenshot.ocr_text.trim();
   const isLong = ocrText.length > OCR_TEXT_TRUNCATE_LENGTH;
-  const displayedText = expanded || !isLong ? ocrText : `${ocrText.slice(0, OCR_TEXT_TRUNCATE_LENGTH)}…`;
+  const displayedText =
+    expanded || !isLong ? ocrText : `${ocrText.slice(0, OCR_TEXT_TRUNCATE_LENGTH)}…`;
 
   return (
     <li className="space-y-2 rounded-xl border border-stone-200 p-2">
       <img
         src={convertFileSrc(screenshot.image_path)}
-        alt={t('meetings.detail.slideAt').replace('{time}', formatClockMs(screenshot.captured_at_ms))}
+        alt={t('meetings.detail.slideAt').replace(
+          '{time}',
+          formatClockMs(screenshot.captured_at_ms)
+        )}
         className="aspect-video w-full rounded-lg border border-stone-100 object-contain"
       />
       <div className="flex items-center justify-between gap-2">

@@ -26,7 +26,10 @@ fn render_test_png(text: &str) -> Vec<u8> {
 
     let mut png_bytes = Vec::new();
     image::DynamicImage::ImageRgb8(img)
-        .write_to(&mut std::io::Cursor::new(&mut png_bytes), image::ImageFormat::Png)
+        .write_to(
+            &mut std::io::Cursor::new(&mut png_bytes),
+            image::ImageFormat::Png,
+        )
         .expect("encode synthetic test image as PNG");
     png_bytes
 }

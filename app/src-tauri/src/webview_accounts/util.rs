@@ -274,7 +274,10 @@ pub(crate) fn label_for(account_id: &str) -> String {
     format!("acct_{}", safe)
 }
 
-pub(crate) fn data_directory_for<R: Runtime>(app: &AppHandle<R>, account_id: &str) -> Result<PathBuf, String> {
+pub(crate) fn data_directory_for<R: Runtime>(
+    app: &AppHandle<R>,
+    account_id: &str,
+) -> Result<PathBuf, String> {
     // Guard against path traversal — `account_id` is joined into a filesystem
     // path that is later passed to `create_dir_all` / `remove_dir_all`.
     let account_id = sanitize_account_id(account_id)?;

@@ -308,7 +308,9 @@ mod tests {
         let salt = EncryptionKey::generate_salt();
         let key = EncryptionKey::derive("pw", &salt).unwrap();
         let mut payload = key.encrypt(b"data").unwrap();
-        payload.ciphertext.truncate(payload.ciphertext.len().saturating_sub(4));
+        payload
+            .ciphertext
+            .truncate(payload.ciphertext.len().saturating_sub(4));
 
         let encrypted_json = serde_json::to_string(&payload).unwrap();
         assert!(key.decrypt_string(&encrypted_json).is_err());

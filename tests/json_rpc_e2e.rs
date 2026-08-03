@@ -1244,7 +1244,8 @@ async fn json_rpc_meetings_create_transcript_and_finish_lifecycle() {
     // (the same dir `write_min_config` below writes `config.toml` into)
     // achieves real isolation on every platform, not just the ones where the
     // `HOME` trick happens to work.
-    let _workspace_guard = EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", openhuman_home.as_path());
+    let _workspace_guard =
+        EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", openhuman_home.as_path());
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
     let _api_url_guard = EnvVarGuard::unset("OPENHUMAN_API_URL");
@@ -1401,7 +1402,8 @@ async fn json_rpc_meetings_search_finds_matching_chunk() {
     // developer `~/.openhuman` workspace. `OPENHUMAN_WORKSPACE` is a plain env
     // var read directly by `resolve_runtime_config_dirs_with`, bypassing OS
     // home-directory resolution entirely.
-    let _workspace_guard = EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", openhuman_home.as_path());
+    let _workspace_guard =
+        EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", openhuman_home.as_path());
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
     let _api_url_guard = EnvVarGuard::unset("OPENHUMAN_API_URL");
@@ -1529,7 +1531,8 @@ async fn json_rpc_meetings_export_pdf_and_docx_write_files() {
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
     // See the comment in `json_rpc_meetings_create_transcript_and_finish_lifecycle`:
     // `HOME` alone does not isolate storage on Windows.
-    let _workspace_guard = EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", openhuman_home.as_path());
+    let _workspace_guard =
+        EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", openhuman_home.as_path());
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
     let _api_url_guard = EnvVarGuard::unset("OPENHUMAN_API_URL");
@@ -1602,7 +1605,8 @@ async fn json_rpc_meetings_export_pdf_and_docx_write_files() {
         json!({ "meeting_id": meeting_id, "format": "txt" }),
     )
     .await;
-    let bad_format_err = assert_jsonrpc_error(&bad_format, "meetings_export with unsupported format");
+    let bad_format_err =
+        assert_jsonrpc_error(&bad_format, "meetings_export with unsupported format");
     assert!(
         bad_format_err["message"]
             .as_str()
@@ -1632,14 +1636,17 @@ fn base64_png_with_text(text: &str) -> String {
     use image::{Rgb, RgbImage};
     use imageproc::drawing::draw_text_mut;
 
-    let font =
-        FontRef::try_from_slice(MEETINGS_SCREENSHOT_TEST_FONT).expect("embedded test font must parse");
+    let font = FontRef::try_from_slice(MEETINGS_SCREENSHOT_TEST_FONT)
+        .expect("embedded test font must parse");
     let mut img = RgbImage::from_pixel(700, 120, Rgb([255, 255, 255]));
     draw_text_mut(&mut img, Rgb([0, 0, 0]), 10, 30, 48.0, &font, text);
 
     let mut png_bytes = Vec::new();
     image::DynamicImage::ImageRgb8(img)
-        .write_to(&mut std::io::Cursor::new(&mut png_bytes), image::ImageFormat::Png)
+        .write_to(
+            &mut std::io::Cursor::new(&mut png_bytes),
+            image::ImageFormat::Png,
+        )
         .expect("encode synthetic test image as PNG");
     STANDARD.encode(png_bytes)
 }
@@ -1654,7 +1661,8 @@ async fn json_rpc_meetings_append_screenshot_writes_file_and_runs_ocr() {
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
     // See the comment in `json_rpc_meetings_create_transcript_and_finish_lifecycle`:
     // `HOME` alone does not isolate storage on Windows.
-    let _workspace_guard = EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", openhuman_home.as_path());
+    let _workspace_guard =
+        EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", openhuman_home.as_path());
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
     let _api_url_guard = EnvVarGuard::unset("OPENHUMAN_API_URL");
@@ -1740,7 +1748,11 @@ async fn json_rpc_meetings_append_screenshot_writes_file_and_runs_ocr() {
         .get("screenshots")
         .and_then(Value::as_array)
         .expect("screenshots array in meetings_get result");
-    assert_eq!(screenshots.len(), 1, "the appended screenshot should be listed");
+    assert_eq!(
+        screenshots.len(),
+        1,
+        "the appended screenshot should be listed"
+    );
     assert_eq!(
         screenshots[0].get("captured_at_ms").and_then(Value::as_i64),
         Some(20_000)
@@ -1767,8 +1779,7 @@ async fn json_rpc_meetings_append_screenshot_writes_file_and_runs_ocr() {
         }),
     )
     .await;
-    let rejected_err =
-        assert_jsonrpc_error(&rejected, "meetings_append_screenshot after finish");
+    let rejected_err = assert_jsonrpc_error(&rejected, "meetings_append_screenshot after finish");
     assert!(
         rejected_err["message"]
             .as_str()

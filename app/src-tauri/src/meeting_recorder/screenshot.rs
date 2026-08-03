@@ -130,7 +130,10 @@ fn capture_primary_monitor_png() -> anyhow::Result<Vec<u8>> {
 
     let mut png_bytes = Vec::new();
     image::DynamicImage::ImageRgba8(image)
-        .write_to(&mut std::io::Cursor::new(&mut png_bytes), image::ImageFormat::Png)
+        .write_to(
+            &mut std::io::Cursor::new(&mut png_bytes),
+            image::ImageFormat::Png,
+        )
         .map_err(|e| anyhow::anyhow!("failed to encode screenshot as PNG: {e}"))?;
     Ok(png_bytes)
 }
@@ -167,7 +170,11 @@ fn mean_abs_diff(a: &[u8], b: &[u8]) -> f64 {
     sum as f64 / a.len() as f64
 }
 
-async fn push_screenshot(meeting_id: &str, captured_at_ms: i64, png_bytes: &[u8]) -> Result<(), String> {
+async fn push_screenshot(
+    meeting_id: &str,
+    captured_at_ms: i64,
+    png_bytes: &[u8],
+) -> Result<(), String> {
     let image_base64 = BASE64.encode(png_bytes);
     rpc_call(
         "openhuman.meetings_append_screenshot",
@@ -257,10 +264,16 @@ mod tests {
         let img = image::RgbImage::from_pixel(64, 64, image::Rgb([200, 100, 50]));
         let mut png_bytes = Vec::new();
         image::DynamicImage::ImageRgb8(img)
-            .write_to(&mut std::io::Cursor::new(&mut png_bytes), image::ImageFormat::Png)
+            .write_to(
+                &mut std::io::Cursor::new(&mut png_bytes),
+                image::ImageFormat::Png,
+            )
             .unwrap();
 
         let thumbnail = downscale_grayscale_thumbnail(&png_bytes).expect("valid PNG should decode");
-        assert_eq!(thumbnail.len(), (DIFF_THUMBNAIL_SIZE * DIFF_THUMBNAIL_SIZE) as usize);
+        assert_eq!(
+            thumbnail.len(),
+            (DIFF_THUMBNAIL_SIZE * DIFF_THUMBNAIL_SIZE) as usize
+        );
     }
 }

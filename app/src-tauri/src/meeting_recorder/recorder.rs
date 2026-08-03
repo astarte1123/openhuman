@@ -136,10 +136,15 @@ pub async fn meeting_recorder_start<R: Runtime>(
 
     let mic_device = pick_device(&available, DeviceType::Input, mic_device_name.as_deref())
         .ok_or_else(|| "no microphone device available".to_string())?;
-    let system_device = pick_device(&available, DeviceType::Output, system_device_name.as_deref())
-        .ok_or_else(|| "no system-audio (loopback) device available".to_string())?;
+    let system_device = pick_device(
+        &available,
+        DeviceType::Output,
+        system_device_name.as_deref(),
+    )
+    .ok_or_else(|| "no system-audio (loopback) device available".to_string())?;
 
-    let (mic_cpal_device, mic_config) = devices::get_device(&mic_device).map_err(|e| e.to_string())?;
+    let (mic_cpal_device, mic_config) =
+        devices::get_device(&mic_device).map_err(|e| e.to_string())?;
     let (system_cpal_device, system_config) =
         devices::get_device(&system_device).map_err(|e| e.to_string())?;
 
@@ -175,8 +180,9 @@ pub async fn meeting_recorder_start<R: Runtime>(
     let model_path = whisper_engine::ensure_model_downloaded(&workspace_dir)
         .await
         .map_err(|e| format!("whisper model setup failed: {e}"))?;
-    let engine =
-        Arc::new(WhisperEngine::load(&model_path).map_err(|e| format!("whisper load failed: {e}"))?);
+    let engine = Arc::new(
+        WhisperEngine::load(&model_path).map_err(|e| format!("whisper load failed: {e}"))?,
+    );
 
     // 4) Spawn capture threads (mic + system loopback).
     let stop_flag = Arc::new(AtomicBool::new(false));
@@ -199,7 +205,8 @@ pub async fn meeting_recorder_start<R: Runtime>(
 
     // 5) Spawn the async pipeline: mixer -> resample -> VAD -> whisper -> RPC push.
     let pipeline_meeting_id = meeting_id.clone();
-    let pipeline_handle = tauri::async_runtime::spawn(run_pipeline(rx, engine, pipeline_meeting_id));
+    let pipeline_handle =
+        tauri::async_runtime::spawn(run_pipeline(rx, engine, pipeline_meeting_id));
 
     // 6) Spawn the sibling periodic screenshot-capture task (slide OCR).
     let screenshot_handle = screenshot::spawn_capture_task(meeting_id.clone());
@@ -281,9 +288,12 @@ fn spawn_capture_thread(
     stop_flag: Arc<AtomicBool>,
 ) {
     let thread_name = format!("meeting-recorder-{device_type:?}");
-    if let Err(err) = std::thread::Builder::new().name(thread_name).spawn(move || {
-        stream::run_capture_thread(device, config, device_type, tx, stop_flag);
-    }) {
+    if let Err(err) = std::thread::Builder::new()
+        .name(thread_name)
+        .spawn(move || {
+            stream::run_capture_thread(device, config, device_type, tx, stop_flag);
+        })
+    {
         log::error!("{LOG_PREFIX} failed to spawn {device_type:?} capture thread: {err}");
     }
 }

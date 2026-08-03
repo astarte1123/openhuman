@@ -84,17 +84,22 @@ describe('useVoiceInput', () => {
   beforeEach(() => {
     FakeMediaRecorder.instances = [];
     vi.stubGlobal('MediaRecorder', FakeMediaRecorder);
-    vi.stubGlobal('Audio', class {
-      play = vi.fn().mockResolvedValue(undefined);
-      pause = vi.fn();
-    });
+    vi.stubGlobal(
+      'Audio',
+      class {
+        play = vi.fn().mockResolvedValue(undefined);
+        pause = vi.fn();
+      }
+    );
     getUserMedia.mockReset().mockResolvedValue(new FakeMediaStream());
     Object.defineProperty(globalThis.navigator, 'mediaDevices', {
       value: { getUserMedia },
       configurable: true,
     });
     vi.mocked(notifyOverlaySttState).mockReset();
-    vi.mocked(openhumanVoiceStatus).mockReset().mockResolvedValue({ stt_available: true } as any);
+    vi.mocked(openhumanVoiceStatus)
+      .mockReset()
+      .mockResolvedValue({ stt_available: true } as any);
     vi.mocked(openhumanVoiceTranscribeBytes).mockReset();
     vi.mocked(openhumanVoiceTts).mockReset();
   });

@@ -45,10 +45,7 @@ fn token_exchange_form_has_the_fixed_rfc8693_fields() {
                 "urn:ietf:params:oauth:grant-type:token-exchange"
             ),
             ("actor_token", "actor-tok"),
-            (
-                "subject_token",
-                "00000000-0000-0000-0000-000000000002"
-            ),
+            ("subject_token", "00000000-0000-0000-0000-000000000002"),
             ("subject_token_type", "urn:youco:channel:youworkforce"),
             ("audience", "youworker-api"),
         ]
@@ -161,7 +158,8 @@ fn fold_transcript_delta_accumulates_and_finalizes() {
             "delta": { "op": "block.finalized", "block_id": "b1" }
         }
     });
-    let outcome = fold_transcript_delta(&finalized, "s1", &mut texts, &mut response_block_id).unwrap();
+    let outcome =
+        fold_transcript_delta(&finalized, "s1", &mut texts, &mut response_block_id).unwrap();
     assert_eq!(outcome, FoldOutcome::Finalized("pong".to_string()));
 }
 
@@ -188,7 +186,13 @@ fn fold_transcript_delta_ignores_appended_and_finalized_for_other_blocks() {
             "delta": { "op": "block.appended", "block_id": "reasoning-1", "field": "markdown", "text": "thinking…" }
         }
     });
-    let outcome = fold_transcript_delta(&reasoning_appended, "s1", &mut texts, &mut response_block_id).unwrap();
+    let outcome = fold_transcript_delta(
+        &reasoning_appended,
+        "s1",
+        &mut texts,
+        &mut response_block_id,
+    )
+    .unwrap();
     assert_eq!(outcome, FoldOutcome::Continue);
 
     let reasoning_finalized = json!({
@@ -198,7 +202,13 @@ fn fold_transcript_delta_ignores_appended_and_finalized_for_other_blocks() {
             "delta": { "op": "block.finalized", "block_id": "reasoning-1" }
         }
     });
-    let outcome = fold_transcript_delta(&reasoning_finalized, "s1", &mut texts, &mut response_block_id).unwrap();
+    let outcome = fold_transcript_delta(
+        &reasoning_finalized,
+        "s1",
+        &mut texts,
+        &mut response_block_id,
+    )
+    .unwrap();
     assert_eq!(outcome, FoldOutcome::Continue);
 
     let response_appended = json!({
@@ -217,7 +227,13 @@ fn fold_transcript_delta_ignores_appended_and_finalized_for_other_blocks() {
             "delta": { "op": "block.finalized", "block_id": "response-1" }
         }
     });
-    let outcome = fold_transcript_delta(&response_finalized, "s1", &mut texts, &mut response_block_id).unwrap();
+    let outcome = fold_transcript_delta(
+        &response_finalized,
+        "s1",
+        &mut texts,
+        &mut response_block_id,
+    )
+    .unwrap();
     assert_eq!(outcome, FoldOutcome::Finalized("Answer".to_string()));
 }
 

@@ -351,9 +351,7 @@ describe('AIPanel', () => {
     fireEvent.change(screen.getByLabelText(/Autentika URL/i), {
       target: { value: 'https://example.autentika.test' },
     });
-    fireEvent.change(screen.getByLabelText(/^Persona$/i), {
-      target: { value: 'test-persona' },
-    });
+    fireEvent.change(screen.getByLabelText(/^Persona$/i), { target: { value: 'test-persona' } });
     fireEvent.change(screen.getByLabelText(/Client ID/i), {
       target: { value: '00000000-0000-0000-0000-000000000001' },
     });
@@ -370,9 +368,7 @@ describe('AIPanel', () => {
       expect(vi.mocked(setCloudProviderKey)).toHaveBeenCalledWith('youworker', 'test-client-secret')
     );
     await waitFor(() =>
-      expect(
-        screen.queryByRole('dialog', { name: /Connect YouWorker/i })
-      ).not.toBeInTheDocument()
+      expect(screen.queryByRole('dialog', { name: /Connect YouWorker/i })).not.toBeInTheDocument()
     );
     // The chip should have flipped to the "Disconnect" (enabled) state.
     expect(screen.getByRole('switch', { name: /Disconnect YouWorker/i })).toBeInTheDocument();

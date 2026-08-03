@@ -13,26 +13,28 @@
  */
 import { useMemo, useState } from 'react';
 
-import {
-  clearCloudProviderKey,
-  setCloudProviderKey,
-} from '../../../services/api/aiSettingsApi';
+import { clearCloudProviderKey, setCloudProviderKey } from '../../../services/api/aiSettingsApi';
+import SettingsHeader from '../components/SettingsHeader';
+import { useSettingsNavigation } from '../hooks/useSettingsNavigation';
 import BackgroundLoopControls from './ai-panel/BackgroundLoopControls';
-import { BUILTIN_PROVIDER_META, LOCAL_CHIP_LABEL, LOCAL_CHIP_TONE, WORKLOADS } from './ai-panel/catalog';
+import {
+  BUILTIN_PROVIDER_META,
+  LOCAL_CHIP_LABEL,
+  LOCAL_CHIP_TONE,
+  WORKLOADS,
+} from './ai-panel/catalog';
 import CloudProviderEditor from './ai-panel/CloudProviderEditor';
 import CustomRoutingDialog from './ai-panel/CustomRoutingDialog';
 import ProviderKeyDialog from './ai-panel/ProviderKeyDialog';
 import ProviderToggleChip from './ai-panel/ProviderToggleChip';
 import SaveBar from './ai-panel/SaveBar';
-import YouWorkerProviderDialog from './ai-panel/YouWorkerProviderDialog';
 import { authStyleForSlug, defaultEndpointFor, maskKeyLabel } from './ai-panel/transforms';
 import type { CloudProvider, ProviderRef, WorkloadId } from './ai-panel/types';
 import { useAISettings } from './ai-panel/useAISettings';
 import { useInstalledModels } from './ai-panel/useInstalledModels';
 import { useOllamaStatus } from './ai-panel/useOllamaStatus';
 import WorkloadRow from './ai-panel/WorkloadRow';
-import SettingsHeader from '../components/SettingsHeader';
-import { useSettingsNavigation } from '../hooks/useSettingsNavigation';
+import YouWorkerProviderDialog from './ai-panel/YouWorkerProviderDialog';
 
 interface AIPanelProps {
   /** When true, the panel is rendered embedded inside another flow (e.g. the
@@ -420,11 +422,9 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
       {youworkerDialogOpen && (
         <YouWorkerProviderDialog
           initial={draft.cloudProviders.find(cp => cp.slug === 'youworker') ?? null}
-          hasExistingSecret={
-            (draft.cloudProviders.find(cp => cp.slug === 'youworker')?.maskedKey ?? '').startsWith(
-              '••••'
-            )
-          }
+          hasExistingSecret={(
+            draft.cloudProviders.find(cp => cp.slug === 'youworker')?.maskedKey ?? ''
+          ).startsWith('••••')}
           onClose={() => setYouworkerDialogOpen(false)}
           onSubmit={async (next, clientSecret) => {
             setBusyAction('toggle-youworker');

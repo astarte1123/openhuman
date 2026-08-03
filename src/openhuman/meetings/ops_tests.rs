@@ -28,9 +28,13 @@ async fn meetings_create_trims_and_uses_provided_fields() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
 
-    let out = meetings_create(&config, Some("  Kickoff  ".to_string()), Some("zoom".to_string()))
-        .await
-        .unwrap();
+    let out = meetings_create(
+        &config,
+        Some("  Kickoff  ".to_string()),
+        Some("zoom".to_string()),
+    )
+    .await
+    .unwrap();
     assert_eq!(out.value.title, "Kickoff");
     assert_eq!(out.value.source, "zoom");
 }
@@ -153,7 +157,9 @@ async fn meetings_finish_errors_when_already_completed() {
     let created = meetings_create(&config, None, None).await.unwrap().value;
     meetings_finish(&config, &created.id, 1_000).await.unwrap();
 
-    let err = meetings_finish(&config, &created.id, 2_000).await.unwrap_err();
+    let err = meetings_finish(&config, &created.id, 2_000)
+        .await
+        .unwrap_err();
     assert!(err.contains("meeting is not recording"));
 }
 
@@ -183,7 +189,9 @@ async fn meetings_summarize_errors_when_meeting_missing() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
 
-    let err = meetings_summarize(&config, "does-not-exist").await.unwrap_err();
+    let err = meetings_summarize(&config, "does-not-exist")
+        .await
+        .unwrap_err();
     assert!(err.contains("not found"));
 }
 
@@ -192,7 +200,9 @@ async fn meetings_search_rejects_empty_query() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
 
-    let err = meetings_search(&config, "   ".to_string()).await.unwrap_err();
+    let err = meetings_search(&config, "   ".to_string())
+        .await
+        .unwrap_err();
     assert!(err.contains("must not be empty"));
 }
 
@@ -202,8 +212,13 @@ async fn meetings_export_rejects_unsupported_format() {
     let config = test_config(&tmp);
     let created = meetings_create(&config, None, None).await.unwrap().value;
 
-    let err = meetings_export(&config, &created.id, "txt").await.unwrap_err();
-    assert!(err.contains("unsupported export format"), "unexpected error: {err}");
+    let err = meetings_export(&config, &created.id, "txt")
+        .await
+        .unwrap_err();
+    assert!(
+        err.contains("unsupported export format"),
+        "unexpected error: {err}"
+    );
 }
 
 #[tokio::test]
@@ -220,7 +235,9 @@ async fn meetings_export_errors_when_meeting_missing() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
 
-    let err = meetings_export(&config, "does-not-exist", "pdf").await.unwrap_err();
+    let err = meetings_export(&config, "does-not-exist", "pdf")
+        .await
+        .unwrap_err();
     assert!(err.contains("not found"));
 }
 
@@ -237,7 +254,10 @@ async fn meetings_export_pdf_writes_nonempty_file_and_returns_its_path() {
         .unwrap();
 
     let out = meetings_export(&config, &created.id, "pdf").await.unwrap();
-    let path = out.value["path"].as_str().expect("path in export result").to_string();
+    let path = out.value["path"]
+        .as_str()
+        .expect("path in export result")
+        .to_string();
 
     let metadata = std::fs::metadata(&path).expect("exported PDF file must exist on disk");
     assert!(metadata.len() > 0, "exported PDF must be non-empty");
@@ -258,7 +278,10 @@ async fn meetings_export_docx_writes_nonempty_file_and_returns_its_path() {
         .unwrap();
 
     let out = meetings_export(&config, &created.id, "DOCX").await.unwrap();
-    let path = out.value["path"].as_str().expect("path in export result").to_string();
+    let path = out.value["path"]
+        .as_str()
+        .expect("path in export result")
+        .to_string();
 
     let metadata = std::fs::metadata(&path).expect("exported DOCX file must exist on disk");
     assert!(metadata.len() > 0, "exported DOCX must be non-empty");
@@ -274,9 +297,15 @@ async fn meetings_export_works_with_zero_transcript_chunks() {
     let created = meetings_create(&config, None, None).await.unwrap().value;
 
     let out = meetings_export(&config, &created.id, "pdf").await.unwrap();
-    let path = out.value["path"].as_str().expect("path in export result").to_string();
+    let path = out.value["path"]
+        .as_str()
+        .expect("path in export result")
+        .to_string();
     let metadata = std::fs::metadata(&path).expect("exported PDF file must exist on disk");
-    assert!(metadata.len() > 0, "exported PDF must be non-empty even with no transcript");
+    assert!(
+        metadata.len() > 0,
+        "exported PDF must be non-empty even with no transcript"
+    );
 }
 
 // ── append_screenshot ────────────────────────────────────────────
@@ -295,7 +324,10 @@ fn base64_png_with_text(text: &str) -> String {
 
     let mut png_bytes = Vec::new();
     image::DynamicImage::ImageRgb8(img)
-        .write_to(&mut std::io::Cursor::new(&mut png_bytes), image::ImageFormat::Png)
+        .write_to(
+            &mut std::io::Cursor::new(&mut png_bytes),
+            image::ImageFormat::Png,
+        )
         .expect("encode synthetic test image as PNG");
     BASE64.encode(png_bytes)
 }
@@ -344,7 +376,10 @@ async fn meetings_append_screenshot_rejects_invalid_base64() {
     let err = meetings_append_screenshot(&config, &created.id, 0, "not-valid-base64!!")
         .await
         .unwrap_err();
-    assert!(err.contains("invalid 'image_base64'"), "unexpected error: {err}");
+    assert!(
+        err.contains("invalid 'image_base64'"),
+        "unexpected error: {err}"
+    );
 }
 
 #[tokio::test]
@@ -393,14 +428,30 @@ async fn meetings_search_finds_matching_chunk() {
         .await
         .unwrap()
         .value;
-    meetings_append_transcript_chunk(&config, &created.id, 0, 1_000, "we shipped the release", None)
-        .await
-        .unwrap();
-    meetings_append_transcript_chunk(&config, &created.id, 1_000, 2_000, "lunch plans for later", None)
-        .await
-        .unwrap();
+    meetings_append_transcript_chunk(
+        &config,
+        &created.id,
+        0,
+        1_000,
+        "we shipped the release",
+        None,
+    )
+    .await
+    .unwrap();
+    meetings_append_transcript_chunk(
+        &config,
+        &created.id,
+        1_000,
+        2_000,
+        "lunch plans for later",
+        None,
+    )
+    .await
+    .unwrap();
 
-    let out = meetings_search(&config, "release".to_string()).await.unwrap();
+    let out = meetings_search(&config, "release".to_string())
+        .await
+        .unwrap();
     assert_eq!(out.value.len(), 1);
     assert_eq!(out.value[0].meeting_id, created.id);
     assert!(out.value[0].snippet.contains("<mark>"));

@@ -69,13 +69,28 @@ pub fn render_pdf(meeting: &Meeting, chunks: &[TranscriptChunk]) -> Result<Vec<u
 
     let mut layout = PdfLayout::new();
 
-    layout.line(&meeting.title, BuiltinFont::HelveticaBold, TITLE_FONT_SIZE_PT, TITLE_LINE_HEIGHT_MM);
+    layout.line(
+        &meeting.title,
+        BuiltinFont::HelveticaBold,
+        TITLE_FONT_SIZE_PT,
+        TITLE_LINE_HEIGHT_MM,
+    );
     for meta_line in wrap_text(&format_meta_line(meeting), WRAP_CHARS) {
-        layout.line(&meta_line, BuiltinFont::Helvetica, META_FONT_SIZE_PT, META_LINE_HEIGHT_MM);
+        layout.line(
+            &meta_line,
+            BuiltinFont::Helvetica,
+            META_FONT_SIZE_PT,
+            META_LINE_HEIGHT_MM,
+        );
     }
     layout.blank_line(BODY_LINE_HEIGHT_MM);
 
-    layout.line("Transcript", BuiltinFont::HelveticaBold, HEADING_FONT_SIZE_PT, HEADING_LINE_HEIGHT_MM);
+    layout.line(
+        "Transcript",
+        BuiltinFont::HelveticaBold,
+        HEADING_FONT_SIZE_PT,
+        HEADING_LINE_HEIGHT_MM,
+    );
     if chunks.is_empty() {
         layout.line(
             "(no transcript recorded)",
@@ -86,21 +101,36 @@ pub fn render_pdf(meeting: &Meeting, chunks: &[TranscriptChunk]) -> Result<Vec<u
     } else {
         for chunk in chunks {
             for wrapped in wrap_text(&transcript_line(chunk), WRAP_CHARS) {
-                layout.line(&wrapped, BuiltinFont::Helvetica, BODY_FONT_SIZE_PT, BODY_LINE_HEIGHT_MM);
+                layout.line(
+                    &wrapped,
+                    BuiltinFont::Helvetica,
+                    BODY_FONT_SIZE_PT,
+                    BODY_LINE_HEIGHT_MM,
+                );
             }
         }
     }
 
     if let Some(summary) = non_empty_summary(meeting) {
         layout.blank_line(BODY_LINE_HEIGHT_MM);
-        layout.line("Summary", BuiltinFont::HelveticaBold, HEADING_FONT_SIZE_PT, HEADING_LINE_HEIGHT_MM);
+        layout.line(
+            "Summary",
+            BuiltinFont::HelveticaBold,
+            HEADING_FONT_SIZE_PT,
+            HEADING_LINE_HEIGHT_MM,
+        );
         for summary_line in summary.lines() {
             if summary_line.trim().is_empty() {
                 layout.blank_line(BODY_LINE_HEIGHT_MM);
                 continue;
             }
             for wrapped in wrap_text(summary_line, WRAP_CHARS) {
-                layout.line(&wrapped, BuiltinFont::Helvetica, BODY_FONT_SIZE_PT, BODY_LINE_HEIGHT_MM);
+                layout.line(
+                    &wrapped,
+                    BuiltinFont::Helvetica,
+                    BODY_FONT_SIZE_PT,
+                    BODY_LINE_HEIGHT_MM,
+                );
             }
         }
     }
@@ -108,7 +138,9 @@ pub fn render_pdf(meeting: &Meeting, chunks: &[TranscriptChunk]) -> Result<Vec<u
     let pages = layout.finish();
     let mut doc = PdfDocument::new(&meeting.title);
     let mut warnings = Vec::new();
-    let bytes = doc.with_pages(pages).save(&PdfSaveOptions::default(), &mut warnings);
+    let bytes = doc
+        .with_pages(pages)
+        .save(&PdfSaveOptions::default(), &mut warnings);
 
     if !warnings.is_empty() {
         log::debug!(
@@ -166,7 +198,12 @@ const TITLE_HEADING_SIZE: usize = 36;
 const SECTION_HEADING_SIZE: usize = 26;
 
 fn heading_paragraph(text: &str, half_point_size: usize) -> Paragraph {
-    Paragraph::new().add_run(Run::new().add_text(text.to_string()).bold().size(half_point_size))
+    Paragraph::new().add_run(
+        Run::new()
+            .add_text(text.to_string())
+            .bold()
+            .size(half_point_size),
+    )
 }
 
 fn text_paragraph(text: &str) -> Paragraph {
@@ -186,7 +223,11 @@ fn non_empty_summary(meeting: &Meeting) -> Option<&str> {
 /// transcript-building step, so the exported document's transcript reads
 /// identically to what the summarization LLM saw.
 fn transcript_line(chunk: &TranscriptChunk) -> String {
-    format!("[{}]: {}", chunk.speaker.as_deref().unwrap_or("unknown"), chunk.text)
+    format!(
+        "[{}]: {}",
+        chunk.speaker.as_deref().unwrap_or("unknown"),
+        chunk.text
+    )
 }
 
 /// One line of "Source: ... | Created: ... | Duration: ..." metadata shown
@@ -309,8 +350,11 @@ impl PdfLayout {
 
     fn finish(mut self) -> Vec<PdfPage> {
         self.ops.push(Op::EndTextSection);
-        self.pages
-            .push(PdfPage::new(Mm(PAGE_WIDTH_MM), Mm(PAGE_HEIGHT_MM), self.ops));
+        self.pages.push(PdfPage::new(
+            Mm(PAGE_WIDTH_MM),
+            Mm(PAGE_HEIGHT_MM),
+            self.ops,
+        ));
         self.pages
     }
 }

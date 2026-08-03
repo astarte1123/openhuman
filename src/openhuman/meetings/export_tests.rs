@@ -58,7 +58,10 @@ fn render_pdf_handles_zero_chunks_without_panicking() {
     let bytes = render_pdf(&meeting, &[]).unwrap();
 
     assert!(!bytes.is_empty());
-    assert!(bytes.starts_with(b"%PDF-"), "output must still be a valid PDF file");
+    assert!(
+        bytes.starts_with(b"%PDF-"),
+        "output must still be a valid PDF file"
+    );
 }
 
 #[test]
@@ -73,8 +76,7 @@ fn render_pdf_paginates_a_very_long_transcript() {
             start_ms: i * 1_000,
             end_ms: (i + 1) * 1_000,
             speaker: Some("alice".into()),
-            text: "This is a moderately long transcript line meant to force pagination."
-                .into(),
+            text: "This is a moderately long transcript line meant to force pagination.".into(),
             created_at: meeting.created_at.clone(),
         })
         .collect();
@@ -97,7 +99,10 @@ fn render_docx_produces_nonempty_docx_bytes_with_chunks_and_summary() {
     assert!(!bytes.is_empty());
     // DOCX is a zip archive; every zip starts with the local-file-header
     // signature "PK\x03\x04".
-    assert!(bytes.starts_with(b"PK\x03\x04"), "output must be a zip/docx file");
+    assert!(
+        bytes.starts_with(b"PK\x03\x04"),
+        "output must be a zip/docx file"
+    );
 }
 
 #[test]

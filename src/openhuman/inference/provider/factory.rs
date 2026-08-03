@@ -344,11 +344,7 @@ fn make_youworker_provider(
             slug
         );
     }
-    let yw_base = entry
-        .endpoint
-        .trim()
-        .trim_end_matches('/')
-        .to_string();
+    let yw_base = entry.endpoint.trim().trim_end_matches('/').to_string();
     if yw_base.is_empty() {
         anyhow::bail!(
             "[chat-factory] youworker provider '{}' is missing 'endpoint' (used as yw_base)",

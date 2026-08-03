@@ -4,10 +4,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { ConfirmationModal } from '../../components/intelligence/ConfirmationModal';
 import MeetingExportPanel from '../../components/meetings/MeetingExportPanel';
-import { formatClockMs } from '../../components/meetings/meetingTime';
 import MeetingSlideGallery from '../../components/meetings/MeetingSlideGallery';
 import MeetingStatusBadge from '../../components/meetings/MeetingStatusBadge';
 import MeetingSummaryPanel from '../../components/meetings/MeetingSummaryPanel';
+import { formatClockMs } from '../../components/meetings/meetingTime';
 import TranscriptChunkList from '../../components/meetings/TranscriptChunkList';
 import { useT } from '../../lib/i18n/I18nContext';
 import type { ConfirmationModal as ConfirmationModalType } from '../../types/intelligence';
@@ -15,10 +15,10 @@ import { meetingRecorderStop } from '../../utils/tauriCommands/meetingRecorder';
 import {
   type Meeting,
   type MeetingScreenshot,
-  type TranscriptChunk,
   openhumanMeetingsDelete,
   openhumanMeetingsGet,
   openhumanMeetingsUpdateTitle,
+  type TranscriptChunk,
 } from '../../utils/tauriCommands/meetings';
 
 const log = createDebug('app:pages:MeetingDetail');
@@ -244,7 +244,9 @@ const MeetingDetail = () => {
         </div>
 
         <div className="space-y-3 rounded-2xl border border-stone-200 bg-white p-4 shadow-soft">
-          <h2 className="text-sm font-semibold text-stone-900">{t('meetings.detail.transcript')}</h2>
+          <h2 className="text-sm font-semibold text-stone-900">
+            {t('meetings.detail.transcript')}
+          </h2>
           <TranscriptChunkList chunks={chunks} />
         </div>
 

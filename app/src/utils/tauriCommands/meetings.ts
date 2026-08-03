@@ -90,11 +90,12 @@ export async function openhumanMeetingsGet(
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<
-    CommandResponse<{ meeting: Meeting; chunks: TranscriptChunk[]; screenshots: MeetingScreenshot[] }>
-  >({
-    method: 'openhuman.meetings_get',
-    params: { meeting_id: meetingId },
-  });
+    CommandResponse<{
+      meeting: Meeting;
+      chunks: TranscriptChunk[];
+      screenshots: MeetingScreenshot[];
+    }>
+  >({ method: 'openhuman.meetings_get', params: { meeting_id: meetingId } });
 }
 
 export async function openhumanMeetingsUpdateTitle(

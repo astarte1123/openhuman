@@ -8,9 +8,9 @@ import MeetingRecordModal from '../components/meetings/MeetingRecordModal';
 import { useT } from '../lib/i18n/I18nContext';
 import {
   type Meeting,
-  type TranscriptSearchResult,
   openhumanMeetingsList,
   openhumanMeetingsSearch,
+  type TranscriptSearchResult,
 } from '../utils/tauriCommands/meetings';
 
 const log = createDebug('app:pages:Meetings');
@@ -177,9 +177,7 @@ const Meetings = () => {
             )}
           </>
         ) : loading ? (
-          <div className="px-6 py-16 text-center text-sm text-stone-500">
-            {t('common.loading')}
-          </div>
+          <div className="px-6 py-16 text-center text-sm text-stone-500">{t('common.loading')}</div>
         ) : meetings.length === 0 ? (
           <div className="px-6 py-16 text-center text-sm text-stone-500">{t('meetings.empty')}</div>
         ) : (
