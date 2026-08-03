@@ -27,22 +27,48 @@
 //!    resolves the pending slot registered in step 2.
 //!
 //! Voice (`youtalkie`) is not implemented — [`Provider`] is text-only.
+//!
+//! ## Alternate transport: native WebSocket
+//!
+//! [`YouWorkerTransport::Websocket`] skips the webhook leg entirely: the
+//! SAME broker-exchanged user JWT from step 1 is also accepted by
+//! youworker's native `youworker.v1` WS upgrade (empirically confirmed
+//! against the real `dev.youworker.ai` DEV deployment — no separate
+//! credential set, despite the public REST API reference documenting no
+//! WS/session route at all). Mints a fresh `session.create` +
+//! `session.attach`, then `message.send`, and reads the reply off the SAME
+//! open connection — no public inbound endpoint, no HMAC secret, no
+//! `YW_CG_YWF_OUTBOUND_BASE_URL` coordination needed. Use this transport
+//! whenever nobody has registered our outbound base URL on youworker.ai's
+//! side yet; switch to `Webhook` once they have (it scales better — one
+//! connection per call here vs. one long-lived socket).
 
 use super::traits::{Provider, ProviderCapabilities};
 use super::youworker_webhook::{cancel_pending, register_pending};
 use crate::aura::credentials::profiles::TokenSet;
 use async_trait::async_trait;
+use futures_util::{SinkExt, StreamExt};
 use serde::Deserialize;
-use serde_json::json;
+use serde_json::{json, Value};
 use std::time::Duration;
 use tokio::sync::Mutex;
 use tokio::time::timeout;
+use tokio_tungstenite::tungstenite::client::IntoClientRequest;
+use tokio_tungstenite::tungstenite::http::HeaderValue;
+use tokio_tungstenite::tungstenite::Message as WsMessage;
+use tokio_tungstenite::{MaybeTlsStream, WebSocketStream};
 
 pub const PROVIDER_LABEL: &str = "YouWorker";
 
 /// The only inbound channel a text [`Provider`] speaks — youworker's other
 /// webhook channel, `youtalkie`, is voice-only (see module docs).
 const CHANNEL: &str = "youmessage";
+/// `origin` on `session.create` / `channel` on `session.attach` for the WS
+/// transport. Matches the confirmed-working default — the
+/// `operatore-centrale` persona's manifest allows `yw-web` (and
+/// `youmessage`/`youtalkie`) but NOT `yw-cli`.
+const WS_ORIGIN: &str = "yw-web";
+const WS_SUBPROTOCOL: &str = "youworker.v1";
 
 /// Wait budget for the Autentika token-exchange HTTP calls and the inbound
 /// `POST .../inbound/message` itself (all fast, synchronous HTTP round-trips).
@@ -50,8 +76,36 @@ const HTTP_TIMEOUT: Duration = Duration::from_secs(30);
 /// Wait budget for youworker's async webhook reply to arrive after the
 /// inbound POST is accepted (an agent turn can run long).
 const TURN_TIMEOUT: Duration = Duration::from_secs(300);
+/// Wait budget for a single WS control round-trip (`session.create`,
+/// `session.attach`, the WS handshake itself, and `message.send`'s ack).
+const WS_CONTROL_TIMEOUT: Duration = Duration::from_secs(30);
+/// Wait budget for the agent to finish streaming a turn over WS.
+const WS_TURN_TIMEOUT: Duration = Duration::from_secs(300);
 /// Refresh the cached user JWT this far ahead of its `expires_at`.
 const TOKEN_EXPIRY_SKEW: Duration = Duration::from_secs(60);
+
+/// Which leg carries youworker's reply. See the module docs' "Alternate
+/// transport" section for why both exist.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum YouWorkerTransport {
+    /// `POST inbound/message` + await our own HMAC-verified outbound webhook.
+    #[default]
+    Webhook,
+    /// Native `youworker.v1` WebSocket — reply arrives on the same connection.
+    Websocket,
+}
+
+impl YouWorkerTransport {
+    /// Parses the `cloud_providers` entry's `youworker_transport` string
+    /// (`"webhook"` | `"websocket"`, defaulting to `Webhook` on anything
+    /// else, including empty/absent).
+    pub fn from_config_str(s: &str) -> Self {
+        match s.trim() {
+            "websocket" => Self::Websocket,
+            _ => Self::Webhook,
+        }
+    }
+}
 
 /// Static connection config for one youworker.ai `AuthStyle::YouWorker`
 /// `cloud_providers` entry. `client_secret` is resolved by the factory via
@@ -70,6 +124,8 @@ pub struct YouWorkerConfig {
     /// The youworker end-user UUID presented as `subject_token` (MVP: one
     /// youworker user per broker grant).
     pub subject_uuid: String,
+    /// Which leg carries the reply — see [`YouWorkerTransport`].
+    pub transport: YouWorkerTransport,
 }
 
 pub struct YouWorkerProvider {
@@ -174,7 +230,7 @@ impl YouWorkerProvider {
     /// POST one inbound message, then await the async webhook reply that
     /// [`super::youworker_webhook`] resolves when youworker's outbound
     /// callback lands.
-    async fn run_turn(&self, message: &str) -> anyhow::Result<String> {
+    async fn run_turn_webhook(&self, message: &str) -> anyhow::Result<String> {
         let jwt = self.ensure_user_jwt().await?;
         let conversation_ref = uuid::Uuid::new_v4().to_string();
         let message_id = uuid::Uuid::new_v4().to_string();
@@ -238,6 +294,75 @@ impl YouWorkerProvider {
             }
         }
     }
+
+    /// Connect, `session.create` + `session.attach`, `message.send`, collect
+    /// the streamed terminal response, close. See the module docs' "Alternate
+    /// transport" section — wire shapes below are empirically confirmed, not
+    /// guessed.
+    async fn run_turn_ws(&self, message: &str) -> anyhow::Result<String> {
+        let jwt = self.ensure_user_jwt().await?;
+        let ws_url = derive_ws_url(&self.config.yw_base)?;
+
+        let mut request = ws_url
+            .as_str()
+            .into_client_request()
+            .map_err(|e| anyhow::anyhow!("[youworker][ws] invalid WS URL '{ws_url}': {e}"))?;
+        request.headers_mut().insert(
+            "Authorization",
+            HeaderValue::from_str(&format!("Bearer {jwt}"))
+                .map_err(|e| anyhow::anyhow!("[youworker][ws] invalid bearer header: {e}"))?,
+        );
+        request
+            .headers_mut()
+            .insert("Sec-WebSocket-Protocol", HeaderValue::from_static(WS_SUBPROTOCOL));
+
+        // Needed for wss:// TLS; no-op if already installed elsewhere.
+        let _ = rustls::crypto::ring::default_provider().install_default();
+
+        let (mut socket, _) = timeout(WS_CONTROL_TIMEOUT, tokio_tungstenite::connect_async(request))
+            .await
+            .map_err(|_| anyhow::anyhow!("[youworker][ws] connect timed out"))?
+            .map_err(|e| anyhow::anyhow!("[youworker][ws] connect failed: {e}"))?;
+
+        let result = self.run_turn_ws_on_socket(&mut socket, message).await;
+        let _ = socket.close(None).await;
+        result
+    }
+
+    async fn run_turn_ws_on_socket(&self, socket: &mut WsSocket, message: &str) -> anyhow::Result<String> {
+        let create_result = ws_send_control(
+            socket,
+            "session.create",
+            json!({ "persona": self.config.persona, "origin": WS_ORIGIN }),
+        )
+        .await?;
+        let session_id = create_result
+            .get("session_id")
+            .and_then(Value::as_str)
+            .ok_or_else(|| anyhow::anyhow!("[youworker][ws] session.create.result missing session_id"))?
+            .to_string();
+
+        ws_send_control(
+            socket,
+            "session.attach",
+            json!({ "session_id": session_id, "channel": WS_ORIGIN }),
+        )
+        .await?;
+
+        ws_send_control(
+            socket,
+            "message.send",
+            json!({ "session_id": session_id, "content": message }),
+        )
+        .await?;
+
+        timeout(
+            WS_TURN_TIMEOUT,
+            ws_collect_terminal_response(socket, &session_id),
+        )
+        .await
+        .map_err(|_| anyhow::anyhow!("[youworker][ws] timed out waiting for the agent's response"))?
+    }
 }
 
 #[async_trait]
@@ -264,7 +389,10 @@ impl Provider for YouWorkerProvider {
             Some(sp) if !sp.trim().is_empty() => format!("{sp}\n\n{message}"),
             _ => message.to_string(),
         };
-        self.run_turn(&full_message).await
+        match self.config.transport {
+            YouWorkerTransport::Webhook => self.run_turn_webhook(&full_message).await,
+            YouWorkerTransport::Websocket => self.run_turn_ws(&full_message).await,
+        }
     }
 }
 
@@ -301,6 +429,157 @@ fn inbound_message_body(
         "message_id": message_id,
         "text": text,
     })
+}
+
+/// Derives the native WS URL from the configured HTTP `yw_base`, e.g.
+/// `https://dev.youworker.ai/api/v1` → `wss://dev.youworker.ai/api/v1/ws`.
+/// Matches the confirmed-working default (`wss://dev.youworker.ai/api/v1/ws`).
+fn derive_ws_url(yw_base: &str) -> anyhow::Result<String> {
+    let base = yw_base.trim().trim_end_matches('/');
+    let ws = if let Some(rest) = base.strip_prefix("https://") {
+        format!("wss://{rest}")
+    } else if let Some(rest) = base.strip_prefix("http://") {
+        format!("ws://{rest}")
+    } else {
+        anyhow::bail!("[youworker][ws] yw_base '{base}' must start with http:// or https://");
+    };
+    Ok(format!("{ws}/ws"))
+}
+
+/// Fold one `transcript.delta` frame into the accumulated response text.
+/// Confirmed shape: `block.created` (type="response") opens the block,
+/// `block.updated`'s `patch.markdown` carries the FULL cumulative text so
+/// far (not a delta — no need to also track `block.appended`), and
+/// `block.finalized` on that same block id is the terminal signal.
+fn ws_fold_transcript_delta(
+    frame: &Value,
+    response_block_id: &mut Option<String>,
+    response_text: &mut String,
+) -> anyhow::Result<Option<String>> {
+    if frame.get("type").and_then(Value::as_str) == Some("error") {
+        let message = frame
+            .get("payload")
+            .and_then(|p| p.get("message"))
+            .and_then(Value::as_str)
+            .unwrap_or("unknown error");
+        anyhow::bail!("[youworker][ws] error frame during turn: {message}");
+    }
+    if frame.get("type").and_then(Value::as_str) != Some("transcript.delta") {
+        return Ok(None);
+    }
+    let Some(delta) = frame.get("payload").and_then(|p| p.get("delta")) else {
+        return Ok(None);
+    };
+    let op = delta.get("op").and_then(Value::as_str).unwrap_or_default();
+
+    match op {
+        "block.created" => {
+            let block = delta.get("block");
+            if block.and_then(|b| b.get("type")).and_then(Value::as_str) == Some("response") {
+                *response_block_id = block
+                    .and_then(|b| b.get("block_id"))
+                    .and_then(Value::as_str)
+                    .map(str::to_string);
+            }
+        }
+        "block.updated" => {
+            let block_id = delta.get("block_id").and_then(Value::as_str);
+            if block_id.is_some() && block_id == response_block_id.as_deref() {
+                if let Some(md) = delta
+                    .get("patch")
+                    .and_then(|p| p.get("markdown"))
+                    .and_then(Value::as_str)
+                {
+                    *response_text = md.to_string();
+                }
+            }
+        }
+        "block.finalized" => {
+            let block_id = delta.get("block_id").and_then(Value::as_str);
+            if block_id.is_some() && block_id == response_block_id.as_deref() {
+                return Ok(Some(response_text.clone()));
+            }
+        }
+        _ => {}
+    }
+    Ok(None)
+}
+
+// ── WS wire I/O ──────────────────────────────────────────────────────────────
+
+type WsSocket = WebSocketStream<MaybeTlsStream<tokio::net::TcpStream>>;
+
+/// The `ClientFrame` envelope: `{id, type, ts, payload}`.
+async fn ws_send_frame(socket: &mut WsSocket, frame_type: &str, payload: Value) -> anyhow::Result<String> {
+    let id = uuid::Uuid::new_v4().to_string();
+    let envelope = json!({
+        "id": id,
+        "type": frame_type,
+        "ts": chrono::Utc::now().to_rfc3339(),
+        "payload": payload,
+    });
+    let text = envelope.to_string();
+    log::debug!("[youworker][ws] send: {text}");
+    socket
+        .send(WsMessage::Text(text))
+        .await
+        .map_err(|e| anyhow::anyhow!("[youworker][ws] send failed ({frame_type}): {e}"))?;
+    Ok(id)
+}
+
+/// Send a control frame and wait for its `in_reply_to` reply
+/// (`<frame_type>.result`), bailing loudly on a matching `error` frame.
+/// Returns the reply's `payload`.
+async fn ws_send_control(socket: &mut WsSocket, frame_type: &str, payload: Value) -> anyhow::Result<Value> {
+    let id = ws_send_frame(socket, frame_type, payload).await?;
+    let expected_result_type = format!("{frame_type}.result");
+    loop {
+        let msg = timeout(WS_CONTROL_TIMEOUT, socket.next())
+            .await
+            .map_err(|_| anyhow::anyhow!("[youworker][ws] timed out waiting for {expected_result_type}"))?
+            .ok_or_else(|| anyhow::anyhow!("[youworker][ws] closed while waiting for {expected_result_type}"))?
+            .map_err(|e| anyhow::anyhow!("[youworker][ws] read error: {e}"))?;
+        let WsMessage::Text(text) = msg else { continue };
+        log::debug!("[youworker][ws] recv: {text}");
+        let frame: Value = serde_json::from_str(&text)
+            .map_err(|e| anyhow::anyhow!("[youworker][ws] malformed frame: {e} — raw: {text}"))?;
+        let in_reply_to = frame.get("in_reply_to").and_then(Value::as_str);
+        let is_error = frame.get("type").and_then(Value::as_str) == Some("error");
+        if in_reply_to != Some(id.as_str()) && !is_error {
+            continue;
+        }
+        if is_error {
+            let message = frame
+                .get("payload")
+                .and_then(|p| p.get("message"))
+                .and_then(Value::as_str)
+                .unwrap_or("unknown error");
+            anyhow::bail!("[youworker][ws] {expected_result_type} rejected: {message}");
+        }
+        return Ok(frame.get("payload").cloned().unwrap_or(Value::Null));
+    }
+}
+
+/// Read `transcript.delta` frames until the response block finalizes.
+async fn ws_collect_terminal_response(socket: &mut WsSocket, _session_id: &str) -> anyhow::Result<String> {
+    let mut response_block_id: Option<String> = None;
+    let mut response_text = String::new();
+    loop {
+        let msg = socket
+            .next()
+            .await
+            .ok_or_else(|| anyhow::anyhow!("[youworker][ws] closed before the turn completed"))?
+            .map_err(|e| anyhow::anyhow!("[youworker][ws] read error: {e}"))?;
+        let WsMessage::Text(raw) = msg else { continue };
+        log::debug!("[youworker][ws] recv: {raw}");
+        let frame: Value = serde_json::from_str(&raw)
+            .map_err(|e| anyhow::anyhow!("[youworker][ws] malformed frame: {e} — raw: {raw}"))?;
+        if let Some(text) =
+            ws_fold_transcript_delta(&frame, &mut response_block_id, &mut response_text)?
+        {
+            return Ok(text);
+        }
+    }
 }
 
 #[cfg(test)]

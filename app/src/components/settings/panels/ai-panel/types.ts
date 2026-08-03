@@ -16,6 +16,8 @@ export type CloudProvider = {
   persona?: string;
   clientId?: string;
   subjectUuid?: string;
+  /** Which leg carries youworker's reply — defaults to 'webhook' when absent. */
+  youworkerTransport?: 'webhook' | 'websocket';
 };
 
 export type OllamaState = 'disabled' | 'missing' | 'stopped' | 'starting' | 'running' | 'error';

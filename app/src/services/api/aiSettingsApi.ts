@@ -221,7 +221,8 @@ export async function saveAISettings(prev: AISettings, next: AISettings): Promis
         n.autentika_url !== p.autentika_url ||
         n.persona !== p.persona ||
         n.client_id !== p.client_id ||
-        n.subject_uuid !== p.subject_uuid
+        n.subject_uuid !== p.subject_uuid ||
+        n.youworker_transport !== p.youworker_transport
       );
     })
   ) {
@@ -236,6 +237,7 @@ export async function saveAISettings(prev: AISettings, next: AISettings): Promis
         persona,
         client_id,
         subject_uuid,
+        youworker_transport,
       }) => ({
         id,
         slug,
@@ -246,6 +248,7 @@ export async function saveAISettings(prev: AISettings, next: AISettings): Promis
         persona,
         client_id,
         subject_uuid,
+        youworker_transport,
       })
     );
   }

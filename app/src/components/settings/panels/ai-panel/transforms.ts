@@ -36,6 +36,7 @@ export function toPanelProvider(p: CloudProviderView): CloudProvider {
     persona: p.persona ?? undefined,
     clientId: p.client_id ?? undefined,
     subjectUuid: p.subject_uuid ?? undefined,
+    youworkerTransport: (p.youworker_transport as 'webhook' | 'websocket' | null | undefined) ?? undefined,
   };
 }
 
@@ -69,6 +70,7 @@ export function toApiSettings(panel: AISettings): ApiAISettings {
       persona: p.persona ?? null,
       client_id: p.clientId ?? null,
       subject_uuid: p.subjectUuid ?? null,
+      youworker_transport: p.youworkerTransport ?? null,
     })),
     routing: {
       reasoning: panel.routing.reasoning,

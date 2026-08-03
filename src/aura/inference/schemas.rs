@@ -82,6 +82,8 @@ struct InferenceCloudProviderUpdate {
     client_id: Option<String>,
     #[serde(default)]
     subject_uuid: Option<String>,
+    #[serde(default)]
+    youworker_transport: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -549,6 +551,7 @@ fn handle_inference_update_model_settings(params: Map<String, Value>) -> Control
                                 persona: entry.persona,
                                 client_id: entry.client_id,
                                 subject_uuid: entry.subject_uuid,
+                                youworker_transport: entry.youworker_transport,
                             };
                             migrate_legacy_fields(&mut provider);
                             Ok(provider)

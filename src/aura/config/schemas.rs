@@ -42,6 +42,8 @@ struct CloudProviderUpdate {
     client_id: Option<String>,
     #[serde(default)]
     subject_uuid: Option<String>,
+    #[serde(default)]
+    youworker_transport: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -970,6 +972,7 @@ fn handle_update_model_settings(params: Map<String, Value>) -> ControllerFuture 
                                 persona: e.persona,
                                 client_id: e.client_id,
                                 subject_uuid: e.subject_uuid,
+                                youworker_transport: e.youworker_transport,
                             };
                             // Apply any remaining legacy-field migration.
                             migrate_legacy_fields(&mut entry);

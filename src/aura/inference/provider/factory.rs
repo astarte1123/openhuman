@@ -352,6 +352,10 @@ fn make_youworker_provider(
         );
     }
 
+    let transport = crate::aura::inference::provider::youworker::YouWorkerTransport::from_config_str(
+        entry.youworker_transport.as_deref().unwrap_or(""),
+    );
+
     Ok(Box::new(YouWorkerProvider::new(YouWorkerConfig {
         autentika_url,
         yw_base,
@@ -359,6 +363,7 @@ fn make_youworker_provider(
         client_secret: client_secret.to_string(),
         persona,
         subject_uuid,
+        transport,
     })))
 }
 

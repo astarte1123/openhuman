@@ -113,6 +113,11 @@ pub struct CloudProviderCreds {
     /// youworker user). Not a secret.
     #[serde(default)]
     pub subject_uuid: Option<String>,
+    /// `"webhook"` (default) or `"websocket"` — which leg carries youworker's
+    /// reply. See `youworker::YouWorkerTransport` for why both exist. Not a
+    /// secret; empty/absent/unrecognized falls back to `"webhook"`.
+    #[serde(default)]
+    pub youworker_transport: Option<String>,
 }
 
 impl Default for CloudProviderCreds {
@@ -129,6 +134,7 @@ impl Default for CloudProviderCreds {
             persona: None,
             client_id: None,
             subject_uuid: None,
+            youworker_transport: None,
         }
     }
 }
