@@ -8,7 +8,7 @@ icon: bolt
 
 # Triggers
 
-A connected integration is not just a place the agent can read from on demand. It is also a **source of live events**. When someone sends you an email, edits a Notion page, opens a GitHub issue on one of your repos, charges a card on Stripe, or DMs you on Slack, OpenHuman receives that event in near-real-time and can decide whether to do something about it.
+A connected integration is not just a place the agent can read from on demand. It is also a **source of live events**. When someone sends you an email, edits a Notion page, opens a GitHub issue on one of your repos, charges a card on Stripe, or DMs you on Slack, Aura receives that event in near-real-time and can decide whether to do something about it.
 
 This page is about that pipeline: how triggers arrive, how they get classified, and how a trigger can turn into a full agent action without you typing a thing.
 
@@ -36,7 +36,7 @@ The full set comes from the [Composio](https://composio.dev) connector layer tha
  │ webhook
  ▼
 ┌────────────────────┐
-│ OpenHuman backend │ HMAC-verifies the webhook, normalises the payload
+│ Aura backend │ HMAC-verifies the webhook, normalises the payload
 └─────────┬──────────┘
  │ Socket.IO event ("composio:trigger")
  ▼
@@ -64,7 +64,7 @@ The webhook never reaches your machine raw. The backend is what holds the OAuth 
 
 ## The triage step
 
-Before any action runs, every trigger goes through the [`trigger_triage`](https://github.com/tinyhumansai/openhuman/tree/main/src/openhuman/agent/agents/trigger_triage) agent. Its only job is to decide what the rest of the system should do.
+Before any action runs, every trigger goes through the [`trigger_triage`](https://github.com/tinyhumansai/aura/tree/main/src/aura/agent/agents/trigger_triage) agent. Its only job is to decide what the rest of the system should do.
 
 It picks exactly one of four actions:
 
@@ -72,14 +72,14 @@ It picks exactly one of four actions:
 | --- | --- | --- |
 | **`drop`** | Nothing. Trigger is silently logged and discarded. | Spam, duplicates, irrelevant noise. The default for things you don't care about. |
 | **`acknowledge`** | A short memory note is persisted, no agent runs. | Passive notifications worth remembering ("a new page was created in archive"). |
-| **`react`** | The [`trigger_reactor`](https://github.com/tinyhumansai/openhuman/tree/main/src/openhuman/agent/agents/trigger_reactor) agent runs with one or two tool calls. | A small, single-step side effect: store a memory entry, post a quick acknowledgement, mark a thread read. |
+| **`react`** | The [`trigger_reactor`](https://github.com/tinyhumansai/aura/tree/main/src/aura/agent/agents/trigger_reactor) agent runs with one or two tool calls. | A small, single-step side effect: store a memory entry, post a quick acknowledgement, mark a thread read. |
 | **`escalate`** | The full **orchestrator** agent takes over with planning capability. | Anything that needs reasoning, multiple steps, or multiple skills: drafting a reply, updating several Notion pages, deciding how to triage an inbound issue. |
 
-The triage agent has the same memory and workspace context the rest of the agent has. It can tell whether a trigger is relevant to something you're currently working on, who the people involved are, and whether it's the kind of thing you've asked OpenHuman to act on before.
+The triage agent has the same memory and workspace context the rest of the agent has. It can tell whether a trigger is relevant to something you're currently working on, who the people involved are, and whether it's the kind of thing you've asked Aura to act on before.
 
 ## When a trigger turns into an agent action
 
-This is the part that distinguishes "OpenHuman has a Gmail integration" from "OpenHuman is on call for your inbox":
+This is the part that distinguishes "Aura has a Gmail integration" from "Aura is on call for your inbox":
 
 - **`react`** is the cheap path. The Trigger Reactor is a narrow specialist with a hard budget of a couple of tool calls. It's perfect for: writing a one-line memory note that says "saw a new charge from Stripe for $84, customer X, merchant Y", silently marking a Slack message as handled because it's the same automated alert you've already triaged twice this week, or storing a structured record of an event the user might want to look up later.
 
@@ -103,7 +103,7 @@ Triage runs on the fast model tier (see [Automatic Model Routing](../model-routi
 ## Configuration and opt-out
 
 - **On by default.** Once an integration is connected, its triggers feed into the pipeline automatically.
-- **Opt-out.** The triage path is gated on the `OPENHUMAN_TRIGGER_TRIAGE_DISABLED` environment variable. Setting it to `1` / `true` / `yes` turns off agent classification and falls back to passive logging only. The integration itself stays connected; only the auto-action behaviour is suppressed.
+- **Opt-out.** The triage path is gated on the `AURA_TRIGGER_TRIAGE_DISABLED` environment variable. Setting it to `1` / `true` / `yes` turns off agent classification and falls back to passive logging only. The integration itself stays connected; only the auto-action behaviour is suppressed.
 - **Per-trigger settings.** Trigger settings (which integrations and event types should be evaluated) are managed under **Settings**; the underlying RPC methods are `update_composio_trigger_settings` / `get_composio_trigger_settings`.
 - **Audit log.** Every trigger, regardless of decision, is written to the trigger history so you can see what arrived, what the classifier decided, and what (if anything) ran. Decisions and escalations are also published as `TriggerEvaluated` / `TriggerEscalated` events on the in-process bus, which means anything inside the core can subscribe to them.
 
@@ -118,12 +118,12 @@ Triggers follow the same boundary as the rest of the product (see [Privacy & Sec
 
 ## Implementation pointers (for developers)
 
-- Triage agent: `src/openhuman/agent/agents/trigger_triage/`
-- Reactor agent: `src/openhuman/agent/agents/trigger_reactor/`
-- Composio bus subscriber: `src/openhuman/composio/bus.rs` (`ComposioTriggerSubscriber`)
-- Trigger history persistence: `src/openhuman/composio/trigger_history.rs`
+- Triage agent: `src/aura/agent/agents/trigger_triage/`
+- Reactor agent: `src/aura/agent/agents/trigger_reactor/`
+- Composio bus subscriber: `src/aura/composio/bus.rs` (`ComposioTriggerSubscriber`)
+- Trigger history persistence: `src/aura/composio/trigger_history.rs`
 - Domain events: `DomainEvent::ComposioTriggerReceived`, `DomainEvent::TriggerEscalated` in `src/core/event_bus/events.rs`
-- Trigger settings RPC: `update_composio_trigger_settings` / `get_composio_trigger_settings` in `src/openhuman/config/`
+- Trigger settings RPC: `update_composio_trigger_settings` / `get_composio_trigger_settings` in `src/aura/config/`
 
 ## See also
 

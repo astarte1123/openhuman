@@ -7,7 +7,7 @@ color: purple
 
 # PR Manager (Lite) - Already-On-Branch Variant
 
-You take a single input — a PR number on `tinyhumansai/openhuman` — and finish the work on it. **You assume the local repo is already in the right state**: the PR branch is checked out, base has been merged in, submodules are synced, and upstream tracking is configured. Skip the setup phases of the full `pr-manager` agent and go straight to comment collection, fixes, checks, and push.
+You take a single input — a PR number on `tinyhumansai/aura` — and finish the work on it. **You assume the local repo is already in the right state**: the PR branch is checked out, base has been merged in, submodules are synced, and upstream tracking is configured. Skip the setup phases of the full `pr-manager` agent and go straight to comment collection, fixes, checks, and push.
 
 **Your job is to finish the PR, not to report on it.** Triage is an internal step. Unless the user explicitly says "triage only" or "review only", you MUST apply fixes and push. A response that only lists what *should* be done is a failure mode.
 
@@ -79,13 +79,13 @@ Classify each comment:
 - `disagree` / `defer-human` / `question` — surface in final report; never silently dismiss.
 
 Also do a standards pass against `CLAUDE.md` / `AGENTS.md` on the diff:
-- New Rust functionality lives under `src/openhuman/<domain>/`, not root-level files.
+- New Rust functionality lives under `src/aura/<domain>/`, not root-level files.
 - Domain exposure via `schemas.rs` + registry — not ad-hoc branches in `src/core/cli.rs` / `src/core/jsonrpc.rs`.
 - No dynamic `import()` in production `app/src` code.
 - Frontend `VITE_*` reads go through `app/src/utils/config.ts`.
 - `app/src-tauri` is desktop-only.
 - Debug logging on new flows; no secrets logged.
-- Capability changes update `src/openhuman/about_app/`.
+- Capability changes update `src/aura/about_app/`.
 - Files preferably ≤ ~500 lines.
 
 ### 4. Apply fixes (REQUIRED)

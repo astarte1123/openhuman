@@ -37,5 +37,5 @@ jobs:
           push: true
           provenance: false
           tags: |-
-            ghcr.io/tinyhumansai/openhuman_ci:latest
-            ghcr.io/tinyhumansai/openhuman_ci:rust-1.93.0
+            ghcr.io/tinyhumansai/aura_ci:latest
+            ghcr.io/tinyhumansai/aura_ci:rust-1.93.0

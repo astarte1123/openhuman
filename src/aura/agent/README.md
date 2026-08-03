@@ -18,23 +18,23 @@ Multi-agent orchestration domain. Owns the LLM tool-calling loop, sub-agent disp
 
 ## Calls into
 
-- `src/openhuman/providers/` — `ChatMessage`, `ChatResponse` send/receive against LLMs.
-- `src/openhuman/tools/` — `Tool` / `ToolSpec` execution surface invoked from the tool loop.
-- `src/openhuman/memory/` — episodic indexing + memory-loader context injection.
-- `src/openhuman/context/` — prompt sections, tool-call format selection.
-- `src/openhuman/local_ai/` — `agent_chat` / `agent_chat_simple` execution backend.
-- `src/openhuman/config/` — runtime config load via `config::rpc::load_config_with_timeout`.
+- `src/aura/providers/` — `ChatMessage`, `ChatResponse` send/receive against LLMs.
+- `src/aura/tools/` — `Tool` / `ToolSpec` execution surface invoked from the tool loop.
+- `src/aura/memory/` — episodic indexing + memory-loader context injection.
+- `src/aura/context/` — prompt sections, tool-call format selection.
+- `src/aura/local_ai/` — `agent_chat` / `agent_chat_simple` execution backend.
+- `src/aura/config/` — runtime config load via `config::rpc::load_config_with_timeout`.
 - `src/core/event_bus/` — emits `DomainEvent::Agent(*)` and `Trigger*` events; subscribers in `agent/bus.rs`.
 
 ## Called by
 
-- `src/openhuman/channels/runtime/dispatch.rs` and `channels/providers/web.rs` — drive chat turns from inbound channel messages.
-- `src/openhuman/cron/scheduler.rs` — fire scheduled triggers through `triage::run_triage` + `apply_decision`.
-- `src/openhuman/webhooks/ops.rs` — webhook ingestion routes through triage.
-- `src/openhuman/composio/bus.rs` — Composio trigger envelopes go through `agent::triage`.
-- `src/openhuman/notifications/rpc.rs` — surfaces agent runs to the UI.
-- `src/openhuman/learning/{reflection,tool_tracker,user_profile}.rs` — read transcripts + tool outcomes.
-- `src/openhuman/tools/impl/agent/{dispatch,spawn_subagent}.rs` — `spawn_subagent` tool delegates here.
+- `src/aura/channels/runtime/dispatch.rs` and `channels/providers/web.rs` — drive chat turns from inbound channel messages.
+- `src/aura/cron/scheduler.rs` — fire scheduled triggers through `triage::run_triage` + `apply_decision`.
+- `src/aura/webhooks/ops.rs` — webhook ingestion routes through triage.
+- `src/aura/composio/bus.rs` — Composio trigger envelopes go through `agent::triage`.
+- `src/aura/notifications/rpc.rs` — surfaces agent runs to the UI.
+- `src/aura/learning/{reflection,tool_tracker,user_profile}.rs` — read transcripts + tool outcomes.
+- `src/aura/tools/impl/agent/{dispatch,spawn_subagent}.rs` — `spawn_subagent` tool delegates here.
 - `src/core/all.rs` — controller registry wires `all_agent_registered_controllers`.
 
 ## Tests

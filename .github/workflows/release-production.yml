@@ -79,7 +79,7 @@ jobs:
       # First 12 chars of `sha` — matches the truncation done at runtime by
       # app/src/utils/config.ts, app/vite.config.ts, src/main.rs, and
       # app/src-tauri/src/lib.rs when they compute the canonical
-      # `openhuman@<version>+<short_sha>` release tag. Use this (not the
+      # `aura@<version>+<short_sha>` release tag. Use this (not the
       # full `sha`) anywhere CI constructs SENTRY_RELEASE so uploaded
       # artifacts attach to the same release events report.
       short_sha: ${{ steps.resolve.outputs.short_sha }}
@@ -176,7 +176,7 @@ jobs:
       # from its package.json (no further bump — patch was applied during the
       # staging cut), and create the production v<version> tag at the same
       # commit. The artifact contents are byte-identical to what staging
-      # validated, modulo build-time env (BASE_URL, OPENHUMAN_APP_ENV, etc.).
+      # validated, modulo build-time env (BASE_URL, AURA_APP_ENV, etc.).
       - name: Resolve staging tag (staging_tag)
         if: inputs.release_source == 'staging_tag'
         id: stagingtag
@@ -287,7 +287,7 @@ jobs:
           BUILD_REF="$TAG"
           BASE_URL="https://api.tinyhumans.ai/"
           # Match the 12-char truncation runtime code applies to
-          # VITE_BUILD_SHA / OPENHUMAN_BUILD_SHA when constructing the release
+          # VITE_BUILD_SHA / AURA_BUILD_SHA when constructing the release
           # tag at startup, so SENTRY_RELEASE assembled in CI agrees with
           # the tag events emit.
           SHORT_SHA="${SHA:0:12}"
@@ -358,7 +358,7 @@ jobs:
               repo,
               tag_name: tag,
               target_commitish: target,
-              name: `OpenHuman v${version}`,
+              name: `Aura v${version}`,
               draft: true,
               prerelease: false,
               generate_release_notes: true,
@@ -384,7 +384,7 @@ jobs:
       base_url: ${{ needs.prepare-build.outputs.base_url }}
       app_env: production
       build_profile: release
-      telegram_bot_username: openhumanaibot
+      telegram_bot_username: auraaibot
       # with_macos_signing defaults to true — left implicit; production
       # always notarizes. See build-desktop.yml inputs.
       with_release_upload: true
@@ -394,7 +394,7 @@ jobs:
   # =========================================================================
   # Phase 3b: Build & push Docker image (runs parallel with build-desktop).
   #
-  # Publishes `ghcr.io/tinyhumansai/openhuman-core` with two immutable tags
+  # Publishes `ghcr.io/tinyhumansai/aura-core` with two immutable tags
   # per release:
   #   - :v<version>            — matches the GitHub Release tag (e.g. v1.2.4)
   #   - :<version>             — bare SemVer for tooling that strips the v
@@ -422,7 +422,7 @@ jobs:
     environment: Production
     env:
       REGISTRY: ghcr.io
-      IMAGE_NAME: tinyhumansai/openhuman-core
+      IMAGE_NAME: tinyhumansai/aura-core
     steps:
       - name: Checkout build ref
         uses: actions/checkout@v5
@@ -465,7 +465,7 @@ jobs:
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ needs.prepare-build.outputs.sha }}
             org.opencontainers.image.version=${{ needs.prepare-build.outputs.version }}
-            org.opencontainers.image.title=openhuman-core
+            org.opencontainers.image.title=aura-core
           cache-from: type=gha,scope=release-production
           cache-to: type=gha,scope=release-production,mode=max
       - name: Verify pushed image is pullable
@@ -476,7 +476,7 @@ jobs:
           docker image inspect "$image" >/dev/null
 
   # =========================================================================
-  # Phase 3c: Build standalone Linux openhuman-core tarballs and attach them
+  # Phase 3c: Build standalone Linux aura-core tarballs and attach them
   # to the GitHub Release. Operators on Linux servers without Docker pull a
   # plain tarball + sha256 from the release page; cloud-deploy.md links here.
   #
@@ -521,21 +521,21 @@ jobs:
             clang
       - name: Verify Sentry DSN is present
         env:
-          OPENHUMAN_CORE_SENTRY_DSN: ${{ vars.OPENHUMAN_CORE_SENTRY_DSN || vars.OPENHUMAN_SENTRY_DSN }}
+          AURA_CORE_SENTRY_DSN: ${{ vars.AURA_CORE_SENTRY_DSN || vars.AURA_SENTRY_DSN }}
         run: |
-          if [ -z "${OPENHUMAN_CORE_SENTRY_DSN}" ]; then
-            echo "::error::vars.OPENHUMAN_CORE_SENTRY_DSN (or legacy vars.OPENHUMAN_SENTRY_DSN) is empty — the Linux CLI tarball would ship without crash reporting."
+          if [ -z "${AURA_CORE_SENTRY_DSN}" ]; then
+            echo "::error::vars.AURA_CORE_SENTRY_DSN (or legacy vars.AURA_SENTRY_DSN) is empty — the Linux CLI tarball would ship without crash reporting."
             exit 1
           fi
-          echo "OPENHUMAN_CORE_SENTRY_DSN is set (length=${#OPENHUMAN_CORE_SENTRY_DSN})"
-      - name: Build openhuman-core binary
+          echo "AURA_CORE_SENTRY_DSN is set (length=${#AURA_CORE_SENTRY_DSN})"
+      - name: Build aura-core binary
         env:
-          OPENHUMAN_CORE_SENTRY_DSN: ${{ vars.OPENHUMAN_CORE_SENTRY_DSN || vars.OPENHUMAN_SENTRY_DSN }}
-          # Match the runtime release tag (`openhuman@<version>+<short_sha>`)
+          AURA_CORE_SENTRY_DSN: ${{ vars.AURA_CORE_SENTRY_DSN || vars.AURA_SENTRY_DSN }}
+          # Match the runtime release tag (`aura@<version>+<short_sha>`)
           # baked elsewhere — see prepare-build.outputs.short_sha comment.
-          OPENHUMAN_BUILD_SHA: ${{ needs.prepare-build.outputs.short_sha }}
-          OPENHUMAN_APP_ENV: production
-        run: cargo build --release --bin openhuman-core
+          AURA_BUILD_SHA: ${{ needs.prepare-build.outputs.short_sha }}
+          AURA_APP_ENV: production
+        run: cargo build --release --bin aura-core
       - name: Package and upload tarball to release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -544,7 +544,7 @@ jobs:
           TARGET: ${{ matrix.target }}
         run: |
           bash scripts/release/package-cli-tarball.sh \
-            target/release/openhuman-core \
+            target/release/aura-core \
             "$VERSION" \
             "$TARGET"
 
@@ -572,7 +572,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ needs.prepare-build.outputs.tag }}
           VERSION: ${{ needs.prepare-build.outputs.version }}
-          REPO: tinyhumansai/openhuman
+          REPO: tinyhumansai/aura
         run: bash scripts/release/publish-updater-manifest.sh
 
   # =========================================================================
@@ -613,13 +613,13 @@ jobs:
           # still a draft, and `GET /releases/tags/{tag}` returns 404 for
           # drafts. The id-keyed endpoint works for drafts and published
           # releases alike.
-          gh api "repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}" > /tmp/openhuman-release.json
+          gh api "repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}" > /tmp/aura-release.json
           gh release download "$TAG" \
             --repo "$GITHUB_REPOSITORY" \
             --pattern latest.json \
             --dir /tmp \
             --clobber
-          scripts/validate-release-assets.sh /tmp/openhuman-release.json /tmp/latest.json
+          scripts/validate-release-assets.sh /tmp/aura-release.json /tmp/latest.json
 
       - name: Validate required installer assets exist
         uses: actions/github-script@v8
@@ -635,22 +635,22 @@ jobs:
             });
             const names = assets.map((a) => a.name);
             const requiredPatterns = [
-              /OpenHuman_.*_aarch64\.dmg$/,
-              /OpenHuman_.*_x64\.dmg$/,
-              /(OpenHuman_.*_x64-setup\.exe$|OpenHuman_.*_x64.*\.msi$)/,
+              /Aura_.*_aarch64\.dmg$/,
+              /Aura_.*_x64\.dmg$/,
+              /(Aura_.*_x64-setup\.exe$|Aura_.*_x64.*\.msi$)/,
               // Linux desktop installer consumed by scripts/install.sh and
               // advertised in latest.json as linux-x86_64.
-              /OpenHuman_.*_amd64\.AppImage$/,
+              /Aura_.*_amd64\.AppImage$/,
               // Auto-updater manifest — without this, installed clients can't
               // discover new releases via plugins.updater.endpoints.
               /^latest\.json$/,
-              // Linux standalone openhuman-core CLI tarballs (build-cli-linux).
+              // Linux standalone aura-core CLI tarballs (build-cli-linux).
               // Operators on headless Linux servers pull these instead of the
               // Tauri bundle; cloud-deploy.md documents both arches.
-              /^openhuman-core-.*-x86_64-unknown-linux-gnu\.tar\.gz$/,
-              /^openhuman-core-.*-x86_64-unknown-linux-gnu\.tar\.gz\.sha256$/,
-              /^openhuman-core-.*-aarch64-unknown-linux-gnu\.tar\.gz$/,
-              /^openhuman-core-.*-aarch64-unknown-linux-gnu\.tar\.gz\.sha256$/,
+              /^aura-core-.*-x86_64-unknown-linux-gnu\.tar\.gz$/,
+              /^aura-core-.*-x86_64-unknown-linux-gnu\.tar\.gz\.sha256$/,
+              /^aura-core-.*-aarch64-unknown-linux-gnu\.tar\.gz$/,
+              /^aura-core-.*-aarch64-unknown-linux-gnu\.tar\.gz\.sha256$/,
             ];
             const missing = requiredPatterns.filter((pattern) => !names.some((name) => pattern.test(name)));
             if (missing.length > 0) {
@@ -692,7 +692,7 @@ jobs:
     if: needs.publish-release.result == 'success'
     env:
       REGISTRY: ghcr.io
-      IMAGE_NAME: tinyhumansai/openhuman-core
+      IMAGE_NAME: tinyhumansai/aura-core
     steps:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -738,12 +738,12 @@ jobs:
         env:
           SENTRY_ORG: ${{ vars.SENTRY_ORG }}
           # Marker lives on the React project's release; events from all
-          # surfaces share the same `openhuman@<version>+<short_sha>` release
+          # surfaces share the same `aura@<version>+<short_sha>` release
           # tag, so the marker on any single project's release shows in
           # Sentry's "Deploys" tab for that release group.
           SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT_REACT }}
           SENTRY_RELEASE:
-            openhuman@${{ needs.prepare-build.outputs.version }}+${{
+            aura@${{ needs.prepare-build.outputs.version }}+${{
             needs.prepare-build.outputs.short_sha }}
           SENTRY_ENVIRONMENT: production
         run: |
@@ -843,7 +843,7 @@ jobs:
           VERSION: ${{ needs.prepare-build.outputs.version }}
         run: |-
           set -uo pipefail
-          PACKAGE="openhuman-core"
+          PACKAGE="aura-core"
           for IMAGE_TAG in "${TAG}" "${VERSION}"; do
             echo "Attempting to delete Docker tag: ${IMAGE_TAG}"
             VERSION_ID="$(gh api \

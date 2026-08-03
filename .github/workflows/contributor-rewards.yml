@@ -51,7 +51,7 @@ jobs:
             const triggerLabelKey = normalize(triggerLabel);
 
             function markerFor(login) {
-              return `<!-- openhuman-contributor-reward:user=${normalize(login)} -->`;
+              return `<!-- aura-contributor-reward:user=${normalize(login)} -->`;
             }
 
             async function ensureLabel(name, color, description) {
@@ -180,7 +180,7 @@ jobs:
             }
 
             async function contributorAlreadyRewardedElsewhere(target) {
-              const markerNeedle = `openhuman-contributor-reward:user=${normalize(target.login)}`;
+              const markerNeedle = `aura-contributor-reward:user=${normalize(target.login)}`;
               const query = `repo:${owner}/${repo} "${markerNeedle}" in:comments`;
               const response = await github.rest.search.issuesAndPullRequests({
                 q: query,
@@ -213,11 +213,11 @@ jobs:
 
               return [
                 markerFor(target.login),
-                `Thanks @${target.login} for contributing to OpenHuman.`,
+                `Thanks @${target.login} for contributing to Aura.`,
                 '',
                 'You are eligible for the contributor reward flow:',
                 '',
-                `1. Join the OpenHuman Discord: ${discordUrl}`,
+                `1. Join the Aura Discord: ${discordUrl}`,
                 `2. Share this ${target.kind} link so maintainers can verify your GitHub handle: ${target.htmlUrl}`,
                 merchLine,
                 '',

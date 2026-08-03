@@ -33,7 +33,7 @@ pnpm test:plan -- \
 
 ## Notes
 
-- Default repo is `tinyhumansai/openhuman`.
+- Default repo is `tinyhumansai/aura`.
 - Requires `gh auth status` to be healthy.
 - Default synthesizer is `codex`; `--llm claude` is also supported.
 - The Markdown output is intentionally compressed. The JSONL is the better input

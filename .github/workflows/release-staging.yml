@@ -59,7 +59,7 @@ jobs:
     name: Prepare build context
     runs-on: ubuntu-latest
     # Reuse the Production GitHub Actions environment so Sentry vars
-    # (`OPENHUMAN_*_SENTRY_DSN`, `SENTRY_PROJECT_*`, `SENTRY_ORG`,
+    # (`AURA_*_SENTRY_DSN`, `SENTRY_PROJECT_*`, `SENTRY_ORG`,
     # `SENTRY_AUTH_TOKEN`) and `VITE_DEBUG` resolve here too. Staging
     # events differentiate from production via the `environment` tag set
     # at runtime — separate Sentry projects are not needed.
@@ -73,7 +73,7 @@ jobs:
       sha: ${{ steps.resolve.outputs.sha }}
       # First 12 chars of `sha`. Matches the truncation runtime code in
       # config.ts / vite.config.ts / main.rs / app/src-tauri/src/lib.rs
-      # applies when computing `openhuman@<version>+<short_sha>`. Use this
+      # applies when computing `aura@<version>+<short_sha>`. Use this
       # (not `sha`) anywhere CI constructs SENTRY_RELEASE so uploaded
       # artifacts attach to the same release events report.
       short_sha: ${{ steps.resolve.outputs.short_sha }}
@@ -174,7 +174,7 @@ jobs:
           SHA: ${{ steps.push.outputs.sha }}
         run: |
           # Match the 12-char truncation runtime code applies to
-          # VITE_BUILD_SHA / OPENHUMAN_BUILD_SHA when constructing the
+          # VITE_BUILD_SHA / AURA_BUILD_SHA when constructing the
           # release tag at startup, so SENTRY_RELEASE assembled in CI
           # agrees with the tag events emit.
           SHORT_SHA="${SHA:0:12}"
@@ -246,8 +246,8 @@ jobs:
       # No publish-updater-manifest job in staging — producing .sig artifacts
       # would just leave them stranded in the Actions artifact tree.
       with_updater: false
-      # Standalone openhuman-core CLI ships from the production cut only:
-      # `build-docker` pushes `ghcr.io/tinyhumansai/openhuman-core` and
+      # Standalone aura-core CLI ships from the production cut only:
+      # `build-docker` pushes `ghcr.io/tinyhumansai/aura-core` and
       # `build-cli-linux` attaches Linux x86_64 / aarch64 tarballs to the
       # GitHub Release (see release-production.yml). Staging does not
       # publish either surface — the matrix-built sidecar artifact had no
@@ -257,7 +257,7 @@ jobs:
       skip_pretests: ${{ inputs.skip_e2e }}
 
   # =========================================================================
-  # Phase 2b: Build the openhuman-core Docker image without pushing.
+  # Phase 2b: Build the aura-core Docker image without pushing.
   # Mirrors the production `build-docker` job so a Dockerfile regression
   # surfaces on the staging cut — no GHCR push, no `:staging-*` tag
   # pollution. `deploy-smoke.yml` already covers the build path on PRs
@@ -292,12 +292,12 @@ jobs:
           push: false
           load: true
           platforms: linux/amd64
-          tags: openhuman-core:staging-${{ needs.prepare-build.outputs.tag }}
+          tags: aura-core:staging-${{ needs.prepare-build.outputs.tag }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ needs.prepare-build.outputs.sha }}
             org.opencontainers.image.version=${{ needs.prepare-build.outputs.version }}
-            org.opencontainers.image.title=openhuman-core
+            org.opencontainers.image.title=aura-core
           cache-from: type=gha,scope=release-staging
           cache-to: type=gha,scope=release-staging,mode=max
 
@@ -328,12 +328,12 @@ jobs:
         env:
           SENTRY_ORG: ${{ vars.SENTRY_ORG }}
           # Marker lives on the React project's release; events from all
-          # surfaces share the same `openhuman@<version>+<short_sha>` release
+          # surfaces share the same `aura@<version>+<short_sha>` release
           # tag, so the marker on any single project's release shows in
           # Sentry's "Deploys" tab for that release group.
           SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT_REACT }}
           SENTRY_RELEASE:
-            openhuman@${{ needs.prepare-build.outputs.version }}+${{
+            aura@${{ needs.prepare-build.outputs.version }}+${{
             needs.prepare-build.outputs.short_sha }}
           SENTRY_ENVIRONMENT: staging
         run: |

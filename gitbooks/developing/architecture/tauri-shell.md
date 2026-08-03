@@ -5,34 +5,34 @@ icon: desktop
 
 # Tauri shell (`app/src-tauri/`)
 
-The desktop host for OpenHuman: Tauri v2 + WebView, IPC commands, window management, and bridging to the `openhuman-core` Rust sidecar (core JSON-RPC). It does **not** duplicate the full domain stack; that lives in the repo-root Rust crate (`openhuman_core`, `src/main.rs`).
+The desktop host for Aura: Tauri v2 + WebView, IPC commands, window management, and bridging to the `aura-core` Rust sidecar (core JSON-RPC). It does **not** duplicate the full domain stack; that lives in the repo-root Rust crate (`aura_core`, `src/main.rs`).
 
 ## Responsibilities
 
 1. **Web UI**. Load the Vite build from `app/dist` (or dev server on port 1420).
 2. **IPC**. Expose a small, explicit set of Tauri commands (see [Commands](#commands)).
-3. **Core lifecycle**. Ensure the `openhuman-core` binary is running (child process and/or service) and proxy JSON-RPC via `core_rpc_relay`.
-4. **AI prompts on disk**. Resolve bundled `src/openhuman/agent/prompts` from resources / dev cwd for `ai_get_config` / `write_ai_config_file`.
+3. **Core lifecycle**. Ensure the `aura-core` binary is running (child process and/or service) and proxy JSON-RPC via `core_rpc_relay`.
+4. **AI prompts on disk**. Resolve bundled `src/aura/agent/prompts` from resources / dev cwd for `ai_get_config` / `write_ai_config_file`.
 5. **Window + tray**. Desktop window behavior and system tray (see `lib.rs`).
 
 ## Building the sidecar
 
-`app/package.json` `core:stage` runs `scripts/stage-core-sidecar.mjs`, which runs `cargo build --bin openhuman-core` at the repo root and copies the binary into `app/src-tauri/binaries/` for Tauri `externalBin`.
+`app/package.json` `core:stage` runs `scripts/stage-core-sidecar.mjs`, which runs `cargo build --bin aura-core` at the repo root and copies the binary into `app/src-tauri/binaries/` for Tauri `externalBin`.
 
 ## Stuck process recovery
 
 Normal app quit runs teardown from `RunEvent::ExitRequested`: child webviews are closed before CEF shutdown, the embedded core's cancellation token is triggered, and the final process sweep sends `SIGTERM` to direct children before escalating holdouts with `SIGKILL` after a short grace period. Sweep summaries are logged as `[app] sweep: term=N kill=M total=K`; any nonzero `kill` count is a warning and means a child ignored graceful shutdown.
 
-On macOS, hard exits (Force Quit, `SIGKILL`, renderer crash) can skip normal teardown. The next launch runs startup recovery before CEF cache preflight: it lists OpenHuman processes whose executable path belongs to the launching `.app/Contents`, skips the current process, sends `SIGTERM`, waits briefly, then `SIGKILL`s stragglers that still match the same pid+command. Logs use the `[startup-recovery]` prefix.
+On macOS, hard exits (Force Quit, `SIGKILL`, renderer crash) can skip normal teardown. The next launch runs startup recovery before CEF cache preflight: it lists Aura processes whose executable path belongs to the launching `.app/Contents`, skips the current process, sends `SIGTERM`, waits briefly, then `SIGKILL`s stragglers that still match the same pid+command. Logs use the `[startup-recovery]` prefix.
 
-Startup recovery skips when `OPENHUMAN_CORE_REUSE_EXISTING=1` is set (so manual CLI-core reuse still works) and when the CEF `SingletonLock` is held by a live process (so the normal second-instance path can fail without killing the already-running app). The Tauri command `process_diagnostics_list_owned` returns the currently owned process list; the macOS implementation is bundle-scoped, Linux/Windows currently return empty.
+Startup recovery skips when `AURA_CORE_REUSE_EXISTING=1` is set (so manual CLI-core reuse still works) and when the CEF `SingletonLock` is held by a live process (so the normal second-instance path can fail without killing the already-running app). The Tauri command `process_diagnostics_list_owned` returns the currently owned process list; the macOS implementation is bundle-scoped, Linux/Windows currently return empty.
 
 
 ## Tauri shell architecture (`app/src-tauri/`)
 
 ### Overview
 
-The **`app/src-tauri`** crate (Rust package **`OpenHuman`**, binary **`OpenHuman`**) is a **desktop-only** host. It embeds the React UI, registers plugins (deep link, opener, OS, notifications, autostart, updater), manages the main window and tray, and **relays JSON-RPC** to the separately built **`openhuman-core`** binary.
+The **`app/src-tauri`** crate (Rust package **`Aura`**, binary **`Aura`**) is a **desktop-only** host. It embeds the React UI, registers plugins (deep link, opener, OS, notifications, autostart, updater), manages the main window and tray, and **relays JSON-RPC** to the separately built **`aura-core`** binary.
 
 Non-desktop targets fail at compile time (`compile_error!` in `lib.rs`).
 
@@ -42,12 +42,12 @@ Non-desktop targets fail at compile time (`compile_error!` in `lib.rs`).
 app/src-tauri/src/
 ├── lib.rs                 # `run()`, tray/menu actions, plugins, `generate_handler!`, core startup
 ├── main.rs                # Binary entry
-├── core_process.rs        # CoreProcessHandle, spawn/monitor openhuman sidecar
+├── core_process.rs        # CoreProcessHandle, spawn/monitor aura sidecar
 ├── core_rpc.rs            # HTTP client to core JSON-RPC
 ├── commands/
 │   ├── mod.rs             # Re-exports
 │   ├── core_relay.rs      # `core_rpc_relay`, service-managed core bootstrap
-│   ├── openhuman.rs       # Daemon host config, systemd-style service helpers
+│   ├── aura.rs       # Daemon host config, systemd-style service helpers
 │   └── window.rs          # show/hide/minimize/close window
 └── utils/
     ├── mod.rs
@@ -61,8 +61,8 @@ There is **no** `src-tauri/src/services/session_service.rs` in this tree; sessio
 ```
 React (invoke)
     → core_rpc_relay { method, params, serviceManaged? }
-        → core_rpc::call HTTP POST to OPENHUMAN_CORE_RPC_URL
-            → openhuman binary (src/bin/openhuman.rs → core_server)
+        → core_rpc::call HTTP POST to AURA_CORE_RPC_URL
+            → aura binary (src/bin/aura.rs → core_server)
 ```
 
 `CoreProcessHandle` in `core_process.rs` starts or waits for the sidecar; `commands/core_relay.rs` optionally ensures a **service-managed** core is running before relaying.
@@ -72,17 +72,17 @@ React (invoke)
 - The shell creates a tray icon at startup and wires actions to open the main window or quit.
 - In daemon mode (`daemon` / `--daemon`), the main window is hidden on launch and can be reopened from tray actions.
 - On macOS `RunEvent::Reopen` also restores and focuses the main window.
-- Windows and Linux use the same tray actions (`Open OpenHuman`, `Quit`), with desktop-environment-specific tray rendering differences on some Linux setups.
+- Windows and Linux use the same tray actions (`Open Aura`, `Quit`), with desktop-environment-specific tray rendering differences on some Linux setups.
 
 ### Bundled resources
 
-`tauri.conf.json` bundles **`../../skills/skills`** and **`../../src/openhuman/agent/prompts`** so skills and prompt markdown ship with the app.
+`tauri.conf.json` bundles **`../../skills/skills`** and **`../../src/aura/agent/prompts`** so skills and prompt markdown ship with the app.
 
 ### Related
 
 - IPC surface: see the [Commands](#tauri-ipc-commands-app-src-tauri) section below
 - HTTP bridge: see the [Core bridge & helpers](#core-bridge-helpers-app-src-tauri) section below
-- Rust domains (implementation): repo root `src/openhuman/`, `src/core_server/`
+- Rust domains (implementation): repo root `src/aura/`, `src/core_server/`
 
 
 ## Tauri IPC commands (`app/src-tauri`)
@@ -99,15 +99,15 @@ All commands are registered in **`app/src-tauri/src/lib.rs`** inside `tauri::gen
 
 | Command                | Purpose                                                                                      |
 | ---------------------- | -------------------------------------------------------------------------------------------- |
-| `ai_get_config`        | Build `AIPreview` from resolved `SOUL.md` / `TOOLS.md` under bundled or dev `src/openhuman/agent/prompts` |
+| `ai_get_config`        | Build `AIPreview` from resolved `SOUL.md` / `TOOLS.md` under bundled or dev `src/aura/agent/prompts` |
 | `ai_refresh_config`    | Same read path as `ai_get_config` (refresh hook)                                             |
-| `write_ai_config_file` | Write a single `.md` under repo `src/openhuman/agent/prompts` (dev / safe filename checks)                |
+| `write_ai_config_file` | Write a single `.md` under repo `src/aura/agent/prompts` (dev / safe filename checks)                |
 
 ### Core JSON-RPC relay
 
 | Command          | Purpose                                                                                                        |
 | ---------------- | -------------------------------------------------------------------------------------------------------------- |
-| `core_rpc_relay` | Body: `{ method, params?, serviceManaged? }` → forwards to local **`openhuman-core`** HTTP JSON-RPC (`core_rpc.rs`) |
+| `core_rpc_relay` | Body: `{ method, params?, serviceManaged? }` → forwards to local **`aura-core`** HTTP JSON-RPC (`core_rpc.rs`) |
 
 Use **`app/src/services/coreRpcClient.ts`** (`callCoreRpc`) from the frontend.
 
@@ -126,19 +126,19 @@ From **`commands/window.rs`** (names may vary slightly; see `lib.rs`):
 | `close_window`      | Close             |
 | `set_window_title`  | Set title string  |
 
-### OpenHuman daemon / service helpers
+### Aura daemon / service helpers
 
-From **`commands/openhuman.rs`** (see source for exact payloads):
+From **`commands/aura.rs`** (see source for exact payloads):
 
 | Command                            | Purpose                                        |
 | ---------------------------------- | ---------------------------------------------- |
-| `openhuman_get_daemon_host_config` | Read daemon host preferences (e.g. tray)       |
-| `openhuman_set_daemon_host_config` | Persist daemon host preferences                |
-| `openhuman_service_install`        | Install background service (platform-specific) |
-| `openhuman_service_start`          | Start service                                  |
-| `openhuman_service_stop`           | Stop service                                   |
-| `openhuman_service_status`         | Query status                                   |
-| `openhuman_service_uninstall`      | Uninstall service                              |
+| `aura_get_daemon_host_config` | Read daemon host preferences (e.g. tray)       |
+| `aura_set_daemon_host_config` | Persist daemon host preferences                |
+| `aura_service_install`        | Install background service (platform-specific) |
+| `aura_service_start`          | Start service                                  |
+| `aura_service_stop`           | Stop service                                   |
+| `aura_service_status`         | Query status                                   |
+| `aura_service_uninstall`      | Uninstall service                              |
 
 ### Screen share picker (CEF / macOS)
 
@@ -175,12 +175,12 @@ _See `app/src-tauri/src/lib.rs` for the authoritative list._
 
 ## Core bridge & helpers (`app/src-tauri`)
 
-This document replaces the old “SessionService / SocketService” split. The Tauri crate **does not** embed a duplicate Socket.io server or Telegram client; instead it focuses on **process management** and **HTTP JSON-RPC** to the **`openhuman-core`** binary.
+This document replaces the old “SessionService / SocketService” split. The Tauri crate **does not** embed a duplicate Socket.io server or Telegram client; instead it focuses on **process management** and **HTTP JSON-RPC** to the **`aura-core`** binary.
 
 ### `CoreProcessHandle` (`core_process.rs`)
 
-- Resolves the **`openhuman-core`** executable (staged under `binaries/` or `PATH` / dev layout).
-- Starts or attaches to the core process and exposes its RPC URL (`OPENHUMAN_CORE_RPC_URL`).
+- Resolves the **`aura-core`** executable (staged under `binaries/` or `PATH` / dev layout).
+- Starts or attaches to the core process and exposes its RPC URL (`AURA_CORE_RPC_URL`).
 - Used during app setup in `lib.rs` (`app.manage(core_handle)`).
 
 ### `core_rpc` (`core_rpc.rs`)
@@ -193,14 +193,14 @@ This document replaces the old “SessionService / SocketService” split. The T
 - **`core_rpc_relay`**. ensures the core is running (in-process handle or **service-managed** path), then calls `core_rpc`.
 - **`ensure_service_managed_core_running`**. bootstraps systemd/launchd-style service when RPC is down (platform-specific behavior inside core CLI).
 
-### `commands/openhuman.rs`
+### `commands/aura.rs`
 
 - Daemon host JSON config (e.g. tray visibility) under the app data directory.
-- Install/start/stop/status/uninstall helpers for the **openhuman** background service.
+- Install/start/stop/status/uninstall helpers for the **aura** background service.
 
 ### `utils/dev_paths.rs`
 
-- Resolves **`src/openhuman/agent/prompts`** for development and bundled resource paths for AI preview.
+- Resolves **`src/aura/agent/prompts`** for development and bundled resource paths for AI preview.
 
 ### `utils/tauriSocket.ts` (frontend)
 

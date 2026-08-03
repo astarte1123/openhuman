@@ -5,7 +5,7 @@ dynamic (video) virtual backgrounds, embedded YouTube/Vimeo previews, and
 any HTML5 `<video>` source pulling H.264-in-MP4 fail with
 `MEDIA_ERR_SRC_NOT_SUPPORTED: PipelineStatus::DEMUXER_ERROR_NO_SUPPORTED_STREAMS:
 FFmpegDemuxer: no supported streams`. Empirical confirmation of the codec
-absence is in #1223 and in [`feedback_cef_runtime_gaps.md`](https://github.com/tinyhumansai/openhuman/issues/1223#issuecomment-4379209818)
+absence is in #1223 and in [`feedback_cef_runtime_gaps.md`](https://github.com/tinyhumansai/aura/issues/1223#issuecomment-4379209818)
 gap #3.
 
 The Spotify CDN (`cef-builds.spotifycdn.com`) — which `download-cef` and
@@ -46,7 +46,7 @@ does not currently ship that plugin path.
 
 **Before running this build, get sign-off from legal / business** on:
 
-1. Whether the AVC license fee is in budget for OpenHuman's distribution
+1. Whether the AVC license fee is in budget for Aura's distribution
    channels (desktop installer, GitHub releases, app stores).
 2. Whether the AAC patent pool (separate licensor) is also in scope —
    AAC is bundled with H.264 in the same `proprietary_codecs = true`
@@ -133,7 +133,7 @@ without each machine needing a 4-hour compile:
 1. Run the build on a powerful CI runner (GitHub Actions self-hosted, or
    a beefy on-prem box).
 2. Upload the resulting `cef_binary_*.tar.bz2` to a private CDN
-   (`s3://openhuman-cef-builds/<version>/<platform>/...` or equivalent).
+   (`s3://aura-cef-builds/<version>/<platform>/...` or equivalent).
 3. Set `CEF_DOWNLOAD_URL` in `scripts/load-dotenv.sh` (or as a
    per-developer env override) to point at that CDN.
 4. The vendored `download-cef` crate will fetch from the new URL on

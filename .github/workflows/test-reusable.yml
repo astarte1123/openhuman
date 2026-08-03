@@ -25,7 +25,7 @@ on:
         type: boolean
         default: true
       run_rust_core:
-        description: Run `cargo test -p openhuman` (core crate).
+        description: Run `cargo test -p aura` (core crate).
         type: boolean
         default: true
       run_rust_tauri:
@@ -42,7 +42,7 @@ jobs:
     name: Frontend Unit Tests
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/tinyhumansai/openhuman_ci:rust-1.93.0
+      image: ghcr.io/tinyhumansai/aura_ci:rust-1.93.0
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -76,7 +76,7 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 20
     container:
-      image: ghcr.io/tinyhumansai/openhuman_ci:rust-1.93.0
+      image: ghcr.io/tinyhumansai/aura_ci:rust-1.93.0
     env:
       CARGO_INCREMENTAL: '0'
       RUSTC_WRAPPER: sccache
@@ -96,15 +96,15 @@ jobs:
           key: core
       - name: Install sccache
         uses: mozilla-actions/sccache-action@v0.0.9
-      - name: Test core crate (openhuman)
-        run: cargo test -p openhuman
+      - name: Test core crate (aura)
+        run: cargo test -p aura
 
   rust-tauri-tests:
     if: inputs.run_rust_tauri
     name: Rust Tauri Shell Tests
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/tinyhumansai/openhuman_ci:rust-1.93.0
+      image: ghcr.io/tinyhumansai/aura_ci:rust-1.93.0
     env:
       CARGO_INCREMENTAL: '0'
       RUSTC_WRAPPER: sccache
@@ -134,5 +134,5 @@ jobs:
             cef-ubuntu-22.04-
       - name: Install sccache
         uses: mozilla-actions/sccache-action@v0.0.9
-      - name: Test Tauri shell (OpenHuman)
+      - name: Test Tauri shell (Aura)
         run: cargo test --manifest-path app/src-tauri/Cargo.toml

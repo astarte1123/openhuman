@@ -7,7 +7,7 @@ icon: microchip
 
 # Local AI (optional)
 
-OpenHuman can run a local model on your machine for the workloads where keeping data on-device matters most: **memory embeddings, summary-tree building, and background reasoning loops**. It is **opt-in** and ships **off** by default.
+Aura can run a local model on your machine for the workloads where keeping data on-device matters most: **memory embeddings, summary-tree building, and background reasoning loops**. It is **opt-in** and ships **off** by default.
 
 This is a deliberate scoping. The previous design tried to put chat, vision, STT and TTS all on-device with Gemma 3, and the result was a heavy, hardware-sensitive footprint that fought with what the rest of the product needed to be. Today, the things that benefit most from being local (recurring, low-latency, privacy-sensitive memory work) run local; the things that benefit most from frontier models (default chat, reasoning, vision) stay cloud.
 
@@ -15,11 +15,11 @@ This is a deliberate scoping. The previous design tried to put chat, vision, STT
 
 | Workload                  | Default model                     | Implementation                                                                                                    |
 | ------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| **Memory embeddings**     | `all-minilm:latest`               | `src/openhuman/embeddings/ollama.rs` - used by the [Memory Tree](../obsidian-wiki/memory-tree.md) for vector search. |
-| **Summary-tree building** | `gemma3:1b-it-qat` (configurable) | `src/openhuman/tree_summarizer/ops.rs` - source / topic / global summary builders for the Memory Tree.            |
-| **Heartbeat loop**        | small chat model                  | `src/openhuman/heartbeat/` - periodic background reflection.                                                      |
-| **Learning / reflection** | small chat model                  | `src/openhuman/learning/reflection.rs` - passes that consolidate what was learned.                                |
-| **Subconscious**          | small chat model                  | `src/openhuman/subconscious/executor.rs` - background evaluation loop.                                            |
+| **Memory embeddings**     | `all-minilm:latest`               | `src/aura/embeddings/ollama.rs` - used by the [Memory Tree](../obsidian-wiki/memory-tree.md) for vector search. |
+| **Summary-tree building** | `gemma3:1b-it-qat` (configurable) | `src/aura/tree_summarizer/ops.rs` - source / topic / global summary builders for the Memory Tree.            |
+| **Heartbeat loop**        | small chat model                  | `src/aura/heartbeat/` - periodic background reflection.                                                      |
+| **Learning / reflection** | small chat model                  | `src/aura/learning/reflection.rs` - passes that consolidate what was learned.                                |
+| **Subconscious**          | small chat model                  | `src/aura/subconscious/executor.rs` - background evaluation loop.                                            |
 
 Each of these is a **per-feature opt-in flag**. Turning on local AI does not silently route everything through it, you choose the workloads.
 
@@ -29,7 +29,7 @@ Each of these is a **per-feature opt-in flag**. Turning on local AI does not sil
 | ------------------ | --------------------------------------------------------------------------------------------------- |
 | **Chat (default)** | Frontier reasoning quality. Routed via the [model router](README.md) under one subscription. |
 | **Vision**         | Same.                                                                                               |
-| **STT**            | Backend-proxied transcription (`src/openhuman/voice/cloud_transcribe.rs`).                          |
+| **STT**            | Backend-proxied transcription (`src/aura/voice/cloud_transcribe.rs`).                          |
 | **TTS**            | Hosted [text-to-speech](../native-tools/voice.md) under the hood (`reply_speech.rs`).                            |
 | **Web search**     | Backend proxy (no API key on your machine).                                                         |
 
@@ -37,22 +37,22 @@ For **lightweight or medium chat hints** (`hint:reaction`, `hint:classify`, `hin
 
 ## How it works
 
-Under the hood, OpenHuman supports two local provider paths:
+Under the hood, Aura supports two local provider paths:
 
 * [Ollama](https://ollama.com), used for bundled model lifecycle, embeddings, and the existing model-asset flow.
 * [LM Studio](https://lmstudio.ai), used through its local OpenAI-compatible server for chat-style local inference.
 
-For Ollama, OpenHuman talks to its OpenAI-compatible `/v1` endpoint where possible. That means:
+For Ollama, Aura talks to its OpenAI-compatible `/v1` endpoint where possible. That means:
 
-* The `OpenAiCompatibleProvider` (`src/openhuman/providers/compatible.rs`) wraps Ollama exactly the way it wraps a remote OpenAI-style provider. No special-case code path.
+* The `OpenAiCompatibleProvider` (`src/aura/providers/compatible.rs`) wraps Ollama exactly the way it wraps a remote OpenAI-style provider. No special-case code path.
 * The provider router creates a _health-gated_ local provider on startup. If Ollama is not reachable, requests transparently fall back to the remote provider, no broken state.
-* Models are pulled on demand by Ollama and cached in its own store. OpenHuman doesn't ship the weights itself.
+* Models are pulled on demand by Ollama and cached in its own store. Aura doesn't ship the weights itself.
 
-For LM Studio, set `local_ai.provider = "lm_studio"` and ensure LM Studio's local server is running. OpenHuman defaults to `http://localhost:1234/v1`, probes `GET /v1/models`, and sends chat requests to `POST /v1/chat/completions`. You can override the endpoint with `local_ai.base_url`, `OPENHUMAN_LM_STUDIO_BASE_URL`, or `LM_STUDIO_BASE_URL`.
+For LM Studio, set `local_ai.provider = "lm_studio"` and ensure LM Studio's local server is running. Aura defaults to `http://localhost:1234/v1`, probes `GET /v1/models`, and sends chat requests to `POST /v1/chat/completions`. You can override the endpoint with `local_ai.base_url`, `AURA_LM_STUDIO_BASE_URL`, or `LM_STUDIO_BASE_URL`.
 
 ## Opting in
 
-Local AI is gated by two flags in the core config (`src/openhuman/config/schema/local_ai.rs`):
+Local AI is gated by two flags in the core config (`src/aura/config/schema/local_ai.rs`):
 
 | Flag                                 | Default | Meaning                                                             |
 | ------------------------------------ | ------- | ------------------------------------------------------------------- |
@@ -65,7 +65,7 @@ Local AI is gated by two flags in the core config (`src/openhuman/config/schema/
 | `local_ai.usage.learning_reflection` | `false` | Use local for learning passes.                                      |
 | `local_ai.usage.subconscious`        | `false` | Use local for the subconscious loop.                                |
 
-In the desktop app, **Settings → AI & Skills → Local AI** exposes presets, pick one ("embeddings only", "memory + reflection", "everything local") and the right combination of flags is set for you. Status (Ollama reachability, model availability, per-subsystem enablement) is surfaced live via `openhuman.local_ai_status`.
+In the desktop app, **Settings → AI & Skills → Local AI** exposes presets, pick one ("embeddings only", "memory + reflection", "everything local") and the right combination of flags is set for you. Status (Ollama reachability, model availability, per-subsystem enablement) is surfaced live via `aura.local_ai_status`.
 
 ## When to turn it on
 
@@ -83,14 +83,14 @@ It is **not** worth turning on if you only have a few sources connected, the clo
 * Enough disk for the models (`gemma3:1b-it-qat` \~700 MB, `all-minilm:latest` \~23 MB).
 * Enough RAM to keep the model resident (8 GB+ recommended, 16 GB+ ideal).
 
-OpenHuman handles the rest: lifecycle (`src/openhuman/local_ai/service/`), API clients (`ollama_api.rs`, `lm_studio_api.rs`), health checks, and graceful fallback to remote when the local provider disappears.
+Aura handles the rest: lifecycle (`src/aura/local_ai/service/`), API clients (`ollama_api.rs`, `lm_studio_api.rs`), health checks, and graceful fallback to remote when the local provider disappears.
 
 ### LM Studio troubleshooting
 
 * Confirm the LM Studio local server is enabled and reachable at `http://localhost:1234/v1`.
-* Load the selected model in LM Studio before calling OpenHuman. Diagnostics report `load_lm_studio_model` when the configured `local_ai.chat_model_id` is not present in `/v1/models`.
-* If LM Studio uses a different port, set `local_ai.base_url` or `OPENHUMAN_LM_STUDIO_BASE_URL`.
-* LM Studio model downloads are managed inside LM Studio. OpenHuman will not pull LM Studio models from the local asset-download controls.
+* Load the selected model in LM Studio before calling Aura. Diagnostics report `load_lm_studio_model` when the configured `local_ai.chat_model_id` is not present in `/v1/models`.
+* If LM Studio uses a different port, set `local_ai.base_url` or `AURA_LM_STUDIO_BASE_URL`.
+* LM Studio model downloads are managed inside LM Studio. Aura will not pull LM Studio models from the local asset-download controls.
 
 ## See also
 

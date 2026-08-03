@@ -7,7 +7,7 @@ icon: browsers
 
 # Frontend (app/src/)
 
-The OpenHuman desktop UI: a Vite + React 19 tree under `app/src/` (Yarn workspace `openhuman-app`). It uses Redux Toolkit with persistence for session state, talks to the backend over REST + Socket.io, and calls the Rust core sidecar via JSON-RPC (`coreRpcClient` / Tauri `core_rpc_relay`). Heavy logic lives in the core, not here.
+The Aura desktop UI: a Vite + React 19 tree under `app/src/` (Yarn workspace `aura-app`). It uses Redux Toolkit with persistence for session state, talks to the backend over REST + Socket.io, and calls the Rust core sidecar via JSON-RPC (`coreRpcClient` / Tauri `core_rpc_relay`). Heavy logic lives in the core, not here.
 
 This is one consolidated reference. Use the table of contents above (or your reader's outline) to jump between sections.
 
@@ -52,12 +52,12 @@ app/src/
 
 ### System architecture
 
-OpenHuman’s desktop UI is a **React 19** app (`app/src/`) that:
+Aura’s desktop UI is a **React 19** app (`app/src/`) that:
 
 * Uses **Redux Toolkit** with persistence for session-related state
 * Connects to the backend with **REST** (`apiClient`) and **Socket.io** (`socketService`)
-* Calls the **Rust core** process over HTTP via **`coreRpcClient`** / Tauri **`core_rpc_relay`** (JSON-RPC methods implemented in repo root `src/openhuman/`, exposed through `core_server`)
-* Loads **AI prompts** from bundled `src/openhuman/agent/prompts` (repo root) and from Tauri **`ai_get_config`** when packaged
+* Calls the **Rust core** process over HTTP via **`coreRpcClient`** / Tauri **`core_rpc_relay`** (JSON-RPC methods implemented in repo root `src/aura/`, exposed through `core_server`)
+* Loads **AI prompts** from bundled `src/aura/agent/prompts` (repo root) and from Tauri **`ai_get_config`** when packaged
 * Uses a **minimal MCP-style** helper layer under `lib/mcp/` (transport, validation), not a large in-repo Telegram MCP tool bundle
 
 ### Entry points
@@ -109,9 +109,9 @@ App.tsx
 ```
 services/
   ├─ apiClient        → REST to a URL resolved at runtime via `services/backendUrl#getBackendUrl`
-  ├─ backendUrl       → Calls `openhuman.config_resolve_api_url`; falls back to VITE_BACKEND_URL only outside Tauri
+  ├─ backendUrl       → Calls `aura.config_resolve_api_url`; falls back to VITE_BACKEND_URL only outside Tauri
   ├─ socketService    → Socket.io; realtime + MCP-style envelopes
-  └─ coreRpcClient    → HTTP to local openhuman core (JSON-RPC), used with Tauri relay
+  └─ coreRpcClient    → HTTP to local aura core (JSON-RPC), used with Tauri relay
 ```
 
 #### Runtime config precedence
@@ -120,10 +120,10 @@ The desktop app does not bake the core RPC URL or the API host into the bundle a
 
 1. **Login-screen RPC URL field**, saved via `utils/configPersistence` and restored on next launch. End users configure the sidecar address here, not by hand-editing `config.toml` or `.env` files.
 2. **Tauri `core_rpc_url` command**, the port the bundled sidecar is listening on for this process.
-3. **`VITE_OPENHUMAN_CORE_RPC_URL`**, build-time fallback for development.
+3. **`VITE_AURA_CORE_RPC_URL`**, build-time fallback for development.
 4. The hardcoded `http://127.0.0.1:7788/rpc` default.
 
-Once the RPC handshake succeeds, `services/backendUrl` calls `openhuman.config_resolve_api_url` to pull `api_url` (and other safe client fields) from the loaded core `Config`. `VITE_BACKEND_URL` is only used as a web fallback when the app runs outside Tauri.
+Once the RPC handshake succeeds, `services/backendUrl` calls `aura.config_resolve_api_url` to pull `api_url` (and other safe client fields) from the loaded core `Config`. `VITE_BACKEND_URL` is only used as a web fallback when the app runs outside Tauri.
 
 Components that need the backend URL should call `useBackendUrl()` (or `getBackendUrl()` from non-React code), they must not import the static `BACKEND_URL` constant from `utils/config`, which represents the build-time value only.
 
@@ -402,7 +402,7 @@ app/src/services/
   │   ├─ web: JS client
   │   └─ Tauri: coordinates with Rust-side socket via utils/tauriSocket.ts
   ├─ coreRpcClient.ts
-  │   └─ invoke('core_rpc_relay', …) → local openhuman core (JSON-RPC)
+  │   └─ invoke('core_rpc_relay', …) → local aura core (JSON-RPC)
   └─ services/api/* - domain REST modules (auth, user, teams, …)
 ```
 
@@ -571,13 +571,13 @@ In Tauri mode, connection and events are bridged through **`utils/tauriSocket.ts
 
 ### Core RPC (`services/coreRpcClient.ts`)
 
-The desktop app runs a separate **`openhuman`** Rust binary (staged under `app/src-tauri/binaries/`). The UI calls JSON-RPC methods on that process through Tauri:
+The desktop app runs a separate **`aura`** Rust binary (staged under `app/src-tauri/binaries/`). The UI calls JSON-RPC methods on that process through Tauri:
 
 ```typescript
 import { callCoreRpc } from "../services/coreRpcClient";
 
 const result = await callCoreRpc<MyType>({
-  method: "some.openhuman.method",
+  method: "some.aura.method",
   params: {
     /* … */
   },
@@ -1219,7 +1219,7 @@ import("./utils/desktopDeepLinkListener").then((m) => {
 });
 ```
 
-The listener intercepts `openhuman://auth?token=...` and:
+The listener intercepts `aura://auth?token=...` and:
 
 1. Exchanges token via Rust command
 2. Stores session in Redux
@@ -1966,7 +1966,7 @@ if (DEBUG) {
 }
 ```
 
-> **Do not** import `BACKEND_URL` directly to make API calls. Resolve the URL at runtime so the core sidecar's `api_url` (set on the login screen via `openhuman.config_resolve_api_url`) takes effect:
+> **Do not** import `BACKEND_URL` directly to make API calls. Resolve the URL at runtime so the core sidecar's `api_url` (set on the login screen via `aura.config_resolve_api_url`) takes effect:
 >
 > ```typescript
 > // React components
@@ -1997,7 +1997,7 @@ import { buildAuthDeepLink } from '../utils/deeplink';
 
 // Build URL for browser redirect
 const deepLink = buildAuthDeepLink(loginToken);
-// → "openhuman://auth?token=abc123"
+// → "aura://auth?token=abc123"
 
 // In web frontend after auth:
 window.location.href = deepLink;
@@ -2024,7 +2024,7 @@ import('./utils/desktopDeepLinkListener').then(m => {
 **What it does:**
 
 1. Listens for `onOpenUrl` events from Tauri deep-link plugin
-2. Parses `openhuman://auth?token=...` URLs
+2. Parses `aura://auth?token=...` URLs
 3. Calls Rust `exchange_token` command (bypasses CORS)
 4. Stores session in Redux
 5. Navigates to `/onboarding` or `/home`

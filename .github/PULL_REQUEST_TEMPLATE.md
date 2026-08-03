@@ -59,7 +59,7 @@ A bare "#123" reference is just a link — it does NOT close the issue.
 - Commit SHA:
 
 ### Validation Run
-- [ ] `pnpm --filter openhuman-app format:check`
+- [ ] `pnpm --filter aura-app format:check`
 - [ ] `pnpm typecheck`
 - [ ] Focused tests:
 - [ ] Rust fmt/check (if changed):

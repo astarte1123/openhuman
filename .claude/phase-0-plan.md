@@ -2,11 +2,11 @@
 
 One-page summary. Full spec: [`docs/superpowers/specs/2026-04-21-command-palette-design.md`](../docs/superpowers/specs/2026-04-21-command-palette-design.md)
 
-**Branch:** `feat/frontend-reskin` · **Worktree:** `~/projects/openhuman-frontend`
+**Branch:** `feat/frontend-reskin` · **Worktree:** `~/projects/aura-frontend`
 
 ## What
 
-Superhuman/Linear-style `⌘K` palette + global keyboard shortcut system + `?` help overlay for OpenHuman. Additive keyboard layer — no existing page visuals touched, no feature flag, no new Redux slices.
+Superhuman/Linear-style `⌘K` palette + global keyboard shortcut system + `?` help overlay for Aura. Additive keyboard layer — no existing page visuals touched, no feature flag, no new Redux slices.
 
 ## Architecture at a glance
 

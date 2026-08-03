@@ -7,7 +7,7 @@ icon: shield-check
 
 The tool-scoped memory layer captures **actionable guidance** about how the agent should use specific tools - separate from the [Memory Tools](memory-tools.md) general-purpose recall and from the `tool_effectiveness` statistics namespace. It is the surface that turns "never email Sarah" into a hard constraint the agent has to obey on every subsequent turn.
 
-It implements [issue #1400](https://github.com/tinyhumansai/openhuman/issues/1400) - a first-class storage and retrieval system for durable learnings and high-priority rules.
+It implements [issue #1400](https://github.com/tinyhumansai/aura/issues/1400) - a first-class storage and retrieval system for durable learnings and high-priority rules.
 
 ## What it stores
 
@@ -42,7 +42,7 @@ Two automatic capture paths fire after every turn (via `ToolMemoryCaptureHook`):
 1. **User edicts** - sentences like `never <verb> <noun>`, `don't <verb> ...`, `do not <verb> ...`, or `stop <verb>ing ...` in the user message are promoted to a **Critical** rule on the matching tool. Common-noun aliases map `"email"` to a tool named `send_email`, `"shell"` to `bash`/`exec`, etc.; when no alias matches, the rule lands on the first tool that ran in the turn so it stays adjacent to the relevant call site.
 2. **Repeated tool failures** - a tool that fails twice or more in a single turn earns a **Normal**-priority observation, with the failure class summarized inline so the agent has context next time it considers that tool.
 
-The hook is enabled by default whenever the learning subsystem is on. Disable selectively with `OPENHUMAN_LEARNING_TOOL_MEMORY_CAPTURE_ENABLED=0`.
+The hook is enabled by default whenever the learning subsystem is on. Disable selectively with `AURA_LEARNING_TOOL_MEMORY_CAPTURE_ENABLED=0`.
 
 ## Retrieval at tool-selection time
 
@@ -74,7 +74,7 @@ The "never email Sarah" path is covered as a regression test:
 3. On the next session, `prefetch_tool_memory_rules_blocking` pulls every Critical and High rule and the session builder appends a `ToolMemoryRulesSection` to the system prompt.
 4. The agent sees `### \`send_email\`` followed by `- **[critical]** Never email Sarah at sarah@example.com.` before ever choosing a tool, and the rule survives any mid-session token compression.
 
-Coverage and the integration test live in `src/openhuman/memory/tool_memory/`.
+Coverage and the integration test live in `src/aura/memory/tool_memory/`.
 
 ## See also
 

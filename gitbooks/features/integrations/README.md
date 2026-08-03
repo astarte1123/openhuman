@@ -7,7 +7,7 @@ icon: plug
 
 # Third-party Integrations (118+)
 
-OpenHuman ships with backend-proxied access to **118+ third-party services**. Connecting any of them is a one-click OAuth flow inside the app, there are no API keys to wire by hand, and no plugin marketplace to navigate.
+Aura ships with backend-proxied access to **118+ third-party services**. Connecting any of them is a one-click OAuth flow inside the app, there are no API keys to wire by hand, and no plugin marketplace to navigate.
 
 (Under the hood, the connector layer is powered by [Composio](https://composio.dev). You will not need to think about it.)
 
@@ -39,7 +39,7 @@ Some services have **native providers**. Rust modules that know how to ingest th
 
 ## How connections work
 
-Click **Connect** on any integration. A browser window opens for OAuth. Once you sign in, the connection becomes active and OpenHuman starts syncing it through [auto-fetch](../obsidian-wiki/auto-fetch.md) on the next 20-minute tick.
+Click **Connect** on any integration. A browser window opens for OAuth. Once you sign in, the connection becomes active and Aura starts syncing it through [auto-fetch](../obsidian-wiki/auto-fetch.md) on the next 20-minute tick.
 
 Each integration shows its current status:
 
@@ -51,17 +51,17 @@ You can revoke any connection at any time from the Skills tab.
 
 ## Messaging channels
 
-Three integrations are special. OpenHuman uses them to _talk back_ to you, not just read from them:
+Three integrations are special. Aura uses them to _talk back_ to you, not just read from them:
 
 * **Telegram**. the primary messaging channel. Two-way: send and receive messages, manage chats, search history, create groups, 80+ actions on your behalf. All actions run through your own encrypted credentials.
-* **Discord**. send and receive messages via Discord. Connect your account to receive OpenHuman messages there.
+* **Discord**. send and receive messages via Discord. Connect your account to receive Aura messages there.
 * **Web**. a browser-based chat interface within the desktop app. Messages stay entirely local.
 
-Set your default under **Settings → Automation & Channels → Messaging Channels**. The active route status shows which channel is currently in use. Telegram offers two credential modes: connect via OpenHuman (one-click, encrypted) or provide your own credentials for maximum control.
+Set your default under **Settings → Automation & Channels → Messaging Channels**. The active route status shows which channel is currently in use. Telegram offers two credential modes: connect via Aura (one-click, encrypted) or provide your own credentials for maximum control.
 
 ## Skills
 
-Beyond third-party services, OpenHuman has **skills**, small sandboxed modules that run inside the app, fetch external data, run on a schedule, transform information, and respond to events. Each runs with enforced resource limits. Skills install from the Skills tab and integrate with the same Memory Tree as everything else.
+Beyond third-party services, Aura has **skills**, small sandboxed modules that run inside the app, fetch external data, run on a schedule, transform information, and respond to events. Each runs with enforced resource limits. Skills install from the Skills tab and integrate with the same Memory Tree as everything else.
 
 ## Native voice and tools
 
@@ -72,7 +72,7 @@ Two capabilities ship native rather than as integrations because they're load-be
 
 ## Privacy boundary
 
-OpenHuman's core never calls any third-party API directly. All requests go through the OpenHuman backend, which handles OAuth tokens and rate limiting. Your tokens never sit on disk in plaintext on your machine, and the agent only sees the _results_ of tool calls, not the credentials.
+Aura's core never calls any third-party API directly. All requests go through the Aura backend, which handles OAuth tokens and rate limiting. Your tokens never sit on disk in plaintext on your machine, and the agent only sees the _results_ of tool calls, not the credentials.
 
 See [Privacy & Security](../privacy-and-security.md) for the full boundary.
 

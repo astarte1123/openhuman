@@ -18,18 +18,18 @@ Trust boundary for the autonomous core. Owns the autonomy / risk policy, sandbox
 
 ## Calls into
 
-- `src/openhuman/config/` — `SecurityConfig`, `AutonomyConfig` for policy + sandbox selection.
+- `src/aura/config/` — `SecurityConfig`, `AutonomyConfig` for policy + sandbox selection.
 - OS-level sandbox tools — `docker`, `bwrap`, `firejail`, `landlock` syscalls (per backend).
 - Filesystem under the workspace dir for the audit log + secrets store.
 
 ## Called by
 
-- `src/openhuman/cron/scheduler.rs` — wraps shell jobs in `SecurityPolicy::from_config`.
-- `src/openhuman/tools/local_cli.rs`, `tools/ops.rs`, and most `tools/impl/{system,network,memory,agent}/*.rs` — every executable tool consults `SecurityPolicy`.
-- `src/openhuman/tools/impl/network/{curl,http_request,composio}.rs` — risk-classify outbound calls.
-- `src/openhuman/tools/impl/memory/{store,forget}.rs` — sensitive-write tracking.
-- `src/openhuman/tools/impl/agent/delegate.rs` — sub-agent dispatch goes through autonomy gate.
-- `src/openhuman/credentials/` — uses `SecretStore` and `redact`.
+- `src/aura/cron/scheduler.rs` — wraps shell jobs in `SecurityPolicy::from_config`.
+- `src/aura/tools/local_cli.rs`, `tools/ops.rs`, and most `tools/impl/{system,network,memory,agent}/*.rs` — every executable tool consults `SecurityPolicy`.
+- `src/aura/tools/impl/network/{curl,http_request,composio}.rs` — risk-classify outbound calls.
+- `src/aura/tools/impl/memory/{store,forget}.rs` — sensitive-write tracking.
+- `src/aura/tools/impl/agent/delegate.rs` — sub-agent dispatch goes through autonomy gate.
+- `src/aura/credentials/` — uses `SecretStore` and `redact`.
 
 ## Tests
 

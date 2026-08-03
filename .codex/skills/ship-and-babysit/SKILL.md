@@ -1,15 +1,15 @@
 ---
 name: ship-and-babysit
-description: "End-to-end PR shipping workflow for tinyhumansai/openhuman: commit local changes, push to the user's fork, open or reuse a PR against main, then babysit CI and CodeRabbit feedback until the PR is green and clean. Use when the user asks to ship, open a PR, monitor CI, address review comments, or 'babysit' a branch."
+description: "End-to-end PR shipping workflow for tinyhumansai/aura: commit local changes, push to the user's fork, open or reuse a PR against main, then babysit CI and CodeRabbit feedback until the PR is green and clean. Use when the user asks to ship, open a PR, monitor CI, address review comments, or 'babysit' a branch."
 ---
 
 # Ship and Babysit
 
-Use this skill for `tinyhumansai/openhuman` when the user wants a branch shipped end to end:
+Use this skill for `tinyhumansai/aura` when the user wants a branch shipped end to end:
 
 - commit the local changes
 - push the branch to the user's fork
-- open or reuse a PR against `tinyhumansai/openhuman:main`
+- open or reuse a PR against `tinyhumansai/aura:main`
 - monitor CI and review feedback in a polling loop
 - address actionable review comments and push follow-up fixes
 - stop only when the PR is green and clean
@@ -18,7 +18,7 @@ Use this skill for `tinyhumansai/openhuman` when the user wants a branch shipped
 
 - Work from the repository root.
 - Follow repo rules from `AGENTS.md`, including validation and PR checklist requirements.
-- Assume `origin` is the user's writable fork and `upstream` points to `tinyhumansai/openhuman`.
+- Assume `origin` is the user's writable fork and `upstream` points to `tinyhumansai/aura`.
 - Resolve the fork owner once near the start and reuse it:
   - `FORK_OWNER=$(git remote get-url origin | sed -E 's#.*[:/]([^/]+)/[^/]+(\.git)?$#\1#')`
 - If `origin` resolves to `tinyhumansai`, stop and ask the user to add a fork remote. Never push branches to upstream.
@@ -57,14 +57,14 @@ Use this skill for `tinyhumansai/openhuman` when the user wants a branch shipped
 
 ### Phase 3: Open or Reuse the PR
 
-1. Verify remotes with `git remote -v` and confirm `upstream` points at `tinyhumansai/openhuman`.
+1. Verify remotes with `git remote -v` and confirm `upstream` points at `tinyhumansai/aura`.
 2. Check for an existing PR for the exact branch:
-   - `gh pr list --repo tinyhumansai/openhuman --head <fork-owner>:<branch> --state open --json number,url`
+   - `gh pr list --repo tinyhumansai/aura --head <fork-owner>:<branch> --state open --json number,url`
 3. If a PR exists, capture its number and URL and reuse it.
 4. If no PR exists:
    - inspect `git log main..HEAD` and `git diff main...HEAD`
    - fill `.github/PULL_REQUEST_TEMPLATE.md` exactly
-   - create the PR against `tinyhumansai/openhuman:main` with `--head <fork-owner>:<branch>`
+   - create the PR against `tinyhumansai/aura:main` with `--head <fork-owner>:<branch>`
 5. Print the PR URL to the user.
 
 ### Phase 4: Babysit Loop
@@ -79,19 +79,19 @@ Run an explicit poll loop until the PR is green and clean. Do not treat this as 
 Each tick:
 
 1. Fetch CI status:
-   - `gh pr checks <pr-number> --repo tinyhumansai/openhuman --json name,state,link,description`
+   - `gh pr checks <pr-number> --repo tinyhumansai/aura --json name,state,link,description`
 2. Treat `PENDING` as still in progress. Do not claim success while checks are still running.
 3. If any check is `FAILURE` or `CANCELLED`:
-   - if the `link` is a GitHub Actions run URL, extract the run id and inspect failing logs with `gh run view <id> --log-failed --repo tinyhumansai/openhuman`
+   - if the `link` is a GitHub Actions run URL, extract the run id and inspect failing logs with `gh run view <id> --log-failed --repo tinyhumansai/aura`
    - otherwise work from the check name, state, and description
    - make the smallest correct fix
    - rerun targeted validation
    - commit
    - push
 4. Fetch PR review comments:
-   - `gh api repos/tinyhumansai/openhuman/pulls/<pr-number>/comments --paginate`
+   - `gh api repos/tinyhumansai/aura/pulls/<pr-number>/comments --paginate`
 5. Fetch issue-level PR comments:
-   - `gh api repos/tinyhumansai/openhuman/issues/<pr-number>/comments --paginate`
+   - `gh api repos/tinyhumansai/aura/issues/<pr-number>/comments --paginate`
 6. Inspect review threads via GraphQL, not just flat comments, so unresolved discussions do not slip through:
    - query `reviewThreads` with pagination until `hasNextPage` is false
 7. Specifically inspect bot feedback from `coderabbitai` and `coderabbitai[bot]`, but also check for human actionable review comments.

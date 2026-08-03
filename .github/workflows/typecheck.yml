@@ -16,7 +16,7 @@ jobs:
     name: Type Check TypeScript
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/tinyhumansai/openhuman_ci:rust-1.93.0
+      image: ghcr.io/tinyhumansai/aura_ci:rust-1.93.0
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -32,22 +32,22 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Type check TypeScript files
-        run: pnpm --filter openhuman-app compile
+        run: pnpm --filter aura-app compile
         env:
           NODE_ENV: test
       - name: Check Prettier formatting
-        run: pnpm --filter openhuman-app format:check
+        run: pnpm --filter aura-app format:check
         env:
           NODE_ENV: test
       - name: Run ESLint
-        run: pnpm --filter openhuman-app lint
+        run: pnpm --filter aura-app lint
         env:
           NODE_ENV: test
   rust-quality:
     name: Rust Quality (fmt + clippy)
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/tinyhumansai/openhuman_ci:rust-1.93.0
+      image: ghcr.io/tinyhumansai/aura_ci:rust-1.93.0
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -62,4 +62,4 @@ jobs:
       - name: Check formatting (cargo fmt)
         run: cargo fmt --all -- --check
       - name: Run clippy (core crate)
-        run: cargo clippy -p openhuman
+        run: cargo clippy -p aura

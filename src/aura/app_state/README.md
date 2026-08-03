@@ -15,17 +15,17 @@ Aggregator that the React shell polls every few seconds to render the OS-level c
 
 ## Calls into
 
-- `src/openhuman/config/` — `config_rpc::*` for `Config` reads and the workspace dir resolver.
-- `src/openhuman/autocomplete/` — `AutocompleteStatus` snapshot.
-- `src/openhuman/local_ai/` — `LocalAiStatus` snapshot.
-- `src/openhuman/screen_intelligence/` — `AccessibilityStatus` snapshot.
-- `src/openhuman/service/` — `ServiceState` / `ServiceStatus` runtime info.
-- `src/openhuman/credentials/` — `session_support::build_session_state` for the auth slice.
+- `src/aura/config/` — `config_rpc::*` for `Config` reads and the workspace dir resolver.
+- `src/aura/autocomplete/` — `AutocompleteStatus` snapshot.
+- `src/aura/local_ai/` — `LocalAiStatus` snapshot.
+- `src/aura/screen_intelligence/` — `AccessibilityStatus` snapshot.
+- `src/aura/service/` — `ServiceState` / `ServiceStatus` runtime info.
+- `src/aura/credentials/` — `session_support::build_session_state` for the auth slice.
 - `src/api/{config,jwt}` — backend base URL + bearer token used by the cached current-user fetch.
 
 ## Called by
 
-- `src/openhuman/agent/harness/session/builder.rs` — agent builder reads cached app state when resolving identity.
+- `src/aura/agent/harness/session/builder.rs` — agent builder reads cached app state when resolving identity.
 - `src/core/all.rs` — registers `all_app_state_*` controllers; the shell hits these via `core_rpc_relay`.
 - `app/src/` — Tauri shell consumes the snapshot in its polling loops (out of scope for this README).
 

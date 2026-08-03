@@ -17,7 +17,7 @@ jobs:
     name: PR Submission Checklist
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/tinyhumansai/openhuman_ci:rust-1.93.0
+      image: ghcr.io/tinyhumansai/aura_ci:rust-1.93.0
     continue-on-error: true
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'docs') && !contains(github.event.pull_request.labels.*.name, 'chore') }}
     steps:
@@ -33,7 +33,7 @@ jobs:
     name: Coverage Matrix Sync
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/tinyhumansai/openhuman_ci:rust-1.93.0
+      image: ghcr.io/tinyhumansai/aura_ci:rust-1.93.0
     continue-on-error: true
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'docs') && !contains(github.event.pull_request.labels.*.name, 'chore') }}
     steps:
@@ -62,7 +62,7 @@ jobs:
             --exclude '^http://localhost'
             --exclude '^https?://127\.0\.0\.1'
             --exclude 'docs/install\.md#apt-debianubuntu$'
-            --exclude '^https://github\.com/tinyhumansai/homebrew-openhuman'
+            --exclude '^https://github\.com/tinyhumansai/homebrew-aura'
             'docs/**/*.md'
             'src/**/README.md'
             '.github/PULL_REQUEST_TEMPLATE.md'

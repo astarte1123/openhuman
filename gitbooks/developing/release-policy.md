@@ -9,7 +9,7 @@ This runbook describes how we avoid users completing **OAuth** (including **Gmai
 
 ## Distribution
 
-- **GitHub Releases** for [tinyhumansai/openhuman](https://github.com/tinyhumansai/openhuman/releases) are the primary source for desktop builds.
+- **GitHub Releases** for [tinyhumansai/aura](https://github.com/tinyhumansai/aura/releases) are the primary source for desktop builds.
 - The **Tauri updater** endpoint (see `scripts/prepareTauriConfig.js` and release workflows) should point users at the current release artifacts.
 - **Retiring old stable artifacts:** When dropping a release line, remove or hide obsolete installer assets on **GitHub Releases**, update **website / CDN** download links to **releases/latest** (or current), refresh the **updater manifest** (e.g. Gist / `latest.json`) so it does not point users at deprecated builds, and spot-check that old direct URLs are **redirected, 404, or 410** where appropriate. Verification: try known-old asset URLs from docs or bookmarks and confirm they no longer deliver primary install paths.
 
@@ -19,8 +19,8 @@ Production web builds embed a **minimum supported app semver** at **build time**
 
 | Variable                             | Purpose                                                                                                               |
 | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
-| `VITE_MINIMUM_SUPPORTED_APP_VERSION` | e.g. `0.51.0` - desktop app must be **≥** this to finish `openhuman://oauth/success`.                                 |
-| `VITE_LATEST_APP_DOWNLOAD_URL`       | Optional; defaults to `https://github.com/tinyhumansai/openhuman/releases/latest`. Opened when the gate blocks OAuth. |
+| `VITE_MINIMUM_SUPPORTED_APP_VERSION` | e.g. `0.51.0` - desktop app must be **≥** this to finish `aura://oauth/success`.                                 |
+| `VITE_LATEST_APP_DOWNLOAD_URL`       | Optional; defaults to `https://github.com/tinyhumansai/aura/releases/latest`. Opened when the gate blocks OAuth. |
 
 Configure these as **GitHub Actions variables**. They must be present on **both** the standalone **`pnpm build`** step and the **`tauri-apps/tauri-action`** step env in `.github/workflows/build-desktop.yml` (the reusable matrix invoked by `release-production.yml` / `release-staging.yml`) and `build-windows.yml` so the Vite bundle embedded in shipped installers includes the gate. Leave `VITE_MINIMUM_SUPPORTED_APP_VERSION` **unset** for local dev (gate disabled).
 
@@ -29,7 +29,7 @@ Implementation: `app/src/utils/oauthAppVersionGate.ts`, `app/src/utils/desktopDe
 ## Gmail / Google Cloud OAuth
 
 - **Redirect URIs** in Google Cloud Console must match the **current** backend + tunnel callback paths.
-- The desktop scheme (`openhuman://`) is stable; the **installed binary** must meet the minimum version when `VITE_MINIMUM_SUPPORTED_APP_VERSION` is set.
+- The desktop scheme (`aura://`) is stable; the **installed binary** must meet the minimum version when `VITE_MINIMUM_SUPPORTED_APP_VERSION` is set.
 
 ## Release checklist (avoid regressions)
 

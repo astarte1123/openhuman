@@ -20,13 +20,13 @@ Cross-platform accessibility middleware. Owns macOS AX / CGEvent / IOKit FFI, th
 
 - macOS frameworks (`ApplicationServices`, `CoreGraphics`, `IOKit`, `AVFoundation`) via FFI.
 - Bundled Swift helper process for AX queries that require a separate process.
-- `src/openhuman/config/` — overlay sizing and helper paths (light dependency).
+- `src/aura/config/` — overlay sizing and helper paths (light dependency).
 
 ## Called by
 
-- `src/openhuman/autocomplete/core/{terminal,text,overlay,types,focus}.rs` — focus-driven autocomplete needs every accessibility primitive.
-- `src/openhuman/screen_intelligence/{types,state,capture_worker,input,tests}.rs` — screen capture + focus context for vision pipelines.
-- `src/openhuman/voice/` — microphone permission + foreground app context (indirect, via re-exports).
+- `src/aura/autocomplete/core/{terminal,text,overlay,types,focus}.rs` — focus-driven autocomplete needs every accessibility primitive.
+- `src/aura/screen_intelligence/{types,state,capture_worker,input,tests}.rs` — screen capture + focus context for vision pipelines.
+- `src/aura/voice/` — microphone permission + foreground app context (indirect, via re-exports).
 - `src/core/` — surfaces `AccessibilityStatus` snapshots for the shell.
 
 ## Tests

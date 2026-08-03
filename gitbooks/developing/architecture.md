@@ -1,13 +1,13 @@
 ---
-description: Deep architecture reference for the OpenHuman codebase - repo layout, runtime scope, dual-socket sync, RPC flow.
+description: Deep architecture reference for the Aura codebase - repo layout, runtime scope, dual-socket sync, RPC flow.
 icon: code-branch
 ---
 
-# OpenHuman Architecture
+# Aura Architecture
 
 **AI-powered super assistant for crypto communities, built on Rust.**
 
-OpenHuman is a cross-platform communication and automation platform purpose-built for the cryptocurrency ecosystem. A single React + Rust (Tauri) codebase can target multiple platforms; **what we document and ship for users today is desktop only** - **Windows, macOS, and Linux**. Android, iOS, and web are **not** supported in current docs or releases. The stack includes a managed Node.js runtime for tool-capable skills, persistent Rust-native WebSocket infrastructure, and an AI tool protocol that lets language models invoke any connected service in real time.
+Aura is a cross-platform communication and automation platform purpose-built for the cryptocurrency ecosystem. A single React + Rust (Tauri) codebase can target multiple platforms; **what we document and ship for users today is desktop only** - **Windows, macOS, and Linux**. Android, iOS, and web are **not** supported in current docs or releases. The stack includes a managed Node.js runtime for tool-capable skills, persistent Rust-native WebSocket infrastructure, and an AI tool protocol that lets language models invoke any connected service in real time.
 
 ---
 
@@ -15,13 +15,13 @@ OpenHuman is a cross-platform communication and automation platform purpose-buil
 
 | Path                    | Contents                                                                                                                                                           |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **`app/`**              | Yarn workspace **`openhuman-app`**: Vite/React UI (`app/src/`), Tauri shell (`app/src-tauri/`), Vitest tests                                                       |
-| **Repo root `src/`**    | Rust **`openhuman_core`** library + **`openhuman-core`** CLI binary - core server, JSON-RPC, first-class JavaScript runtime (`src/openhuman/javascript/`) backed by a managed Node.js implementation, channels, memory, etc. |
-| **`Cargo.toml`** (root) | Builds the `openhuman-core` binary (`cargo build --bin openhuman-core`) staged into `app/src-tauri/binaries/` for the desktop bundle                                 |
+| **`app/`**              | Yarn workspace **`aura-app`**: Vite/React UI (`app/src/`), Tauri shell (`app/src-tauri/`), Vitest tests                                                       |
+| **Repo root `src/`**    | Rust **`aura_core`** library + **`aura-core`** CLI binary - core server, JSON-RPC, first-class JavaScript runtime (`src/aura/javascript/`) backed by a managed Node.js implementation, channels, memory, etc. |
+| **`Cargo.toml`** (root) | Builds the `aura-core` binary (`cargo build --bin aura-core`) staged into `app/src-tauri/binaries/` for the desktop bundle                                 |
 | **`skills/`**           | Skill packages consumed by the runtime                                                                                                                             |
 | **`docs/`**             | This book + per-tree guides (`docs/src/`, `docs/src-tauri/`)                                                                                                       |
 
-The desktop app **WebView** loads the UI from `app/`; heavy RPC and skills run in the **`openhuman-core`** process, reachable over HTTP from the Tauri host (`core_rpc_relay`).
+The desktop app **WebView** loads the UI from `app/`; heavy RPC and skills run in the **`aura-core`** process, reachable over HTTP from the Tauri host (`core_rpc_relay`).
 
 ---
 
@@ -32,7 +32,7 @@ The desktop app **WebView** loads the UI from `app/`; heavy RPC and skills run i
 **Not supported yet:** Android, iOS, standalone web client (may exist as experimental targets in the repo; do not treat as product-ready).
 
 ```
-                        OpenHuman (shipping)
+                        Aura (shipping)
                             |
                          Desktop
                     /      |      \
@@ -78,15 +78,15 @@ Tauri v2 compiles the Rust core into native binaries per platform, embedding the
      (Socket.io Server)        (Telegram, etc.)
 ```
 
-The frontend communicates with the **openhuman** Rust core in two ways: **Tauri IPC** for a small set of shell commands (windows, AI file helpers, **`core_rpc_relay`**) and **HTTP JSON-RPC** to the core process for business logic and skills. The core owns persistent connections where applicable, cryptographic work for memory/features, and **QuickJS** sandboxed skill execution.
+The frontend communicates with the **aura** Rust core in two ways: **Tauri IPC** for a small set of shell commands (windows, AI file helpers, **`core_rpc_relay`**) and **HTTP JSON-RPC** to the core process for business logic and skills. The core owns persistent connections where applicable, cryptographic work for memory/features, and **QuickJS** sandboxed skill execution.
 
 ---
 
 ## Rust-Powered Performance
 
-OpenHuman chose Tauri + Rust over Electron for fundamental performance and security reasons:
+Aura chose Tauri + Rust over Electron for fundamental performance and security reasons:
 
-| Metric                    | OpenHuman (Tauri + Rust)                                 | Typical Electron App         |
+| Metric                    | Aura (Tauri + Rust)                                 | Typical Electron App         |
 | ------------------------- | -------------------------------------------------------- | ---------------------------- |
 | Binary size               | Feature-dependent (CEF runtime + skills bundle dominate) | ~150 MB+                     |
 | Memory per skill context  | ~1-2 MB (QuickJS)                                        | ~150 MB+ (Chromium renderer) |
@@ -95,7 +95,7 @@ OpenHuman chose Tauri + Rust over Electron for fundamental performance and secur
 | Memory safety             | Compile-time guaranteed                                  | Runtime exceptions           |
 | TLS implementation        | rustls (no OpenSSL dependency)                           | Chromium's BoringSSL         |
 
-**Why this matters for a crypto platform**: Traders and analysts run OpenHuman alongside resource-intensive tools, charting software, multiple browser tabs, trading terminals. A native binary with sub-500ms startup means the app feels native and stays out of the way. Zero GC pauses means real-time price feeds and alerts are never delayed by memory management.
+**Why this matters for a crypto platform**: Traders and analysts run Aura alongside resource-intensive tools, charting software, multiple browser tabs, trading terminals. A native binary with sub-500ms startup means the app feels native and stays out of the way. Zero GC pauses means real-time price feeds and alerts are never delayed by memory management.
 
 The **Tokio async runtime** drives all I/O. WebSocket connections, HTTP requests, file operations, and inter-skill communication, as non-blocking tasks on a thread pool. Thousands of concurrent operations (skill executions, cron jobs, socket events) share a small fixed set of OS threads.
 
@@ -103,7 +103,7 @@ The **Tokio async runtime** drives all I/O. WebSocket connections, HTTP requests
 
 ## Real-Time Socket Infrastructure
 
-OpenHuman implements a **dual-socket architecture**: a Rust-native WebSocket client on desktop and a JavaScript Socket.io client on web. The Rust implementation survives app backgrounding, operates independently of the WebView, and handles TLS via rustls.
+Aura implements a **dual-socket architecture**: a Rust-native WebSocket client on desktop and a JavaScript Socket.io client on web. The Rust implementation survives app backgrounding, operates independently of the WebView, and handles TLS via rustls.
 
 ```
 Desktop Mode:                          Web Mode:
@@ -138,7 +138,7 @@ The socket connection is **shared across all skills**. When events arrive, the s
 
 ## Skills Runtime Engine
 
-OpenHuman's defining capability is its **sandboxed JavaScript execution engine** running inside the Rust process. Skills are lightweight automation scripts that extend the platform with custom tools, integrations, and scheduled tasks.
+Aura's defining capability is its **sandboxed JavaScript execution engine** running inside the Rust process. Skills are lightweight automation scripts that extend the platform with custom tools, integrations, and scheduled tasks.
 
 ```
 +---------------------------------------------------------------+
@@ -163,7 +163,7 @@ OpenHuman's defining capability is its **sandboxed JavaScript execution engine**
 +---------------------------------------------------------------+
 ```
 
-**Node.js Runtime**: the core resolves a compatible system `node` when possible and otherwise installs a managed distribution into the OpenHuman cache. Skills primarily expose tool metadata and use the runtime bridge to list and execute tools rather than running isolated QuickJS VMs inside the core.
+**Node.js Runtime**: the core resolves a compatible system `node` when possible and otherwise installs a managed distribution into the Aura cache. Skills primarily expose tool metadata and use the runtime bridge to list and execute tools rather than running isolated QuickJS VMs inside the core.
 
 | Parameter              | Value |
 | ---------------------- | ----- |
@@ -204,7 +204,7 @@ Skills are synced from a GitHub repository and discovered at runtime. Execution 
 
 ## AI & Tool Protocol (MCP)
 
-OpenHuman implements the **Model Context Protocol**, a JSON-RPC 2.0 layer over Socket.io that lets AI models discover and invoke tools exposed by skills.
+Aura implements the **Model Context Protocol**, a JSON-RPC 2.0 layer over Socket.io that lets AI models discover and invoke tools exposed by skills.
 
 ```
 User Prompt

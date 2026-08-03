@@ -14,7 +14,7 @@ Desktop E2E tests use **WebDriverIO (WDIO)** to drive the Tauri app via two auto
 | **Linux / CEF status** | `tauri-driver` | 4444 | Debug binary | CSS / DOM |
 | **macOS / Appium** | Appium Mac2 | 4723 | `.app` bundle | XPath / accessibility |
 
-OpenHuman's desktop app currently uses the CEF runtime (`tauri-runtime-cef`). Linux `tauri-driver` talks to WebKitWebDriver / webkit2gtk and cannot drive a CEF-backed WebView, so Linux CEF E2E is disabled in CI until a CEF-compatible driver or replacement harness exists. The supported path today is macOS/Appium for local runs, with manual macOS/Appium workflow runs when that workflow is enabled.
+Aura's desktop app currently uses the CEF runtime (`tauri-runtime-cef`). Linux `tauri-driver` talks to WebKitWebDriver / webkit2gtk and cannot drive a CEF-backed WebView, so Linux CEF E2E is disabled in CI until a CEF-compatible driver or replacement harness exists. The supported path today is macOS/Appium for local runs, with manual macOS/Appium workflow runs when that workflow is enabled.
 
 ---
 
@@ -27,10 +27,10 @@ OpenHuman's desktop app currently uses the CEF runtime (`tauri-runtime-cef`). Li
 cargo install tauri-driver
 
 # Build the E2E app
-pnpm --filter openhuman-app test:e2e:build
+pnpm --filter aura-app test:e2e:build
 
 # Run all flows
-pnpm --filter openhuman-app test:e2e:all:flows
+pnpm --filter aura-app test:e2e:all:flows
 
 # Run a single spec
 bash app/scripts/e2e-run-spec.sh test/e2e/specs/smoke.spec.ts smoke
@@ -46,10 +46,10 @@ npm install -g appium
 appium driver install mac2
 
 # Build the .app bundle
-pnpm --filter openhuman-app test:e2e:build
+pnpm --filter aura-app test:e2e:build
 
 # Run all flows
-pnpm --filter openhuman-app test:e2e:all:flows
+pnpm --filter aura-app test:e2e:all:flows
 ```
 
 ### Docker on macOS (Linux harness locally)
@@ -62,7 +62,7 @@ docker compose -f e2e/docker-compose.yml run --rm e2e
 
 # Build the app first (if needed)
 docker compose -f e2e/docker-compose.yml run --rm e2e \
-  pnpm --filter openhuman-app test:e2e:build
+  pnpm --filter aura-app test:e2e:build
 
 # Run a single spec
 docker compose -f e2e/docker-compose.yml run --rm e2e \
@@ -123,9 +123,9 @@ Requires Docker Desktop or Colima. The repo is bind-mounted so builds persist be
 | `TAURI_DRIVER_PORT` | `4444` | tauri-driver WebDriver port |
 | `APPIUM_PORT` | `4723` | Appium server port |
 | `E2E_MOCK_PORT` | `18473` | Mock backend server port |
-| `OPENHUMAN_WORKSPACE` | (temp dir) | App workspace directory |
-| `OPENHUMAN_SERVICE_MOCK` | `0` | Enable service mock mode |
-| `OPENHUMAN_E2E_AUTH_BYPASS` | unset | Enable JWT bypass auth |
+| `AURA_WORKSPACE` | (temp dir) | App workspace directory |
+| `AURA_SERVICE_MOCK` | `0` | Enable service mock mode |
+| `AURA_E2E_AUTH_BYPASS` | unset | Enable JWT bypass auth |
 | `DEBUG_E2E_DEEPLINK` | (verbose) | Set to `0` to silence deep link logs |
 | `E2E_FORCE_CARGO_CLEAN` | unset | Force cargo clean before E2E build |
 

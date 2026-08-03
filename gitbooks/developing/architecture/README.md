@@ -1,17 +1,17 @@
 ---
 description: >-
-  High-level shape of the OpenHuman system (desktop shell, Rust core, Memory
+  High-level shape of the Aura system (desktop shell, Rust core, Memory
   Tree, agent loop). Pointer to the deep developer architecture in the repo.
 icon: code-branch
 ---
 
 # Architecture
 
-OpenHuman is open-sourced under GNU GPL3. This page is the high-level shape of the system; the deep developer architecture lives in [deep architecture reference](../architecture.md) in the repo.
+Aura is open-sourced under GNU GPL3. This page is the high-level shape of the system; the deep developer architecture lives in [deep architecture reference](../architecture.md) in the repo.
 
 ## The shape
 
-OpenHuman is a **React + Tauri v2 desktop app** with a **Rust core** that does the heavy lifting.
+Aura is a **React + Tauri v2 desktop app** with a **Rust core** that does the heavy lifting.
 
 ```
 ┌──────────────────────────────────────────────────┐
@@ -21,7 +21,7 @@ OpenHuman is a **React + Tauri v2 desktop app** with a **Rust core** that does t
 └──────────────────────────────────────────────────┘
  │ JSON-RPC (HTTP) ↕
 ┌──────────────────────────────────────────────────┐
-│ Rust core (`openhuman` binary, `src/`) │
+│ Rust core (`aura` binary, `src/`) │
 │ • Memory Tree pipeline │
 │ • Integration adapters + auto-fetch scheduler │
 │ • Provider router (model routing) │
@@ -65,7 +65,7 @@ Stays on your machine:
 * The Obsidian Markdown vault.
 * Audio capture buffers and any local model state.
 
-Goes through the OpenHuman backend (under one subscription):
+Goes through the Aura backend (under one subscription):
 
 * LLM calls (model providers).
 * Web search proxy.
@@ -76,6 +76,6 @@ See [Privacy & Security](../../features/privacy-and-security.md) for the full pi
 
 ## Open source
 
-* **Repo:** [github.com/tinyhumansai/openhuman](https://github.com/tinyhumansai/openhuman). GNU GPL3.
+* **Repo:** [github.com/tinyhumansai/aura](https://github.com/tinyhumansai/aura). GNU GPL3.
 * **Issues and PRs** are welcome. The project is in early beta.
 * For contributors, the canonical developer guide is [deep architecture reference](../architecture.md).

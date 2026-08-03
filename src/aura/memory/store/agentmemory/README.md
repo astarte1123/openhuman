@@ -16,7 +16,7 @@ non-breaking for existing configs.
 
 ## Why another backend (and why not via MCP tools)
 
-OpenHuman already supports MCP servers as tools, but that path is
+Aura already supports MCP servers as tools, but that path is
 agent-facing — the LLM picks `recall` / `save` as tool calls per turn. The
 `Memory` trait is the *host-facing* surface: harness, archivist, reflection,
 prompt-section builders all consume it directly, without going through
@@ -28,7 +28,7 @@ namespace summaries that drive agent-side discovery — none of which would
 route through MCP today.
 
 It also lets operators who self-host agentmemory across multiple agents
-(Claude Code, Cursor, Codex, OpenCode, plus OpenHuman) share a single
+(Claude Code, Cursor, Codex, OpenCode, plus Aura) share a single
 durable memory.
 
 ## Config keys
@@ -46,7 +46,7 @@ them on this path is a no-op.
 
 ## Field mapping
 
-| OpenHuman `MemoryEntry` | agentmemory wire |
+| Aura `MemoryEntry` | agentmemory wire |
 |---|---|
 | `namespace` | `project` (defaults to `"default"` if empty) |
 | `key` | `title` |

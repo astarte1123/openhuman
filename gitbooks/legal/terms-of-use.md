@@ -1,5 +1,5 @@
 ---
-description: Terms and conditions governing use of the OpenHuman service.
+description: Terms and conditions governing use of the Aura service.
 icon: file-contract
 ---
 

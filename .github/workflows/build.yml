@@ -18,7 +18,7 @@ jobs:
     name: Build Tauri App
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/tinyhumansai/openhuman_ci:rust-1.93.0
+      image: ghcr.io/tinyhumansai/aura_ci:rust-1.93.0
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -45,7 +45,7 @@ jobs:
             cef-ubuntu-22.04-
 
       # Note: the vendored CEF-aware tauri-cli, Node 24, and pnpm are all
-      # pre-installed in the ghcr.io/tinyhumansai/openhuman_ci image (see
+      # pre-installed in the ghcr.io/tinyhumansai/aura_ci image (see
       # .github/Dockerfile), so `cargo tauri build` below resolves to the
       # fork without any per-run compile step.
       - name: Cache pnpm store
@@ -71,7 +71,7 @@ jobs:
           # CI builds should point at staging, not production.
           # Without these, APP_ENV is undefined in config.ts and
           # DEFAULT_BACKEND_URL falls through to api.tinyhumans.ai.
-          VITE_OPENHUMAN_APP_ENV: staging
+          VITE_AURA_APP_ENV: staging
           VITE_BACKEND_URL: https://staging-api.tinyhumans.ai
           CARGO_PROFILE_RELEASE_OPT_LEVEL: "1"
           CARGO_PROFILE_RELEASE_CODEGEN_UNITS: "16"

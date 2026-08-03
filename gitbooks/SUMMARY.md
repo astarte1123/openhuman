@@ -2,7 +2,7 @@
 
 ## Overview
 
-* [Welcome to OpenHuman](README.md)
+* [Welcome to Aura](README.md)
 * [Getting Started](overview/getting-started.md)
 
 ## Features

@@ -1,11 +1,11 @@
 ---
-description: Build, run, test, and ship OpenHuman from source.
+description: Build, run, test, and ship Aura from source.
 icon: code-branch
 ---
 
 # Overview
 
-OpenHuman is open source under GPLv3 at [github.com/tinyhumansai/openhuman](https://github.com/tinyhumansai/openhuman). This section is for contributors and anyone running OpenHuman from source.
+Aura is open source under GPLv3 at [github.com/tinyhumansai/aura](https://github.com/tinyhumansai/aura). This section is for contributors and anyone running Aura from source.
 
 If you just want to use the app, head to [Getting Started](../overview/getting-started.md). If you're here to read the architecture, hack on a feature, or land a PR, you're in the right place.
 
@@ -15,8 +15,8 @@ If you just want to use the app, head to [Getting Started](../overview/getting-s
 
 | Path        | What's there                                                                                                      |
 | ----------- | ----------------------------------------------------------------------------------------------------------------- |
-| `app/`      | pnpm workspace `openhuman-app`. Vite + React frontend (`app/src/`) and the Tauri desktop host (`app/src-tauri/`). |
-| `src/`      | Rust crate `openhuman_core` and the `openhuman-core` CLI binary. Domains, JSON-RPC, MCP routing.                  |
+| `app/`      | pnpm workspace `aura-app`. Vite + React frontend (`app/src/`) and the Tauri desktop host (`app/src-tauri/`). |
+| `src/`      | Rust crate `aura_core` and the `aura-core` CLI binary. Domains, JSON-RPC, MCP routing.                  |
 | `gitbooks/` | This site (the public-facing docs).                                                                               |
 | `docs/`     | Older deep references not yet migrated to GitBook (memory pipeline diagrams, agent flows, etc.).                  |
 
@@ -32,13 +32,13 @@ If it's your first time pulling the repo:
 2. [**Building the Rust Core**](building-rust-core.md). Fresh-machine setup for the repo-root Rust crate only: pinned toolchain, OS packages, and exact `cargo` commands.
 3. [**Architecture**](architecture.md). How the desktop app, the Rust core sidecar, the JSON-RPC bridge, and the dual sockets fit together. Read this before you make non-trivial changes.
 4. [**Frontend**](architecture/frontend.md) and [**Tauri Shell**](architecture/tauri-shell.md). The React app and the desktop host that wraps it.
-5. [**MCP Server**](mcp-server.md). Opt-in stdio MCP mode for exposing read-only OpenHuman memory tools to local clients.
+5. [**MCP Server**](mcp-server.md). Opt-in stdio MCP mode for exposing read-only Aura memory tools to local clients.
 
 ***
 
 ## Testing
 
-OpenHuman ships with three test layers. Know which one your change belongs in:
+Aura ships with three test layers. Know which one your change belongs in:
 
 * [**Testing Strategy**](testing-strategy.md). When to write Vitest vs cargo tests vs WDIO.
 * [**E2E Testing**](e2e-testing.md). WDIO/Appium specs, dual-platform setup (Linux tauri-driver, macOS Appium Mac2), and how to run a single spec locally.
@@ -66,7 +66,7 @@ For features still being built, the [Subconscious Loop](../features/subconscious
 
 ## Contributing
 
-* Open issues and PRs at [tinyhumansai/openhuman](https://github.com/tinyhumansai/openhuman).
+* Open issues and PRs at [tinyhumansai/aura](https://github.com/tinyhumansai/aura).
 * PRs target `main`. Push to your fork, not upstream.
 * Follow [`CONTRIBUTING.md`](../../CONTRIBUTING.md) and the issue/PR templates.
 * Keep changes focused. A bug fix doesn't need surrounding cleanup; a one-shot operation doesn't need a helper.

@@ -1,6 +1,6 @@
 ---
 description: >-
-  The on-screen face of OpenHuman, a desktop mascot that speaks, reacts, joins
+  The on-screen face of Aura, a desktop mascot that speaks, reacts, joins
   your meetings, and thinks in the background even when you aren't looking at
   it.
 icon: face-smile
@@ -8,7 +8,7 @@ icon: face-smile
 
 # The Mascot
 
-OpenHuman has a face. The mascot is an animated character that lives on your desktop and acts as the visible surface of the agent, what it's saying, what it's thinking about, when it's idle, when it's busy, when it has something to tell you.
+Aura has a face. The mascot is an animated character that lives on your desktop and acts as the visible surface of the agent, what it's saying, what it's thinking about, when it's idle, when it's busy, when it has something to tell you.
 
 It is not a chrome ornament. The mascot is wired into the same pieces as the rest of the agent: voice, memory, the [subconscious loop](../subconscious.md), and the [Google Meet integration](../native-tools/voice.md). When the agent talks, the mascot is the one talking; when the agent is thinking, the mascot is the one thinking.
 
@@ -22,7 +22,7 @@ See [Native Voice](../native-tools/voice.md) for the speech-to-text, text-to-spe
 
 ### It joins your meetings, as a real participant
 
-The mascot is OpenHuman's flagship voice integration. It can join a Google Meet call as a real participant: it hears everyone, takes notes into your [Memory Tree](../obsidian-wiki/memory-tree.md), speaks back into the call when it has something to say, and pipes its own animated face into the meeting as the camera feed.
+The mascot is Aura's flagship voice integration. It can join a Google Meet call as a real participant: it hears everyone, takes notes into your [Memory Tree](../obsidian-wiki/memory-tree.md), speaks back into the call when it has something to say, and pipes its own animated face into the meeting as the camera feed.
 
 This is the headline use case and has its own page, see [Meeting Agents](meeting-agents.md).
 

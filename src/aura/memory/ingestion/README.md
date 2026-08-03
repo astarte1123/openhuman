@@ -15,4 +15,4 @@ Pipeline that turns raw document text into chunks plus extracted entities and re
 
 ## How it fits
 
-`MemoryClient` owns the singleton `IngestionQueue` and forwards to it from `put_doc` (background) or `ingest_doc` (synchronous, behind the same lock). Every ingestion run publishes `MemoryIngestionStarted` / `MemoryIngestionCompleted` events on the global event bus so the UI status pill and `openhuman.memory_ingestion_status` RPC stay in sync. Output rows feed `UnifiedMemory`'s `memory_docs`, `vector_chunks`, and `graph_namespace` tables.
+`MemoryClient` owns the singleton `IngestionQueue` and forwards to it from `put_doc` (background) or `ingest_doc` (synchronous, behind the same lock). Every ingestion run publishes `MemoryIngestionStarted` / `MemoryIngestionCompleted` events on the global event bus so the UI status pill and `aura.memory_ingestion_status` RPC stay in sync. Output rows feed `UnifiedMemory`'s `memory_docs`, `vector_chunks`, and `graph_namespace` tables.

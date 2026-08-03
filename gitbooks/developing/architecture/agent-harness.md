@@ -120,7 +120,7 @@ When the code-executor sub-agent runs a shell command and the runtime answers "c
 
 ## Sub-agents - the orchestrator pattern
 
-OpenHuman is **multi-agent**. The agent the user is chatting with is the **Orchestrator** - a senior, strategy-level agent that decides when to answer directly, when to use a direct tool, and when to spawn a specialist sub-agent.
+Aura is **multi-agent**. The agent the user is chatting with is the **Orchestrator** - a senior, strategy-level agent that decides when to answer directly, when to use a direct tool, and when to spawn a specialist sub-agent.
 
 ### Why multi-agent
 
@@ -152,7 +152,7 @@ Each archetype lives under `agents/<name>/` with an `agent.toml` (metadata, tool
 | `morning_briefing`  | Curated daily digest run by cron.                                                       |
 | `welcome` / `help`  | Onboarding flows.                                                                       |
 
-Custom archetypes ship as TOML files under `$OPENHUMAN_WORKSPACE/agents/*.toml` (or `~/.openhuman/agents/*.toml` for user-global specialists). Custom definitions override built-ins on id collision.
+Custom archetypes ship as TOML files under `$AURA_WORKSPACE/agents/*.toml` (or `~/.aura/agents/*.toml` for user-global specialists). Custom definitions override built-ins on id collision.
 
 ### Running a sub-agent
 
@@ -225,7 +225,7 @@ Interrupts are user-driven; stop hooks are policy-driven. They share the underly
 
 ## Cost accounting
 
-Every provider response carries a `UsageInfo` block - input tokens, output tokens, cached input tokens, and an authoritative `charged_amount_usd` populated by the OpenHuman backend. `TurnCost` sums those across every provider call inside one turn so the harness can:
+Every provider response carries a `UsageInfo` block - input tokens, output tokens, cached input tokens, and an authoritative `charged_amount_usd` populated by the Aura backend. `TurnCost` sums those across every provider call inside one turn so the harness can:
 
 * Emit per-iteration cost telemetry over the progress channel.
 * Feed the budget stop hook so a runaway turn cuts itself off mid-loop.
@@ -249,7 +249,7 @@ None of these change the loop's shape - they just make the common failure modes 
 
 ## Where to look in the code
 
-The harness lives entirely under `src/openhuman/agent/`. The README in that directory enumerates the public surface; the most load-bearing files are:
+The harness lives entirely under `src/aura/agent/`. The README in that directory enumerates the public surface; the most load-bearing files are:
 
 | File / dir                    | What lives there                                                  |
 | ----------------------------- | ----------------------------------------------------------------- |

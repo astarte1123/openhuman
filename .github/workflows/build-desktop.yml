@@ -77,7 +77,7 @@ on:
         default: ""
       build_sidecar:
         description:
-          When true, build the standalone openhuman-core CLI binary alongside
+          When true, build the standalone aura-core CLI binary alongside
           the Tauri shell, stage it for the bundler, upload its DIFs to the
           core Sentry project, and publish it as an Actions artifact. Staging
           uses this; production builds do not (the core lives in-process in
@@ -131,7 +131,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Keep in sync with DEFAULT_TELEGRAM_BOT_USERNAME_* in channels/controllers/ops.rs
-      OPENHUMAN_TELEGRAM_BOT_USERNAME: ${{ inputs.telegram_bot_username }}
+      AURA_TELEGRAM_BOT_USERNAME: ${{ inputs.telegram_bot_username }}
       VITE_TELEGRAM_BOT_USERNAME: ${{ inputs.telegram_bot_username }}
     steps:
       - name: Checkout build ref
@@ -297,7 +297,7 @@ jobs:
             const config = prepareTauriConfig();
             core.setOutput('json', JSON.stringify(config));
 
-      # ---- Optional: standalone openhuman-core CLI sidecar ------------------
+      # ---- Optional: standalone aura-core CLI sidecar ------------------
       # Only built for staging (`build_sidecar: true`). Production builds the
       # core in-process inside the Tauri shell since #1061.
       - name: Resolve core manifest and binary names
@@ -308,17 +308,17 @@ jobs:
           MATRIX_TARGET: ${{ matrix.settings.target }}
           PROFILE: ${{ inputs.build_profile }}
         run: |
-          if [ -f "openhuman_core/Cargo.toml" ]; then
-            CORE_DIR="openhuman_core"
+          if [ -f "aura_core/Cargo.toml" ]; then
+            CORE_DIR="aura_core"
           elif [ -f "rust-core/Cargo.toml" ]; then
             CORE_DIR="rust-core"
-          elif [ -f "Cargo.toml" ] && grep -q '^name = "openhuman"' Cargo.toml; then
+          elif [ -f "Cargo.toml" ] && grep -q '^name = "aura"' Cargo.toml; then
             CORE_DIR="."
           else
-            echo "No core Cargo manifest found (expected root Cargo.toml with openhuman, openhuman_core/Cargo.toml, or rust-core/Cargo.toml)"
+            echo "No core Cargo manifest found (expected root Cargo.toml with aura, aura_core/Cargo.toml, or rust-core/Cargo.toml)"
             exit 1
           fi
-          SIDE_CAR_BASE="$(node -e "const fs=require('fs');const c=JSON.parse(fs.readFileSync('app/src-tauri/tauri.conf.json','utf8'));const b=(c.bundle&&Array.isArray(c.bundle.externalBin)&&c.bundle.externalBin[0])||'binaries/openhuman-core';process.stdout.write(String(b).split('/').pop());")"
+          SIDE_CAR_BASE="$(node -e "const fs=require('fs');const c=JSON.parse(fs.readFileSync('app/src-tauri/tauri.conf.json','utf8'));const b=(c.bundle&&Array.isArray(c.bundle.externalBin)&&c.bundle.externalBin[0])||'binaries/aura-core';process.stdout.write(String(b).split('/').pop());")"
           CORE_BIN_NAME="${SIDE_CAR_BASE}"
           echo "core_dir=$CORE_DIR" >> "$GITHUB_OUTPUT"
           echo "core_manifest=$CORE_DIR/Cargo.toml" >> "$GITHUB_OUTPUT"
@@ -332,22 +332,22 @@ jobs:
           MATRIX_TARGET: ${{ matrix.settings.target }}
           CORE_MANIFEST: ${{ steps.core-paths.outputs.core_manifest }}
           CORE_BIN_NAME: ${{ steps.core-paths.outputs.core_bin_name }}
-          OPENHUMAN_APP_ENV: ${{ inputs.app_env }}
+          AURA_APP_ENV: ${{ inputs.app_env }}
           # Bake the short SHA into the CLI so build_release_tag() in
-          # src/main.rs produces openhuman@<version>+<sha> matching the
+          # src/main.rs produces aura@<version>+<sha> matching the
           # Sentry release tag used when uploading the standalone CLI symbols.
-          OPENHUMAN_BUILD_SHA: ${{ inputs.short_sha }}
+          AURA_BUILD_SHA: ${{ inputs.short_sha }}
           # Bake the core Sentry DSN into the binary via `option_env!` in
           # src/main.rs. Without this the standalone CLI ships with Sentry
           # disabled and the symbols uploaded below have nothing to attach
           # to. Same DSN as `release-packages.yml` uses for the Linux arm64
-          # tarball — there is one openhuman-core Sentry project that all
+          # tarball — there is one aura-core Sentry project that all
           # standalone-CLI surfaces report to. Prefer the namespaced GH
           # var, fall back to the legacy unprefixed one during transition.
-          OPENHUMAN_CORE_SENTRY_DSN: ${{ vars.OPENHUMAN_CORE_SENTRY_DSN || vars.OPENHUMAN_SENTRY_DSN }}
+          AURA_CORE_SENTRY_DSN: ${{ vars.AURA_CORE_SENTRY_DSN || vars.AURA_SENTRY_DSN }}
         run: |
-          if [ -z "${OPENHUMAN_CORE_SENTRY_DSN}" ]; then
-            echo "::warning::vars.OPENHUMAN_CORE_SENTRY_DSN (or legacy vars.OPENHUMAN_SENTRY_DSN) is empty — the standalone CLI artifact will ship without crash reporting."
+          if [ -z "${AURA_CORE_SENTRY_DSN}" ]; then
+            echo "::warning::vars.AURA_CORE_SENTRY_DSN (or legacy vars.AURA_SENTRY_DSN) is empty — the standalone CLI artifact will ship without crash reporting."
           fi
           cargo build \
             --manifest-path "$CORE_MANIFEST" \
@@ -375,28 +375,28 @@ jobs:
         working-directory: app
         env:
           BASE_URL: ${{ inputs.base_url }}
-          OPENHUMAN_APP_ENV: ${{ inputs.app_env }}
-          VITE_OPENHUMAN_APP_ENV: ${{ inputs.app_env }}
+          AURA_APP_ENV: ${{ inputs.app_env }}
+          VITE_AURA_APP_ENV: ${{ inputs.app_env }}
           VITE_BACKEND_URL: ${{ inputs.base_url }}
           VITE_GA_MEASUREMENT_ID: ${{ vars.VITE_GA_MEASUREMENT_ID }}
           # React frontend Sentry DSN — separate Sentry project. Baked by the
           # Vite plugin via `import.meta.env.VITE_SENTRY_DSN`.
-          VITE_SENTRY_DSN: ${{ vars.OPENHUMAN_REACT_SENTRY_DSN }}
+          VITE_SENTRY_DSN: ${{ vars.AURA_REACT_SENTRY_DSN }}
           # Tauri shell (desktop host) Sentry DSN. Baked into the shell binary
-          # via `option_env!("OPENHUMAN_TAURI_SENTRY_DSN")` at compile time.
-          OPENHUMAN_TAURI_SENTRY_DSN: ${{ vars.OPENHUMAN_TAURI_SENTRY_DSN }}
+          # via `option_env!("AURA_TAURI_SENTRY_DSN")` at compile time.
+          AURA_TAURI_SENTRY_DSN: ${{ vars.AURA_TAURI_SENTRY_DSN }}
           # Bake the build SHA into the Tauri shell so its Sentry release tag
-          # (`openhuman@<version>+<sha>`) matches the React bundle and the
+          # (`aura@<version>+<sha>`) matches the React bundle and the
           # standalone CLI — events across all surfaces group under one release.
-          OPENHUMAN_BUILD_SHA: ${{ inputs.sha }}
+          AURA_BUILD_SHA: ${{ inputs.sha }}
           VITE_DEBUG: ${{ vars.VITE_DEBUG }}
           VITE_BUILD_SHA: ${{ inputs.sha }}
           # Use short_sha (12 chars) — matches what config.ts / vite.config.ts
           # / main.rs / app/src-tauri/src/lib.rs all slice VITE_BUILD_SHA /
-          # OPENHUMAN_BUILD_SHA down to at runtime when emitting events. The
+          # AURA_BUILD_SHA down to at runtime when emitting events. The
           # sentry-vite-plugin reads SENTRY_RELEASE raw, so a long-SHA value
           # here would tag uploads against a different release than events.
-          SENTRY_RELEASE: openhuman@${{ inputs.version }}+${{ inputs.short_sha }}
+          SENTRY_RELEASE: aura@${{ inputs.version }}+${{ inputs.short_sha }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ vars.SENTRY_ORG }}
           # SENTRY_PROJECT here is consumed by sentry-vite-plugin during the
@@ -425,7 +425,7 @@ jobs:
           #
           # Linux AppImage bundler note: the vendored tauri-cef bundler
           # invokes `quick-sharun.sh`, which runs `lib4bin` → `ldd` on the
-          # staged OpenHuman binary. CEF (libcef.so) is downloaded into
+          # staged Aura binary. CEF (libcef.so) is downloaded into
           # `~/.cache/tauri-cef/<version>/<os-arch>/` at cargo-build time and
           # copied into the AppDir at usr/lib/libcef.so, but the binary's
           # RUNPATH does not include either location, so plain `ldd` reports
@@ -465,9 +465,9 @@ jobs:
         run: |
           set +e
           for BIN in \
-            "app/src-tauri/target/${MATRIX_TARGET}/${PROFILE}/OpenHuman" \
-            "app/src-tauri/target/${MATRIX_TARGET}/${PROFILE}/bundle/appimage_deb/data/usr/bin/OpenHuman" \
-            "target/${MATRIX_TARGET}/${PROFILE}/OpenHuman"; do
+            "app/src-tauri/target/${MATRIX_TARGET}/${PROFILE}/Aura" \
+            "app/src-tauri/target/${MATRIX_TARGET}/${PROFILE}/bundle/appimage_deb/data/usr/bin/Aura" \
+            "target/${MATRIX_TARGET}/${PROFILE}/Aura"; do
             if [ -x "$BIN" ]; then
               echo "==> ldd $BIN"
               ldd "$BIN" || true
@@ -495,7 +495,7 @@ jobs:
       # Since #1061 the core lives in-process as a library linked into the
       # Tauri shell binary — there is exactly one Rust process and one
       # `sentry::init` call (in `app/src-tauri/src/lib.rs::run()`), so all
-      # Rust events from the desktop app route to `openhuman-tauri`. Upload
+      # Rust events from the desktop app route to `aura-tauri`. Upload
       # DIFs to that project so they actually attach to the right events.
       # Symbols are keyed by debug-ID, so it's safe to run per-matrix-target
       # without collisions — Sentry merges artifacts across platforms.
@@ -506,7 +506,7 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ vars.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT_TAURI }}
-          SENTRY_RELEASE: openhuman@${{ inputs.version }}+${{ inputs.short_sha }}
+          SENTRY_RELEASE: aura@${{ inputs.version }}+${{ inputs.short_sha }}
           VERSION: ${{ inputs.version }}
           MATRIX_TARGET: ${{ matrix.settings.target }}
           PROFILE: ${{ inputs.build_profile }}
@@ -525,8 +525,8 @@ jobs:
           echo "==> Uploading symbols from $dif_dir to ${SENTRY_PROJECT}"
           bash scripts/upload_sentry_symbols.sh "$VERSION" "$dif_dir"
 
-      # The standalone openhuman-core CLI has its own `sentry::init` in
-      # `src/main.rs` and reports to `openhuman-core`. Only built when the
+      # The standalone aura-core CLI has its own `sentry::init` in
+      # `src/main.rs` and reports to `aura-core`. Only built when the
       # caller opts into `build_sidecar`; production currently does not.
       - name: Upload standalone core CLI debug symbols to Sentry (core project)
         if: inputs.build_sidecar && env.SENTRY_AUTH_TOKEN != ''
@@ -535,14 +535,14 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ vars.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT_CORE }}
-          SENTRY_RELEASE: openhuman@${{ inputs.version }}+${{ inputs.short_sha }}
+          SENTRY_RELEASE: aura@${{ inputs.version }}+${{ inputs.short_sha }}
           VERSION: ${{ inputs.version }}
           MATRIX_TARGET: ${{ matrix.settings.target }}
           PROFILE: ${{ inputs.build_profile }}
         run: |
           set -euo pipefail
           dif_dir="target/${MATRIX_TARGET}/${PROFILE}"
-          # build_sidecar only runs `cargo build --bin openhuman` for the
+          # build_sidecar only runs `cargo build --bin aura` for the
           # standalone CLI, so this dir must exist when we reach this step.
           # Hard-fail on miss (#1403) so we never ship a sidecar with
           # un-symbolicated production crashes.
@@ -594,7 +594,7 @@ jobs:
           fi
           echo "Uploading:"
           printf '  %s\n' "${UPLOAD[@]}"
-          gh release upload "$TAG" "${UPLOAD[@]}" --repo tinyhumansai/openhuman --clobber
+          gh release upload "$TAG" "${UPLOAD[@]}" --repo tinyhumansai/aura --clobber
 
       # ---- macOS sign / notarize / repackage --------------------------------
       - name: Locate macOS .app bundle
@@ -608,19 +608,19 @@ jobs:
           set -euo pipefail
           APP_PATH=""
           for candidate in \
-            "app/src-tauri/target/${MATRIX_TARGET}/${PROFILE}/bundle/macos/OpenHuman.app" \
-            "target/${MATRIX_TARGET}/${PROFILE}/bundle/macos/OpenHuman.app"; do
+            "app/src-tauri/target/${MATRIX_TARGET}/${PROFILE}/bundle/macos/Aura.app" \
+            "target/${MATRIX_TARGET}/${PROFILE}/bundle/macos/Aura.app"; do
             if [ -d "$candidate" ]; then
               APP_PATH="$candidate"
               break
             fi
           done
           if [ -z "$APP_PATH" ]; then
-            APP_PATH="$(find . -path "*/${PROFILE}/bundle/macos/OpenHuman.app" -type d 2>/dev/null | head -1)"
+            APP_PATH="$(find . -path "*/${PROFILE}/bundle/macos/Aura.app" -type d 2>/dev/null | head -1)"
           fi
           if [ -z "$APP_PATH" ]; then
-            echo "ERROR: Could not find OpenHuman.app bundle anywhere"
-            find . -name 'OpenHuman.app' -type d 2>/dev/null || true
+            echo "ERROR: Could not find Aura.app bundle anywhere"
+            find . -name 'Aura.app' -type d 2>/dev/null || true
             exit 1
           fi
           BUNDLE_DIR="$(dirname "$(dirname "$APP_PATH")")"

@@ -7,7 +7,7 @@
 #   - `.github/workflows/release-production.yml` — pretest gate, all 3 OS, full suite.
 #
 # Recipe per OS (identical across platforms — see e2e-run-session.sh):
-#   1. Build the CEF app via `pnpm --filter openhuman-app test:e2e:build`.
+#   1. Build the CEF app via `pnpm --filter aura-app test:e2e:build`.
 #   2. Install Appium 3.x + the `chromium` driver.
 #   3. Run `app/scripts/e2e-run-session.sh` which:
 #        - launches the built binary,
@@ -65,7 +65,7 @@ jobs:
     name: E2E (Linux / Appium Chromium)
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/tinyhumansai/openhuman_ci:latest
+      image: ghcr.io/tinyhumansai/aura_ci:latest
     timeout-minutes: 90
     steps:
       - name: Checkout code
@@ -130,7 +130,7 @@ jobs:
           appium driver install --source=npm appium-chromium-driver >/dev/null 2>&1 || true
 
       - name: Build E2E app
-        run: pnpm --filter openhuman-app test:e2e:build
+        run: pnpm --filter aura-app test:e2e:build
 
       - name: Run E2E (smoke)
         if: ${{ !inputs.full }}
@@ -176,7 +176,7 @@ jobs:
     name: E2E (Linux / Rust integration suite)
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/tinyhumansai/openhuman_ci:latest
+      image: ghcr.io/tinyhumansai/aura_ci:latest
     timeout-minutes: 60
     env:
       CARGO_INCREMENTAL: '0'
@@ -217,7 +217,7 @@ jobs:
 
       # No artifact uploads here either — same release-workflow reuse
       # concern as the Tauri job above. Mock-backend log lives at
-      # /tmp/openhuman-rust-e2e-mock.log for local docker repro.
+      # /tmp/aura-rust-e2e-mock.log for local docker repro.
 
   e2e-macos:
     if: inputs.run_macos
@@ -298,16 +298,16 @@ jobs:
           appium driver install --source=npm appium-chromium-driver >/dev/null 2>&1 || true
 
       - name: Build E2E app
-        run: pnpm --filter openhuman-app test:e2e:build
+        run: pnpm --filter aura-app test:e2e:build
 
       # macOS rejects dynamic-framework loads from unsigned bundles — adhoc
       # signing satisfies the loader without a real developer-ID cert.
       - name: Adhoc-sign the .app bundle
         run: |
           codesign --force --deep --sign - \
-            app/src-tauri/target/debug/bundle/macos/OpenHuman.app
+            app/src-tauri/target/debug/bundle/macos/Aura.app
           codesign --verify --deep --verbose=2 \
-            app/src-tauri/target/debug/bundle/macos/OpenHuman.app
+            app/src-tauri/target/debug/bundle/macos/Aura.app
 
       - name: Run E2E (smoke + mega-flow)
         if: ${{ !inputs.full }}
@@ -392,7 +392,7 @@ jobs:
           appium driver install --source=npm appium-chromium-driver >/dev/null 2>&1 || true
 
       - name: Build E2E app
-        run: pnpm --filter openhuman-app test:e2e:build
+        run: pnpm --filter aura-app test:e2e:build
 
       - name: Run E2E (smoke + mega-flow)
         if: ${{ !inputs.full }}

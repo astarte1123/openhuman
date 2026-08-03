@@ -1,13 +1,13 @@
 ---
 description: >-
-  What OpenHuman ships as (native React + Tauri v2 desktop app with a Rust
+  What Aura ships as (native React + Tauri v2 desktop app with a Rust
   core), supported platforms, and what's in scope today.
 icon: layer-plus
 ---
 
 # Platform & Availability
 
-OpenHuman is a native desktop application, not a browser extension, not an Electron wrapper. Built on **React + Tauri v2** with a **Rust core**, it ships small, starts fast, and stays out of the way.
+Aura is a native desktop application, not a browser extension, not an Electron wrapper. Built on **React + Tauri v2** with a **Rust core**, it ships small, starts fast, and stays out of the way.
 
 ***
 
@@ -23,7 +23,7 @@ OpenHuman is a native desktop application, not a browser extension, not an Elect
 
 ## Why native matters
 
-OpenHuman is built as a native application rather than a web wrapper for three reasons.
+Aura is built as a native application rather than a web wrapper for three reasons.
 
 **Small footprint.** A fraction of the size of typical communication tools. Starts in under a second and uses minimal memory.
 
@@ -41,7 +41,7 @@ OpenHuman is built as a native application rather than a web wrapper for three r
 └──────────────────────────────────────────────────┘
  │ JSON-RPC ↕
 ┌──────────────────────────────────────────────────┐
-│ Rust core (`openhuman` sidecar) │
+│ Rust core (`aura` sidecar) │
 │ • Memory Tree, integrations, auto-fetch │
 │ • Model router, TokenJuice, native tools │
 │ • Voice (STT in, TTS out, Meet agent) │
@@ -58,7 +58,7 @@ The shell is a delivery vehicle (windowing, process lifecycle, IPC). All product
 
 ## Real-time communication
 
-The desktop app maintains a persistent connection to the OpenHuman backend. Responses stream as they are generated; outputs appear progressively, not after a hang. If the network drops, the app reconnects automatically with progressive backoff.
+The desktop app maintains a persistent connection to the Aura backend. Responses stream as they are generated; outputs appear progressively, not after a hang. If the network drops, the app reconnects automatically with progressive backoff.
 
 ***
 
@@ -72,4 +72,4 @@ Auto-fetch and live LLM calls require connectivity. When the network returns, th
 
 ## Auto-update
 
-The desktop shell auto-updates itself via Tauri's updater plugin against a manifest published on GitHub Releases. The OpenHuman core sidecar ships inside the same bundle, so a shell update upgrades both.
+The desktop shell auto-updates itself via Tauri's updater plugin against a manifest published on GitHub Releases. The Aura core sidecar ships inside the same bundle, so a shell update upgrades both.

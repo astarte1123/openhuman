@@ -5,7 +5,7 @@ icon: code
 
 # Coder
 
-The coder family is what makes OpenHuman a viable coding partner instead of a chat window that *pretends* to know the codebase.
+The coder family is what makes Aura a viable coding partner instead of a chat window that *pretends* to know the codebase.
 
 ## Tools in the family
 
@@ -35,7 +35,7 @@ A shell tool plus `cat`/`sed`/`awk` could *technically* do all of this. The nati
 
 ## Workspace scoping
 
-Filesystem tools respect a workspace boundary - the agent can't read or write outside it without explicit permission. Same boundary the rest of the app uses for `OPENHUMAN_WORKSPACE`.
+Filesystem tools respect a workspace boundary - the agent can't read or write outside it without explicit permission. Same boundary the rest of the app uses for `AURA_WORKSPACE`.
 
 ## See also
 

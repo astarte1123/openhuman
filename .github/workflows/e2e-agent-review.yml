@@ -80,14 +80,14 @@ jobs:
       - name: Install Appium and chromium driver
         if: steps.gate.outputs.present == 'true'
         run: |
-          APPIUM_ROOT="$(printf '%s' "$RUNNER_TEMP" | tr '\\' '/')/openhuman-appium"
-          APPIUM_BIN_DIR="$(printf '%s' "$RUNNER_TEMP" | tr '\\' '/')/openhuman-e2e-bin"
+          APPIUM_ROOT="$(printf '%s' "$RUNNER_TEMP" | tr '\\' '/')/aura-appium"
+          APPIUM_BIN_DIR="$(printf '%s' "$RUNNER_TEMP" | tr '\\' '/')/aura-e2e-bin"
           mkdir -p "$APPIUM_ROOT" "$APPIUM_BIN_DIR"
           npm install --no-audit --no-fund --prefix "$APPIUM_ROOT" appium@3
           printf '%s\n' \
             '#!/usr/bin/env bash' \
             'SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"' \
-            'APPIUM_ROOT="$(cd "$SCRIPT_DIR/../openhuman-appium" && pwd)"' \
+            'APPIUM_ROOT="$(cd "$SCRIPT_DIR/../aura-appium" && pwd)"' \
             'exec node "$APPIUM_ROOT/node_modules/appium/index.js" "$@"' \
             > "$APPIUM_BIN_DIR/appium"
           chmod +x "$APPIUM_BIN_DIR/appium"
@@ -103,7 +103,7 @@ jobs:
           touch app/.env
       - name: Build E2E app
         if: steps.gate.outputs.present == 'true'
-        run: pnpm --filter openhuman-app test:e2e:build
+        run: pnpm --filter aura-app test:e2e:build
       - name: Run agent-review E2E spec under Xvfb
         if: steps.gate.outputs.present == 'true'
         run: |
@@ -125,7 +125,7 @@ jobs:
           name: e2e-agent-review-artifacts
           path: |
             app/test/e2e/artifacts/**
-            /tmp/openhuman-e2e-app-*.log
+            /tmp/aura-e2e-app-*.log
             /tmp/appium-e2e-*.log
           if-no-files-found: ignore
           retention-days: 7

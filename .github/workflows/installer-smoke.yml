@@ -34,7 +34,7 @@ jobs:
 
       - name: Unit tests (MSI args / asset selection)
         shell: pwsh
-        run: pwsh -NoProfile -File ./scripts/tests/OpenHumanWindowsInstall.Tests.ps1
+        run: pwsh -NoProfile -File ./scripts/tests/AuraWindowsInstall.Tests.ps1
 
       - name: Run installer dry-run
         shell: pwsh
