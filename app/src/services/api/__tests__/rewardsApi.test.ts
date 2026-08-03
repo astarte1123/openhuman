@@ -10,7 +10,7 @@ describe('normalizeRewardsSnapshot', () => {
       discord: {
         linked: true,
         discordId: 'discord-123',
-        inviteUrl: 'https://discord.gg/openhuman',
+        inviteUrl: 'https://discord.gg/aura',
         membershipStatus: 'member',
       },
       summary: {
@@ -33,7 +33,7 @@ describe('normalizeRewardsSnapshot', () => {
         {
           id: 'STREAK_7',
           title: '7-Day Streak',
-          description: 'Use OpenHuman on seven consecutive active days.',
+          description: 'Use Aura on seven consecutive active days.',
           actionLabel: 'Keep your streak alive for 7 days',
           unlocked: true,
           progressLabel: 'Unlocked',

@@ -14,7 +14,7 @@
 #   SENTRY_PROJECT     - Sentry project name (required)
 #
 # Optional environment variables:
-#   SENTRY_VERSION     - Release version (defaults to: openhuman@{version})
+#   SENTRY_VERSION     - Release version (defaults to: aura@{version})
 #   DEBUG_SYMBOLS_PATH - Path to debug symbols (defaults to: target/release/deps)
 # =============================================================================
 
@@ -199,13 +199,13 @@ upload_symbols() {
     fi
 
     # Honor SENTRY_RELEASE if set so DIFs attach to the same release name
-    # the running binaries report (`openhuman@<version>+<sha>`). Without this,
-    # CI uploads to `openhuman@<version>` while events are tagged
-    # `openhuman@<version>+<sha>` — a different release, so Sentry never
+    # the running binaries report (`aura@<version>+<sha>`). Without this,
+    # CI uploads to `aura@<version>` while events are tagged
+    # `aura@<version>+<sha>` — a different release, so Sentry never
     # joins frames to symbols and stack traces stay un-symbolicated.
     # Falls back to the bare-version tag for local invocations that don't
     # set SENTRY_RELEASE.
-    local release_name="${SENTRY_RELEASE:-openhuman@${version}}"
+    local release_name="${SENTRY_RELEASE:-aura@${version}}"
 
     log_info "Uploading Rust debug symbols for release: ${release_name}"
     log_info "Symbols path: ${symbols_path}"

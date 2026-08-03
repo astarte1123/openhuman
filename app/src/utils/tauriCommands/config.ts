@@ -21,10 +21,10 @@ export interface ModelRoute {
 }
 
 /** Authentication header style. Matches Rust AuthStyle enum. */
-export type AuthStyle = 'bearer' | 'anthropic' | 'openhuman_jwt' | 'none' | 'youworker';
+export type AuthStyle = 'bearer' | 'anthropic' | 'aura_jwt' | 'none' | 'youworker';
 
 /** @deprecated Use AuthStyle. Kept for back-compat with old wire format. */
-export type CloudProviderType = 'openhuman' | 'openai' | 'anthropic' | 'openrouter' | 'custom';
+export type CloudProviderType = 'aura' | 'openai' | 'anthropic' | 'openrouter' | 'custom';
 
 /**
  * Endpoint config for one cloud LLM provider (new slug-keyed shape).
@@ -53,14 +53,14 @@ export interface CloudProviderCreds {
 
 export interface ModelSettingsUpdate {
   /**
-   * OpenHuman product backend URL. Almost always left untouched; the
+   * Aura product backend URL. Almost always left untouched; the
    * inference endpoint is the separate `inference_url` field.
    */
   api_url?: string | null;
   /**
    * Custom OpenAI-compatible LLM endpoint. When set together with
    * `api_key`, inference talks directly to this URL instead of routing
-   * through the OpenHuman backend. Send an empty string to clear.
+   * through the Aura backend. Send an empty string to clear.
    */
   inference_url?: string | null;
   api_key?: string | null;
@@ -69,7 +69,7 @@ export interface ModelSettingsUpdate {
   /**
    * When present, REPLACES `config.model_routes` wholesale with these
    * `(hint, model)` pairs. Send `[]` to clear all routes (used when switching
-   * back to the OpenHuman backend whose built-in router picks per-task models
+   * back to the Aura backend whose built-in router picks per-task models
    * on its own). Omit to leave existing routes untouched.
    */
   model_routes?: ModelRoute[] | null;
@@ -94,7 +94,7 @@ export interface ModelSettingsUpdate {
 
 /**
  * Stepped user-facing memory-context window preset. Mirrors the core
- * `MemoryContextWindow` enum (`src/openhuman/config/schema/agent.rs`)
+ * `MemoryContextWindow` enum (`src/aura/config/schema/agent.rs`)
  * — the actual char budgets are owned by the core, this is the label.
  */
 export type MemoryContextWindow = 'minimal' | 'balanced' | 'extended' | 'maximum';
@@ -188,7 +188,7 @@ export interface AIPreview {
   };
 }
 
-export async function openhumanGetConfig(): Promise<CommandResponse<ConfigSnapshot>> {
+export async function auraGetConfig(): Promise<CommandResponse<ConfigSnapshot>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
@@ -198,10 +198,10 @@ export async function openhumanGetConfig(): Promise<CommandResponse<ConfigSnapsh
 /**
  * Safe client-facing config slice. Never contains the raw api_key — only
  * `api_key_set` indicates whether a custom backend key is stored. See
- * `config.get_client_config` in `src/openhuman/config/schemas.rs`.
+ * `config.get_client_config` in `src/aura/config/schemas.rs`.
  */
 export interface ClientConfig {
-  /** OpenHuman product backend URL (auth/billing/voice). */
+  /** Aura product backend URL (auth/billing/voice). */
   api_url: string | null;
   /**
    * Custom OpenAI-compatible LLM endpoint. Legacy field, retained for
@@ -229,28 +229,28 @@ export interface ClientConfig {
   subconscious_provider: string | null;
 }
 
-export async function openhumanGetClientConfig(): Promise<CommandResponse<ClientConfig>> {
+export async function auraGetClientConfig(): Promise<CommandResponse<ClientConfig>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<ClientConfig>>({
-    method: 'openhuman.inference_get_client_config',
+    method: 'aura.inference_get_client_config',
   });
 }
 
-export async function openhumanUpdateModelSettings(
+export async function auraUpdateModelSettings(
   update: ModelSettingsUpdate
 ): Promise<CommandResponse<ConfigSnapshot>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<ConfigSnapshot>>({
-    method: 'openhuman.inference_update_model_settings',
+    method: 'aura.inference_update_model_settings',
     params: update,
   });
 }
 
-export async function openhumanUpdateMemorySettings(
+export async function auraUpdateMemorySettings(
   update: MemorySettingsUpdate
 ): Promise<CommandResponse<ConfigSnapshot>> {
   if (!isTauri()) {
@@ -262,7 +262,7 @@ export async function openhumanUpdateMemorySettings(
   });
 }
 
-export async function openhumanUpdateRuntimeSettings(
+export async function auraUpdateRuntimeSettings(
   update: RuntimeSettingsUpdate
 ): Promise<CommandResponse<ConfigSnapshot>> {
   if (!isTauri()) {
@@ -274,7 +274,7 @@ export async function openhumanUpdateRuntimeSettings(
   });
 }
 
-export async function openhumanUpdateBrowserSettings(
+export async function auraUpdateBrowserSettings(
   update: BrowserSettingsUpdate
 ): Promise<CommandResponse<ConfigSnapshot>> {
   if (!isTauri()) {
@@ -286,7 +286,7 @@ export async function openhumanUpdateBrowserSettings(
   });
 }
 
-export async function openhumanUpdateScreenIntelligenceSettings(
+export async function auraUpdateScreenIntelligenceSettings(
   update: ScreenIntelligenceSettingsUpdate
 ): Promise<CommandResponse<ConfigSnapshot>> {
   if (!isTauri()) {
@@ -298,19 +298,19 @@ export async function openhumanUpdateScreenIntelligenceSettings(
   });
 }
 
-export async function openhumanUpdateLocalAiSettings(
+export async function auraUpdateLocalAiSettings(
   update: LocalAiSettingsUpdate
 ): Promise<CommandResponse<ConfigSnapshot>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<ConfigSnapshot>>({
-    method: 'openhuman.inference_update_local_settings',
+    method: 'aura.inference_update_local_settings',
     params: update,
   });
 }
 
-export async function openhumanUpdateAnalyticsSettings(update: {
+export async function auraUpdateAnalyticsSettings(update: {
   enabled?: boolean;
 }): Promise<CommandResponse<ConfigSnapshot>> {
   if (!isTauri()) {
@@ -322,7 +322,7 @@ export async function openhumanUpdateAnalyticsSettings(update: {
   });
 }
 
-export async function openhumanGetAnalyticsSettings(): Promise<
+export async function auraGetAnalyticsSettings(): Promise<
   CommandResponse<{ enabled: boolean }>
 > {
   if (!isTauri()) {
@@ -333,26 +333,26 @@ export async function openhumanGetAnalyticsSettings(): Promise<
   });
 }
 
-export async function openhumanUpdateMeetSettings(update: {
+export async function auraUpdateMeetSettings(update: {
   auto_orchestrator_handoff?: boolean;
 }): Promise<CommandResponse<ConfigSnapshot>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<ConfigSnapshot>>({
-    method: 'openhuman.config_update_meet_settings',
+    method: 'aura.config_update_meet_settings',
     params: update,
   });
 }
 
-export async function openhumanGetMeetSettings(): Promise<
+export async function auraGetMeetSettings(): Promise<
   CommandResponse<{ auto_orchestrator_handoff: boolean }>
 > {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<{ auto_orchestrator_handoff: boolean }>>({
-    method: 'openhuman.config_get_meet_settings',
+    method: 'aura.config_get_meet_settings',
   });
 }
 
@@ -366,7 +366,7 @@ export interface ComposioTriggerSettings {
   triage_disabled_toolkits: string[];
 }
 
-export async function openhumanUpdateComposioTriggerSettings(
+export async function auraUpdateComposioTriggerSettings(
   update: ComposioTriggerSettingsUpdate
 ): Promise<CommandResponse<ConfigSnapshot>> {
   if (!isTauri()) {
@@ -374,7 +374,7 @@ export async function openhumanUpdateComposioTriggerSettings(
   }
   try {
     return await callCoreRpc<CommandResponse<ConfigSnapshot>>({
-      method: 'openhuman.config_update_composio_trigger_settings',
+      method: 'aura.config_update_composio_trigger_settings',
       params: update,
     });
   } catch (err) {
@@ -389,7 +389,7 @@ export async function openhumanUpdateComposioTriggerSettings(
   }
 }
 
-export async function openhumanGetComposioTriggerSettings(): Promise<
+export async function auraGetComposioTriggerSettings(): Promise<
   CommandResponse<ComposioTriggerSettings>
 > {
   if (!isTauri()) {
@@ -397,7 +397,7 @@ export async function openhumanGetComposioTriggerSettings(): Promise<
   }
   try {
     return await callCoreRpc<CommandResponse<ComposioTriggerSettings>>({
-      method: 'openhuman.config_get_composio_trigger_settings',
+      method: 'aura.config_get_composio_trigger_settings',
     });
   } catch (err) {
     if (tauriErrorMessage(err).includes('unknown method')) {
@@ -411,7 +411,7 @@ export async function openhumanGetComposioTriggerSettings(): Promise<
   }
 }
 
-export async function openhumanGetRuntimeFlags(): Promise<CommandResponse<RuntimeFlags>> {
+export async function auraGetRuntimeFlags(): Promise<CommandResponse<RuntimeFlags>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
@@ -420,7 +420,7 @@ export async function openhumanGetRuntimeFlags(): Promise<CommandResponse<Runtim
   });
 }
 
-export async function openhumanSetBrowserAllowAll(
+export async function auraSetBrowserAllowAll(
   enabled: boolean
 ): Promise<CommandResponse<RuntimeFlags>> {
   if (!isTauri()) {
@@ -436,7 +436,7 @@ export async function aiGetConfig(): Promise<AIPreview> {
   return {
     soul: {
       raw: '',
-      name: 'OpenHuman',
+      name: 'Aura',
       description: 'Agent',
       personalityPreview: [],
       safetyRulesPreview: [],

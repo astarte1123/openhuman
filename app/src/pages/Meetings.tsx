@@ -8,8 +8,8 @@ import MeetingRecordModal from '../components/meetings/MeetingRecordModal';
 import { useT } from '../lib/i18n/I18nContext';
 import {
   type Meeting,
-  openhumanMeetingsList,
-  openhumanMeetingsSearch,
+  auraMeetingsList,
+  auraMeetingsSearch,
   type TranscriptSearchResult,
 } from '../utils/tauriCommands/meetings';
 
@@ -40,7 +40,7 @@ const Meetings = () => {
     setLoading(true);
     setCoreError(null);
     try {
-      const response = await openhumanMeetingsList();
+      const response = await auraMeetingsList();
       setMeetings(response.result);
       log('loadMeetings: success count=%d', response.result.length);
     } catch (err) {
@@ -80,7 +80,7 @@ const Meetings = () => {
       setSearching(true);
       setSearchError(null);
 
-      void openhumanMeetingsSearch(trimmedQuery)
+      void auraMeetingsSearch(trimmedQuery)
         .then(response => {
           if (searchRequestSeqRef.current !== requestSeq) return;
           setSearchResults(response.result);

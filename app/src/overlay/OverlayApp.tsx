@@ -17,7 +17,7 @@
  *
  *   2. **Attention message** — when the core (subconscious loop, heartbeat,
  *      …) publishes an `OverlayAttentionEvent` via
- *      `openhuman::overlay::publish_attention(...)`. The bridge in
+ *      `aura::overlay::publish_attention(...)`. The bridge in
  *      `core::socketio` forwards this as an `overlay:attention` event.
  *      The bubble auto-dismisses after its ttl.
  *
@@ -351,7 +351,7 @@ export default function OverlayApp() {
           activation_mode: string;
           transcription_count: number;
           last_error: string | null;
-        }>({ method: 'openhuman.voice_server_status' });
+        }>({ method: 'aura.voice_server_status' });
 
         if (disposed) return;
 
@@ -619,7 +619,7 @@ export default function OverlayApp() {
                 ? 'Voice input active'
                 : mode === 'attention'
                   ? 'Attention message'
-                  : 'OpenHuman overlay'
+                  : 'Aura overlay'
             }
             onMouseDown={handleDragStart}
             onMouseMove={handleMouseMove}

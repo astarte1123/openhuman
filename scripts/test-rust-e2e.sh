@@ -77,7 +77,7 @@ fi
 
 MOCK_API_PORT="${MOCK_API_PORT:-18505}"
 MOCK_API_URL="http://127.0.0.1:${MOCK_API_PORT}"
-MOCK_LOG="${MOCK_LOG:-/tmp/openhuman-rust-e2e-mock.log}"
+MOCK_LOG="${MOCK_LOG:-/tmp/aura-rust-e2e-mock.log}"
 MOCK_PID=""
 
 cleanup() {

@@ -6,10 +6,10 @@ import { useCoreState } from '../providers/CoreStateProvider';
 import { tunnelsApi } from '../services/api/tunnelsApi';
 import { getCoreHttpBaseUrl } from '../services/coreRpcClient';
 import {
-  openhumanWebhooksListLogs,
-  openhumanWebhooksListRegistrations,
-  openhumanWebhooksRegisterEcho,
-  openhumanWebhooksUnregisterEcho,
+  auraWebhooksListLogs,
+  auraWebhooksListRegistrations,
+  auraWebhooksRegisterEcho,
+  auraWebhooksUnregisterEcho,
   type WebhookDebugLogEntry,
 } from '../utils/tauriCommands';
 
@@ -50,8 +50,8 @@ export function useWebhooks() {
   const loadCoreData = useCallback(async () => {
     try {
       const [regsResponse, logsResponse] = await Promise.all([
-        openhumanWebhooksListRegistrations(),
-        openhumanWebhooksListLogs(100),
+        auraWebhooksListRegistrations(),
+        auraWebhooksListLogs(100),
       ]);
       setRegistrations(regsResponse.result.result.registrations);
 
@@ -161,7 +161,7 @@ export function useWebhooks() {
   const registerEcho = useCallback(
     async (tunnelUuid: string, tunnelName?: string, backendTunnelId?: string) => {
       try {
-        const response = await openhumanWebhooksRegisterEcho(
+        const response = await auraWebhooksRegisterEcho(
           tunnelUuid,
           tunnelName,
           backendTunnelId
@@ -179,7 +179,7 @@ export function useWebhooks() {
 
   const unregisterEcho = useCallback(async (tunnelUuid: string) => {
     try {
-      const response = await openhumanWebhooksUnregisterEcho(tunnelUuid);
+      const response = await auraWebhooksUnregisterEcho(tunnelUuid);
       setRegistrations(response.result.result.registrations);
       log('Unregistered echo for tunnel %s', tunnelUuid);
     } catch (err) {

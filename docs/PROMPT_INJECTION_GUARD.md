@@ -1,6 +1,6 @@
 # Prompt Injection Guard
 
-This document describes the end-to-end prompt injection detection and enforcement flow added in the OpenHuman core and app.
+This document describes the end-to-end prompt injection detection and enforcement flow added in the Aura core and app.
 
 ## Scope
 
@@ -10,7 +10,7 @@ This document describes the end-to-end prompt injection detection and enforcemen
 
 ## Detection Layers
 
-Detection is implemented in `src/openhuman/prompt_injection/` with layered analysis:
+Detection is implemented in `src/aura/prompt_injection/` with layered analysis:
 
 1. Normalization
 - Lowercasing and whitespace collapse.
@@ -25,7 +25,7 @@ Detection is implemented in `src/openhuman/prompt_injection/` with layered analy
 - Unsafe tool coercion patterns.
 
 3. Optional classifier
-- Enabled with `OPENHUMAN_PROMPT_INJECTION_CLASSIFIER=heuristic`.
+- Enabled with `AURA_PROMPT_INJECTION_CLASSIFIER=heuristic`.
 - Adds score for suspicious combinations (obfuscation + override/exfiltration intent).
 
 ## Verdict Contract
@@ -47,10 +47,10 @@ Current threshold policy:
 
 Server-side checks are wired before LLM/tool execution in:
 
-- `src/openhuman/channels/providers/web.rs` (`start_chat`)
-- `src/openhuman/local_ai/ops.rs` (`agent_chat`, `agent_chat_simple`, `local_ai_chat`, `local_ai_prompt`, `local_ai_vision_prompt`, `local_ai_summarize`)
-- `src/openhuman/agent/harness/session/runtime.rs` (`Agent::run_single`)
-- `src/openhuman/agent/bus.rs` (`agent.run_turn` native bus handler)
+- `src/aura/channels/providers/web.rs` (`start_chat`)
+- `src/aura/local_ai/ops.rs` (`agent_chat`, `agent_chat_simple`, `local_ai_chat`, `local_ai_prompt`, `local_ai_vision_prompt`, `local_ai_summarize`)
+- `src/aura/agent/harness/session/runtime.rs` (`Agent::run_single`)
+- `src/aura/agent/bus.rs` (`agent.run_turn` native bus handler)
 
 If action is `block` or `review_blocked`, request processing is stopped and no prompt is sent to provider/tool loop.
 
@@ -81,16 +81,16 @@ Raw prompt text is not logged by this guard.
 ## Tests
 
 - Unit tests:
-  - `src/openhuman/prompt_injection/tests.rs`
-  - `src/openhuman/channels/providers/web_tests.rs`
-  - `src/openhuman/local_ai/ops_tests.rs`
+  - `src/aura/prompt_injection/tests.rs`
+  - `src/aura/channels/providers/web_tests.rs`
+  - `src/aura/local_ai/ops_tests.rs`
   - `app/src/chat/__tests__/promptInjectionGuard.test.ts`
 - Integration test:
   - `tests/json_rpc_e2e.rs` (`json_rpc_prompt_injection_is_rejected_before_model_call`)
 
 ## Extending Rules
 
-1. Add/adjust regex rules in `src/openhuman/prompt_injection/detector.rs` (`DETECTION_RULES`).
+1. Add/adjust regex rules in `src/aura/prompt_injection/detector.rs` (`DETECTION_RULES`).
 2. Keep reason codes stable for observability and tests.
 3. Add unit tests for both positive and negative cases (including obfuscated variants).
 4. If introducing new classifier logic, gate it behind config/env and ensure deterministic fallback behavior when disabled.

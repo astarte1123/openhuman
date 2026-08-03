@@ -1,26 +1,26 @@
 {
-  "name": "openhuman",
+  "name": "aura",
   "version": "0.0.0",
-  "description": "AI-powered assistant for communities — OpenHuman CLI",
+  "description": "AI-powered assistant for communities — Aura CLI",
   "keywords": [
-    "openhuman",
+    "aura",
     "ai",
     "cli",
     "crypto",
     "community"
   ],
-  "homepage": "https://github.com/tinyhumansai/openhuman",
+  "homepage": "https://github.com/tinyhumansai/aura",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tinyhumansai/openhuman.git",
+    "url": "https://github.com/tinyhumansai/aura.git",
     "directory": "packages/npm"
   },
   "bugs": {
-    "url": "https://github.com/tinyhumansai/openhuman/issues"
+    "url": "https://github.com/tinyhumansai/aura/issues"
   },
   "license": "MIT",
   "bin": {
-    "openhuman": "./bin/openhuman.js"
+    "aura": "./bin/aura.js"
   },
   "scripts": {
     "postinstall": "node install.js"

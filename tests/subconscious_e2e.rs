@@ -8,18 +8,18 @@ use std::sync::Arc;
 use serde_json::json;
 
 /// Test config for the heuristic-only ingestion pipeline.
-fn ci_safe_ingestion_config() -> openhuman_core::openhuman::memory::MemoryIngestionConfig {
-    openhuman_core::openhuman::memory::MemoryIngestionConfig::default()
+fn ci_safe_ingestion_config() -> aura_core::aura::memory::MemoryIngestionConfig {
+    aura_core::aura::memory::MemoryIngestionConfig::default()
 }
 
 async fn ingest_doc(
-    memory: &openhuman_core::openhuman::memory::UnifiedMemory,
+    memory: &aura_core::aura::memory::UnifiedMemory,
     namespace: &str,
     key: &str,
     title: &str,
     content: &str,
 ) -> String {
-    use openhuman_core::openhuman::memory::{MemoryIngestionRequest, NamespaceDocumentInput};
+    use aura_core::aura::memory::{MemoryIngestionRequest, NamespaceDocumentInput};
     let result = memory
         .ingest_document(MemoryIngestionRequest {
             document: NamespaceDocumentInput {
@@ -59,9 +59,9 @@ async fn ingest_doc(
 #[tokio::test]
 #[ignore] // requires running Ollama
 async fn two_tick_e2e_with_real_ollama() {
-    use openhuman_core::openhuman::embeddings::NoopEmbedding;
-    use openhuman_core::openhuman::memory::{MemoryClient, UnifiedMemory};
-    use openhuman_core::openhuman::subconscious::store;
+    use aura_core::aura::embeddings::NoopEmbedding;
+    use aura_core::aura::memory::{MemoryClient, UnifiedMemory};
+    use aura_core::aura::subconscious::store;
 
     // ── Setup workspace ──────────────────────────────────────────────
     let tmp = tempfile::tempdir().expect("tempdir");
@@ -132,7 +132,7 @@ Project: Q1 Budget Report
     .await;
 
     // Build engine with real config
-    let mut config = openhuman_core::openhuman::config::Config::default();
+    let mut config = aura_core::aura::config::Config::default();
     config.workspace_dir = workspace.to_path_buf();
     config.heartbeat.enabled = true;
     config.heartbeat.inference_enabled = true;
@@ -141,7 +141,7 @@ Project: Q1 Budget Report
     config.local_ai.runtime_enabled = true;
     config.local_ai.usage.subconscious = true;
 
-    let engine = openhuman_core::openhuman::subconscious::SubconsciousEngine::new(
+    let engine = aura_core::aura::subconscious::SubconsciousEngine::new(
         &config,
         Some(Arc::new(memory_client)),
     );

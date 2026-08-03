@@ -18,7 +18,7 @@ fn success_html() -> String {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>OpenHuman &#8212; Connected</title>
+    <title>Aura &#8212; Connected</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
@@ -32,7 +32,7 @@ fn success_html() -> String {
     <div class="card">
         <div class="icon">&#10004;</div>
         <h1>Connected!</h1>
-        <p>Your Telegram account has been connected to OpenHuman. You can close this tab.</p>
+        <p>Your Telegram account has been connected to Aura. You can close this tab.</p>
     </div>
 </body>
 </html>"#
@@ -57,7 +57,7 @@ fn error_html(message: &str) -> String {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>OpenHuman &#8212; Error</title>
+    <title>Aura &#8212; Error</title>
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; display: flex; align-items: center; justify-content: center; min-height: 100vh; }}
@@ -111,7 +111,7 @@ pub(super) async fn telegram_auth_handler(
 
     log::info!("[auth:telegram] Received registration callback with token");
 
-    let config = match crate::openhuman::config::Config::load_or_init().await {
+    let config = match crate::aura::config::Config::load_or_init().await {
         Ok(c) => c,
         Err(e) => {
             log::error!("[auth:telegram] Failed to load config: {e}");
@@ -168,7 +168,7 @@ pub(super) async fn telegram_auth_handler(
     };
 
     // Store the resulting session token in the local configuration.
-    match crate::openhuman::credentials::ops::store_session(&config, &jwt_token, None, None).await {
+    match crate::aura::credentials::ops::store_session(&config, &jwt_token, None, None).await {
         Ok(outcome) => {
             for msg in &outcome.logs {
                 log::info!("[auth:telegram] {msg}");

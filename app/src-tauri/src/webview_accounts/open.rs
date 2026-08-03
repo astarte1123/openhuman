@@ -62,7 +62,7 @@ pub async fn webview_account_open<R: Runtime>(
     // shim (see `cdp/session.rs`) BEFORE the real provider URL loads;
     // without it Slack surfaces in-app "enable notifications"
     // banners. For Slack debug sessions we allow opting out via
-    // `OPENHUMAN_DISABLE_SLACK_SCANNER=1`, which also skips the long-lived
+    // `AURA_DISABLE_SLACK_SCANNER=1`, which also skips the long-lived
     // CDP session so external DevTools can attach cleanly.
     let initial_url_str = if skip_cdp_for_debug {
         real_url_str.clone()
@@ -514,7 +514,7 @@ pub async fn webview_account_open<R: Runtime>(
 
     // Wire the native page-load signal and forward only *usable* load
     // completions to `emit_load_finished`:
-    //   - skip placeholder `about:blank#openhuman-acct-*` commits (otherwise
+    //   - skip placeholder `about:blank#aura-acct-*` commits (otherwise
     //     we reveal a blank viewport before real content arrives),
     //   - treat Chromium network error pages (`chrome-error://…`) as timeout
     //     signals so frontend shows retry/help UI instead of the dino page.
@@ -673,7 +673,7 @@ pub async fn webview_account_open<R: Runtime>(
     // for the lifetime of the webview so `Emulation.setUserAgentOverride`
     // (which reverts on detach) keeps applying, and drives the initial
     // Page.navigate from our placeholder URL to the real provider URL.
-    // Also installs the `#openhuman-account-{id}` fragment the scanners
+    // Also installs the `#aura-account-{id}` fragment the scanners
     // match on for multi-account disambiguation.
     // Spawn the per-account CDP session opener, replacing any prior
     // handle for this account (the old one would still be trying to
@@ -681,7 +681,7 @@ pub async fn webview_account_open<R: Runtime>(
     {
         if skip_cdp_for_debug {
             log::info!(
-                "[webview-accounts] skipping CDP session via OPENHUMAN_DISABLE_SLACK_SCANNER for account={}",
+                "[webview-accounts] skipping CDP session via AURA_DISABLE_SLACK_SCANNER for account={}",
                 args.account_id
             );
         } else {
@@ -743,7 +743,7 @@ pub async fn webview_account_open<R: Runtime>(
                 }
             } else {
                 log::info!(
-                    "[webview-accounts] slack scanner disabled via OPENHUMAN_DISABLE_SLACK_SCANNER for account={}",
+                    "[webview-accounts] slack scanner disabled via AURA_DISABLE_SLACK_SCANNER for account={}",
                     args.account_id
                 );
             }
@@ -780,7 +780,7 @@ pub async fn webview_account_open<R: Runtime>(
         // Browser Notification interception, native CEF path. The renderer
         // subprocess (cef-helper) has already replaced `window.Notification`
         // and `ServiceWorkerRegistration.prototype.showNotification` with
-        // V8 native bindings that send a `"openhuman.notify"` ProcessMessage
+        // V8 native bindings that send a `"aura.notify"` ProcessMessage
         // to the browser process. `tauri-runtime-cef::notification::register`
         // installs a per-browser callback that the runtime invokes when that
         // IPC arrives. We need the CEF browser id to key the registration —

@@ -13,14 +13,14 @@ import {
 import { selectMascotVoiceId, setMascotVoiceId } from '../../../store/mascotSlice';
 import { MASCOT_VOICE_ID } from '../../../utils/config';
 import {
-  openhumanGetVoiceServerSettings,
-  openhumanLocalAiAssetsStatus,
-  openhumanUpdateVoiceServerSettings,
-  openhumanVoiceServerStart,
-  openhumanVoiceServerStatus,
-  openhumanVoiceServerStop,
-  openhumanVoiceSetProviders,
-  openhumanVoiceStatus,
+  auraGetVoiceServerSettings,
+  auraLocalAiAssetsStatus,
+  auraUpdateVoiceServerSettings,
+  auraVoiceServerStart,
+  auraVoiceServerStatus,
+  auraVoiceServerStop,
+  auraVoiceSetProviders,
+  auraVoiceStatus,
   type VoiceProvidersSnapshot,
   type VoiceServerSettings,
   type VoiceServerStatus,
@@ -82,7 +82,7 @@ const VoicePanel = ({ embedded = false }: VoicePanelProps = {}) => {
   const [voiceStatus, setVoiceStatus] = useState<VoiceStatus | null>(null);
   const [sttReady, setSttReady] = useState(false);
   // Local provider selectors — initialised from voice_status, persisted via
-  // openhumanVoiceSetProviders on change. Empty string until first load.
+  // auraVoiceSetProviders on change. Empty string until first load.
   const [sttProvider, setSttProvider] = useState<'cloud' | 'whisper' | ''>('');
   const [ttsProvider, setTtsProvider] = useState<'cloud' | 'piper' | ''>('');
   const [sttModel, setSttModel] = useState<string>('');
@@ -125,10 +125,10 @@ const VoicePanel = ({ embedded = false }: VoicePanelProps = {}) => {
         whisperStatusResponse,
         piperStatusResponse,
       ] = await Promise.all([
-        openhumanGetVoiceServerSettings(),
-        openhumanVoiceServerStatus(),
-        openhumanVoiceStatus(),
-        openhumanLocalAiAssetsStatus(),
+        auraGetVoiceServerSettings(),
+        auraVoiceServerStatus(),
+        auraVoiceStatus(),
+        auraLocalAiAssetsStatus(),
         whisperInstallStatus().catch(err => {
           // Status polls happen on a 2s loop; a single transient error
           // shouldn't blow up the entire settings panel. Log + keep the
@@ -219,7 +219,7 @@ const VoicePanel = ({ embedded = false }: VoicePanelProps = {}) => {
     setError(null);
     setNotice(null);
     try {
-      await openhumanUpdateVoiceServerSettings({
+      await auraUpdateVoiceServerSettings({
         auto_start: settings.auto_start,
         hotkey: settings.hotkey,
         activation_mode: settings.activation_mode,
@@ -230,8 +230,8 @@ const VoicePanel = ({ embedded = false }: VoicePanelProps = {}) => {
       });
 
       if (restartIfRunning && serverStatus && serverStatus.state !== 'stopped') {
-        await openhumanVoiceServerStop();
-        await openhumanVoiceServerStart({
+        await auraVoiceServerStop();
+        await auraVoiceServerStart({
           hotkey: settings.hotkey,
           activation_mode: settings.activation_mode,
           skip_cleanup: settings.skip_cleanup,
@@ -257,7 +257,7 @@ const VoicePanel = ({ embedded = false }: VoicePanelProps = {}) => {
     setError(null);
     setNotice(null);
     try {
-      await openhumanUpdateVoiceServerSettings({
+      await auraUpdateVoiceServerSettings({
         auto_start: settings.auto_start,
         hotkey: settings.hotkey,
         activation_mode: settings.activation_mode,
@@ -266,7 +266,7 @@ const VoicePanel = ({ embedded = false }: VoicePanelProps = {}) => {
         silence_threshold: settings.silence_threshold,
         custom_dictionary: settings.custom_dictionary,
       });
-      await openhumanVoiceServerStart({
+      await auraVoiceServerStart({
         hotkey: settings.hotkey,
         activation_mode: settings.activation_mode,
         skip_cleanup: settings.skip_cleanup,
@@ -286,7 +286,7 @@ const VoicePanel = ({ embedded = false }: VoicePanelProps = {}) => {
     setError(null);
     setNotice(null);
     try {
-      await openhumanVoiceServerStop();
+      await auraVoiceServerStop();
       setNotice(t('voice.serverStopped'));
       await loadData(true);
     } catch (err) {
@@ -311,7 +311,7 @@ const VoicePanel = ({ embedded = false }: VoicePanelProps = {}) => {
     setIsSavingProviders(true);
     setError(null);
     try {
-      const snapshot = await openhumanVoiceSetProviders({
+      const snapshot = await auraVoiceSetProviders({
         stt_provider: update.stt_provider,
         tts_provider: update.tts_provider,
         stt_model: update.stt_model,

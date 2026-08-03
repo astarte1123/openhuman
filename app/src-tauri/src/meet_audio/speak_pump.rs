@@ -107,7 +107,7 @@ async fn poll_and_feed(
     session_id: &str,
 ) -> Result<(), String> {
     let v = super::rpc_call(
-        "openhuman.meet_agent_poll_speech",
+        "aura.meet_agent_poll_speech",
         serde_json::json!({ "request_id": request_id }),
     )
     .await?;

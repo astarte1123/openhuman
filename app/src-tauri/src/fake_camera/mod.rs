@@ -1,6 +1,6 @@
 //! Mascot-as-webcam pipeline.
 //!
-//! Once at app startup we rasterize the OpenHuman mascot SVG into a
+//! Once at app startup we rasterize the Aura mascot SVG into a
 //! 640×480 RGBA bitmap, convert it to YUV420, and write a single-frame
 //! YUV4MPEG2 (Y4M) file to the per-user data directory. The file is
 //! cached across launches keyed by source-SVG hash so subsequent boots
@@ -122,7 +122,7 @@ fn rasterize_svg(svg: &str) -> Result<Vec<u8>, String> {
 /// frame is enough for a steady image.
 fn encode_single_frame_y4m(rgba: &[u8]) -> Vec<u8> {
     let header = format!(
-        "YUV4MPEG2 W{WIDTH} H{HEIGHT} {FRAMERATE} Ip A1:1 C420jpeg Xopenhuman-mascot\nFRAME\n"
+        "YUV4MPEG2 W{WIDTH} H{HEIGHT} {FRAMERATE} Ip A1:1 C420jpeg Xaura-mascot\nFRAME\n"
     );
 
     let pixel_count = (WIDTH * HEIGHT) as usize;
@@ -220,7 +220,7 @@ mod tests {
 
     #[test]
     fn stable_hash_is_deterministic() {
-        assert_eq!(stable_hash("openhuman"), stable_hash("openhuman"));
+        assert_eq!(stable_hash("aura"), stable_hash("aura"));
         assert_ne!(stable_hash("a"), stable_hash("b"));
     }
 }

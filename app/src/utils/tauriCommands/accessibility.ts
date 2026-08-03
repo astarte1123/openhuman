@@ -169,153 +169,153 @@ export interface CaptureTestResult {
   timing_ms: number;
 }
 
-export async function openhumanAccessibilityStatus(): Promise<
+export async function auraAccessibilityStatus(): Promise<
   CommandResponse<AccessibilityStatus>
 > {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<AccessibilityStatus>>({
-    method: 'openhuman.accessibility_status',
+    method: 'aura.accessibility_status',
     serviceManaged: true,
   });
 }
 
-export async function openhumanAccessibilityRequestPermissions(): Promise<
+export async function auraAccessibilityRequestPermissions(): Promise<
   CommandResponse<AccessibilityPermissionStatus>
 > {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<AccessibilityPermissionStatus>>({
-    method: 'openhuman.accessibility_request_permissions',
+    method: 'aura.accessibility_request_permissions',
     serviceManaged: true,
   });
 }
 
-export async function openhumanAccessibilityRequestPermission(
+export async function auraAccessibilityRequestPermission(
   permission: AccessibilityPermissionKind
 ): Promise<CommandResponse<AccessibilityPermissionStatus>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<AccessibilityPermissionStatus>>({
-    method: 'openhuman.accessibility_request_permission',
+    method: 'aura.accessibility_request_permission',
     params: { permission },
     serviceManaged: true,
   });
 }
 
-export async function openhumanAccessibilityStartSession(
+export async function auraAccessibilityStartSession(
   params: AccessibilityStartSessionParams
 ): Promise<CommandResponse<AccessibilitySessionStatus>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<AccessibilitySessionStatus>>({
-    method: 'openhuman.accessibility_start_session',
+    method: 'aura.accessibility_start_session',
     params,
     serviceManaged: true,
   });
 }
 
-export async function openhumanAccessibilityStopSession(
+export async function auraAccessibilityStopSession(
   params?: AccessibilityStopSessionParams
 ): Promise<CommandResponse<AccessibilitySessionStatus>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<AccessibilitySessionStatus>>({
-    method: 'openhuman.accessibility_stop_session',
+    method: 'aura.accessibility_stop_session',
     params: params ?? {},
     serviceManaged: true,
   });
 }
 
-export async function openhumanAccessibilityCaptureNow(): Promise<
+export async function auraAccessibilityCaptureNow(): Promise<
   CommandResponse<AccessibilityCaptureNowResult>
 > {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<AccessibilityCaptureNowResult>>({
-    method: 'openhuman.accessibility_capture_now',
+    method: 'aura.accessibility_capture_now',
     serviceManaged: true,
   });
 }
 
-export async function openhumanAccessibilityInputAction(
+export async function auraAccessibilityInputAction(
   params: AccessibilityInputActionParams
 ): Promise<CommandResponse<AccessibilityInputActionResult>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<AccessibilityInputActionResult>>({
-    method: 'openhuman.accessibility_input_action',
+    method: 'aura.accessibility_input_action',
     params,
     serviceManaged: true,
   });
 }
 
-export async function openhumanAccessibilityAutocompleteSuggest(
+export async function auraAccessibilityAutocompleteSuggest(
   params?: AccessibilityAutocompleteSuggestParams
 ): Promise<CommandResponse<AccessibilityAutocompleteSuggestResult>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<AccessibilityAutocompleteSuggestResult>>({
-    method: 'openhuman.accessibility_autocomplete_suggest',
+    method: 'aura.accessibility_autocomplete_suggest',
     params: params ?? {},
     serviceManaged: true,
   });
 }
 
-export async function openhumanAccessibilityAutocompleteCommit(
+export async function auraAccessibilityAutocompleteCommit(
   params: AccessibilityAutocompleteCommitParams
 ): Promise<CommandResponse<AccessibilityAutocompleteCommitResult>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<AccessibilityAutocompleteCommitResult>>({
-    method: 'openhuman.accessibility_autocomplete_commit',
+    method: 'aura.accessibility_autocomplete_commit',
     params,
     serviceManaged: true,
   });
 }
 
-export async function openhumanAccessibilityVisionRecent(
+export async function auraAccessibilityVisionRecent(
   limit?: number
 ): Promise<CommandResponse<AccessibilityVisionRecentResult>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<AccessibilityVisionRecentResult>>({
-    method: 'openhuman.accessibility_vision_recent',
+    method: 'aura.accessibility_vision_recent',
     params: { limit },
     serviceManaged: true,
   });
 }
 
-export async function openhumanAccessibilityVisionFlush(): Promise<
+export async function auraAccessibilityVisionFlush(): Promise<
   CommandResponse<AccessibilityVisionFlushResult>
 > {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<AccessibilityVisionFlushResult>>({
-    method: 'openhuman.accessibility_vision_flush',
+    method: 'aura.accessibility_vision_flush',
     serviceManaged: true,
   });
 }
 
-export async function openhumanScreenIntelligenceCaptureTest(): Promise<
+export async function auraScreenIntelligenceCaptureTest(): Promise<
   CommandResponse<CaptureTestResult>
 > {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<CaptureTestResult>>({
-    method: 'openhuman.screen_intelligence_capture_test',
+    method: 'aura.screen_intelligence_capture_test',
     serviceManaged: true,
   });
 }

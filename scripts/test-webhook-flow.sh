@@ -10,42 +10,42 @@ if [[ -f "$ROOT_DIR/.env" ]]; then
   eval "$(bash "$ROOT_DIR/scripts/load-dotenv.sh" "$ROOT_DIR/.env")"
 fi
 
-CORE_HOST="${OPENHUMAN_CORE_HOST:-127.0.0.1}"
-CORE_PORT="${OPENHUMAN_CORE_PORT:-7788}"
+CORE_HOST="${AURA_CORE_HOST:-127.0.0.1}"
+CORE_PORT="${AURA_CORE_PORT:-7788}"
 CORE_RPC_URL="${CORE_RPC_URL:-http://${CORE_HOST}:${CORE_PORT}/rpc}"
 
 # Resolve the core RPC bearer token.  Resolution order:
-#   1. OPENHUMAN_CORE_TOKEN env var (set by caller or Tauri shell)
-#   2. core.token file in workspace dir (written by standalone `openhuman core run`)
-#   3. Live process environment of the running openhuman-core child (Tauri-managed:
+#   1. AURA_CORE_TOKEN env var (set by caller or Tauri shell)
+#   2. core.token file in workspace dir (written by standalone `aura core run`)
+#   3. Live process environment of the running aura-core child (Tauri-managed:
 #      token is injected via env var, never written to disk)
 _resolve_rpc_token() {
-  if [[ -n "${OPENHUMAN_CORE_TOKEN:-}" ]]; then
-    echo "$OPENHUMAN_CORE_TOKEN"
+  if [[ -n "${AURA_CORE_TOKEN:-}" ]]; then
+    echo "$AURA_CORE_TOKEN"
     return
   fi
-  local workspace="${OPENHUMAN_WORKSPACE:-$HOME/.openhuman}"
+  local workspace="${AURA_WORKSPACE:-$HOME/.aura}"
   local token_file="$workspace/core.token"
   if [[ -f "$token_file" ]]; then
     cat "$token_file"
     return
   fi
   # Tauri-managed core: token is in the child process environment, not on disk.
-  # Read it from the running openhuman-core process via ps.
+  # Read it from the running aura-core process via ps.
   local core_pid
-  core_pid="$(pgrep -f 'openhuman-core.*run' 2>/dev/null | head -1)"
+  core_pid="$(pgrep -f 'aura-core.*run' 2>/dev/null | head -1)"
   if [[ -n "$core_pid" ]]; then
     local tok
-    tok="$(ps eww -p "$core_pid" 2>/dev/null | tr ' ' '\n' | grep '^OPENHUMAN_CORE_TOKEN=' | cut -d= -f2)"
+    tok="$(ps eww -p "$core_pid" 2>/dev/null | tr ' ' '\n' | grep '^AURA_CORE_TOKEN=' | cut -d= -f2)"
     if [[ -n "$tok" ]]; then
       echo "$tok"
       return
     fi
   fi
   echo "ERROR: core RPC token not found. Options:" >&2
-  echo "  1. Set OPENHUMAN_CORE_TOKEN=<token> before running this script" >&2
-  echo "  2. Start the core standalone: openhuman core run  (writes $token_file)" >&2
-  echo "  3. Open the OpenHuman app (token auto-detected from process env)" >&2
+  echo "  1. Set AURA_CORE_TOKEN=<token> before running this script" >&2
+  echo "  2. Start the core standalone: aura core run  (writes $token_file)" >&2
+  echo "  3. Open the Aura app (token auto-detected from process env)" >&2
   exit 1
 }
 RPC_TOKEN="$(_resolve_rpc_token)"
@@ -131,7 +131,7 @@ echo "Core RPC: $CORE_RPC_URL"
 curl -fsS "${CORE_RPC_URL%/rpc}/health" >/dev/null
 
 SESSION_TOKEN="$(
-  rpc_call "openhuman.auth_get_session_token" \
+  rpc_call "aura.auth_get_session_token" \
   | jq -r '.result.result.token // empty'
 )"
 
@@ -141,7 +141,7 @@ if [[ -z "$SESSION_TOKEN" ]]; then
 fi
 
 BACKEND_URL="$(
-  rpc_call "openhuman.config_resolve_api_url" \
+  rpc_call "aura.config_resolve_api_url" \
   | jq -r '.result.api_url // empty'
 )"
 
@@ -178,7 +178,7 @@ cleanup() {
   fi
 
   echo "Cleaning up local echo registration..."
-  rpc_call "openhuman.webhooks_unregister_echo" \
+  rpc_call "aura.webhooks_unregister_echo" \
     "$(jq -n --arg tunnel_uuid "$TUNNEL_UUID" '{tunnel_uuid: $tunnel_uuid}')" >/dev/null || true
 
   echo "Deleting backend tunnel..."
@@ -197,7 +197,7 @@ REGISTER_PARAMS="$(
     --arg backend_tunnel_id "$TUNNEL_ID" \
     '{tunnel_uuid: $tunnel_uuid, tunnel_name: $tunnel_name, backend_tunnel_id: $backend_tunnel_id}'
 )"
-rpc_call "openhuman.webhooks_register_echo" "$REGISTER_PARAMS" >/dev/null
+rpc_call "aura.webhooks_register_echo" "$REGISTER_PARAMS" >/dev/null
 
 WEBHOOK_URL="${BACKEND_URL%/}/webhooks/ingress/${TUNNEL_UUID}${HOOK_PATH}"
 echo "Triggering: ${HOOK_METHOD} ${WEBHOOK_URL}"
@@ -208,7 +208,7 @@ HTTP_STATUS="$(
     -X "$HOOK_METHOD" \
     "$WEBHOOK_URL?source=local-curl&script=test-webhook-flow" \
     -H 'Content-Type: application/json' \
-    -H 'X-OpenHuman-Debug: webhook-flow-script' \
+    -H 'X-Aura-Debug: webhook-flow-script' \
     -d "$PAYLOAD"
 )"
 
@@ -232,11 +232,11 @@ rm -f "$RESPONSE_BODY_FILE"
 sleep 1
 
 echo "Latest captured log:"
-rpc_call "openhuman.webhooks_list_logs" '{"limit":1}' \
+rpc_call "aura.webhooks_list_logs" '{"limit":1}' \
   | jq '.result.result.logs[0]'
 
 echo "Latest registrations:"
-rpc_call "openhuman.webhooks_list_registrations" \
+rpc_call "aura.webhooks_list_registrations" \
   | jq '.result.result.registrations'
 
 echo "Done."

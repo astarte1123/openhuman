@@ -37,27 +37,27 @@ export interface UpdateTunnelRequest {
 export const tunnelsApi = {
   /** POST /webhooks/core — create a new webhook tunnel */
   createTunnel: async (body: CreateTunnelRequest): Promise<Tunnel> => {
-    return await callCoreCommand<Tunnel>('openhuman.webhooks_create_tunnel', body);
+    return await callCoreCommand<Tunnel>('aura.webhooks_create_tunnel', body);
   },
 
   /** GET /webhooks/core — list user's webhook tunnels */
   getTunnels: async (): Promise<Tunnel[]> => {
-    return await callCoreCommand<Tunnel[]>('openhuman.webhooks_list_tunnels');
+    return await callCoreCommand<Tunnel[]>('aura.webhooks_list_tunnels');
   },
 
   /** GET /webhooks/core/bandwidth — get remaining webhook bandwidth budget */
   getBandwidthUsage: async (): Promise<TunnelBandwidthUsage> => {
-    return await callCoreCommand<TunnelBandwidthUsage>('openhuman.webhooks_get_bandwidth');
+    return await callCoreCommand<TunnelBandwidthUsage>('aura.webhooks_get_bandwidth');
   },
 
   /** GET /webhooks/core/:tunnelId — get a specific webhook tunnel by its internal ID. */
   getTunnel: async (tunnelId: string): Promise<Tunnel> => {
-    return await callCoreCommand<Tunnel>('openhuman.webhooks_get_tunnel', { id: tunnelId });
+    return await callCoreCommand<Tunnel>('aura.webhooks_get_tunnel', { id: tunnelId });
   },
 
   /** PATCH /webhooks/core/:tunnelId — update a webhook tunnel by its internal ID. */
   updateTunnel: async (tunnelId: string, body: UpdateTunnelRequest): Promise<Tunnel> => {
-    return await callCoreCommand<Tunnel>('openhuman.webhooks_update_tunnel', {
+    return await callCoreCommand<Tunnel>('aura.webhooks_update_tunnel', {
       id: tunnelId,
       ...body,
     });
@@ -65,7 +65,7 @@ export const tunnelsApi = {
 
   /** DELETE /webhooks/core/:tunnelId — delete a webhook tunnel by its internal ID. */
   deleteTunnel: async (tunnelId: string): Promise<void> => {
-    await callCoreCommand<unknown>('openhuman.webhooks_delete_tunnel', { id: tunnelId });
+    await callCoreCommand<unknown>('aura.webhooks_delete_tunnel', { id: tunnelId });
   },
 
   ingressUrl: (backendUrl: string, tunnelUuid: string): string =>

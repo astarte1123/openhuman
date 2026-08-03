@@ -20,7 +20,7 @@ pub struct CdpTarget {
 /// is set on attach.
 pub async fn browser_ws_url() -> Result<String, String> {
     let client = reqwest::Client::builder()
-        .user_agent("openhuman-cdp/1.0")
+        .user_agent("aura-cdp/1.0")
         .timeout(Duration::from_secs(5))
         .build()
         .map_err(|e| format!("reqwest build: {e}"))?;
@@ -116,7 +116,7 @@ pub async fn detach_session(cdp: &mut CdpConn, session_id: &str) {
 
 /// Generalised variant — caller supplies the predicate (url-hash marker,
 /// title marker, etc). Used by the per-account session opener, which matches
-/// on `#openhuman-account-{id}` so multiple webviews on the same origin
+/// on `#aura-account-{id}` so multiple webviews on the same origin
 /// don't collide.
 pub async fn find_page_target_where<F>(cdp: &mut CdpConn, pred: F) -> Result<CdpTarget, String>
 where

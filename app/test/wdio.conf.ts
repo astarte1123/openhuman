@@ -71,7 +71,7 @@ export const config: Options.Testrunner & Record<string, unknown> = {
       'goog:chromeOptions': {
         // Attach to the already-running CEF process. chromedriver will not
         // try to launch its own Chrome — it picks the first page target
-        // exposed at this address (which is the main OpenHuman webview).
+        // exposed at this address (which is the main Aura webview).
         debuggerAddress: `${CEF_CDP_HOST}:${CEF_CDP_PORT}`,
       },
     },
@@ -91,12 +91,12 @@ export const config: Options.Testrunner & Record<string, unknown> = {
   autoCompileOpts: { tsNodeOpts: { project: tsconfigE2ePath } },
   /**
    * After the chromedriver session attaches, switch the active window to
-   * the main OpenHuman app webview.
+   * the main Aura app webview.
    *
    * CEF exposes multiple CDP page targets:
    *   - `about:blank`  — the CEF prewarm hot-loaded child-webview slot
    *                     (see CEF_PREWARM_LABEL in src-tauri/src/lib.rs).
-   *   - `OpenHuman` @ `http://tauri.localhost/#/` — the main React app.
+   *   - `Aura` @ `http://tauri.localhost/#/` — the main React app.
    *
    * `debuggerAddress` makes chromedriver attach to the *first* page target,
    * which is `about:blank`. Without this switch, every spec ends up looking

@@ -25,7 +25,7 @@ set -euo pipefail
 
 : "${TAG:?TAG required (e.g. v0.52.21)}"
 : "${VERSION:?VERSION required (e.g. 0.52.21)}"
-: "${REPO:?REPO required (e.g. tinyhumansai/openhuman)}"
+: "${REPO:?REPO required (e.g. tinyhumansai/aura)}"
 : "${GITHUB_TOKEN:?GITHUB_TOKEN required}"
 
 WORKDIR="$(mktemp -d)"
@@ -93,10 +93,10 @@ read_sig() {
 #   darwin  : <AppName>_<version>_<arch>.app.tar.gz
 #   linux   : <AppName>_<version>_amd64.AppImage
 #   windows : <AppName>_<version>_x64-setup.exe
-MAC_AARCH64=$(find_asset "^OpenHuman(_| ).*aarch64(-apple-darwin)?\.app\.tar\.gz$")
-MAC_X86_64=$(find_asset  "^OpenHuman(_| ).*(x64|x86_64)(-apple-darwin)?\.app\.tar\.gz$")
-LIN_X86_64=$(find_asset  "^OpenHuman(_| ).*amd64\.AppImage$")
-WIN_X86_64=$(find_asset "^OpenHuman(_| ).*x64-setup\.exe$")
+MAC_AARCH64=$(find_asset "^Aura(_| ).*aarch64(-apple-darwin)?\.app\.tar\.gz$")
+MAC_X86_64=$(find_asset  "^Aura(_| ).*(x64|x86_64)(-apple-darwin)?\.app\.tar\.gz$")
+LIN_X86_64=$(find_asset  "^Aura(_| ).*amd64\.AppImage$")
+WIN_X86_64=$(find_asset "^Aura(_| ).*x64-setup\.exe$")
 
 echo "[updater] Resolved updater bundles:"
 echo "  darwin-aarch64  = ${MAC_AARCH64:-<missing>}"

@@ -173,7 +173,7 @@ mod macos {
         // didn't supply a tag.
         let identifier_str = tag.unwrap_or_else(|| {
             format!(
-                "openhuman.notify.{}",
+                "aura.notify.{}",
                 SystemTime::now()
                     .duration_since(UNIX_EPOCH)
                     .map(|d| d.as_nanos())

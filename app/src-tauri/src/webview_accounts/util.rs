@@ -306,7 +306,7 @@ pub(crate) fn build_init_script(account_id: &str, provider: &str) -> String {
         "provider": provider,
     });
     format!(
-        "window.__OPENHUMAN_RECIPE_CTX__ = {ctx};\n\n{runtime}\n\n{recipe}\n",
+        "window.__AURA_RECIPE_CTX__ = {ctx};\n\n{runtime}\n\n{recipe}\n",
         ctx = ctx,
         runtime = RUNTIME_JS,
         recipe = recipe_js

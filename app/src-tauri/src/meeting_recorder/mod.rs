@@ -1,9 +1,9 @@
 //! Meeting recording pipeline: local audio capture (mic + system
 //! loopback) -> mixing -> voice-activity detection -> in-process Whisper
-//! transcription -> push to the `openhuman::meetings` core domain.
+//! transcription -> push to the `aura::meetings` core domain.
 //!
 //! Phase 2+3 of the Meetily integration plan (Phase 1 — the `meetings`
-//! core RPC surface — already exists at `src/openhuman/meetings/`). This
+//! core RPC surface — already exists at `src/aura/meetings/`). This
 //! module is the shell-side audio pipeline that feeds it.
 //!
 //! **Windows only** for now. macOS/Linux calls fail fast with an explicit

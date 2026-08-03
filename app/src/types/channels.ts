@@ -33,7 +33,7 @@ export interface OutboundRoute {
   authMode: ChannelAuthMode;
 }
 
-// --- Backend-driven definitions (from openhuman.channels_list) ---
+// --- Backend-driven definitions (from aura.channels_list) ---
 
 export interface FieldRequirement {
   key: string;

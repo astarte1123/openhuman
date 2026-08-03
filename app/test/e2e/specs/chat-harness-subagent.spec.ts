@@ -2,10 +2,10 @@
  * Chat harness — orchestrator → subagent flow.
  *
  * The default chat agent after onboarding is the **orchestrator**
- * (`src/openhuman/channels/providers/web.rs::pick_target_agent_id`).
+ * (`src/aura/channels/providers/web.rs::pick_target_agent_id`).
  * Its `subagents = [...]` list synthesises one `delegate_<id>` tool per
  * archetype at build time (see
- * `src/openhuman/tools/orchestrator_tools.rs`). When the LLM calls
+ * `src/aura/tools/orchestrator_tools.rs`). When the LLM calls
  * `delegate_researcher` (or any other `delegate_*`), the tool dispatches
  * to a sub-agent which runs the agent harness loop a level deeper —
  * which means the LLM gets hit at least once more for the sub-agent.
@@ -43,7 +43,7 @@ import {
   hexEncodeThreadId,
   typeIntoComposer,
 } from '../helpers/chat-harness';
-import { callOpenhumanRpc } from '../helpers/core-rpc';
+import { callAuraRpc } from '../helpers/core-rpc';
 import { textExists } from '../helpers/element-helpers';
 import { resetApp } from '../helpers/reset-app';
 import { navigateViaHash } from '../helpers/shared-flows';
@@ -82,8 +82,8 @@ interface RuntimeSnapshot {
 
 async function snapshotRuntime(threadId: string): Promise<RuntimeSnapshot> {
   return (await browser.execute((tid: string) => {
-    const winAny = window as unknown as { __OPENHUMAN_STORE__?: { getState: () => unknown } };
-    const state = winAny.__OPENHUMAN_STORE__?.getState() as
+    const winAny = window as unknown as { __AURA_STORE__?: { getState: () => unknown } };
+    const state = winAny.__AURA_STORE__?.getState() as
       | {
           chatRuntime?: {
             inferenceStatusByThread?: Record<string, { phase?: string; activeSubagent?: string }>;
@@ -176,8 +176,8 @@ describe('Chat harness — orchestrator → subagent flow', () => {
     // IN_FLIGHT must drain after chat_done.
     await browser.waitUntil(
       async () => {
-        const snap = await callOpenhumanRpc<{ result: { entries: Array<unknown> } }>(
-          'openhuman.test_support_in_flight_chats',
+        const snap = await callAuraRpc<{ result: { entries: Array<unknown> } }>(
+          'aura.test_support_in_flight_chats',
           {}
         );
         return snap.ok && (snap.result?.result?.entries?.length ?? 0) === 0;
@@ -205,8 +205,8 @@ describe('Chat harness — orchestrator → subagent flow', () => {
     let content = '';
     const deadline = Date.now() + 10_000;
     while (Date.now() < deadline) {
-      const read = await callOpenhumanRpc<{ result: { content_utf8: string } }>(
-        'openhuman.test_support_read_workspace_file',
+      const read = await callAuraRpc<{ result: { content_utf8: string } }>(
+        'aura.test_support_read_workspace_file',
         { rel_path: relPath, max_bytes: 131_072 }
       );
       if (read.ok && read.result?.result?.content_utf8) {

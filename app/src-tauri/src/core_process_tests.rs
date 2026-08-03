@@ -1,6 +1,6 @@
 use super::{
     current_rpc_token, default_core_port, generate_rpc_token, is_expected_port_clash,
-    is_openhuman_root_body, parse_lsof_pid, parse_netstat_pid, CoreProcessHandle,
+    is_aura_root_body, parse_lsof_pid, parse_netstat_pid, CoreProcessHandle,
 };
 use std::sync::{Mutex, MutexGuard, OnceLock};
 
@@ -43,10 +43,10 @@ impl Drop for EnvGuard {
 #[test]
 fn default_core_port_env_and_fallback() {
     let _env_lock = env_lock();
-    let _unset = EnvGuard::unset("OPENHUMAN_CORE_PORT");
+    let _unset = EnvGuard::unset("AURA_CORE_PORT");
     assert_eq!(default_core_port(), 7788);
 
-    let _set = EnvGuard::set("OPENHUMAN_CORE_PORT", "8899");
+    let _set = EnvGuard::set("AURA_CORE_PORT", "8899");
     assert_eq!(default_core_port(), 8899);
 }
 
@@ -57,14 +57,14 @@ fn core_process_handle_new_creates_instance() {
     assert_eq!(handle.rpc_url(), "http://127.0.0.1:9999/rpc");
 }
 
-/// Issue #1130: a non-OpenHuman listener on the RPC port must NOT be
+/// Issue #1130: a non-Aura listener on the RPC port must NOT be
 /// silently attached to. The test binds a bare `TcpListener` (which never
 /// answers HTTP) so the identification probe sees an unknown listener and
 /// `ensure_running` must surface the conflict instead of returning Ok.
 #[test]
 fn ensure_running_refuses_unknown_listener_on_port() {
     let _env_lock = env_lock();
-    let _unset = EnvGuard::unset("OPENHUMAN_CORE_REUSE_EXISTING");
+    let _unset = EnvGuard::unset("AURA_CORE_REUSE_EXISTING");
     let rt = tokio::runtime::Runtime::new().expect("runtime");
     let result = rt.block_on(async {
         let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
@@ -76,17 +76,17 @@ fn ensure_running_refuses_unknown_listener_on_port() {
     });
     let err = result.expect_err("ensure_running must refuse an unidentified listener");
     assert!(
-        err.contains("not an OpenHuman core") || err.contains("port"),
+        err.contains("not an Aura core") || err.contains("port"),
         "error should explain the conflict, got: {err}"
     );
 }
 
-/// Escape hatch: setting `OPENHUMAN_CORE_REUSE_EXISTING=1` opts back into
+/// Escape hatch: setting `AURA_CORE_REUSE_EXISTING=1` opts back into
 /// the legacy attach-to-anything behavior for manual harnesses.
 #[test]
 fn ensure_running_reuses_unknown_listener_when_override_set() {
     let _env_lock = env_lock();
-    let _override = EnvGuard::set("OPENHUMAN_CORE_REUSE_EXISTING", "1");
+    let _override = EnvGuard::set("AURA_CORE_REUSE_EXISTING", "1");
     let rt = tokio::runtime::Runtime::new().expect("runtime");
     let result = rt.block_on(async {
         let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
@@ -107,24 +107,24 @@ fn ensure_running_reuses_unknown_listener_when_override_set() {
 // ---------------------------------------------------------------------------
 
 #[test]
-fn is_openhuman_root_body_matches_canonical_root_response() {
+fn is_aura_root_body_matches_canonical_root_response() {
     // Mirrors the JSON shape produced by `core/jsonrpc.rs::root_handler`.
     let body = r#"{
-        "name": "openhuman",
+        "name": "aura",
         "ok": true,
         "endpoints": {"health": "/health", "rpc": "/rpc"}
     }"#;
-    assert!(is_openhuman_root_body(body));
+    assert!(is_aura_root_body(body));
 }
 
 #[test]
-fn is_openhuman_root_body_rejects_other_services() {
-    assert!(!is_openhuman_root_body(r#"{"name": "something-else"}"#));
-    assert!(!is_openhuman_root_body(r#"{"ok": true}"#));
-    assert!(!is_openhuman_root_body("not json at all"));
-    assert!(!is_openhuman_root_body(""));
+fn is_aura_root_body_rejects_other_services() {
+    assert!(!is_aura_root_body(r#"{"name": "something-else"}"#));
+    assert!(!is_aura_root_body(r#"{"ok": true}"#));
+    assert!(!is_aura_root_body("not json at all"));
+    assert!(!is_aura_root_body(""));
     // Wrong type for `name`.
-    assert!(!is_openhuman_root_body(r#"{"name": 42}"#));
+    assert!(!is_aura_root_body(r#"{"name": 42}"#));
 }
 
 #[test]
@@ -140,7 +140,7 @@ fn expected_port_clash_classifier_matches_benign_probe_shapes() {
     ));
     assert!(is_expected_port_clash("probe GET / returned status 200 OK"));
     assert!(is_expected_port_clash(
-        "probe GET / body did not identify as openhuman (\"hello\")"
+        "probe GET / body did not identify as aura (\"hello\")"
     ));
 }
 
@@ -239,7 +239,7 @@ fn core_process_handle_new_token_is_valid() {
 
 /// `CoreProcessHandle::new()` must NOT publish the token to the global
 /// `CURRENT_RPC_TOKEN`. The global is set only after `ensure_running()`
-/// successfully spawns the embedded server with `OPENHUMAN_CORE_TOKEN` in
+/// successfully spawns the embedded server with `AURA_CORE_TOKEN` in
 /// scope. Advertising the token before spawn would 401 against any process
 /// already listening on the port that never received this token.
 #[test]

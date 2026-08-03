@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useT } from '../../../lib/i18n/I18nContext';
 import { DISCORD_INVITE_URL } from '../../../utils/links';
 
-const DISMISSED_KEY = 'openhuman_beta_banner_dismissed';
+const DISMISSED_KEY = 'aura_beta_banner_dismissed';
 
 const BetaBanner = () => {
   const { t } = useT();

@@ -2,11 +2,11 @@
 
 ## Summary
 
-Ingest messages from the embedded WeChat webview into OpenHuman so the agent can use recent WeChat conversations as context and persist useful history into memory.
+Ingest messages from the embedded WeChat webview into Aura so the agent can use recent WeChat conversations as context and persist useful history into memory.
 
 ## Problem
 
-We can embed WeChat Web in the Tauri shell for sign-in and manual use, but OpenHuman does not yet extract message data from that surface. That leaves a gap for users who coordinate through WeChat, especially for China-based communities and teams. The work needs to respect platform limits in WeChat Web, avoid broad DOM scraping that breaks easily, and keep private message content scoped to explicit product surfaces and consented storage paths.
+We can embed WeChat Web in the Tauri shell for sign-in and manual use, but Aura does not yet extract message data from that surface. That leaves a gap for users who coordinate through WeChat, especially for China-based communities and teams. The work needs to respect platform limits in WeChat Web, avoid broad DOM scraping that breaks easily, and keep private message content scoped to explicit product surfaces and consented storage paths.
 
 ## Solution (optional)
 
@@ -21,7 +21,7 @@ Add a dedicated WeChat webview ingestion path, following the existing Franz-styl
 
 ## Acceptance criteria
 
-- [ ] **Embedded WeChat extraction** — OpenHuman can detect the active WeChat chat surface and extract normalized message data from the embedded webview.
+- [ ] **Embedded WeChat extraction** — Aura can detect the active WeChat chat surface and extract normalized message data from the embedded webview.
 - [ ] **Context + memory ingestion** — extracted WeChat messages can be written into the existing context/memory pipeline with provider/account provenance.
 - [ ] **Unread/respond surfaces** — unread or actionable WeChat activity appears in the same provider-surface/respond-queue flows used by other messaging integrations where applicable.
 - [ ] **Privacy + control** — users can understand, disable, and purge stored WeChat-derived data using existing account/memory controls or clearly-scoped additions.

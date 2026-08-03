@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Invoke OpenHuman core JSON-RPC from the Tauri WebView (same transport as `callCoreRpc` in the app).
+ * Invoke Aura core JSON-RPC from the Tauri WebView (same transport as `callCoreRpc` in the app).
  * Uses `invoke('core_rpc_url')` so the test follows the live sidecar port.
  */
 
@@ -11,8 +11,8 @@ export interface RpcCallResult<T = unknown> {
   result?: T;
 }
 
-/** Linux tauri-driver only — Mac2 cannot run this (no WebView execute). Use `callOpenhumanRpc` from core-rpc.ts. */
-export async function callOpenhumanRpcWebView<T = unknown>(
+/** Linux tauri-driver only — Mac2 cannot run this (no WebView execute). Use `callAuraRpc` from core-rpc.ts. */
+export async function callAuraRpcWebView<T = unknown>(
   method: string,
   params: Record<string, unknown> = {}
 ): Promise<RpcCallResult<T>> {

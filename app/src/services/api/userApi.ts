@@ -10,6 +10,6 @@ export const userApi = {
    * Core RPC -> GET /auth/me
    */
   getMe: async (): Promise<User> => {
-    return await callCoreCommand<User>('openhuman.auth_get_me');
+    return await callCoreCommand<User>('aura.auth_get_me');
   },
 };

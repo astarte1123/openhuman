@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 #
 # debug-composio-login.sh — Walk the Composio Google/Gmail OAuth
-# handoff end-to-end against a live openhuman backend.
+# handoff end-to-end against a live aura backend.
 #
 # This is the Rust-side counterpart to
 #   backend-1/src/scripts/live-test-composio-gmail.ts
 # and it hits the exact same endpoints that the new
-# src/openhuman/composio/ module wraps in Rust.
+# src/aura/composio/ module wraps in Rust.
 #
 # Flow:
 #   1. GET  /agent-integrations/composio/toolkits

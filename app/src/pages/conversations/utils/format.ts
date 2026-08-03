@@ -72,7 +72,7 @@ export function isAllowedExternalHref(rawHref: string): boolean {
  * Custom inline tag the welcome agent (and any future agent) can drop
  * inside a chat bubble to render an in-app navigation pill, e.g.
  *
- *     <openhuman-link path="settings/notifications">Allow notifications</openhuman-link>
+ *     <aura-link path="settings/notifications">Allow notifications</aura-link>
  *
  * The conversation UI (`AgentMessageBubble`) parses these out of the
  * raw text, splitting the message into ordered text/link segments.
@@ -83,7 +83,7 @@ export function isAllowedExternalHref(rawHref: string): boolean {
  * Path is the hash route under HashRouter (e.g. `settings/notifications`
  * → `#/settings/notifications`). Leading/trailing slashes are tolerated.
  */
-export interface OpenhumanLinkSegment {
+export interface AuraLinkSegment {
   kind: 'link';
   path: string;
   label: string;
@@ -94,21 +94,21 @@ export interface TextSegment {
   text: string;
 }
 
-export type BubbleSegment = TextSegment | OpenhumanLinkSegment;
+export type BubbleSegment = TextSegment | AuraLinkSegment;
 
-const OPENHUMAN_LINK_RE =
-  /<openhuman-link\s+path=(?:"([^"]+)"|'([^']+)')\s*>([\s\S]*?)<\/openhuman-link>/gi;
+const AURA_LINK_RE =
+  /<aura-link\s+path=(?:"([^"]+)"|'([^']+)')\s*>([\s\S]*?)<\/aura-link>/gi;
 
 export function parseBubbleSegments(content: string): BubbleSegment[] {
-  if (!content || !content.includes('<openhuman-link')) {
+  if (!content || !content.includes('<aura-link')) {
     return [{ kind: 'text', text: content }];
   }
   const segments: BubbleSegment[] = [];
   let cursor = 0;
   // Reset regex state between calls (the global flag preserves lastIndex).
-  OPENHUMAN_LINK_RE.lastIndex = 0;
+  AURA_LINK_RE.lastIndex = 0;
   let match: RegExpExecArray | null;
-  while ((match = OPENHUMAN_LINK_RE.exec(content)) !== null) {
+  while ((match = AURA_LINK_RE.exec(content)) !== null) {
     if (match.index > cursor) {
       segments.push({ kind: 'text', text: content.slice(cursor, match.index) });
     }

@@ -1,30 +1,30 @@
 import { behavior, parseBehaviorJson } from "../../state.mjs";
 
 const DEFAULT_MODELS = [
-  { id: "e2e-mock-model", family: "chat", owned_by: "openhuman-mock" },
+  { id: "e2e-mock-model", family: "chat", owned_by: "aura-mock" },
   {
-    id: "openhuman-reasoning-mock",
+    id: "aura-reasoning-mock",
     family: "reasoning",
-    owned_by: "openhuman-mock",
+    owned_by: "aura-mock",
   },
-  { id: "o3-mini-mock", family: "reasoning", owned_by: "openhuman-mock" },
+  { id: "o3-mini-mock", family: "reasoning", owned_by: "aura-mock" },
   {
-    id: "openhuman-agentic-mock",
+    id: "aura-agentic-mock",
     family: "agentic",
-    owned_by: "openhuman-mock",
+    owned_by: "aura-mock",
   },
-  { id: "gpt-4.1-agent-mock", family: "agentic", owned_by: "openhuman-mock" },
-  { id: "openhuman-coder-mock", family: "coding", owned_by: "openhuman-mock" },
-  { id: "gpt-5-codex-mock", family: "coding", owned_by: "openhuman-mock" },
+  { id: "gpt-4.1-agent-mock", family: "agentic", owned_by: "aura-mock" },
+  { id: "aura-coder-mock", family: "coding", owned_by: "aura-mock" },
+  { id: "gpt-5-codex-mock", family: "coding", owned_by: "aura-mock" },
   {
-    id: "openhuman-summary-mock",
+    id: "aura-summary-mock",
     family: "summarization",
-    owned_by: "openhuman-mock",
+    owned_by: "aura-mock",
   },
   {
     id: "memory-summarizer-mock",
     family: "summarization",
-    owned_by: "openhuman-mock",
+    owned_by: "aura-mock",
   },
 ];
 
@@ -38,7 +38,7 @@ export function listMockLlmModels() {
     id: String(entry.id || `mock-model-${index + 1}`),
     object: "model",
     created: entry.created || 1_710_000_000,
-    owned_by: entry.owned_by || entry.ownedBy || "openhuman-mock",
+    owned_by: entry.owned_by || entry.ownedBy || "aura-mock",
     family:
       entry.family ||
       detectModelFamily({

@@ -2,7 +2,7 @@
 'use strict';
 
 // postinstall: downloads the correct pre-built binary for this platform/arch,
-// verifies the SHA-256 checksum, then places it at bin/openhuman-bin[.exe].
+// verifies the SHA-256 checksum, then places it at bin/aura-bin[.exe].
 //
 // The binary is fetched from the GitHub release that matches package.json version.
 
@@ -12,7 +12,7 @@ const path = require('path');
 const crypto = require('crypto');
 const { execFileSync } = require('child_process');
 
-const REPO = 'tinyhumansai/openhuman';
+const REPO = 'tinyhumansai/aura';
 const pkg = require('./package.json');
 const VERSION = pkg.version;
 
@@ -82,15 +82,15 @@ function sha256hex(filePath) {
 
 async function main() {
   // Skip in CI environments that just need the package metadata
-  if (process.env.SKIP_OPENHUMAN_BINARY_DOWNLOAD) {
-    console.log('[openhuman] Skipping binary download (SKIP_OPENHUMAN_BINARY_DOWNLOAD set)');
+  if (process.env.SKIP_AURA_BINARY_DOWNLOAD) {
+    console.log('[aura] Skipping binary download (SKIP_AURA_BINARY_DOWNLOAD set)');
     return;
   }
 
   const { platform, target } = getTarget();
   const isWin = platform === 'win32';
   const ext = isWin ? '.zip' : '.tar.gz';
-  const tarball = `openhuman-core-${VERSION}-${target}${ext}`;
+  const tarball = `aura-core-${VERSION}-${target}${ext}`;
   const checksumFile = `${tarball}.sha256`;
   const baseUrl = `https://github.com/${REPO}/releases/download/v${VERSION}`;
 
@@ -98,15 +98,15 @@ async function main() {
   fs.mkdirSync(binDir, { recursive: true });
 
   const tmpTarball = path.join(binDir, tarball);
-  const binDest = path.join(binDir, isWin ? 'openhuman-bin.exe' : 'openhuman-bin');
+  const binDest = path.join(binDir, isWin ? 'aura-bin.exe' : 'aura-bin');
 
   // Skip if binary already exists and is executable
   if (fs.existsSync(binDest)) {
-    console.log('[openhuman] Binary already installed, skipping download.');
+    console.log('[aura] Binary already installed, skipping download.');
     return;
   }
 
-  console.log(`[openhuman] Downloading v${VERSION} for ${target}...`);
+  console.log(`[aura] Downloading v${VERSION} for ${target}...`);
 
   // Download checksum first (small)
   const checksumData = await httpsGet(`${baseUrl}/${checksumFile}`);
@@ -120,10 +120,10 @@ async function main() {
   if (expectedChecksum !== actualChecksum) {
     fs.rmSync(tmpTarball, { force: true });
     throw new Error(
-      `[openhuman] Checksum mismatch!\n  expected: ${expectedChecksum}\n  got:      ${actualChecksum}`
+      `[aura] Checksum mismatch!\n  expected: ${expectedChecksum}\n  got:      ${actualChecksum}`
     );
   }
-  console.log('[openhuman] Checksum verified.');
+  console.log('[aura] Checksum verified.');
 
   // Extract — use execFileSync (no shell interpolation) so paths with spaces
   // or shell metacharacters in `tmpTarball` / `binDir` can't be injected.
@@ -139,11 +139,11 @@ async function main() {
       ],
       { stdio: 'inherit', env: { ...process.env, TC_SRC: tmpTarball, TC_DEST: binDir } }
     );
-    const extracted = path.join(binDir, 'openhuman-core.exe');
+    const extracted = path.join(binDir, 'aura-core.exe');
     if (fs.existsSync(extracted)) fs.renameSync(extracted, binDest);
   } else {
     execFileSync('tar', ['-xzf', tmpTarball, '-C', binDir], { stdio: 'inherit' });
-    const extracted = path.join(binDir, 'openhuman-core');
+    const extracted = path.join(binDir, 'aura-core');
     if (fs.existsSync(extracted)) {
       fs.renameSync(extracted, binDest);
       fs.chmodSync(binDest, 0o755);
@@ -154,14 +154,14 @@ async function main() {
   fs.rmSync(tmpTarball, { force: true });
 
   if (!fs.existsSync(binDest)) {
-    throw new Error('[openhuman] Extraction failed — binary not found after unpack.');
+    throw new Error('[aura] Extraction failed — binary not found after unpack.');
   }
 
-  console.log(`[openhuman] Installed at ${binDest}`);
+  console.log(`[aura] Installed at ${binDest}`);
 }
 
 main().catch((err) => {
-  console.error('\n[openhuman] Installation failed:', err.message);
-  console.error('You can file a bug at https://github.com/tinyhumansai/openhuman/issues');
+  console.error('\n[aura] Installation failed:', err.message);
+  console.error('You can file a bug at https://github.com/tinyhumansai/aura/issues');
   process.exit(1);
 });

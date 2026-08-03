@@ -1,8 +1,8 @@
 # Agent self-learning
 
-OpenHuman learns user preferences continuously and surfaces them as ambient defaults in every system prompt. The mechanism is a small **personalization cache** materialized from multiple deterministic + LLM-driven producers, scored by stability, rendered into a user-editable `PROFILE.md`, and injected into prompts through the existing prompt-section pipeline.
+Aura learns user preferences continuously and surfaces them as ambient defaults in every system prompt. The mechanism is a small **personalization cache** materialized from multiple deterministic + LLM-driven producers, scored by stability, rendered into a user-editable `PROFILE.md`, and injected into prompts through the existing prompt-section pipeline.
 
-This document covers how preferences are captured, scored, persisted, and surfaced. For the originating issue, see [#566](https://github.com/tinyhumansai/openhuman/issues/566).
+This document covers how preferences are captured, scored, persisted, and surfaced. For the originating issue, see [#566](https://github.com/tinyhumansai/aura/issues/566).
 
 ---
 
@@ -210,50 +210,50 @@ The provider-profile path (`composio::providers::profile::persist_provider_profi
 ```markdown
 # User Profile
 
-<!-- openhuman:style:start -->
+<!-- aura:style:start -->
 ## Style
 
 - **verbosity**: terse
 - **preamble**: skip *(pinned)*
 
-<!-- openhuman:style:end -->
+<!-- aura:style:end -->
 
-<!-- openhuman:identity:start -->
+<!-- aura:identity:start -->
 ## Identity
 
 - **name**: Sanil
 - **timezone**: PST
 
-<!-- openhuman:identity:end -->
+<!-- aura:identity:end -->
 
-<!-- openhuman:tooling:start -->
+<!-- aura:tooling:start -->
 ## Tooling
 
 - **lang**: rust
 - **package_manager**: pnpm
 
-<!-- openhuman:tooling:end -->
+<!-- aura:tooling:end -->
 
-<!-- openhuman:vetoes:start -->
+<!-- aura:vetoes:start -->
 ## Vetoes
 
 - **tool=jest**: banned
 
-<!-- openhuman:vetoes:end -->
+<!-- aura:vetoes:end -->
 
-<!-- openhuman:goals:start -->
+<!-- aura:goals:start -->
 ## Goals
 
 - ship #566 before #686
 
-<!-- openhuman:goals:end -->
+<!-- aura:goals:end -->
 
-<!-- openhuman:connected-accounts:start -->
+<!-- aura:connected-accounts:start -->
 ## Connected Accounts
 
 - gmail (sanil@vezures.xyz)
 
-<!-- openhuman:connected-accounts:end -->
+<!-- aura:connected-accounts:end -->
 ```
 
 User-authored content between blocks (free-form notes, hand-edited details) is preserved verbatim across rebuilds.
@@ -296,7 +296,7 @@ The agent itself acts as a conversational user-control surface: asked "what do y
 
 ## Configuration
 
-`LearningConfig` in `src/openhuman/config/schema/learning.rs`:
+`LearningConfig` in `src/aura/config/schema/learning.rs`:
 
 ```rust
 pub struct LearningConfig {

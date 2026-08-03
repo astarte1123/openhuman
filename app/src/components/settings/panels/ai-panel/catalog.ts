@@ -7,7 +7,7 @@ import type { AISettings, RoutingMap, Workload } from './types';
 // Slug-keyed display metadata for built-in provider slugs. Used only for
 // chip rendering (label, tone). Custom providers use `provider.label` directly.
 export const BUILTIN_PROVIDER_META: Record<string, { tone: string; label: string }> = {
-  openhuman: { label: 'OpenHuman', tone: 'bg-primary-50 ring-primary-200 text-primary-900' },
+  aura: { label: 'Aura', tone: 'bg-primary-50 ring-primary-200 text-primary-900' },
   openai: { label: 'OpenAI', tone: 'bg-emerald-50 ring-emerald-200 text-emerald-900' },
   anthropic: { label: 'Anthropic', tone: 'bg-orange-50 ring-orange-200 text-orange-900' },
   openrouter: { label: 'OpenRouter', tone: 'bg-slate-100 ring-slate-300 text-slate-900' },
@@ -69,14 +69,14 @@ export const WORKLOADS: Workload[] = [
 // TIER_PRESETS removed alongside the Local provider section.
 
 export const EMPTY_ROUTING: RoutingMap = {
-  reasoning: { kind: 'openhuman' },
-  agentic: { kind: 'openhuman' },
-  coding: { kind: 'openhuman' },
-  memory: { kind: 'openhuman' },
-  embeddings: { kind: 'openhuman' },
-  heartbeat: { kind: 'openhuman' },
-  learning: { kind: 'openhuman' },
-  subconscious: { kind: 'openhuman' },
+  reasoning: { kind: 'aura' },
+  agentic: { kind: 'aura' },
+  coding: { kind: 'aura' },
+  memory: { kind: 'aura' },
+  embeddings: { kind: 'aura' },
+  heartbeat: { kind: 'aura' },
+  learning: { kind: 'aura' },
+  subconscious: { kind: 'aura' },
 };
 
 export const EMPTY_SETTINGS: AISettings = { cloudProviders: [], routing: EMPTY_ROUTING };

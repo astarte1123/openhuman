@@ -68,7 +68,7 @@ export async function restartCoreProcess(): Promise<void> {
  * Tauri's `app.restart()` exits the cargo parent, which orphans/kills the
  * vite child and tears down the entire dev session (#1068). Use a webview
  * reload in dev mode instead — module init re-runs, so localStorage seeds
- * (e.g. `OPENHUMAN_ACTIVE_USER_ID`, set by `setActiveUserId` before the
+ * (e.g. `AURA_ACTIVE_USER_ID`, set by `setActiveUserId` before the
  * caller invokes us) are read fresh and redux-persist re-hydrates from
  * the active user's namespace, all without touching the cargo / vite
  * processes. Packaged builds keep the original `app.restart()` path —
@@ -94,7 +94,7 @@ export async function restartApp(): Promise<void> {
 }
 
 /**
- * Read the active user id from `~/.openhuman/active_user.toml` via Rust.
+ * Read the active user id from `~/.aura/active_user.toml` via Rust.
  * Used at startup (before redux-persist hydrates) to seed
  * `userScopedStorage` from the profile-independent source of truth so
  * the UI always lands on the right user namespace, regardless of any
@@ -256,9 +256,9 @@ export const installAppUpdate = async (): Promise<void> => {
   console.debug('[app-update] installAppUpdate: returned (install did not relaunch)');
 };
 
-export async function resetOpenHumanDataAndRestartCore(): Promise<void> {
+export async function resetAuraDataAndRestartCore(): Promise<void> {
   if (!isTauri()) {
-    console.debug('[core] resetOpenHumanDataAndRestartCore: skipped — not running in Tauri');
+    console.debug('[core] resetAuraDataAndRestartCore: skipped — not running in Tauri');
     return;
   }
   // Single Tauri command: the shell stops the embedded core (dropping
@@ -268,22 +268,22 @@ export async function resetOpenHumanDataAndRestartCore(): Promise<void> {
   // dance, but the core RPC ran the remove *inside* the running core's
   // tokio task — on Windows that hit `ERROR_SHARING_VIOLATION` (os error
   // 32) because the core still held SQLite / log / Sentry handles open in
-  // the directory it was trying to delete (OPENHUMAN-TAURI-AF).
-  console.debug('[core] resetOpenHumanDataAndRestartCore: invoking reset_local_data');
+  // the directory it was trying to delete (AURA-TAURI-AF).
+  console.debug('[core] resetAuraDataAndRestartCore: invoking reset_local_data');
   try {
     await invoke<void>('reset_local_data');
   } catch (err) {
-    console.error('[core] resetOpenHumanDataAndRestartCore: reset_local_data failed', err);
+    console.error('[core] resetAuraDataAndRestartCore: reset_local_data failed', err);
     throw err;
   }
-  console.debug('[core] resetOpenHumanDataAndRestartCore: done');
+  console.debug('[core] resetAuraDataAndRestartCore: done');
 }
 
 /** Read onboarding_completed from core config. */
 export async function getOnboardingCompleted(): Promise<boolean> {
   if (!isTauri()) return false;
   const res = await callCoreRpc<boolean | { result: boolean }>({
-    method: 'openhuman.config_get_onboarding_completed',
+    method: 'aura.config_get_onboarding_completed',
   });
   // RpcOutcome may wrap value in { result, logs } when logs are present
   if (typeof res === 'boolean') return res;
@@ -295,7 +295,7 @@ export async function getOnboardingCompleted(): Promise<boolean> {
 export async function setOnboardingCompleted(value: boolean): Promise<boolean> {
   if (!isTauri()) return false;
   const res = await callCoreRpc<boolean | { result: boolean }>({
-    method: 'openhuman.config_set_onboarding_completed',
+    method: 'aura.config_set_onboarding_completed',
     params: { value },
   });
   if (typeof res === 'boolean') return res;
@@ -303,26 +303,26 @@ export async function setOnboardingCompleted(value: boolean): Promise<boolean> {
   return false;
 }
 
-export async function openhumanDoctorReport(): Promise<CommandResponse<DoctorReport>> {
+export async function auraDoctorReport(): Promise<CommandResponse<DoctorReport>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
-  return await callCoreRpc<CommandResponse<DoctorReport>>({ method: 'openhuman.doctor_report' });
+  return await callCoreRpc<CommandResponse<DoctorReport>>({ method: 'aura.doctor_report' });
 }
 
-export async function openhumanDoctorModels(
+export async function auraDoctorModels(
   useCache = true
 ): Promise<CommandResponse<ModelProbeReport>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<ModelProbeReport>>({
-    method: 'openhuman.doctor_models',
+    method: 'aura.doctor_models',
     params: { use_cache: useCache },
   });
 }
 
-export async function openhumanMigrateOpenclaw(
+export async function auraMigrateOpenclaw(
   sourceWorkspace?: string,
   dryRun = true
 ): Promise<CommandResponse<MigrationReport>> {
@@ -330,7 +330,7 @@ export async function openhumanMigrateOpenclaw(
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<MigrationReport>>({
-    method: 'openhuman.migrate_openclaw',
+    method: 'aura.migrate_openclaw',
     params: { source_workspace: sourceWorkspace, dry_run: dryRun },
   });
 }

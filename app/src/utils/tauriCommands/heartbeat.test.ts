@@ -20,7 +20,7 @@ describe('tauriCommands/heartbeat', () => {
   });
 
   test('reads heartbeat settings', async () => {
-    const { openhumanHeartbeatSettingsGet } = await import('./heartbeat');
+    const { auraHeartbeatSettingsGet } = await import('./heartbeat');
     mockCallCoreRpc.mockResolvedValue({
       result: {
         settings: {
@@ -39,26 +39,26 @@ describe('tauriCommands/heartbeat', () => {
       logs: [],
     });
 
-    const out = await openhumanHeartbeatSettingsGet();
+    const out = await auraHeartbeatSettingsGet();
 
-    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'openhuman.heartbeat_settings_get' });
+    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'aura.heartbeat_settings_get' });
     expect(out.result.settings.enabled).toBe(false);
   });
 
   test('saves heartbeat settings patch', async () => {
-    const { openhumanHeartbeatSettingsSet } = await import('./heartbeat');
+    const { auraHeartbeatSettingsSet } = await import('./heartbeat');
     mockCallCoreRpc.mockResolvedValue({ result: { settings: { enabled: true } }, logs: [] });
 
-    await openhumanHeartbeatSettingsSet({ enabled: true, interval_minutes: 15 });
+    await auraHeartbeatSettingsSet({ enabled: true, interval_minutes: 15 });
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.heartbeat_settings_set',
+      method: 'aura.heartbeat_settings_set',
       params: { enabled: true, interval_minutes: 15 },
     });
   });
 
   test('runs a planner tick now', async () => {
-    const { openhumanHeartbeatTickNow } = await import('./heartbeat');
+    const { auraHeartbeatTickNow } = await import('./heartbeat');
     mockCallCoreRpc.mockResolvedValue({
       result: {
         summary: {
@@ -71,25 +71,25 @@ describe('tauriCommands/heartbeat', () => {
       logs: [],
     });
 
-    const out = await openhumanHeartbeatTickNow();
+    const out = await auraHeartbeatTickNow();
 
-    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'openhuman.heartbeat_tick_now' });
+    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'aura.heartbeat_tick_now' });
     expect(out.result.summary.deliveries_sent).toBe(1);
   });
 
   test('rejects when not running in Tauri', async () => {
     mockIsTauri.mockReturnValue(false);
     const {
-      openhumanHeartbeatSettingsGet,
-      openhumanHeartbeatSettingsSet,
-      openhumanHeartbeatTickNow,
+      auraHeartbeatSettingsGet,
+      auraHeartbeatSettingsSet,
+      auraHeartbeatTickNow,
     } = await import('./heartbeat');
 
-    await expect(openhumanHeartbeatSettingsGet()).rejects.toThrow('Not running in Tauri');
-    await expect(openhumanHeartbeatSettingsSet({ enabled: true })).rejects.toThrow(
+    await expect(auraHeartbeatSettingsGet()).rejects.toThrow('Not running in Tauri');
+    await expect(auraHeartbeatSettingsSet({ enabled: true })).rejects.toThrow(
       'Not running in Tauri'
     );
-    await expect(openhumanHeartbeatTickNow()).rejects.toThrow('Not running in Tauri');
+    await expect(auraHeartbeatTickNow()).rejects.toThrow('Not running in Tauri');
     expect(mockCallCoreRpc).not.toHaveBeenCalled();
   });
 });

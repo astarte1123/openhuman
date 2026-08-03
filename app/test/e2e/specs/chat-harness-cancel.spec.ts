@@ -3,8 +3,8 @@
  * Chat harness — mid-stream cancel.
  *
  * The composer's Cancel button calls `chatService.chatCancel` →
- * `openhuman.channel_web_cancel` → `cancel_chat()` in
- * `src/openhuman/channels/providers/web.rs`. That handler aborts the
+ * `aura.channel_web_cancel` → `cancel_chat()` in
+ * `src/aura/channels/providers/web.rs`. That handler aborts the
  * in-flight JoinHandle, removes the IN_FLIGHT entry, and publishes a
  * `chat_error` event with `error_type = "cancelled"`.
  *
@@ -33,7 +33,7 @@ import {
   hexEncodeThreadId,
   typeIntoComposer,
 } from '../helpers/chat-harness';
-import { callOpenhumanRpc } from '../helpers/core-rpc';
+import { callAuraRpc } from '../helpers/core-rpc';
 import { textExists } from '../helpers/element-helpers';
 import { resetApp } from '../helpers/reset-app';
 import { navigateViaHash } from '../helpers/shared-flows';
@@ -78,8 +78,8 @@ async function clickComposerCancel(): Promise<boolean> {
 }
 
 async function inFlightCount(): Promise<number> {
-  const snap = await callOpenhumanRpc<{ result: { entries: Array<unknown> } }>(
-    'openhuman.test_support_in_flight_chats',
+  const snap = await callAuraRpc<{ result: { entries: Array<unknown> } }>(
+    'aura.test_support_in_flight_chats',
     {}
   );
   return snap.ok ? (snap.result?.result?.entries?.length ?? 0) : 0;
@@ -185,8 +185,8 @@ describe('Chat harness — mid-stream cancel', () => {
     // The store may or may not record the partial assistant turn — both
     // are acceptable. What we lock down is the contract that the
     // LATE_PIECES never reach the persisted file.
-    const read = await callOpenhumanRpc<{ result: { content_utf8: string } }>(
-      'openhuman.test_support_read_workspace_file',
+    const read = await callAuraRpc<{ result: { content_utf8: string } }>(
+      'aura.test_support_read_workspace_file',
       { rel_path: relPath, max_bytes: 131_072 }
     );
     if (!read.ok) return; // No file yet → nothing to violate, also fine.

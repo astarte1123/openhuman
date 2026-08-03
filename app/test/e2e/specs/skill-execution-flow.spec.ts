@@ -5,7 +5,7 @@
  * Mirrors the Rust integration test
  * `json_rpc_skills_runtime_start_tools_call_stop` in
  * `tests/json_rpc_e2e.rs` — but goes through the same HTTP path the
- * desktop UI uses (`callOpenhumanRpc` → `http://127.0.0.1:<port>/rpc`).
+ * desktop UI uses (`callAuraRpc` → `http://127.0.0.1:<port>/rpc`).
  *
  * RPC result shapes:
  *   - skills_start              → SkillSnapshot ({ status, skill_id, … })
@@ -19,7 +19,7 @@
  * skill runtime + RPC + Skills shell deterministically.
  */
 import { waitForApp } from '../helpers/app-helpers';
-import { callOpenhumanRpc } from '../helpers/core-rpc';
+import { callAuraRpc } from '../helpers/core-rpc';
 import { dumpAccessibilityTree, textExists } from '../helpers/element-helpers';
 import { resetApp } from '../helpers/reset-app';
 import { navigateToSkills } from '../helpers/shared-flows';
@@ -47,19 +47,19 @@ describe('Skill execution (UI + core RPC)', () => {
 
   it('lands the user on a logged-in shell', async () => {
     const atHome =
-      (await textExists('Message OpenHuman')) ||
+      (await textExists('Message Aura')) ||
       (await textExists('Good morning')) ||
       (await textExists('Upgrade to Premium'));
     expect(atHome).toBe(true);
   });
 
   it('core.ping responds over the same JSON-RPC URL the UI uses', async () => {
-    const ping = await callOpenhumanRpc('core.ping', {});
+    const ping = await callAuraRpc('core.ping', {});
     expect(ping.ok).toBe(true);
   });
 
   it('runs start → list_tools → call_tool → stop for the seeded echo skill', async () => {
-    const start = await callOpenhumanRpc('openhuman.skills_start', {
+    const start = await callAuraRpc('aura.skills_start', {
       skill_id: E2E_RUNTIME_SKILL_ID,
     });
     if (!start.ok) {
@@ -71,14 +71,14 @@ describe('Skill execution (UI + core RPC)', () => {
 
     await browser.pause(800);
 
-    const tools = await callOpenhumanRpc('openhuman.skills_list_tools', {
+    const tools = await callAuraRpc('aura.skills_list_tools', {
       skill_id: E2E_RUNTIME_SKILL_ID,
     });
     expect(tools.ok).toBe(true);
     const toolNames = (tools.result?.tools || []).map((t: { name?: string }) => t.name);
     expect(toolNames.includes('echo')).toBe(true);
 
-    const call = await callOpenhumanRpc('openhuman.skills_call_tool', {
+    const call = await callAuraRpc('aura.skills_call_tool', {
       skill_id: E2E_RUNTIME_SKILL_ID,
       tool_name: 'echo',
       arguments: { message: 'hello from e2e skill execution' },
@@ -92,7 +92,7 @@ describe('Skill execution (UI + core RPC)', () => {
       )
     ).toBe(true);
 
-    const stop = await callOpenhumanRpc('openhuman.skills_stop', {
+    const stop = await callAuraRpc('aura.skills_stop', {
       skill_id: E2E_RUNTIME_SKILL_ID,
     });
     expect(stop.ok).toBe(true);
@@ -101,19 +101,19 @@ describe('Skill execution (UI + core RPC)', () => {
 
   it('persists setup_complete via skills_set_setup_complete (OAuth path)', async () => {
     try {
-      const set = await callOpenhumanRpc('openhuman.skills_set_setup_complete', {
+      const set = await callAuraRpc('aura.skills_set_setup_complete', {
         skill_id: E2E_RUNTIME_SKILL_ID,
         complete: true,
       });
       expect(set.ok).toBe(true);
 
-      const st = await callOpenhumanRpc('openhuman.skills_status', {
+      const st = await callAuraRpc('aura.skills_status', {
         skill_id: E2E_RUNTIME_SKILL_ID,
       });
       expect(st.ok).toBe(true);
       expect(st.result?.setup_complete === true).toBe(true);
     } finally {
-      await callOpenhumanRpc('openhuman.skills_set_setup_complete', {
+      await callAuraRpc('aura.skills_set_setup_complete', {
         skill_id: E2E_RUNTIME_SKILL_ID,
         complete: false,
       });

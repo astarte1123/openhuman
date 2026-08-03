@@ -40,7 +40,7 @@ const generateTitleLog = debug('threadApi.generateTitleIfNeeded');
 export const threadApi = {
   createNewThread: async (labels?: string[]): Promise<Thread> => {
     const response = await callCoreRpc<Envelope<Thread>>({
-      method: 'openhuman.threads_create_new',
+      method: 'aura.threads_create_new',
       params: { labels },
     });
     return unwrapEnvelope(response);
@@ -48,14 +48,14 @@ export const threadApi = {
 
   getThreads: async (): Promise<ThreadsListData> => {
     const response = await callCoreRpc<Envelope<ThreadsListData>>({
-      method: 'openhuman.threads_list',
+      method: 'aura.threads_list',
     });
     return unwrapEnvelope(response);
   },
 
   getThreadMessages: async (threadId: string): Promise<ThreadMessagesData> => {
     const response = await callCoreRpc<Envelope<ThreadMessagesData>>({
-      method: 'openhuman.threads_messages_list',
+      method: 'aura.threads_messages_list',
       params: { thread_id: threadId },
     });
     return unwrapEnvelope(response);
@@ -63,7 +63,7 @@ export const threadApi = {
 
   appendMessage: async (threadId: string, message: ThreadMessage): Promise<ThreadMessage> => {
     const response = await callCoreRpc<Envelope<ThreadMessage>>({
-      method: 'openhuman.threads_message_append',
+      method: 'aura.threads_message_append',
       params: { thread_id: threadId, message },
     });
     return unwrapEnvelope(response);
@@ -73,7 +73,7 @@ export const threadApi = {
     generateTitleLog('enter threadId=%s assistantMessage=%o', threadId, assistantMessage);
     try {
       const response = await callCoreRpc<Envelope<Thread>>({
-        method: 'openhuman.threads_generate_title',
+        method: 'aura.threads_generate_title',
         params: { thread_id: threadId, assistant_message: assistantMessage },
       });
       const thread = unwrapEnvelope(response);
@@ -96,7 +96,7 @@ export const threadApi = {
     extraMetadata: Record<string, unknown>
   ): Promise<ThreadMessage> => {
     const response = await callCoreRpc<Envelope<ThreadMessage>>({
-      method: 'openhuman.threads_message_update',
+      method: 'aura.threads_message_update',
       params: { thread_id: threadId, message_id: messageId, extra_metadata: extraMetadata },
     });
     return unwrapEnvelope(response);
@@ -104,7 +104,7 @@ export const threadApi = {
 
   deleteThread: async (threadId: string): Promise<ThreadDeleteData> => {
     const response = await callCoreRpc<Envelope<ThreadDeleteData>>({
-      method: 'openhuman.threads_delete',
+      method: 'aura.threads_delete',
       params: { thread_id: threadId, deleted_at: new Date().toISOString() },
     });
     return unwrapEnvelope(response);
@@ -112,14 +112,14 @@ export const threadApi = {
 
   purge: async (): Promise<PurgeResultData> => {
     const response = await callCoreRpc<Envelope<PurgeResultData>>({
-      method: 'openhuman.threads_purge',
+      method: 'aura.threads_purge',
     });
     return unwrapEnvelope(response);
   },
 
   getTurnState: async (threadId: string): Promise<PersistedTurnState | null> => {
     const response = await callCoreRpc<{ data?: GetTurnStateResponse }>({
-      method: 'openhuman.threads_turn_state_get',
+      method: 'aura.threads_turn_state_get',
       params: { thread_id: threadId },
     });
     const data = unwrapEnvelope(response);
@@ -128,7 +128,7 @@ export const threadApi = {
 
   listTurnStates: async (): Promise<PersistedTurnState[]> => {
     const response = await callCoreRpc<{ data?: ListTurnStatesResponse }>({
-      method: 'openhuman.threads_turn_state_list',
+      method: 'aura.threads_turn_state_list',
     });
     const data = unwrapEnvelope(response);
     return data?.turnStates ?? [];
@@ -136,7 +136,7 @@ export const threadApi = {
 
   clearTurnState: async (threadId: string): Promise<boolean> => {
     const response = await callCoreRpc<{ data?: ClearTurnStateResponse }>({
-      method: 'openhuman.threads_turn_state_clear',
+      method: 'aura.threads_turn_state_clear',
       params: { thread_id: threadId },
     });
     const data = unwrapEnvelope(response);
@@ -145,7 +145,7 @@ export const threadApi = {
 
   getTaskBoard: async (threadId: string): Promise<TaskBoard | null> => {
     const response = await callCoreRpc<{ data?: GetTaskBoardResponse }>({
-      method: 'openhuman.threads_task_board_get',
+      method: 'aura.threads_task_board_get',
       params: { thread_id: threadId },
     });
     const data = unwrapEnvelope(response);
@@ -154,7 +154,7 @@ export const threadApi = {
 
   putTaskBoard: async (threadId: string, cards: TaskBoardCard[]): Promise<TaskBoard | null> => {
     const response = await callCoreRpc<{ data?: PutTaskBoardResponse }>({
-      method: 'openhuman.threads_task_board_put',
+      method: 'aura.threads_task_board_put',
       params: { thread_id: threadId, cards },
     });
     const data = unwrapEnvelope(response);
@@ -163,7 +163,7 @@ export const threadApi = {
 
   updateLabels: async (threadId: string, labels: string[]): Promise<Thread> => {
     const response = await callCoreRpc<Envelope<Thread>>({
-      method: 'openhuman.threads_update_labels',
+      method: 'aura.threads_update_labels',
       params: { thread_id: threadId, labels },
     });
     return unwrapEnvelope(response);

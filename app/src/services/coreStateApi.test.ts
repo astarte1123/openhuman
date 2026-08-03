@@ -73,7 +73,7 @@ describe('coreStateApi.fetchCoreAppSnapshot', () => {
     const { fetchCoreAppSnapshot } = await import('./coreStateApi');
     await fetchCoreAppSnapshot();
 
-    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'openhuman.app_state_snapshot' });
+    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'aura.app_state_snapshot' });
   });
 
   it('returns the inner result from the RPC envelope', async () => {
@@ -109,7 +109,7 @@ describe('coreStateApi.updateCoreLocalState', () => {
     await updateCoreLocalState(params);
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.app_state_update_local_state',
+      method: 'aura.app_state_update_local_state',
       params,
     });
   });
@@ -152,7 +152,7 @@ describe('coreStateApi.listTeams', () => {
     const { listTeams } = await import('./coreStateApi');
     const out = await listTeams();
 
-    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'openhuman.team_list_teams' });
+    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'aura.team_list_teams' });
     expect(out).toHaveLength(2);
     expect(out[0].team._id).toBe('t-1');
   });
@@ -180,7 +180,7 @@ describe('coreStateApi.getTeamMembers', () => {
     const out = await getTeamMembers('t-1');
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.team_list_members',
+      method: 'aura.team_list_members',
       params: { teamId: 't-1' },
     });
     expect(out[0]._id).toBe('m-1');
@@ -210,7 +210,7 @@ describe('coreStateApi.getTeamInvites', () => {
     const out = await getTeamInvites('t-1');
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.team_list_invites',
+      method: 'aura.team_list_invites',
       params: { teamId: 't-1' },
     });
     expect(out[0]._id).toBe('inv-1');

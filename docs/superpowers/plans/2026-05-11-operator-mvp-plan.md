@@ -1,8 +1,8 @@
-# Operator MVP - OpenHuman Fork Execution Plan
+# Operator MVP - Aura Fork Execution Plan
 
 **Status:** Draft execution plan
 **Date:** 2026-05-11
-**Primary repo:** `openhuman`
+**Primary repo:** `aura`
 **Reference repo:** `inbox`
 **Goal:** Turn the fork into a phone-reachable personal operator that observes work, proposes next actions, asks for approval, acts through trusted connectors, verifies outcomes, and records evidence.
 
@@ -32,7 +32,7 @@ Connect your real work once. The operator finds what needs attention, drafts use
 
 ## Why This Can Beat The Existing Shape
 
-OpenHuman already has a strong desktop shell, Rust core, controller registry, Composio integration, local memory, skills, screen/voice surfaces, and a growing capability catalog. The current weakness is product focus: many capabilities exist, but the user still has to decide what to ask, where to ask it, and how to know whether the agent actually finished.
+Aura already has a strong desktop shell, Rust core, controller registry, Composio integration, local memory, skills, screen/voice surfaces, and a growing capability catalog. The current weakness is product focus: many capabilities exist, but the user still has to decide what to ask, where to ask it, and how to know whether the agent actually finished.
 
 The inbox repo already solved the more important product primitive: normalize noisy sources into work to do. It has concrete patterns for:
 
@@ -44,22 +44,22 @@ The inbox repo already solved the more important product primitive: normalize no
 - narrow MCP tools
 - "Now", "Actionable", "Waiting On", and calendar-attached work views
 
-The fork should combine them by making OpenHuman the operator runtime and inbox logic the work-discovery/control plane.
+The fork should combine them by making Aura the operator runtime and inbox logic the work-discovery/control plane.
 
 ---
 
 ## Existing Assets To Reuse
 
-### From OpenHuman
+### From Aura
 
 - Tauri desktop app and Rust sidecar runtime.
 - Controller registry in `src/core/all.rs`.
-- Domain layout under `src/openhuman/<domain>/`.
-- Composio controllers in `src/openhuman/composio/`.
+- Domain layout under `src/aura/<domain>/`.
+- Composio controllers in `src/aura/composio/`.
 - Frontend Composio API wrappers in `app/src/lib/composio/`.
 - Skills/runtime surfaces for app actions.
 - Memory store and memory tree ingestion/retrieval.
-- Capability catalog in `src/openhuman/about_app/`.
+- Capability catalog in `src/aura/about_app/`.
 - Channels/controllers surface for external channels.
 - Voice, screen intelligence, provider surfaces, notifications, and subconscious/background work scaffolding.
 
@@ -82,7 +82,7 @@ The fork should combine them by making OpenHuman the operator runtime and inbox 
 Create a dedicated domain:
 
 ```text
-src/openhuman/operator/
+src/aura/operator/
 |-- mod.rs
 |-- types.rs
 |-- store.rs
@@ -103,19 +103,19 @@ The domain owns operator state and business logic. React should render operator 
 Expose controllers through the existing registry:
 
 ```text
-openhuman.operator_list_goal_packs
-openhuman.operator_create_goal_pack
-openhuman.operator_update_goal_pack
-openhuman.operator_list_work_items
-openhuman.operator_propose_next_actions
-openhuman.operator_preview_action
-openhuman.operator_create_approval_request
-openhuman.operator_approve_request
-openhuman.operator_reject_request
-openhuman.operator_execute_approved_action
-openhuman.operator_record_evidence
-openhuman.operator_list_evidence
-openhuman.operator_explain_routing_decision
+aura.operator_list_goal_packs
+aura.operator_create_goal_pack
+aura.operator_update_goal_pack
+aura.operator_list_work_items
+aura.operator_propose_next_actions
+aura.operator_preview_action
+aura.operator_create_approval_request
+aura.operator_approve_request
+aura.operator_reject_request
+aura.operator_execute_approved_action
+aura.operator_record_evidence
+aura.operator_list_evidence
+aura.operator_explain_routing_decision
 ```
 
 Registry additions belong in `src/core/all.rs` and the operator domain schema tests should prove schema/handler parity.
@@ -181,10 +181,10 @@ Do not port the whole inbox repo first. Use an adapter boundary.
 
 ### Phase 1 Adapter
 
-OpenHuman calls a local inbox server when present:
+Aura calls a local inbox server when present:
 
 ```text
-OpenHuman operator domain -> inbox_adapter.rs -> http://127.0.0.1:9849
+Aura operator domain -> inbox_adapter.rs -> http://127.0.0.1:9849
 ```
 
 Adapter functions:
@@ -197,7 +197,7 @@ Adapter functions:
 - `preflight_write`
 - `explain_routing_decision`
 
-This gives immediate reuse while keeping OpenHuman stable.
+This gives immediate reuse while keeping Aura stable.
 
 ### Phase 2 Native Port
 
@@ -444,7 +444,7 @@ Every proposal must show:
 ### Gate 0 - Fork And Product Boundaries
 
 - [ ] Decide fork name, package identifiers, and user-facing brand copy.
-- [ ] Preserve upstream GPL-3.0 obligations for OpenHuman-derived client code.
+- [ ] Preserve upstream GPL-3.0 obligations for Aura-derived client code.
 - [ ] Preserve MIT notices for any inbox-derived code.
 - [ ] Decide whether the hosted control plane is separate proprietary service code or open source.
 - [ ] Add a `FORK_NOTES.md` or equivalent with upstream sync policy.
@@ -460,12 +460,12 @@ rg -n "GPL|MIT|license|License" README.md LICENSE* app src docs
 
 Files:
 
-- `src/openhuman/operator/types.rs`
-- `src/openhuman/operator/store.rs`
-- `src/openhuman/operator/schemas.rs`
-- `src/openhuman/operator/ops.rs`
-- `src/openhuman/operator/ops_tests.rs`
-- `src/openhuman/operator/mod.rs`
+- `src/aura/operator/types.rs`
+- `src/aura/operator/store.rs`
+- `src/aura/operator/schemas.rs`
+- `src/aura/operator/ops.rs`
+- `src/aura/operator/ops_tests.rs`
+- `src/aura/operator/mod.rs`
 - `src/core/all.rs`
 
 Tasks:
@@ -486,10 +486,10 @@ cargo check --manifest-path app/src-tauri/Cargo.toml
 
 Files:
 
-- `src/openhuman/operator/inbox_adapter.rs`
-- `src/openhuman/operator/preflight.rs`
-- `src/openhuman/operator/policy.rs`
-- `src/openhuman/operator/ops_tests.rs`
+- `src/aura/operator/inbox_adapter.rs`
+- `src/aura/operator/preflight.rs`
+- `src/aura/operator/policy.rs`
+- `src/aura/operator/ops_tests.rs`
 
 Tasks:
 
@@ -509,10 +509,10 @@ cargo test operator --manifest-path app/src-tauri/Cargo.toml
 
 Files:
 
-- `src/openhuman/operator/preflight.rs`
-- `src/openhuman/operator/evidence.rs`
-- `src/openhuman/operator/ops.rs`
-- `src/openhuman/operator/ops_tests.rs`
+- `src/aura/operator/preflight.rs`
+- `src/aura/operator/evidence.rs`
+- `src/aura/operator/ops.rs`
+- `src/aura/operator/ops_tests.rs`
 
 Tasks:
 
@@ -556,10 +556,10 @@ pnpm --cwd app test -- --run operator
 
 Files:
 
-- `src/openhuman/operator/connectors.rs`
-- `src/openhuman/operator/preflight.rs`
-- `src/openhuman/operator/evidence.rs`
-- `src/openhuman/composio/` only if narrow changes are required
+- `src/aura/operator/connectors.rs`
+- `src/aura/operator/preflight.rs`
+- `src/aura/operator/evidence.rs`
+- `src/aura/composio/` only if narrow changes are required
 
 Tasks:
 

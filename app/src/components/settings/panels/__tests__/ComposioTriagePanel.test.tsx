@@ -6,8 +6,8 @@ import { renderWithProviders } from '../../../../test/test-utils';
 const hoisted = vi.hoisted(() => ({ getSettings: vi.fn(), updateSettings: vi.fn() }));
 
 vi.mock('../../../../utils/tauriCommands', () => ({
-  openhumanGetComposioTriggerSettings: hoisted.getSettings,
-  openhumanUpdateComposioTriggerSettings: hoisted.updateSettings,
+  auraGetComposioTriggerSettings: hoisted.getSettings,
+  auraUpdateComposioTriggerSettings: hoisted.updateSettings,
 }));
 
 vi.mock('../../hooks/useSettingsNavigation', () => ({
@@ -153,6 +153,6 @@ describe('ComposioTriagePanel', () => {
       expect(screen.queryByText('Loading…')).toBeNull();
     });
 
-    expect(screen.getByText('OPENHUMAN_TRIGGER_TRIAGE_DISABLED')).toBeInTheDocument();
+    expect(screen.getByText('AURA_TRIGGER_TRIAGE_DISABLED')).toBeInTheDocument();
   });
 });

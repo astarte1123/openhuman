@@ -16,7 +16,7 @@ export interface ComposioTriggerHistoryResult {
   entries: ComposioTriggerHistoryEntry[];
 }
 
-export async function openhumanComposioListTriggerHistory(
+export async function auraComposioListTriggerHistory(
   limit = 100
 ): Promise<CommandResponse<{ result: ComposioTriggerHistoryResult }>> {
   if (!isTauri()) {
@@ -24,7 +24,7 @@ export async function openhumanComposioListTriggerHistory(
   }
 
   return await callCoreRpc<CommandResponse<{ result: ComposioTriggerHistoryResult }>>({
-    method: 'openhuman.composio_list_trigger_history',
+    method: 'aura.composio_list_trigger_history',
     params: { limit },
   });
 }
@@ -43,12 +43,12 @@ export interface ComposioModeStatus {
 
 /// Read the current Composio routing mode and whether a direct-mode API
 /// key is stored. The key itself is never returned.
-export async function openhumanComposioGetMode(): Promise<CommandResponse<ComposioModeStatus>> {
+export async function auraComposioGetMode(): Promise<CommandResponse<ComposioModeStatus>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<ComposioModeStatus>>({
-    method: 'openhuman.composio_get_mode',
+    method: 'aura.composio_get_mode',
   });
 }
 
@@ -59,7 +59,7 @@ export interface ComposioSetApiKeyResult {
 
 /// Persist a Composio API key for direct mode and (optionally) flip the
 /// routing mode to "direct".
-export async function openhumanComposioSetApiKey(
+export async function auraComposioSetApiKey(
   apiKey: string,
   activateDirect = true
 ): Promise<CommandResponse<ComposioSetApiKeyResult>> {
@@ -67,20 +67,20 @@ export async function openhumanComposioSetApiKey(
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<ComposioSetApiKeyResult>>({
-    method: 'openhuman.composio_set_api_key',
+    method: 'aura.composio_set_api_key',
     params: { api_key: apiKey, activate_direct: activateDirect },
   });
 }
 
 /// Remove the stored direct-mode API key and reset the routing mode to
 /// "backend".
-export async function openhumanComposioClearApiKey(): Promise<
+export async function auraComposioClearApiKey(): Promise<
   CommandResponse<{ cleared: boolean; mode: string }>
 > {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<{ cleared: boolean; mode: string }>>({
-    method: 'openhuman.composio_clear_api_key',
+    method: 'aura.composio_clear_api_key',
   });
 }

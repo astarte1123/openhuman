@@ -1,9 +1,9 @@
 # ---------------------------------------------------------------------------
-# OpenHuman Core — multi-stage Docker build
-# Produces a minimal image running the `openhuman-core` binary (JSON-RPC server).
+# Aura Core — multi-stage Docker build
+# Produces a minimal image running the `aura-core` binary (JSON-RPC server).
 #
-# Build:   docker build -t openhuman-core .
-# Run:     docker run -p 7788:7788 --env-file .env openhuman-core
+# Build:   docker build -t aura-core .
+# Run:     docker run -p 7788:7788 --env-file .env aura-core
 # ---------------------------------------------------------------------------
 
 # ==========================================================================
@@ -43,14 +43,14 @@ COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
 RUN mkdir -p src && \
     echo 'fn main() {}' > src/main.rs && \
     echo 'pub fn run_core_from_args(_: &[String]) -> anyhow::Result<()> { Ok(()) }' > src/lib.rs && \
-    cargo build --release --bin openhuman-core 2>/dev/null || true && \
+    cargo build --release --bin aura-core 2>/dev/null || true && \
     rm -rf src
 
 # Copy actual source and build
 COPY src/ src/
 # Touch main.rs to force rebuild of our code (not deps)
 RUN touch src/main.rs src/lib.rs && \
-    cargo build --release --bin openhuman-core
+    cargo build --release --bin aura-core
 
 # ==========================================================================
 # Stage 2: Minimal runtime image
@@ -71,18 +71,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Non-root user for security
-RUN useradd --create-home --shell /bin/bash openhuman
-USER openhuman
-WORKDIR /home/openhuman
+RUN useradd --create-home --shell /bin/bash aura
+USER aura
+WORKDIR /home/aura
 
 # Copy the built binary
-COPY --from=builder /build/target/release/openhuman-core /usr/local/bin/openhuman-core
+COPY --from=builder /build/target/release/aura-core /usr/local/bin/aura-core
 
 # Default workspace directory
-ENV OPENHUMAN_WORKSPACE=/home/openhuman/.openhuman
+ENV AURA_WORKSPACE=/home/aura/.aura
 # Bind to all interfaces so the container is reachable
-ENV OPENHUMAN_CORE_HOST=0.0.0.0
-ENV OPENHUMAN_CORE_PORT=7788
+ENV AURA_CORE_HOST=0.0.0.0
+ENV AURA_CORE_PORT=7788
 ENV RUST_LOG=info
 
 EXPOSE 7788
@@ -91,5 +91,5 @@ EXPOSE 7788
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl -sf http://localhost:7788/health || exit 1
 
-ENTRYPOINT ["openhuman-core"]
+ENTRYPOINT ["aura-core"]
 CMD ["serve"]

@@ -9,7 +9,7 @@
  * `postMessage` IPC bridge is connected. An `invoke()` landing in that gap
  * throws `TypeError: Cannot read properties of undefined (reading
  * 'postMessage')` deep inside Tauri's `sendIpcMessage`, which surfaces as
- * the OPENHUMAN-REACT-S Sentry issue (#1472 follow-up). All call sites that
+ * the AURA-REACT-S Sentry issue (#1472 follow-up). All call sites that
  * gate on `isTauri()` should now route through the non-Tauri branch during
  * the gap instead of bursting into IPC.
  */
@@ -58,7 +58,7 @@ describe('isTauri (tauriCommands/common)', () => {
     expect(isTauri()).toBe(true);
   });
 
-  // The OPENHUMAN-REACT-S regression: Tauri sets `globalThis.isTauri = true`
+  // The AURA-REACT-S regression: Tauri sets `globalThis.isTauri = true`
   // (so the official check returns true) before CEF wires the IPC postMessage
   // bridge. During that gap any unguarded `invoke(...)` blows up inside
   // `sendIpcMessage` with the "Cannot read properties of undefined (reading
@@ -91,7 +91,7 @@ describe('isTauri (tauriCommands/common)', () => {
   });
 });
 
-// `parseServiceCliOutput` runs against raw CLI stdout from the `openhuman`
+// `parseServiceCliOutput` runs against raw CLI stdout from the `aura`
 // sidecar. The core process can crash mid-write, return a partial response, or
 // drift from the expected JSON schema across versions — any of which produces
 // malformed input. The guard must reject those cases with a descriptive error

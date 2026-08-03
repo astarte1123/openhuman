@@ -25,18 +25,18 @@ import {
 
 // ─── Mock declarations (must be hoisted before imports) ───────────────────────
 
-const mockOpenhumanGetClientConfig = vi.fn();
+const mockAuraGetClientConfig = vi.fn();
 const mockAuthListProviderCredentials = vi.fn();
-const mockOpenhumanUpdateModelSettings = vi.fn();
-const mockOpenhumanUpdateLocalAiSettings = vi.fn();
+const mockAuraUpdateModelSettings = vi.fn();
+const mockAuraUpdateLocalAiSettings = vi.fn();
 const mockAuthStoreProviderCredentials = vi.fn();
 const mockAuthRemoveProviderCredentials = vi.fn();
 const mockCallCoreRpc = vi.fn();
 const mockIsTauri = vi.fn(() => true);
-const mockOpenhumanLocalAiStatus = vi.fn();
-const mockOpenhumanLocalAiDiagnostics = vi.fn();
-const mockOpenhumanLocalAiPresets = vi.fn();
-const mockOpenhumanLocalAiApplyPreset = vi.fn();
+const mockAuraLocalAiStatus = vi.fn();
+const mockAuraLocalAiDiagnostics = vi.fn();
+const mockAuraLocalAiPresets = vi.fn();
+const mockAuraLocalAiApplyPreset = vi.fn();
 
 vi.mock('../../coreRpcClient', () => ({ callCoreRpc: (a: unknown) => mockCallCoreRpc(a) }));
 
@@ -52,16 +52,16 @@ vi.mock('../../../utils/tauriCommands/auth', () => ({
 }));
 
 vi.mock('../../../utils/tauriCommands/config', () => ({
-  openhumanGetClientConfig: () => mockOpenhumanGetClientConfig(),
-  openhumanUpdateModelSettings: (a: unknown) => mockOpenhumanUpdateModelSettings(a),
-  openhumanUpdateLocalAiSettings: (a: unknown) => mockOpenhumanUpdateLocalAiSettings(a),
+  auraGetClientConfig: () => mockAuraGetClientConfig(),
+  auraUpdateModelSettings: (a: unknown) => mockAuraUpdateModelSettings(a),
+  auraUpdateLocalAiSettings: (a: unknown) => mockAuraUpdateLocalAiSettings(a),
 }));
 
 vi.mock('../../../utils/tauriCommands/localAi', () => ({
-  openhumanLocalAiStatus: (...args: unknown[]) => mockOpenhumanLocalAiStatus(...args),
-  openhumanLocalAiDiagnostics: (...args: unknown[]) => mockOpenhumanLocalAiDiagnostics(...args),
-  openhumanLocalAiPresets: (...args: unknown[]) => mockOpenhumanLocalAiPresets(...args),
-  openhumanLocalAiApplyPreset: (...args: unknown[]) => mockOpenhumanLocalAiApplyPreset(...args),
+  auraLocalAiStatus: (...args: unknown[]) => mockAuraLocalAiStatus(...args),
+  auraLocalAiDiagnostics: (...args: unknown[]) => mockAuraLocalAiDiagnostics(...args),
+  auraLocalAiPresets: (...args: unknown[]) => mockAuraLocalAiPresets(...args),
+  auraLocalAiApplyPreset: (...args: unknown[]) => mockAuraLocalAiApplyPreset(...args),
 }));
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -97,25 +97,25 @@ function makeAuthProfileResult(profiles: Array<{ id: string; provider: string }>
 // ─── parseProviderString ─────────────────────────────────────────────────────
 
 describe('parseProviderString', () => {
-  it('returns openhuman for empty string', () => {
-    expect(parseProviderString('')).toEqual({ kind: 'openhuman' });
+  it('returns aura for empty string', () => {
+    expect(parseProviderString('')).toEqual({ kind: 'aura' });
   });
 
-  it('returns openhuman for null/undefined', () => {
-    expect(parseProviderString(null)).toEqual({ kind: 'openhuman' });
-    expect(parseProviderString(undefined)).toEqual({ kind: 'openhuman' });
+  it('returns aura for null/undefined', () => {
+    expect(parseProviderString(null)).toEqual({ kind: 'aura' });
+    expect(parseProviderString(undefined)).toEqual({ kind: 'aura' });
   });
 
-  it('returns openhuman for the "cloud" sentinel', () => {
-    expect(parseProviderString('cloud')).toEqual({ kind: 'openhuman' });
+  it('returns aura for the "cloud" sentinel', () => {
+    expect(parseProviderString('cloud')).toEqual({ kind: 'aura' });
   });
 
-  it('returns openhuman for the "openhuman" literal', () => {
-    expect(parseProviderString('openhuman')).toEqual({ kind: 'openhuman' });
+  it('returns aura for the "aura" literal', () => {
+    expect(parseProviderString('aura')).toEqual({ kind: 'aura' });
   });
 
-  it('returns openhuman for "openhuman:<anything>"', () => {
-    expect(parseProviderString('openhuman:gpt-4o')).toEqual({ kind: 'openhuman' });
+  it('returns aura for "aura:<anything>"', () => {
+    expect(parseProviderString('aura:gpt-4o')).toEqual({ kind: 'aura' });
   });
 
   it('parses ollama provider strings', () => {
@@ -138,17 +138,17 @@ describe('parseProviderString', () => {
     });
   });
 
-  it('falls back to openhuman for unrecognised bare strings', () => {
-    expect(parseProviderString('unknown-provider')).toEqual({ kind: 'openhuman' });
+  it('falls back to aura for unrecognised bare strings', () => {
+    expect(parseProviderString('unknown-provider')).toEqual({ kind: 'aura' });
   });
 });
 
 // ─── serializeProviderRef ─────────────────────────────────────────────────────
 
 describe('serializeProviderRef', () => {
-  it('serializes openhuman refs', () => {
-    const ref: ProviderRef = { kind: 'openhuman' };
-    expect(serializeProviderRef(ref)).toBe('openhuman');
+  it('serializes aura refs', () => {
+    const ref: ProviderRef = { kind: 'aura' };
+    expect(serializeProviderRef(ref)).toBe('aura');
   });
 
   it('serializes cloud refs to slug:model', () => {
@@ -163,7 +163,7 @@ describe('serializeProviderRef', () => {
 
   it('round-trips through parseProviderString', () => {
     const cases: ProviderRef[] = [
-      { kind: 'openhuman' },
+      { kind: 'aura' },
       { kind: 'cloud', providerSlug: 'anthropic', model: 'claude-3-haiku-20240307' },
       { kind: 'local', model: 'llama3:latest' },
     ];
@@ -177,17 +177,17 @@ describe('serializeProviderRef', () => {
 
 describe('loadAISettings', () => {
   beforeEach(() => {
-    mockOpenhumanGetClientConfig.mockReset();
+    mockAuraGetClientConfig.mockReset();
     mockAuthListProviderCredentials.mockReset();
-    mockOpenhumanUpdateLocalAiSettings.mockReset();
-    mockOpenhumanLocalAiStatus.mockReset();
-    mockOpenhumanLocalAiDiagnostics.mockReset();
-    mockOpenhumanLocalAiPresets.mockReset();
-    mockOpenhumanLocalAiApplyPreset.mockReset();
+    mockAuraUpdateLocalAiSettings.mockReset();
+    mockAuraLocalAiStatus.mockReset();
+    mockAuraLocalAiDiagnostics.mockReset();
+    mockAuraLocalAiPresets.mockReset();
+    mockAuraLocalAiApplyPreset.mockReset();
   });
 
   it('returns cloudProviders with has_api_key=false when no profiles stored', async () => {
-    mockOpenhumanGetClientConfig.mockResolvedValue(
+    mockAuraGetClientConfig.mockResolvedValue(
       makeClientConfigResult({
         cloud_providers: [
           {
@@ -211,7 +211,7 @@ describe('loadAISettings', () => {
   });
 
   it('sets has_api_key=true when a matching provider:<slug> profile is stored', async () => {
-    mockOpenhumanGetClientConfig.mockResolvedValue(
+    mockAuraGetClientConfig.mockResolvedValue(
       makeClientConfigResult({
         cloud_providers: [
           {
@@ -237,7 +237,7 @@ describe('loadAISettings', () => {
   });
 
   it('also accepts legacy bare-slug auth profiles', async () => {
-    mockOpenhumanGetClientConfig.mockResolvedValue(
+    mockAuraGetClientConfig.mockResolvedValue(
       makeClientConfigResult({
         cloud_providers: [
           {
@@ -260,7 +260,7 @@ describe('loadAISettings', () => {
   });
 
   it('parses non-default per-workload routing strings correctly', async () => {
-    mockOpenhumanGetClientConfig.mockResolvedValue(
+    mockAuraGetClientConfig.mockResolvedValue(
       makeClientConfigResult({
         cloud_providers: [],
         reasoning_provider: 'openai:gpt-4o',
@@ -288,11 +288,11 @@ describe('loadAISettings', () => {
       model: 'claude-3-5-sonnet-20241022',
     });
     expect(settings.routing.coding).toEqual({ kind: 'local', model: 'codellama:13b' });
-    expect(settings.routing.memory).toEqual({ kind: 'openhuman' });
+    expect(settings.routing.memory).toEqual({ kind: 'aura' });
   });
 
   it('degrades gracefully when authListProviderCredentials throws', async () => {
-    mockOpenhumanGetClientConfig.mockResolvedValue(
+    mockAuraGetClientConfig.mockResolvedValue(
       makeClientConfigResult({
         cloud_providers: [
           {
@@ -314,7 +314,7 @@ describe('loadAISettings', () => {
   });
 
   it('includes two cloud providers with correct labels and endpoints', async () => {
-    mockOpenhumanGetClientConfig.mockResolvedValue(
+    mockAuraGetClientConfig.mockResolvedValue(
       makeClientConfigResult({
         cloud_providers: [
           {
@@ -374,19 +374,19 @@ describe('loadAISettings', () => {
 
 describe('local provider facade', () => {
   beforeEach(() => {
-    mockOpenhumanUpdateLocalAiSettings.mockReset();
-    mockOpenhumanLocalAiStatus.mockReset();
-    mockOpenhumanLocalAiDiagnostics.mockReset();
-    mockOpenhumanLocalAiPresets.mockReset();
-    mockOpenhumanLocalAiApplyPreset.mockReset();
+    mockAuraUpdateLocalAiSettings.mockReset();
+    mockAuraLocalAiStatus.mockReset();
+    mockAuraLocalAiDiagnostics.mockReset();
+    mockAuraLocalAiPresets.mockReset();
+    mockAuraLocalAiApplyPreset.mockReset();
   });
 
   it('loadLocalProviderSnapshot joins status diagnostics and presets', async () => {
-    mockOpenhumanLocalAiStatus.mockResolvedValue({ result: { state: 'ready' } });
-    mockOpenhumanLocalAiDiagnostics.mockResolvedValue({
+    mockAuraLocalAiStatus.mockResolvedValue({ result: { state: 'ready' } });
+    mockAuraLocalAiDiagnostics.mockResolvedValue({
       installed_models: [{ name: 'gemma3:1b-it-qat', size: 123 }],
     });
-    mockOpenhumanLocalAiPresets.mockResolvedValue({
+    mockAuraLocalAiPresets.mockResolvedValue({
       recommended_tier: 'ram_2_4gb',
       current_tier: 'ram_2_4gb',
       selected_tier: 'ram_2_4gb',
@@ -410,25 +410,25 @@ describe('local provider facade', () => {
   });
 
   it('setLocalRuntimeEnabled updates runtime_enabled and opt_in_confirmed together', async () => {
-    mockOpenhumanUpdateLocalAiSettings.mockResolvedValue({ result: {} });
+    mockAuraUpdateLocalAiSettings.mockResolvedValue({ result: {} });
 
     await setLocalRuntimeEnabled(true);
 
-    expect(mockOpenhumanUpdateLocalAiSettings).toHaveBeenCalledWith({
+    expect(mockAuraUpdateLocalAiSettings).toHaveBeenCalledWith({
       runtime_enabled: true,
       opt_in_confirmed: true,
     });
   });
 
   it('localProvider facade delegates applyPreset and setEnabled', async () => {
-    mockOpenhumanLocalAiApplyPreset.mockResolvedValue({ applied_tier: 'ram_2_4gb' });
-    mockOpenhumanUpdateLocalAiSettings.mockResolvedValue({ result: {} });
+    mockAuraLocalAiApplyPreset.mockResolvedValue({ applied_tier: 'ram_2_4gb' });
+    mockAuraUpdateLocalAiSettings.mockResolvedValue({ result: {} });
 
     await localProvider.applyPreset('ram_2_4gb');
     await localProvider.setEnabled(false);
 
-    expect(mockOpenhumanLocalAiApplyPreset).toHaveBeenCalledWith('ram_2_4gb');
-    expect(mockOpenhumanUpdateLocalAiSettings).toHaveBeenCalledWith({
+    expect(mockAuraLocalAiApplyPreset).toHaveBeenCalledWith('ram_2_4gb');
+    expect(mockAuraUpdateLocalAiSettings).toHaveBeenCalledWith({
       runtime_enabled: false,
       opt_in_confirmed: false,
     });
@@ -439,8 +439,8 @@ describe('local provider facade', () => {
 
 describe('saveAISettings', () => {
   beforeEach(() => {
-    mockOpenhumanUpdateModelSettings.mockReset();
-    mockOpenhumanUpdateModelSettings.mockResolvedValue({ result: {} });
+    mockAuraUpdateModelSettings.mockReset();
+    mockAuraUpdateModelSettings.mockResolvedValue({ result: {} });
   });
 
   function makeSettings(overrides: Partial<AISettings> = {}): AISettings {
@@ -457,13 +457,13 @@ describe('saveAISettings', () => {
       ],
       routing: {
         reasoning: { kind: 'cloud', providerSlug: 'openai', model: 'gpt-4o' },
-        agentic: { kind: 'openhuman' },
-        coding: { kind: 'openhuman' },
-        memory: { kind: 'openhuman' },
-        embeddings: { kind: 'openhuman' },
-        heartbeat: { kind: 'openhuman' },
-        learning: { kind: 'openhuman' },
-        subconscious: { kind: 'openhuman' },
+        agentic: { kind: 'aura' },
+        coding: { kind: 'aura' },
+        memory: { kind: 'aura' },
+        embeddings: { kind: 'aura' },
+        heartbeat: { kind: 'aura' },
+        learning: { kind: 'aura' },
+        subconscious: { kind: 'aura' },
       },
       ...overrides,
     };
@@ -472,18 +472,18 @@ describe('saveAISettings', () => {
   it('issues no RPC call when nothing changed', async () => {
     const settings = makeSettings();
     await saveAISettings(settings, settings);
-    expect(mockOpenhumanUpdateModelSettings).not.toHaveBeenCalled();
+    expect(mockAuraUpdateModelSettings).not.toHaveBeenCalled();
   });
 
   it('sends only changed routing fields when providers are unchanged', async () => {
     const prev = makeSettings();
-    const next = makeSettings({ routing: { ...prev.routing, reasoning: { kind: 'openhuman' } } });
+    const next = makeSettings({ routing: { ...prev.routing, reasoning: { kind: 'aura' } } });
 
     await saveAISettings(prev, next);
 
-    expect(mockOpenhumanUpdateModelSettings).toHaveBeenCalledOnce();
-    const patch = mockOpenhumanUpdateModelSettings.mock.calls[0][0];
-    expect(patch.reasoning_provider).toBe('openhuman');
+    expect(mockAuraUpdateModelSettings).toHaveBeenCalledOnce();
+    const patch = mockAuraUpdateModelSettings.mock.calls[0][0];
+    expect(patch.reasoning_provider).toBe('aura');
     // Other workloads unchanged — should not appear in patch.
     expect(patch.agentic_provider).toBeUndefined();
     expect(patch.cloud_providers).toBeUndefined();
@@ -495,7 +495,7 @@ describe('saveAISettings', () => {
 
     await saveAISettings(prev, next);
 
-    const patch = mockOpenhumanUpdateModelSettings.mock.calls[0][0];
+    const patch = mockAuraUpdateModelSettings.mock.calls[0][0];
     expect(patch.cloud_providers).toHaveLength(1);
     expect(patch.cloud_providers![0].slug).toBe('openai');
     // has_api_key must NOT be present in the wire payload — it's not part of
@@ -515,21 +515,21 @@ describe('saveAISettings', () => {
     const prev: AISettings = {
       cloudProviders: [],
       routing: {
-        reasoning: { kind: 'openhuman' },
-        agentic: { kind: 'openhuman' },
-        coding: { kind: 'openhuman' },
-        memory: { kind: 'openhuman' },
-        embeddings: { kind: 'openhuman' },
-        heartbeat: { kind: 'openhuman' },
-        learning: { kind: 'openhuman' },
-        subconscious: { kind: 'openhuman' },
+        reasoning: { kind: 'aura' },
+        agentic: { kind: 'aura' },
+        coding: { kind: 'aura' },
+        memory: { kind: 'aura' },
+        embeddings: { kind: 'aura' },
+        heartbeat: { kind: 'aura' },
+        learning: { kind: 'aura' },
+        subconscious: { kind: 'aura' },
       },
     };
     const next: AISettings = { cloudProviders: [anthropicProvider], routing: { ...prev.routing } };
 
     await saveAISettings(prev, next);
 
-    const patch = mockOpenhumanUpdateModelSettings.mock.calls[0][0];
+    const patch = mockAuraUpdateModelSettings.mock.calls[0][0];
     expect(patch.cloud_providers![0].auth_style).toBe('anthropic');
   });
 
@@ -544,7 +544,7 @@ describe('saveAISettings', () => {
 
     await saveAISettings(prev, next);
 
-    const patch = mockOpenhumanUpdateModelSettings.mock.calls[0][0];
+    const patch = mockAuraUpdateModelSettings.mock.calls[0][0];
     expect(patch.cloud_providers).toBeDefined();
     expect(patch.coding_provider).toBe('openai:gpt-4o-mini');
   });
@@ -569,8 +569,8 @@ describe('setCloudProviderKey', () => {
     expect(args.setActive).toBe(true);
   });
 
-  it('throws when slug is "openhuman" (session JWT — not configurable)', async () => {
-    await expect(setCloudProviderKey('openhuman', 'some-key')).rejects.toThrow();
+  it('throws when slug is "aura" (session JWT — not configurable)', async () => {
+    await expect(setCloudProviderKey('aura', 'some-key')).rejects.toThrow();
     expect(mockAuthStoreProviderCredentials).not.toHaveBeenCalled();
   });
 
@@ -598,8 +598,8 @@ describe('clearCloudProviderKey', () => {
     expect(args.profile).toBe('default');
   });
 
-  it('is a no-op for "openhuman" (session-managed, no key to clear)', async () => {
-    await clearCloudProviderKey('openhuman');
+  it('is a no-op for "aura" (session-managed, no key to clear)', async () => {
+    await clearCloudProviderKey('aura');
     expect(mockAuthRemoveProviderCredentials).not.toHaveBeenCalled();
   });
 });
@@ -612,7 +612,7 @@ describe('listProviderModels', () => {
     mockIsTauri.mockReturnValue(true);
   });
 
-  it('dispatches openhuman.inference_list_models with provider_id and returns models', async () => {
+  it('dispatches aura.inference_list_models with provider_id and returns models', async () => {
     mockCallCoreRpc.mockResolvedValue({
       result: {
         models: [
@@ -625,7 +625,7 @@ describe('listProviderModels', () => {
     const models = await listProviderModels('p_openai_1');
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.inference_list_models',
+      method: 'aura.inference_list_models',
       params: { provider_id: 'p_openai_1' },
     });
     expect(models).toHaveLength(2);

@@ -9,13 +9,13 @@ use axum::response::Response;
 pub(super) async fn dictation_ws_handler(ws: WebSocketUpgrade) -> Response {
     log::info!("[ws] dictation WebSocket upgrade requested");
     ws.on_upgrade(|socket| async move {
-        let config = match crate::openhuman::config::rpc::load_config_with_timeout().await {
+        let config = match crate::aura::config::rpc::load_config_with_timeout().await {
             Ok(c) => Arc::new(c),
             Err(e) => {
                 log::error!("[ws] failed to load config for dictation: {e}");
                 return;
             }
         };
-        crate::openhuman::voice::streaming::handle_dictation_ws(socket, config).await;
+        crate::aura::voice::streaming::handle_dictation_ws(socket, config).await;
     })
 }

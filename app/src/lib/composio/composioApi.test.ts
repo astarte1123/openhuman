@@ -28,7 +28,7 @@ describe('composioApi trigger wrappers', () => {
     const out = await listAvailableTriggers('gmail', 'conn_1');
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.composio_list_available_triggers',
+      method: 'aura.composio_list_available_triggers',
       params: { toolkit: 'gmail', connection_id: 'conn_1' },
     });
     expect(out.triggers).toHaveLength(1);
@@ -39,7 +39,7 @@ describe('composioApi trigger wrappers', () => {
     mockCallCoreRpc.mockResolvedValue({ triggers: [] });
     await listAvailableTriggers('gmail');
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.composio_list_available_triggers',
+      method: 'aura.composio_list_available_triggers',
       params: { toolkit: 'gmail' },
     });
   });
@@ -48,7 +48,7 @@ describe('composioApi trigger wrappers', () => {
     mockCallCoreRpc.mockResolvedValue({ result: { triggers: [] }, logs: [] });
     await listTriggers();
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.composio_list_triggers',
+      method: 'aura.composio_list_triggers',
       params: {},
     });
   });
@@ -57,7 +57,7 @@ describe('composioApi trigger wrappers', () => {
     mockCallCoreRpc.mockResolvedValue({ triggers: [] });
     await listTriggers('gmail');
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.composio_list_triggers',
+      method: 'aura.composio_list_triggers',
       params: { toolkit: 'gmail' },
     });
   });
@@ -71,7 +71,7 @@ describe('composioApi trigger wrappers', () => {
     const out = await enableTrigger('c1', 'GMAIL_NEW_GMAIL_MESSAGE', { labelIds: 'INBOX' });
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.composio_enable_trigger',
+      method: 'aura.composio_enable_trigger',
       params: {
         connection_id: 'c1',
         slug: 'GMAIL_NEW_GMAIL_MESSAGE',
@@ -85,7 +85,7 @@ describe('composioApi trigger wrappers', () => {
     mockCallCoreRpc.mockResolvedValue({ triggerId: 'ti_2', slug: 'X', connectionId: 'c1' });
     await enableTrigger('c1', 'X');
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.composio_enable_trigger',
+      method: 'aura.composio_enable_trigger',
       params: { connection_id: 'c1', slug: 'X' },
     });
   });
@@ -94,7 +94,7 @@ describe('composioApi trigger wrappers', () => {
     mockCallCoreRpc.mockResolvedValue({ result: { deleted: true }, logs: [] });
     const out = await disableTrigger('ti_1');
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.composio_disable_trigger',
+      method: 'aura.composio_disable_trigger',
       params: { trigger_id: 'ti_1' },
     });
     expect(out.deleted).toBe(true);
@@ -115,7 +115,7 @@ describe('syncConnection', () => {
     const out = await syncConnection('conn-1');
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.composio_sync',
+      method: 'aura.composio_sync',
       params: { connection_id: 'conn-1', reason: 'manual' },
     });
     // Outcome envelope is unwrapped to the bare provider payload.
@@ -127,13 +127,13 @@ describe('syncConnection', () => {
 
     await syncConnection('conn-2', 'periodic');
     expect(mockCallCoreRpc).toHaveBeenLastCalledWith({
-      method: 'openhuman.composio_sync',
+      method: 'aura.composio_sync',
       params: { connection_id: 'conn-2', reason: 'periodic' },
     });
 
     await syncConnection('conn-3', 'connection_created');
     expect(mockCallCoreRpc).toHaveBeenLastCalledWith({
-      method: 'openhuman.composio_sync',
+      method: 'aura.composio_sync',
       params: { connection_id: 'conn-3', reason: 'connection_created' },
     });
   });

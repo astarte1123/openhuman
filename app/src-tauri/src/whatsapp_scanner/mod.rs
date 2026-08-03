@@ -12,7 +12,7 @@
 //!     pull message metadata, chat names, contact names.
 //!
 //! Each scan groups messages by `(chatId, day)` and posts one
-//! `openhuman.memory_doc_ingest` JSON-RPC call per group to the core, so
+//! `aura.memory_doc_ingest` JSON-RPC call per group to the core, so
 //! each day of a conversation upserts a single memory doc. We also emit
 //! `webview:event` ingest events so any React UI listening can update
 //! live when the main window is open.
@@ -473,7 +473,7 @@ fn parse_targets(v: &Value) -> Vec<CdpTarget> {
 async fn browser_ws_url() -> Result<String, String> {
     let url = format!("http://{CDP_HOST}:{CDP_PORT}/json/version");
     let resp = reqwest::Client::builder()
-        .user_agent("openhuman-cdp/1.0")
+        .user_agent("aura-cdp/1.0")
         .timeout(Duration::from_secs(5))
         .build()
         .map_err(|e| format!("reqwest build: {e}"))?
@@ -683,7 +683,7 @@ fn emit_snapshot<R: Runtime>(app: &AppHandle<R>, account_id: &str, snap: &ScanSn
     // resolve sender JIDs → display names without re-walking IDB.
     contact_cache_put(account_id, &snap.chats);
     // Also emit one grouped `whatsapp` ingest event per (chatId, day) so
-    // the React listener can call `openhuman.memory_doc_ingest` with a
+    // the React listener can call `aura.memory_doc_ingest` with a
     // stable namespace/key that upserts cleanly.
     emit_grouped_whatsapp(app, account_id, &messages, &snap.chats, "cdp-indexeddb");
 }
@@ -726,7 +726,7 @@ fn parse_pre_timestamp_ymd(s: &str) -> Option<String> {
 
 /// Group messages by (chatId, day) and emit one `webview:event` per group
 /// matching the shape `persistWhatsappChatDay` (React) consumes. React in
-/// turn calls `openhuman.memory_doc_ingest` to upsert each day's transcript
+/// turn calls `aura.memory_doc_ingest` to upsert each day's transcript
 /// into the memory layer.
 fn emit_grouped_whatsapp<R: Runtime>(
     app: &AppHandle<R>,
@@ -973,7 +973,7 @@ fn emit_grouped_whatsapp<R: Runtime>(
     }
 }
 
-/// Build the JSON-RPC `params` object for `openhuman.memory_doc_ingest`
+/// Build the JSON-RPC `params` object for `aura.memory_doc_ingest`
 /// from a single (chatId, day) ingest payload. Extracted as a pure
 /// function so it can be tested independently of the HTTP layer.
 ///
@@ -1073,7 +1073,7 @@ fn build_doc_ingest_params(account_id: &str, ingest: &Value) -> Option<Value> {
     }))
 }
 
-/// Build the `openhuman.memory_doc_ingest` payload for a single
+/// Build the `aura.memory_doc_ingest` payload for a single
 /// (chatId, day) group and POST it directly to the core. The shape
 /// mirrors `persistWhatsappChatDay` on the React side so the memory docs
 /// line up whether the scanner or the UI drove the ingest.
@@ -1106,7 +1106,7 @@ async fn post_memory_doc_ingest(account_id: &str, ingest: &Value) -> Result<(), 
     let body = json!({
         "jsonrpc": "2.0",
         "id": 1,
-        "method": "openhuman.memory_doc_ingest",
+        "method": "aura.memory_doc_ingest",
         "params": params,
     });
 
@@ -1165,7 +1165,7 @@ async fn post_memory_doc_ingest(account_id: &str, ingest: &Value) -> Result<(), 
     Err(last_err)
 }
 
-/// POST a structured `openhuman.whatsapp_data_ingest` payload to the core.
+/// POST a structured `aura.whatsapp_data_ingest` payload to the core.
 ///
 /// This is the dual-write path alongside `post_memory_doc_ingest`. It
 /// persists chats and messages into the dedicated `whatsapp_data.db` SQLite
@@ -1245,7 +1245,7 @@ async fn post_whatsapp_data_ingest(
         let body = json!({
             "jsonrpc": "2.0",
             "id": 1,
-            "method": "openhuman.whatsapp_data_ingest",
+            "method": "aura.whatsapp_data_ingest",
             "params": params,
         });
 

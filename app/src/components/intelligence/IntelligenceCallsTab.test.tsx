@@ -38,7 +38,7 @@ describe('IntelligenceCallsTab', () => {
     vi.mocked(joinMeetCall).mockResolvedValueOnce({
       requestId: 'req-1',
       meetUrl: VALID_URL,
-      displayName: 'OpenHuman Agent',
+      displayName: 'Aura Agent',
       windowLabel: 'meet-call-req-1',
     });
 
@@ -53,11 +53,11 @@ describe('IntelligenceCallsTab', () => {
     await waitFor(() => expect(joinMeetCall).toHaveBeenCalledTimes(1));
     expect(joinMeetCall).toHaveBeenCalledWith({
       meetUrl: VALID_URL,
-      displayName: 'OpenHuman Agent',
+      displayName: 'Aura Agent',
     });
 
     // Active call appears with a Leave button.
-    await screen.findByText('OpenHuman Agent');
+    await screen.findByText('Aura Agent');
     expect(screen.getByRole('button', { name: /Leave/i })).toBeInTheDocument();
     expect(onToast).toHaveBeenCalledWith(
       expect.objectContaining({ type: 'success', title: 'Joining call' })
@@ -100,7 +100,7 @@ describe('IntelligenceCallsTab', () => {
     vi.mocked(joinMeetCall).mockResolvedValueOnce({
       requestId: 'req-2',
       meetUrl: VALID_URL,
-      displayName: 'OpenHuman Agent',
+      displayName: 'Aura Agent',
       windowLabel: 'meet-call-req-2',
     });
     vi.mocked(closeMeetCall).mockResolvedValueOnce(true);
@@ -124,7 +124,7 @@ describe('IntelligenceCallsTab', () => {
     vi.mocked(joinMeetCall).mockResolvedValueOnce({
       requestId: 'req-3',
       meetUrl: VALID_URL,
-      displayName: 'OpenHuman Agent',
+      displayName: 'Aura Agent',
       windowLabel: 'meet-call-req-3',
     });
     vi.mocked(closeMeetCall).mockResolvedValueOnce(false);

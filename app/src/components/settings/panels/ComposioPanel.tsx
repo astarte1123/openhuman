@@ -1,6 +1,6 @@
 // [composio-direct] Settings panel for the Composio routing mode toggle
 // (Backend / Direct BYO API key). Shipped in PR3 of #1710 — see
-// `src/openhuman/composio/client.rs::create_composio_client` for the
+// `src/aura/composio/client.rs::create_composio_client` for the
 // matching Rust factory.
 //
 // Why a separate panel from ComposioTriagePanel:
@@ -16,9 +16,9 @@ import { useEffect, useRef, useState } from 'react';
 
 import {
   type ComposioModeStatus,
-  openhumanComposioClearApiKey,
-  openhumanComposioGetMode,
-  openhumanComposioSetApiKey,
+  auraComposioClearApiKey,
+  auraComposioGetMode,
+  auraComposioSetApiKey,
 } from '../../../utils/tauriCommands';
 import SettingsHeader from '../components/SettingsHeader';
 import { useSettingsNavigation } from '../hooks/useSettingsNavigation';
@@ -59,7 +59,7 @@ const ComposioPanel = ({ embedded = false }: ComposioPanelProps = {}) => {
   // ── load current mode status on mount ────────────────────────────
   useEffect(() => {
     let isMounted = true;
-    openhumanComposioGetMode()
+    auraComposioGetMode()
       .then(res => {
         if (!isMounted) return;
         const status: ComposioModeStatus | undefined = res.result;
@@ -127,7 +127,7 @@ const ComposioPanel = ({ embedded = false }: ComposioPanelProps = {}) => {
     try {
       if (mode === 'direct' && trimmed.length > 0) {
         // [composio-direct] persist new key + flip mode to direct.
-        await openhumanComposioSetApiKey(trimmed, true);
+        await auraComposioSetApiKey(trimmed, true);
         // Mask the field after a successful save so the secret is not
         // left dangling in the DOM. The Rust side has the source of
         // truth in the encrypted keychain.
@@ -137,7 +137,7 @@ const ComposioPanel = ({ embedded = false }: ComposioPanelProps = {}) => {
         flashSaved('saved');
       } else if (mode === 'backend') {
         // Switching to backend — clear the stored key and reset mode.
-        await openhumanComposioClearApiKey();
+        await auraComposioClearApiKey();
         setApiKey('');
         setApiKeyStored(false);
         setPersistedMode('backend');
@@ -222,7 +222,7 @@ const ComposioPanel = ({ embedded = false }: ComposioPanelProps = {}) => {
       <div className={embedded ? 'space-y-5' : 'p-4 space-y-5'}>
         <p className="text-sm text-stone-500">
           Composio powers integrations with Gmail, Notion, Slack, GitHub, and 1000+ other apps. By
-          default OpenHuman manages it for you, so you don&apos;t need to bring an API key. If you
+          default Aura manages it for you, so you don&apos;t need to bring an API key. If you
           prefer to use your own Composio account directly, switch to{' '}
           <span className="font-medium">Direct</span> mode and paste your key below.
         </p>
@@ -239,15 +239,15 @@ const ComposioPanel = ({ embedded = false }: ComposioPanelProps = {}) => {
                   value="backend"
                   checked={mode === 'backend'}
                   onChange={() => setMode('backend')}
-                  aria-label="Managed (OpenHuman handles it for you)"
+                  aria-label="Managed (Aura handles it for you)"
                   className="mt-1"
                 />
                 <div className="text-left">
                   <span className="text-sm font-medium text-stone-900">
-                    Managed (OpenHuman handles it for you)
+                    Managed (Aura handles it for you)
                   </span>
                   <p className="text-xs text-stone-500 mt-0.5">
-                    Default. OpenHuman manages the Composio connection for you. Trigger webhooks
+                    Default. Aura manages the Composio connection for you. Trigger webhooks
                     (real-time Gmail / Slack events) work out of the box.
                   </p>
                 </div>
@@ -286,7 +286,7 @@ const ComposioPanel = ({ embedded = false }: ComposioPanelProps = {}) => {
             </label>
             <p className="text-xs text-stone-500">
               Find your key at <span className="font-mono">app.composio.dev/api-keys</span>. The key
-              is stored encrypted on this device and is never sent to OpenHuman.
+              is stored encrypted on this device and is never sent to Aura.
             </p>
             <input
               id="composio-api-key"
@@ -325,9 +325,9 @@ const ComposioPanel = ({ embedded = false }: ComposioPanelProps = {}) => {
             </p>
             <div className="text-xs text-amber-900 space-y-2">
               <p>
-                Your existing integrations (Gmail, Slack, GitHub, etc. linked through OpenHuman){' '}
+                Your existing integrations (Gmail, Slack, GitHub, etc. linked through Aura){' '}
                 <span className="font-semibold">won&apos;t be visible</span> — they live in the
-                OpenHuman-managed Composio tenant.
+                Aura-managed Composio tenant.
               </p>
               <p>You&apos;ll need:</p>
               <ol className="list-decimal list-inside space-y-0.5 ml-2">

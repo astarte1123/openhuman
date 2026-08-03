@@ -74,7 +74,7 @@ const AUTH_EXPIRED_EVENT = 'core-rpc-auth-expired';
 /**
  * Classify an RPC error from its surfaced message and (when available) the
  * HTTP status the core returned. Patterns map to the Rust-side error shapes
- * produced by `src/openhuman/backend_api/*` (`authed_json`, rate limiter,
+ * produced by `src/aura/backend_api/*` (`authed_json`, rate limiter,
  * budget guard) and `reqwest::Error`'s connect/timeout variants.
  */
 export function classifyRpcError(
@@ -103,7 +103,7 @@ export function classifyRpcError(
 function isThreadNotFoundRpcData(data: unknown): boolean {
   if (!data || typeof data !== 'object') return false;
   // The server only ever emits kind === 'ThreadNotFound' (see
-  // src/openhuman/threads/error.rs THREAD_NOT_FOUND_KIND). The snake_case
+  // src/aura/threads/error.rs THREAD_NOT_FOUND_KIND). The snake_case
   // variant is not produced anywhere; keep only the canonical form.
   return (data as { kind?: unknown }).kind === 'ThreadNotFound';
 }
@@ -205,7 +205,7 @@ export async function getCoreRpcUrl(): Promise<string> {
     try {
       // Tauri: any user-stored URL (cloud picker output) wins. Without this
       // a cloud-mode user whose picker URL coincides with the build-time
-      // `VITE_OPENHUMAN_CORE_RPC_URL` would be silently routed to whatever
+      // `VITE_AURA_CORE_RPC_URL` would be silently routed to whatever
       // `core_rpc_url` returns (typically the local sidecar's
       // `http://127.0.0.1:<port>/rpc`), producing ERR_CONNECTION_REFUSED in
       // cloud mode where no local sidecar is running.
@@ -254,7 +254,7 @@ export async function getCoreRpcUrl(): Promise<string> {
  *      local-sidecar token would be wrong. Takes priority so cloud mode
  *      always sends the user's own token.
  *   2. Tauri `core_rpc_token` command — the embedded sidecar's per-process
- *      token, written by the core binary to `~/.openhuman/core.token` at
+ *      token, written by the core binary to `~/.aura/core.token` at
  *      startup. Cached for the lifetime of the frontend process.
  *   3. `null` in non-Tauri environments (e.g. Vitest, web preview) when no
  *      stored token is set so existing tests remain unaffected.

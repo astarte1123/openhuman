@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>OpenHuman · AI settings (preview)</title>
+    <title>Aura · AI settings (preview)</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -128,16 +128,16 @@
                         <i data-lucide="pencil-line" class="h-3 w-3"></i>
                       </button>
                       <button
-                        x-show="p.type !== 'openhuman'"
+                        x-show="p.type !== 'aura'"
                         class="rounded p-1 text-stone-400 hover:bg-coral-50 hover:text-coral-600">
                         <i data-lucide="trash-2" class="h-3 w-3"></i>
                       </button>
                     </div>
                   </div>
-                  <template x-if="p.type === 'openhuman'">
+                  <template x-if="p.type === 'aura'">
                     <div class="text-xs text-stone-500">Signed-in default · no configuration needed</div>
                   </template>
-                  <template x-if="p.type !== 'openhuman'">
+                  <template x-if="p.type !== 'aura'">
                     <dl class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 text-[11px]">
                       <dt class="text-stone-400">Endpoint</dt>
                       <dd class="truncate font-mono text-stone-700" x-text="p.endpoint"></dd>
@@ -243,7 +243,7 @@
                             <option :value="cp.id" :selected="draft.routing[w.id].providerId === cp.id" x-text="providerMeta[cp.type].label"></option>
                           </template>
                         </select>
-                        <template x-if="selectedCloudType(w.id) !== 'openhuman'">
+                        <template x-if="selectedCloudType(w.id) !== 'aura'">
                           <input
                             :value="draft.routing[w.id].model"
                             @input="draft.routing[w.id].model = $event.target.value; recordDirty();"
@@ -295,7 +295,7 @@
                             <option :value="cp.id" :selected="draft.routing[w.id].providerId === cp.id" x-text="providerMeta[cp.type].label"></option>
                           </template>
                         </select>
-                        <template x-if="selectedCloudType(w.id) !== 'openhuman'">
+                        <template x-if="selectedCloudType(w.id) !== 'aura'">
                           <input
                             :value="draft.routing[w.id].model"
                             @input="draft.routing[w.id].model = $event.target.value; recordDirty();"
@@ -362,7 +362,7 @@
     <script>
       function aiSettings() {
         const providerMeta = {
-          openhuman: { label: 'OpenHuman', icon: 'shield', rail: 'bg-primary-500', pill: 'bg-primary-50 text-primary-700 ring-primary-200' },
+          aura: { label: 'Aura', icon: 'shield', rail: 'bg-primary-500', pill: 'bg-primary-50 text-primary-700 ring-primary-200' },
           openai: { label: 'OpenAI', icon: 'wand', rail: 'bg-sage-500', pill: 'bg-sage-50 text-sage-700 ring-sage-200' },
           anthropic: { label: 'Anthropic', icon: 'zap', rail: 'bg-amber-500', pill: 'bg-amber-50 text-amber-700 ring-amber-200' },
           openrouter: { label: 'OpenRouter', icon: 'cloud', rail: 'bg-slate-500', pill: 'bg-slate-50 text-slate-700 ring-slate-200' },
@@ -382,7 +382,7 @@
 
         const initial = {
           cloudProviders: [
-            { id: 'p_oh', type: 'openhuman', label: 'OpenHuman', endpoint: 'https://api.openhuman.ai/v1', maskedKey: 'oh_••••••••••••a31f', defaultModel: 'openhuman-default' },
+            { id: 'p_oh', type: 'aura', label: 'Aura', endpoint: 'https://api.aura.ai/v1', maskedKey: 'oh_••••••••••••a31f', defaultModel: 'aura-default' },
             { id: 'p_oai', type: 'openai', label: 'OpenAI', endpoint: 'https://api.openai.com/v1', maskedKey: 'sk-••••••••••••••••7Q2', defaultModel: 'gpt-4o' },
             { id: 'p_anth', type: 'anthropic', label: 'Anthropic', endpoint: 'https://api.anthropic.com/v1', maskedKey: 'sk-ant-•••••••••••e9c', defaultModel: 'claude-sonnet-4-6' },
           ],
@@ -464,13 +464,13 @@
             if (r.kind === 'primary') {
               const p = this.primary;
               if (!p) return 'no primary set';
-              if (p.type === 'openhuman') return 'openhuman';
+              if (p.type === 'aura') return 'aura';
               return `${providerMeta[p.type].label.toLowerCase()} · ${p.defaultModel}`;
             }
             if (r.kind === 'cloud') {
               const p = this.draft.cloudProviders.find((cp) => cp.id === r.providerId);
               if (!p) return r.model;
-              if (p.type === 'openhuman') return 'openhuman';
+              if (p.type === 'aura') return 'aura';
               return `${providerMeta[p.type].label.toLowerCase()} · ${r.model}`;
             }
             return `ollama · ${r.model}`;
@@ -478,7 +478,7 @@
           primaryResolvedLabel() {
             const p = this.primary;
             if (!p) return '—';
-            if (p.type === 'openhuman') return 'openhuman';
+            if (p.type === 'aura') return 'aura';
             return `${providerMeta[p.type].label.toLowerCase()} · ${p.defaultModel}`;
           },
           setRouting(id, next) {
@@ -491,7 +491,7 @@
             this.setRouting(id, {
               kind: 'cloud',
               providerId: other.id,
-              model: other.type === 'openhuman' ? '' : other.defaultModel,
+              model: other.type === 'aura' ? '' : other.defaultModel,
             });
           },
           setLocal(id) {
@@ -506,7 +506,7 @@
             this.draft.routing[id] = {
               kind: 'cloud',
               providerId: p.id,
-              model: p.type === 'openhuman' ? '' : p.defaultModel,
+              model: p.type === 'aura' ? '' : p.defaultModel,
             };
             this.recordDirty();
           },

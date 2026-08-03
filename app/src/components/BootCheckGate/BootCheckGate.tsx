@@ -92,7 +92,7 @@ type TestStatus =
 // Desktop release artifact URL surfaced on the web build's mode picker so
 // users without a remote core have a clear path to install the app instead
 // of being trapped on the cloud-only form.
-const DESKTOP_DOWNLOAD_URL = 'https://github.com/tinyhumansai/openhuman/releases/latest';
+const DESKTOP_DOWNLOAD_URL = 'https://github.com/tinyhumansai/aura/releases/latest';
 
 function ModePicker({ onConfirm }: PickerProps) {
   const { t } = useT();
@@ -290,7 +290,7 @@ function ModePicker({ onConfirm }: PickerProps) {
             <div className="flex flex-col gap-1">
               <label className="text-xs font-medium text-stone-700">
                 {t('bootCheck.authToken')} (
-                <code className="text-[10px]">OPENHUMAN_CORE_TOKEN</code>)
+                <code className="text-[10px]">AURA_CORE_TOKEN</code>)
               </label>
               <input
                 type="password"
@@ -618,7 +618,7 @@ export default function BootCheckGate({ children }: BootCheckGateProps) {
       // Persist URL + token for cloud mode so getCoreRpcUrl/Token resolve
       // correctly on the boot-check probe (and every subsequent RPC) without
       // waiting for redux-persist's async rehydrate to complete. Also write
-      // the synchronous `openhuman_core_mode` marker so a reload triggered
+      // the synchronous `aura_core_mode` marker so a reload triggered
       // mid-flight (e.g. `handleIdentityFlip` → `restartApp`) recovers the
       // chosen mode from localStorage before redux-persist flushes. Clear
       // caches so any prior local-mode resolution doesn't leak into cloud.
@@ -688,8 +688,8 @@ export default function BootCheckGate({ children }: BootCheckGateProps) {
     try {
       if (result.kind === 'daemonDetected') {
         log('[boot-check] gate — removing legacy daemon');
-        await transport.callRpc('openhuman.service_stop', {});
-        await transport.callRpc('openhuman.service_uninstall', {});
+        await transport.callRpc('aura.service_stop', {});
+        await transport.callRpc('aura.service_uninstall', {});
         log('[boot-check] gate — daemon removed, re-running check');
       } else if (result.kind === 'outdatedLocal' || result.kind === 'noVersionMethod') {
         log('[boot-check] gate — restarting local core');
@@ -697,7 +697,7 @@ export default function BootCheckGate({ children }: BootCheckGateProps) {
         log('[boot-check] gate — local core restarted');
       } else if (result.kind === 'outdatedCloud') {
         log('[boot-check] gate — triggering cloud core update');
-        await transport.callRpc('openhuman.update_run', {});
+        await transport.callRpc('aura.update_run', {});
         log('[boot-check] gate — cloud core update triggered');
       }
 

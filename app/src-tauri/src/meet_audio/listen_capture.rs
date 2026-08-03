@@ -150,7 +150,7 @@ fn spawn_forwarder(request_id: String, mut rx: mpsc::Receiver<Vec<u8>>) {
         while let Some(chunk) = rx.recv().await {
             let pcm_b64 = B64.encode(&chunk);
             let res = super::rpc_call(
-                "openhuman.meet_agent_push_listen_pcm",
+                "aura.meet_agent_push_listen_pcm",
                 serde_json::json!({
                     "request_id": request_id,
                     "pcm_base64": pcm_b64,

@@ -25,7 +25,7 @@
 //!
 //! Uses [`xcap::Monitor`] (primary monitor only for v1 — see
 //! [`capture_primary_monitor_png`]) to grab a frame, encodes it as PNG,
-//! base64s it, and calls the new `openhuman.meetings_append_screenshot`
+//! base64s it, and calls the new `aura.meetings_append_screenshot`
 //! core RPC. [`rpc_call`] is a module-local copy of
 //! `recorder::rpc_call`'s minimal JSON-RPC-over-HTTP helper — see that
 //! module's doc comment ("STEP 0 finding") for why the Tauri shell talks to
@@ -177,7 +177,7 @@ async fn push_screenshot(
 ) -> Result<(), String> {
     let image_base64 = BASE64.encode(png_bytes);
     rpc_call(
-        "openhuman.meetings_append_screenshot",
+        "aura.meetings_append_screenshot",
         serde_json::json!({
             "meeting_id": meeting_id,
             "captured_at_ms": captured_at_ms,

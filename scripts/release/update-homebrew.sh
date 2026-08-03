@@ -6,19 +6,19 @@
 #   update-homebrew.sh <tag> <formula_template> <tap_dir>
 #
 # Example:
-#   update-homebrew.sh v0.5.0 packages/homebrew/openhuman.rb /tmp/tap
+#   update-homebrew.sh v0.5.0 packages/homebrew/aura.rb /tmp/tap
 #
 # Required environment:
 #   GITHUB_TOKEN — to download release assets
 #
-# The tap directory must be a git checkout of tinyhumansai/homebrew-openhuman.
+# The tap directory must be a git checkout of tinyhumansai/homebrew-aura.
 set -euo pipefail
 
 TAG="${1:?Usage: update-homebrew.sh <tag> <formula_template> <tap_dir>}"
 TEMPLATE="${2:?}"
 TAP_DIR="${3:?}"
 VERSION="${TAG#v}"
-UPLOAD_REPO="${UPLOAD_REPO:-tinyhumansai/openhuman}"
+UPLOAD_REPO="${UPLOAD_REPO:-tinyhumansai/aura}"
 
 TMPDIR="$(mktemp -d)"
 trap 'rm -rf "$TMPDIR"' EXIT
@@ -38,7 +38,7 @@ for row in \
 do
   TARGET="${row%%:*}"
   VAR="${row##*:}"
-  TARBALL="openhuman-core-${VERSION}-${TARGET}.tar.gz"
+  TARBALL="aura-core-${VERSION}-${TARGET}.tar.gz"
   echo "[homebrew]   Downloading $TARBALL ..."
   gh release download "$TAG" \
     --pattern "$TARBALL" \
@@ -58,15 +58,15 @@ sed \
   -e "s/@SHA256_MACOS_X64@/${SHA256_MACOS_X64}/g" \
   -e "s/@SHA256_LINUX_X64@/${SHA256_LINUX_X64}/g" \
   -e "s/@SHA256_LINUX_ARM64@/${SHA256_LINUX_ARM64}/g" \
-  "$TEMPLATE" > "$TAP_DIR/Formula/openhuman.rb"
+  "$TEMPLATE" > "$TAP_DIR/Formula/aura.rb"
 
-echo "[homebrew] Rendered formula → $TAP_DIR/Formula/openhuman.rb"
+echo "[homebrew] Rendered formula → $TAP_DIR/Formula/aura.rb"
 
 # ── Commit and push ──────────────────────────────────────────────────────────
 cd "$TAP_DIR"
 git config user.name  "${GIT_AUTHOR_NAME:-github-actions[bot]}"
 git config user.email "${GIT_AUTHOR_EMAIL:-github-actions[bot]@users.noreply.github.com}"
-git add Formula/openhuman.rb
+git add Formula/aura.rb
 if git diff --cached --quiet; then
   echo "[homebrew] No changes to commit."
   exit 0

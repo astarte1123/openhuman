@@ -7,14 +7,14 @@ const log = debug('skillsApi');
 /**
  * Scope a skill was discovered in.
  *
- * Mirrors `openhuman::skills::ops::SkillScope` on the Rust side — serialized
+ * Mirrors `aura::skills::ops::SkillScope` on the Rust side — serialized
  * as a lowercase string (`"user" | "project" | "legacy"`).
  */
 export type SkillScope = 'user' | 'project' | 'legacy';
 
 /**
  * Wire-format representation of a discovered skill returned by
- * `openhuman.skills_list`.
+ * `aura.skills_list`.
  *
  * Paths are intentionally serialized as strings (not URLs) to avoid lossy
  * conversions on non-UTF-8 filesystems.
@@ -53,7 +53,7 @@ interface SkillsListResult {
 }
 
 /**
- * Result of `openhuman.skills_read_resource`.
+ * Result of `aura.skills_read_resource`.
  */
 export interface SkillResourceContent {
   /** Echo of the requested skill id. */
@@ -74,9 +74,9 @@ interface RawSkillsReadResourceResult {
 }
 
 /**
- * Parameters accepted by `openhuman.skills_create`.
+ * Parameters accepted by `aura.skills_create`.
  *
- * Matches the wire shape defined in `src/openhuman/skills/schemas.rs`
+ * Matches the wire shape defined in `src/aura/skills/schemas.rs`
  * (`SkillsCreateParams`) — `allowedTools` is rekeyed to `allowed-tools` on
  * the JSON-RPC envelope per SKILL.md frontmatter convention (with
  * `allowed_tools` accepted as an alias by the Rust deserializer).
@@ -96,7 +96,7 @@ interface RawSkillsCreateResult {
 }
 
 /**
- * Parameters accepted by `openhuman.skills_install_from_url`.
+ * Parameters accepted by `aura.skills_install_from_url`.
  *
  * `timeoutSecs` is optional — the Rust side defaults to 60s and caps at
  * 600s. Values outside that range are clamped server-side.
@@ -107,7 +107,7 @@ export interface InstallSkillFromUrlInput {
 }
 
 /**
- * Result of `openhuman.skills_install_from_url`.
+ * Result of `aura.skills_install_from_url`.
  *
  * `newSkills` lists skill ids that appeared post-install (diff vs the
  * pre-install snapshot). `stdout` holds a human-readable diagnostic summary
@@ -130,7 +130,7 @@ interface RawInstallSkillFromUrlResult {
 }
 
 /**
- * Result of `openhuman.skills_uninstall`.
+ * Result of `aura.skills_uninstall`.
  *
  * Mirrors the Rust-side `UninstallSkillOutcome`. `removedPath` is the
  * canonicalised on-disk path that was deleted — surface it in success toasts
@@ -167,7 +167,7 @@ export const skillsApi = {
   listSkills: async (): Promise<SkillSummary[]> => {
     log('listSkills: request');
     const response = await callCoreRpc<Envelope<SkillsListResult> | SkillsListResult>({
-      method: 'openhuman.skills_list',
+      method: 'aura.skills_list',
     });
     const result = unwrapEnvelope(response);
     const skills = result?.skills ?? [];
@@ -191,7 +191,7 @@ export const skillsApi = {
     const response = await callCoreRpc<
       Envelope<RawSkillsReadResourceResult> | RawSkillsReadResourceResult
     >({
-      method: 'openhuman.skills_read_resource',
+      method: 'aura.skills_read_resource',
       params: { skill_id: skillId, relative_path: relativePath },
     });
     const raw = unwrapEnvelope(response);
@@ -206,7 +206,7 @@ export const skillsApi = {
   },
 
   /**
-   * Scaffold a new SKILL.md skill via `openhuman.skills_create`.
+   * Scaffold a new SKILL.md skill via `aura.skills_create`.
    *
    * The Rust side slugifies the name, writes `SKILL.md` with the supplied
    * frontmatter, and returns the freshly-discovered `SkillSummary` so the
@@ -215,7 +215,7 @@ export const skillsApi = {
   createSkill: async (input: CreateSkillInput): Promise<SkillSummary> => {
     log('createSkill: request name=%s scope=%s', input.name, input.scope ?? 'default');
     const response = await callCoreRpc<Envelope<RawSkillsCreateResult> | RawSkillsCreateResult>({
-      method: 'openhuman.skills_create',
+      method: 'aura.skills_create',
       params: {
         name: input.name,
         description: input.description,
@@ -232,7 +232,7 @@ export const skillsApi = {
   },
 
   /**
-   * Install a remote SKILL.md by URL via `openhuman.skills_install_from_url`.
+   * Install a remote SKILL.md by URL via `aura.skills_install_from_url`.
    *
    * The Rust side fetches the SKILL.md directly over HTTPS (no subprocess,
    * no Node toolchain required), validates the frontmatter, and writes it
@@ -248,7 +248,7 @@ export const skillsApi = {
     const response = await callCoreRpc<
       Envelope<RawInstallSkillFromUrlResult> | RawInstallSkillFromUrlResult
     >({
-      method: 'openhuman.skills_install_from_url',
+      method: 'aura.skills_install_from_url',
       params: {
         url: input.url,
         ...(input.timeoutSecs !== undefined ? { timeout_secs: input.timeoutSecs } : {}),
@@ -271,9 +271,9 @@ export const skillsApi = {
   },
 
   /**
-   * Remove an installed user-scope SKILL.md skill via `openhuman.skills_uninstall`.
+   * Remove an installed user-scope SKILL.md skill via `aura.skills_uninstall`.
    *
-   * Only user-scope installs (`~/.openhuman/skills/<name>/`) are supported.
+   * Only user-scope installs (`~/.aura/skills/<name>/`) are supported.
    * Project-scope and legacy skills are read-only — trying to uninstall one
    * returns a backend error surfaced as a rejected promise. The Rust side
    * canonicalises paths and refuses names with separators / traversal
@@ -282,7 +282,7 @@ export const skillsApi = {
   uninstallSkill: async (name: string): Promise<UninstallSkillResult> => {
     log('uninstallSkill: request name=%s', name);
     const response = await callCoreRpc<Envelope<RawUninstallSkillResult> | RawUninstallSkillResult>(
-      { method: 'openhuman.skills_uninstall', params: { name } }
+      { method: 'aura.skills_uninstall', params: { name } }
     );
     const raw = unwrapEnvelope(response);
     const normalized: UninstallSkillResult = {

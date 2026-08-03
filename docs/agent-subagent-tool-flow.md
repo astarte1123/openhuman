@@ -8,17 +8,17 @@ This document explains the current runtime flow around the agent harness, with e
 - how typed vs fork subagents differ
 - where to look when debugging harness and delegation issues
 
-Scope: current Rust implementation under `src/openhuman/agent/` and `src/openhuman/tools/`.
+Scope: current Rust implementation under `src/aura/agent/` and `src/aura/tools/`.
 
 ## Why This Exists
 
 The code path is split across several layers:
 
-- built-in agent definitions in `src/openhuman/agent/agents/`
-- harness data + task-local plumbing in `src/openhuman/agent/harness/`
-- main session lifecycle in `src/openhuman/agent/harness/session/`
-- delegation tools in `src/openhuman/tools/impl/agent/`
-- synthesised `delegate_*` tools in `src/openhuman/tools/orchestrator_tools.rs`
+- built-in agent definitions in `src/aura/agent/agents/`
+- harness data + task-local plumbing in `src/aura/agent/harness/`
+- main session lifecycle in `src/aura/agent/harness/session/`
+- delegation tools in `src/aura/tools/impl/agent/`
+- synthesised `delegate_*` tools in `src/aura/tools/orchestrator_tools.rs`
 
 If you only read one file, the system looks simpler than it is. The actual runtime path crosses all of them.
 
@@ -26,34 +26,34 @@ If you only read one file, the system looks simpler than it is. The actual runti
 
 ### Registry and definitions
 
-- `src/openhuman/agent/agents/loader.rs`
+- `src/aura/agent/agents/loader.rs`
   Loads built-in agents from `agent.toml` plus dynamic `prompt.rs` builders.
-- `src/openhuman/agent/harness/definition.rs`
+- `src/aura/agent/harness/definition.rs`
   Defines `AgentDefinition`, `ToolScope`, `SubagentEntry`, `PromptSource`, and registry-facing data.
-- `src/openhuman/agent/harness/mod.rs`
+- `src/aura/agent/harness/mod.rs`
   Re-exports the harness entrypoints.
 
 ### Main agent session
 
-- `src/openhuman/agent/harness/session/builder.rs`
+- `src/aura/agent/harness/session/builder.rs`
   Builds an `Agent`, chooses dispatcher, applies visible-tool filtering, synthesises delegation tools.
-- `src/openhuman/agent/harness/session/turn.rs`
+- `src/aura/agent/harness/session/turn.rs`
   Main turn lifecycle, tool execution, parent/fork context setup, transcript persistence, post-turn hooks.
 
 ### Subagent path
 
-- `src/openhuman/tools/impl/agent/spawn_subagent.rs`
+- `src/aura/tools/impl/agent/spawn_subagent.rs`
   Runtime tool entrypoint for explicit subagent spawns.
-- `src/openhuman/agent/harness/fork_context.rs`
+- `src/aura/agent/harness/fork_context.rs`
   Task-local parent and fork context.
-- `src/openhuman/agent/harness/subagent_runner.rs`
+- `src/aura/agent/harness/subagent_runner.rs`
   Typed/fork subagent execution, inner loop, tool filtering, transcript writes, large-result handoff.
 
 ### Generic tool loop / bus path
 
-- `src/openhuman/agent/harness/tool_loop.rs`
+- `src/aura/agent/harness/tool_loop.rs`
   Shared LLM -> tool -> tool result -> LLM loop used by the bus handler and legacy call sites.
-- `src/openhuman/agent/bus.rs`
+- `src/aura/agent/bus.rs`
   Native event-bus entrypoint `agent.run_turn`.
 
 ## High-Level Model
@@ -217,7 +217,7 @@ Agent::turn
 
 ## Startup and Registry Loading
 
-Built-in agents live under `src/openhuman/agent/agents/*/` as:
+Built-in agents live under `src/aura/agent/agents/*/` as:
 
 - `agent.toml`
 - `prompt.rs`
@@ -330,7 +330,7 @@ That history format is what the next iteration reasons from.
 
 ## Where `spawn_subagent` Enters
 
-The explicit delegation tool lives in `src/openhuman/tools/impl/agent/spawn_subagent.rs`.
+The explicit delegation tool lives in `src/aura/tools/impl/agent/spawn_subagent.rs`.
 
 Its flow is:
 
@@ -502,7 +502,7 @@ There are two outer entrypoints to keep straight.
 
 Used for full stateful sessions. This is the richer harness.
 
-### `agent.run_turn` via `src/openhuman/agent/bus.rs`
+### `agent.run_turn` via `src/aura/agent/bus.rs`
 
 This native event-bus handler calls `run_tool_call_loop(...)` directly using owned Rust payloads.
 
@@ -594,13 +594,13 @@ These prefixes are the most useful grep anchors:
 
 For end-to-end harness behavior:
 
-- `src/openhuman/agent/harness/session/tests.rs`
+- `src/aura/agent/harness/session/tests.rs`
   - `turn_dispatches_spawn_subagent_through_full_path`
   - `turn_dispatches_spawn_subagent_in_fork_mode`
 
 For runner behavior in isolation:
 
-- `src/openhuman/agent/harness/subagent_runner.rs` tests
+- `src/aura/agent/harness/subagent_runner.rs` tests
   - typed mode returns text
   - memory-context inclusion/omission
   - tool filtering
@@ -611,11 +611,11 @@ For runner behavior in isolation:
 
 For orchestration-tool synthesis:
 
-- `src/openhuman/tools/orchestrator_tools.rs` tests
+- `src/aura/tools/orchestrator_tools.rs` tests
 
 For generic parent loop behavior:
 
-- `src/openhuman/agent/tests.rs`
+- `src/aura/agent/tests.rs`
 
 ## Common Failure Modes
 

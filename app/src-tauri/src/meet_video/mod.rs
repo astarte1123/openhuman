@@ -25,7 +25,7 @@
 //!   resulting `canvas.captureStream(30)` through monkey-patched
 //!   `getUserMedia` + `enumerateDevices`. Carries an unconditional 5s
 //!   mood toggle as the default driver; the host can also call
-//!   `window.__openhumanSetMood(name)` over CDP at any time.
+//!   `window.__auraSetMood(name)` over CDP at any time.
 //!
 //! - [`inject`] — installs the bridge via CDP
 //!   `Page.addScriptToEvaluateOnNewDocument`. Wired into
@@ -57,7 +57,7 @@ const MASCOT_IDLE_SVG: &str = include_str!("../../../../remotion/public/idelMasc
 /// static SVG for a live Remotion-driven OSR feed.
 const MASCOT_THINKING_SVG: &str = include_str!("../../../../remotion/public/Bookreading.svg");
 
-/// Bridge JS template. Two `__OPENHUMAN_MASCOT_*_DATAURI__` tokens are
+/// Bridge JS template. Two `__AURA_MASCOT_*_DATAURI__` tokens are
 /// substituted at install time with base64'd SVG data URIs.
 const CAMERA_BRIDGE_TEMPLATE: &str = include_str!("camera_bridge.js");
 
@@ -75,9 +75,9 @@ pub fn build_camera_bridge_js(frame_bus_port: u16) -> String {
     let idle = svg_to_data_uri(MASCOT_IDLE_SVG);
     let thinking = svg_to_data_uri(MASCOT_THINKING_SVG);
     CAMERA_BRIDGE_TEMPLATE
-        .replace("__OPENHUMAN_MASCOT_IDLE_DATAURI__", &idle)
-        .replace("__OPENHUMAN_MASCOT_THINKING_DATAURI__", &thinking)
-        .replace("__OPENHUMAN_FRAME_BUS_PORT__", &frame_bus_port.to_string())
+        .replace("__AURA_MASCOT_IDLE_DATAURI__", &idle)
+        .replace("__AURA_MASCOT_THINKING_DATAURI__", &thinking)
+        .replace("__AURA_FRAME_BUS_PORT__", &frame_bus_port.to_string())
 }
 
 /// URL-encode an SVG into a `data:image/svg+xml` URI suitable for
@@ -129,9 +129,9 @@ mod tests {
     #[test]
     fn build_substitutes_both_dataurus() {
         let js = build_camera_bridge_js(0);
-        assert!(!js.contains("__OPENHUMAN_MASCOT_IDLE_DATAURI__"));
-        assert!(!js.contains("__OPENHUMAN_MASCOT_THINKING_DATAURI__"));
-        assert!(!js.contains("__OPENHUMAN_FRAME_BUS_PORT__"));
+        assert!(!js.contains("__AURA_MASCOT_IDLE_DATAURI__"));
+        assert!(!js.contains("__AURA_MASCOT_THINKING_DATAURI__"));
+        assert!(!js.contains("__AURA_FRAME_BUS_PORT__"));
         let count = js.matches("data:image/svg+xml;charset=utf-8,").count();
         assert!(count >= 2, "expected at least 2 data URIs, got {count}");
     }

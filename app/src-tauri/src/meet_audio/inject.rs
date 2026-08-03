@@ -1,4 +1,4 @@
-//! Install the OpenHuman audio bridge into the Meet webview via CDP.
+//! Install the Aura audio bridge into the Meet webview via CDP.
 //!
 //! ## Why this can't live in the runtime
 //!
@@ -151,7 +151,7 @@ async fn wait_for_meet_target(meet_url: &str) -> Result<(CdpConn, String), Strin
     ))
 }
 
-/// Poll `window.__openhumanAudioBridgeInfo()` for up to ~5 s. Logs the
+/// Poll `window.__auraAudioBridgeInfo()` for up to ~5 s. Logs the
 /// outcome but never returns an error — the speak pump will rediscover
 /// the bridge on the next push if it shows up late.
 async fn confirm_bridge_alive(cdp: &mut CdpConn, session: &str) {
@@ -161,8 +161,8 @@ async fn confirm_bridge_alive(cdp: &mut CdpConn, session: &str) {
             .call(
                 "Runtime.evaluate",
                 json!({
-                    "expression": "(typeof window.__openhumanAudioBridgeInfo === 'function') \
-                                   ? JSON.stringify(window.__openhumanAudioBridgeInfo()) \
+                    "expression": "(typeof window.__auraAudioBridgeInfo === 'function') \
+                                   ? JSON.stringify(window.__auraAudioBridgeInfo()) \
                                    : null",
                     "returnByValue": true,
                 }),
@@ -196,8 +196,8 @@ pub async fn drain_captions(
         .call(
             "Runtime.evaluate",
             json!({
-                "expression": "(typeof window.__openhumanDrainCaptions === 'function') \
-                               ? JSON.stringify(window.__openhumanDrainCaptions()) \
+                "expression": "(typeof window.__auraDrainCaptions === 'function') \
+                               ? JSON.stringify(window.__auraDrainCaptions()) \
                                : '[]'",
                 "returnByValue": true,
             }),
@@ -256,7 +256,7 @@ pub async fn feed_pcm_chunk(cdp: &mut CdpConn, session: &str, pcm_b64: &str) -> 
     // case some future encoder produces padding-edge weirdness.
     let escaped = pcm_b64.replace('\\', "\\\\").replace('\'', "\\'");
     let expression = format!(
-        "(typeof window.__openhumanFeedPcm === 'function') ? window.__openhumanFeedPcm('{escaped}') : -1"
+        "(typeof window.__auraFeedPcm === 'function') ? window.__auraFeedPcm('{escaped}') : -1"
     );
     let res = cdp
         .call(

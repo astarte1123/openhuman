@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- Circular background — fills the whole button -->
-  <circle cx="50" cy="50" r="50" fill="white"/>
-  <!-- Bold red Y, sized to fill circle nicely -->
-  <path d="M 14,8 L 28,8 L 50,42 L 72,8 L 86,8 L 58,46 L 58,90 L 42,90 L 42,46 Z"
-        fill="#E80000"/>
-</svg>

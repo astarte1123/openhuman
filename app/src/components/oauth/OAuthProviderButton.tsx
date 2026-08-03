@@ -16,12 +16,12 @@ interface OAuthProviderButtonProps {
 
 // Reset the loading state if the OAuth round-trip never completes — covers
 // the case where the user cancels in the system browser, or the backend
-// redirect fails so the `openhuman://` deep link never fires.
+// redirect fails so the `aura://` deep link never fires.
 const OAUTH_LOADING_TIMEOUT_MS = 90_000;
 
 const getOAuthStartupFailureMessage = (provider: OAuthProviderConfig): string => {
   if (provider.id === 'twitter') {
-    return 'Twitter/X sign-in could not start. Check that the Twitter OAuth app callback URL, client ID/secret, and requested scopes match the OpenHuman backend, then try again.';
+    return 'Twitter/X sign-in could not start. Check that the Twitter OAuth app callback URL, client ID/secret, and requested scopes match the Aura backend, then try again.';
   }
 
   return `${provider.name} sign-in could not start. Please try again.`;
@@ -36,7 +36,7 @@ const summarizeOAuthStartupError = (error: unknown): string => {
   // opener errors.
   const redactedMessage = error.message
     .replace(/https?:\/\/\S+/g, '[redacted-url]')
-    .replace(/openhuman:\/\/\S+/g, '[redacted-deep-link]');
+    .replace(/aura:\/\/\S+/g, '[redacted-deep-link]');
 
   return `${error.name}: ${redactedMessage.slice(0, 160)}`;
 };
@@ -120,7 +120,7 @@ const OAuthProviderButton = ({
         console.log(`[dev] OAuth debug mode enabled. OAuth URL: ${loginUrl}`);
         console.log('[dev] In debug mode, OAuth will return JSON response instead of redirect.');
         console.log(
-          '[dev] After OAuth completion, copy the loginToken and use: window.__simulateDeepLink("openhuman://auth?token=YOUR_TOKEN")'
+          '[dev] After OAuth completion, copy the loginToken and use: window.__simulateDeepLink("aura://auth?token=YOUR_TOKEN")'
         );
       }
 

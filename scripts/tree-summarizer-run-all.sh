@@ -12,8 +12,8 @@
 #
 # Options:
 #   -v, --verbose    Enable debug logging
-#   --workspace DIR  Override OPENHUMAN_WORKSPACE
-#   --binary PATH    Override the openhuman-core binary path
+#   --workspace DIR  Override AURA_WORKSPACE
+#   --binary PATH    Override the aura-core binary path
 
 set -euo pipefail
 
@@ -37,52 +37,52 @@ resolve_binary() {
     esac
 
     for bin in \
-        "$REPO_ROOT/app/src-tauri/binaries/openhuman-core-$arch" \
-        "$REPO_ROOT/target/debug/openhuman-core" \
-        "$REPO_ROOT/target/release/openhuman-core"; do
+        "$REPO_ROOT/app/src-tauri/binaries/aura-core-$arch" \
+        "$REPO_ROOT/target/debug/aura-core" \
+        "$REPO_ROOT/target/release/aura-core"; do
         if [ -x "$bin" ]; then
             echo "$bin"
             return
         fi
     done
 
-    echo >&2 "error: could not find openhuman-core binary. Build with: cargo build --bin openhuman-core"
+    echo >&2 "error: could not find aura-core binary. Build with: cargo build --bin aura-core"
     exit 1
 }
 
-OPENHUMAN_BIN="${OPENHUMAN_BIN:-$(resolve_binary)}"
+AURA_BIN="${AURA_BIN:-$(resolve_binary)}"
 
 # Resolve workspace: env var → active user → first user dir
 resolve_workspace() {
-    if [ -n "${OPENHUMAN_WORKSPACE:-}" ]; then
-        echo "$OPENHUMAN_WORKSPACE"
+    if [ -n "${AURA_WORKSPACE:-}" ]; then
+        echo "$AURA_WORKSPACE"
         return
     fi
 
     # Try the active user workspace
-    local active_user_file="$HOME/.openhuman/active_user.toml"
+    local active_user_file="$HOME/.aura/active_user.toml"
     if [ -f "$active_user_file" ]; then
         local user_id
         user_id=$(sed -n 's/^user_id *= *"\([^"]*\)".*/\1/p' "$active_user_file" 2>/dev/null || true)
-        if [ -n "$user_id" ] && [ -d "$HOME/.openhuman/users/$user_id/workspace" ]; then
-            echo "$HOME/.openhuman/users/$user_id/workspace"
+        if [ -n "$user_id" ] && [ -d "$HOME/.aura/users/$user_id/workspace" ]; then
+            echo "$HOME/.aura/users/$user_id/workspace"
             return
         fi
     fi
 
     # Fallback: first user directory with a workspace
-    for user_dir in "$HOME"/.openhuman/users/*/; do
+    for user_dir in "$HOME"/.aura/users/*/; do
         if [ -d "${user_dir}workspace" ]; then
             echo "${user_dir}workspace"
             return
         fi
     done
 
-    echo >&2 "error: could not resolve OPENHUMAN_WORKSPACE. Set it explicitly."
+    echo >&2 "error: could not resolve AURA_WORKSPACE. Set it explicitly."
     exit 1
 }
 
-export OPENHUMAN_WORKSPACE="${OPENHUMAN_WORKSPACE:-$(resolve_workspace)}"
+export AURA_WORKSPACE="${AURA_WORKSPACE:-$(resolve_workspace)}"
 
 # ── Parse args ─────────────────────────────────────────────────────────
 
@@ -93,11 +93,11 @@ while [ $# -gt 0 ]; do
             shift
             ;;
         --workspace)
-            export OPENHUMAN_WORKSPACE="$2"
+            export AURA_WORKSPACE="$2"
             shift 2
             ;;
         --binary)
-            OPENHUMAN_BIN="$2"
+            AURA_BIN="$2"
             shift 2
             ;;
         run|status|query|rebuild)
@@ -124,7 +124,7 @@ done
 
 # ── Discover namespaces ────────────────────────────────────────────────
 
-NAMESPACES_DIR="$OPENHUMAN_WORKSPACE/memory/namespaces"
+NAMESPACES_DIR="$AURA_WORKSPACE/memory/namespaces"
 
 if [ ! -d "$NAMESPACES_DIR" ]; then
     echo "No namespaces directory found at $NAMESPACES_DIR"
@@ -142,15 +142,15 @@ NS_COUNT=$(echo "$NAMESPACES" | wc -l | tr -d ' ')
 NS_LIST=$(echo "$NAMESPACES" | tr '\n' ' ')
 
 echo "Found $NS_COUNT namespace(s): $NS_LIST"
-echo "Workspace: $OPENHUMAN_WORKSPACE"
-echo "Binary:    $OPENHUMAN_BIN"
+echo "Workspace: $AURA_WORKSPACE"
+echo "Binary:    $AURA_BIN"
 echo "Command:   tree-summarizer $SUBCOMMAND"
 echo "---"
 
 # ── Strip ASCII art banner from output ─────────────────────────────────
 
 strip_banner() {
-    grep -v '▗\|▐\|▝\|▀\|█\|Contribute\|OpenHuman core' | grep -v '^[[:space:]]*$'
+    grep -v '▗\|▐\|▝\|▀\|█\|Contribute\|Aura core' | grep -v '^[[:space:]]*$'
 }
 
 # ── Run for each namespace ─────────────────────────────────────────────
@@ -170,7 +170,7 @@ while IFS= read -r ns; do
         args+=("$VERBOSE")
     fi
 
-    if output=$("$OPENHUMAN_BIN" tree-summarizer "${args[@]}" 2>&1); then
+    if output=$("$AURA_BIN" tree-summarizer "${args[@]}" 2>&1); then
         echo "$output" | strip_banner | head -40
         SUCCEEDED=$((SUCCEEDED + 1))
     else

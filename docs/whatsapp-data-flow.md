@@ -1,6 +1,6 @@
 # WhatsApp data flow — scanner, store, agent
 
-**Issue:** [#1341](https://github.com/tinyhumansai/openhuman/issues/1341)
+**Issue:** [#1341](https://github.com/tinyhumansai/aura/issues/1341)
 
 This document describes how WhatsApp Web data captured by the desktop scanner becomes available to the agent. It exists to clear up the most common confusion: there are **two** local storage paths and they are intentional, not duplicates — each backs a different agent capability.
 
@@ -19,7 +19,7 @@ This document describes how WhatsApp Web data captured by the desktop scanner be
       │ exact rows            │ canonicalised transcript
       ▼                       ▼
 ┌──────────────────────┐ ┌──────────────────────────┐
-│ openhuman.whatsapp_  │ │ openhuman.memory_doc_    │
+│ aura.whatsapp_  │ │ aura.memory_doc_    │
 │ data_ingest          │ │ ingest                   │
 │ (internal-only RPC)  │ │ (internal-only RPC)      │
 └──────────┬───────────┘ └─────────────┬────────────┘
@@ -60,8 +60,8 @@ The scanner write-path RPCs are registered as **internal-only** in [`src/core/al
 
 The agent surfaces are exclusively read-only:
 
-- [`src/openhuman/tools/impl/whatsapp_data/`](../src/openhuman/tools/impl/whatsapp_data/) — `whatsapp_data_list_chats`, `whatsapp_data_list_messages`, `whatsapp_data_search_messages`. All three wrap their RPC counterparts and emit a `"provider": "whatsapp"` tag in the response so the agent can cite WhatsApp as the source.
-- [`src/openhuman/tools/impl/memory/tree/`](../src/openhuman/tools/impl/memory/tree/) — generic `memory_tree_*` tools. Filter by `source_kind: "chat"` or query directly; WhatsApp chat-day transcripts are tagged `whatsapp` so they surface in cross-source flows.
+- [`src/aura/tools/impl/whatsapp_data/`](../src/aura/tools/impl/whatsapp_data/) — `whatsapp_data_list_chats`, `whatsapp_data_list_messages`, `whatsapp_data_search_messages`. All three wrap their RPC counterparts and emit a `"provider": "whatsapp"` tag in the response so the agent can cite WhatsApp as the source.
+- [`src/aura/tools/impl/memory/tree/`](../src/aura/tools/impl/memory/tree/) — generic `memory_tree_*` tools. Filter by `source_kind: "chat"` or query directly; WhatsApp chat-day transcripts are tagged `whatsapp` so they surface in cross-source flows.
 
 ## Why the orchestrator only lists three of these
 

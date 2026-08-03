@@ -213,7 +213,7 @@ describe('chatService.subscribeChatEvents', () => {
     await chatSend({ threadId: 'thread-1', message: 'hello' });
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.channel_web_chat',
+      method: 'aura.channel_web_chat',
       params: {
         client_id: 'socket-1',
         thread_id: 'thread-1',

@@ -1,6 +1,6 @@
 //! HTTP JSON-RPC integration tests against a real axum stack and a mock upstream API.
 //!
-//! Isolates config under a temp `HOME` so auth profiles and the OpenHuman provider resolve
+//! Isolates config under a temp `HOME` so auth profiles and the Aura provider resolve
 //! the same state directory. Run with: `cargo test --test json_rpc_e2e`
 
 use std::net::SocketAddr;
@@ -16,9 +16,9 @@ use futures_util::StreamExt;
 use serde_json::{json, Value};
 use tempfile::tempdir;
 
-use openhuman_core::core::auth::{init_rpc_token, CORE_TOKEN_ENV_VAR};
-use openhuman_core::core::jsonrpc::build_core_http_router;
-use openhuman_core::openhuman::memory::all_memory_tree_registered_controllers;
+use aura_core::core::auth::{init_rpc_token, CORE_TOKEN_ENV_VAR};
+use aura_core::core::jsonrpc::build_core_http_router;
+use aura_core::aura::memory::all_memory_tree_registered_controllers;
 
 const TEST_RPC_TOKEN: &str = "json-rpc-e2e-local-token";
 static JSON_RPC_AUTH_INIT: OnceLock<()> = OnceLock::new();
@@ -57,7 +57,7 @@ impl Drop for EnvVarGuard {
     }
 }
 
-/// Serializes tests in this binary: `HOME` / `OPENHUMAN_WORKSPACE` / backend URL overrides are
+/// Serializes tests in this binary: `HOME` / `AURA_WORKSPACE` / backend URL overrides are
 /// process-global, so parallel tests would clobber each other and hit the wrong `config.toml` or
 /// inherited `VITE_BACKEND_URL`.
 static JSON_RPC_E2E_ENV_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
@@ -776,10 +776,10 @@ async fn wait_for_chat_completion_requests_len(expected_len: usize) -> Vec<Value
 }
 
 async fn encrypt_test_mnemonic() -> String {
-    let config = openhuman_core::openhuman::config::load_config_with_timeout()
+    let config = aura_core::aura::config::load_config_with_timeout()
         .await
         .expect("load config for encrypted test mnemonic");
-    openhuman_core::openhuman::encryption::rpc::encrypt_secret(
+    aura_core::aura::encryption::rpc::encrypt_secret(
         &config,
         "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
     )
@@ -811,7 +811,7 @@ fn extract_string_outcome(result: &Value) -> String {
     panic!("expected string or {{result: string}}, got {result}");
 }
 
-fn write_min_config(openhuman_dir: &Path, api_origin: &str) {
+fn write_min_config(aura_dir: &Path, api_origin: &str) {
     // `chat_onboarding_completed = true` bypasses the welcome agent so that
     // `channel_web_chat` in tests routes straight to the orchestrator. Without
     // this, the first chat turn goes through the welcome flow whose tool
@@ -828,28 +828,28 @@ encrypt = false
 "#
     );
     fn write_config_file(config_dir: &Path, cfg: &str) {
-        std::fs::create_dir_all(config_dir).expect("mkdir openhuman");
+        std::fs::create_dir_all(config_dir).expect("mkdir aura");
         let path = config_dir.join("config.toml");
         std::fs::write(&path, cfg).expect("write config");
     }
 
-    write_config_file(openhuman_dir, &cfg);
+    write_config_file(aura_dir, &cfg);
 
     // Runtime config resolution is user-scoped before login, so tests that seed
-    // the root `~/.openhuman` directory also need the equivalent pre-login
-    // config under `~/.openhuman/users/local`.
-    if openhuman_dir
+    // the root `~/.aura` directory also need the equivalent pre-login
+    // config under `~/.aura/users/local`.
+    if aura_dir
         .file_name()
-        .is_some_and(|name| name == std::ffi::OsStr::new(".openhuman"))
+        .is_some_and(|name| name == std::ffi::OsStr::new(".aura"))
     {
-        write_config_file(&openhuman_dir.join("users").join("local"), &cfg);
+        write_config_file(&aura_dir.join("users").join("local"), &cfg);
     }
 
-    let _: openhuman_core::openhuman::config::Config =
+    let _: aura_core::aura::config::Config =
         toml::from_str(&cfg).expect("config toml must match Config schema");
 }
 
-fn write_min_config_with_local_ai_disabled(openhuman_dir: &Path, api_origin: &str) {
+fn write_min_config_with_local_ai_disabled(aura_dir: &Path, api_origin: &str) {
     let cfg = format!(
         r#"api_url = "{api_origin}"
 default_model = "e2e-mock-model"
@@ -864,21 +864,21 @@ enabled = false
 "#
     );
     fn write_config_file(config_dir: &Path, cfg: &str) {
-        std::fs::create_dir_all(config_dir).expect("mkdir openhuman");
+        std::fs::create_dir_all(config_dir).expect("mkdir aura");
         let path = config_dir.join("config.toml");
         std::fs::write(&path, cfg).expect("write config");
     }
 
-    write_config_file(openhuman_dir, &cfg);
+    write_config_file(aura_dir, &cfg);
 
-    if openhuman_dir
+    if aura_dir
         .file_name()
-        .is_some_and(|name| name == std::ffi::OsStr::new(".openhuman"))
+        .is_some_and(|name| name == std::ffi::OsStr::new(".aura"))
     {
-        write_config_file(&openhuman_dir.join("users").join("local"), &cfg);
+        write_config_file(&aura_dir.join("users").join("local"), &cfg);
     }
 
-    let _: openhuman_core::openhuman::config::Config =
+    let _: aura_core::aura::config::Config =
         toml::from_str(&cfg).expect("config toml must match Config schema");
 }
 
@@ -889,7 +889,7 @@ fn ensure_test_rpc_auth() {
         // multi-threaded contexts; the OnceLock guard limits the mutation to a
         // single call at init time, before any concurrent env reads occur.
         unsafe { std::env::set_var(CORE_TOKEN_ENV_VAR, TEST_RPC_TOKEN) };
-        let token_dir = std::env::temp_dir().join("openhuman-json-rpc-e2e-auth");
+        let token_dir = std::env::temp_dir().join("aura-json-rpc-e2e-auth");
         init_rpc_token(&token_dir).expect("init rpc auth token for json_rpc_e2e");
     });
 }
@@ -899,10 +899,10 @@ async fn json_rpc_protocol_auth_and_agent_hello() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     // Always use the in-process Axum mock for /settings + /openai so this test does not pick up
     // BACKEND_URL/VITE_BACKEND_URL from the developer shell (e.g. mock-api that returns 401 for
     // the synthetic JWT used below).
@@ -912,12 +912,12 @@ async fn json_rpc_protocol_auth_and_agent_hello() {
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
 
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     // Pre-create the user-scoped config directory so that when store_session
     // activates user "e2e-user" and reloads config, it finds the correct
     // api_url and secrets.encrypt=false (rather than defaults).
-    let user_scoped_dir = openhuman_home.join("users").join("e2e-user");
+    let user_scoped_dir = aura_home.join("users").join("e2e-user");
     write_min_config(&user_scoped_dir, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
@@ -938,7 +938,7 @@ async fn json_rpc_protocol_auth_and_agent_hello() {
     );
 
     // --- auth: session state (no JWT yet) ---
-    let state_before = post_json_rpc(&rpc_base, 3, "openhuman.auth_get_state", json!({})).await;
+    let state_before = post_json_rpc(&rpc_base, 3, "aura.auth_get_state", json!({})).await;
     let state_outer = assert_no_jsonrpc_error(&state_before, "get_state");
     let state_body = state_outer.get("result").unwrap_or(state_outer);
     assert!(
@@ -950,7 +950,7 @@ async fn json_rpc_protocol_auth_and_agent_hello() {
     let store = post_json_rpc(
         &rpc_base,
         4,
-        "openhuman.auth_store_session",
+        "aura.auth_store_session",
         json!({
             "token": "e2e-test-jwt",
             "user_id": "e2e-user"
@@ -963,7 +963,7 @@ async fn json_rpc_protocol_auth_and_agent_hello() {
     let chat = post_json_rpc(
         &rpc_base,
         5,
-        "openhuman.local_ai_agent_chat",
+        "aura.local_ai_agent_chat",
         json!({
             "message": "Hello",
         }),
@@ -985,7 +985,7 @@ async fn json_rpc_protocol_auth_and_agent_hello() {
     let web_chat = post_json_rpc(
         &rpc_base,
         6,
-        "openhuman.channel_web_chat",
+        "aura.channel_web_chat",
         json!({
             "client_id": client_id,
             "thread_id": thread_id,
@@ -1030,18 +1030,18 @@ async fn json_rpc_prompt_injection_is_rejected_before_model_call() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
-    let _api_url_guard = EnvVarGuard::unset("OPENHUMAN_API_URL");
+    let _api_url_guard = EnvVarGuard::unset("AURA_API_URL");
 
     let (api_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let api_origin = format!("http://{api_addr}");
-    write_min_config(openhuman_home.as_path(), &api_origin);
-    let user_scoped_dir = openhuman_home.join("users").join("e2e-user");
+    write_min_config(aura_home.as_path(), &api_origin);
+    let user_scoped_dir = aura_home.join("users").join("e2e-user");
     write_min_config(&user_scoped_dir, &api_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
@@ -1050,7 +1050,7 @@ async fn json_rpc_prompt_injection_is_rejected_before_model_call() {
     let store = post_json_rpc(
         &rpc_base,
         4001,
-        "openhuman.auth_store_session",
+        "aura.auth_store_session",
         json!({
             "token": "e2e-test-jwt",
             "user_id": "e2e-user"
@@ -1065,7 +1065,7 @@ async fn json_rpc_prompt_injection_is_rejected_before_model_call() {
     let blocked_web = post_json_rpc(
         &rpc_base,
         4002,
-        "openhuman.channel_web_chat",
+        "aura.channel_web_chat",
         json!({
             "client_id": "pi-client",
             "thread_id": "pi-thread",
@@ -1089,7 +1089,7 @@ async fn json_rpc_prompt_injection_is_rejected_before_model_call() {
     let blocked_agent = post_json_rpc(
         &rpc_base,
         4003,
-        "openhuman.local_ai_agent_chat",
+        "aura.local_ai_agent_chat",
         json!({
             "message": payload,
             "model_override": "e2e-mock-model",
@@ -1123,17 +1123,17 @@ async fn json_rpc_thread_labels_create_and_update() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
-    let _api_url_guard = EnvVarGuard::unset("OPENHUMAN_API_URL");
+    let _api_url_guard = EnvVarGuard::unset("AURA_API_URL");
 
     let (api_addr, api_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let api_origin = format!("http://{api_addr}");
-    write_min_config(openhuman_home.as_path(), &api_origin);
+    write_min_config(aura_home.as_path(), &api_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{rpc_addr}");
@@ -1142,7 +1142,7 @@ async fn json_rpc_thread_labels_create_and_update() {
     let create = post_json_rpc(
         &rpc_base,
         9001,
-        "openhuman.threads_create_new",
+        "aura.threads_create_new",
         json!({ "labels": ["custom"] }),
     )
     .await;
@@ -1171,7 +1171,7 @@ async fn json_rpc_thread_labels_create_and_update() {
     let update = post_json_rpc(
         &rpc_base,
         9002,
-        "openhuman.threads_update_labels",
+        "aura.threads_update_labels",
         json!({ "thread_id": thread_id, "labels": ["work", "briefing"] }),
     )
     .await;
@@ -1193,7 +1193,7 @@ async fn json_rpc_thread_labels_create_and_update() {
     );
 
     // 3. Verify the updated labels are reflected in threads_list.
-    let list = post_json_rpc(&rpc_base, 9003, "openhuman.threads_list", json!({})).await;
+    let list = post_json_rpc(&rpc_base, 9003, "aura.threads_list", json!({})).await;
     let list_outer = assert_no_jsonrpc_error(&list, "threads_list after label update");
     let list_result = list_outer
         .get("data")
@@ -1228,31 +1228,31 @@ async fn json_rpc_meetings_create_transcript_and_finish_lifecycle() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    // `EnvVarGuard::unset("OPENHUMAN_WORKSPACE")` plus the `HOME` override above
+    // `EnvVarGuard::unset("AURA_WORKSPACE")` plus the `HOME` override above
     // is the pattern used elsewhere in this file, but it does not actually
     // isolate storage on Windows: `directories::UserDirs::home_dir()` (used by
-    // `default_root_openhuman_dir`) resolves via `SHGetKnownFolderPath`, which
+    // `default_root_aura_dir`) resolves via `SHGetKnownFolderPath`, which
     // ignores the `HOME` env var entirely on that platform. Without this
     // override, this test silently wrote its meetings into the real,
-    // developer-machine `~/.openhuman` workspace instead of the tempdir.
-    // `OPENHUMAN_WORKSPACE` is checked directly as an env var by
+    // developer-machine `~/.aura` workspace instead of the tempdir.
+    // `AURA_WORKSPACE` is checked directly as an env var by
     // `resolve_runtime_config_dirs_with` (step 1, "always wins") before any
-    // OS-level home-directory lookup, so pointing it at `openhuman_home` here
+    // OS-level home-directory lookup, so pointing it at `aura_home` here
     // (the same dir `write_min_config` below writes `config.toml` into)
     // achieves real isolation on every platform, not just the ones where the
     // `HOME` trick happens to work.
     let _workspace_guard =
-        EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", openhuman_home.as_path());
+        EnvVarGuard::set_to_path("AURA_WORKSPACE", aura_home.as_path());
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
-    let _api_url_guard = EnvVarGuard::unset("OPENHUMAN_API_URL");
+    let _api_url_guard = EnvVarGuard::unset("AURA_API_URL");
 
     let (api_addr, api_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let api_origin = format!("http://{api_addr}");
-    write_min_config(openhuman_home.as_path(), &api_origin);
+    write_min_config(aura_home.as_path(), &api_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{rpc_addr}");
@@ -1261,7 +1261,7 @@ async fn json_rpc_meetings_create_transcript_and_finish_lifecycle() {
     let create = post_json_rpc(
         &rpc_base,
         9101,
-        "openhuman.meetings_create",
+        "aura.meetings_create",
         json!({ "title": "Sprint planning", "source": "manual" }),
     )
     .await;
@@ -1287,7 +1287,7 @@ async fn json_rpc_meetings_create_transcript_and_finish_lifecycle() {
     let chunk1 = post_json_rpc(
         &rpc_base,
         9102,
-        "openhuman.meetings_append_transcript_chunk",
+        "aura.meetings_append_transcript_chunk",
         json!({
             "meeting_id": meeting_id,
             "start_ms": 0,
@@ -1302,7 +1302,7 @@ async fn json_rpc_meetings_create_transcript_and_finish_lifecycle() {
     let chunk2 = post_json_rpc(
         &rpc_base,
         9103,
-        "openhuman.meetings_append_transcript_chunk",
+        "aura.meetings_append_transcript_chunk",
         json!({
             "meeting_id": meeting_id,
             "start_ms": 4000,
@@ -1318,7 +1318,7 @@ async fn json_rpc_meetings_create_transcript_and_finish_lifecycle() {
     let get = post_json_rpc(
         &rpc_base,
         9104,
-        "openhuman.meetings_get",
+        "aura.meetings_get",
         json!({ "meeting_id": meeting_id }),
     )
     .await;
@@ -1351,7 +1351,7 @@ async fn json_rpc_meetings_create_transcript_and_finish_lifecycle() {
     let finish = post_json_rpc(
         &rpc_base,
         9105,
-        "openhuman.meetings_finish",
+        "aura.meetings_finish",
         json!({ "meeting_id": meeting_id, "duration_ms": 9000 }),
     )
     .await;
@@ -1369,7 +1369,7 @@ async fn json_rpc_meetings_create_transcript_and_finish_lifecycle() {
     );
 
     // 5. List meetings and verify the completed status is reflected.
-    let list = post_json_rpc(&rpc_base, 9106, "openhuman.meetings_list", json!({})).await;
+    let list = post_json_rpc(&rpc_base, 9106, "aura.meetings_list", json!({})).await;
     let list_outer = assert_no_jsonrpc_error(&list, "meetings_list");
     let meetings = list_outer
         .get("result")
@@ -1393,24 +1393,24 @@ async fn json_rpc_meetings_search_finds_matching_chunk() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
     // See the identical comment in `json_rpc_meetings_create_transcript_and_finish_lifecycle`:
     // `HOME` alone does not isolate storage on Windows (`directories::UserDirs`
     // ignores it there), so this test was silently writing into the real
-    // developer `~/.openhuman` workspace. `OPENHUMAN_WORKSPACE` is a plain env
+    // developer `~/.aura` workspace. `AURA_WORKSPACE` is a plain env
     // var read directly by `resolve_runtime_config_dirs_with`, bypassing OS
     // home-directory resolution entirely.
     let _workspace_guard =
-        EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", openhuman_home.as_path());
+        EnvVarGuard::set_to_path("AURA_WORKSPACE", aura_home.as_path());
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
-    let _api_url_guard = EnvVarGuard::unset("OPENHUMAN_API_URL");
+    let _api_url_guard = EnvVarGuard::unset("AURA_API_URL");
 
     let (api_addr, api_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let api_origin = format!("http://{api_addr}");
-    write_min_config(openhuman_home.as_path(), &api_origin);
+    write_min_config(aura_home.as_path(), &api_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{rpc_addr}");
@@ -1419,7 +1419,7 @@ async fn json_rpc_meetings_search_finds_matching_chunk() {
     let create = post_json_rpc(
         &rpc_base,
         9111,
-        "openhuman.meetings_create",
+        "aura.meetings_create",
         json!({ "title": "Search target meeting", "source": "manual" }),
     )
     .await;
@@ -1437,7 +1437,7 @@ async fn json_rpc_meetings_search_finds_matching_chunk() {
     let chunk1 = post_json_rpc(
         &rpc_base,
         9112,
-        "openhuman.meetings_append_transcript_chunk",
+        "aura.meetings_append_transcript_chunk",
         json!({
             "meeting_id": meeting_id,
             "start_ms": 0,
@@ -1452,7 +1452,7 @@ async fn json_rpc_meetings_search_finds_matching_chunk() {
     let chunk2 = post_json_rpc(
         &rpc_base,
         9113,
-        "openhuman.meetings_append_transcript_chunk",
+        "aura.meetings_append_transcript_chunk",
         json!({
             "meeting_id": meeting_id,
             "start_ms": 4000,
@@ -1468,7 +1468,7 @@ async fn json_rpc_meetings_search_finds_matching_chunk() {
     let search = post_json_rpc(
         &rpc_base,
         9114,
-        "openhuman.meetings_search",
+        "aura.meetings_search",
         json!({ "query": "onboarding" }),
     )
     .await;
@@ -1503,7 +1503,7 @@ async fn json_rpc_meetings_search_finds_matching_chunk() {
     let empty_search = post_json_rpc(
         &rpc_base,
         9115,
-        "openhuman.meetings_search",
+        "aura.meetings_search",
         json!({ "query": "   " }),
     )
     .await;
@@ -1526,20 +1526,20 @@ async fn json_rpc_meetings_export_pdf_and_docx_write_files() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
     // See the comment in `json_rpc_meetings_create_transcript_and_finish_lifecycle`:
     // `HOME` alone does not isolate storage on Windows.
     let _workspace_guard =
-        EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", openhuman_home.as_path());
+        EnvVarGuard::set_to_path("AURA_WORKSPACE", aura_home.as_path());
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
-    let _api_url_guard = EnvVarGuard::unset("OPENHUMAN_API_URL");
+    let _api_url_guard = EnvVarGuard::unset("AURA_API_URL");
 
     let (api_addr, api_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let api_origin = format!("http://{api_addr}");
-    write_min_config(openhuman_home.as_path(), &api_origin);
+    write_min_config(aura_home.as_path(), &api_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{rpc_addr}");
@@ -1547,7 +1547,7 @@ async fn json_rpc_meetings_export_pdf_and_docx_write_files() {
     let create = post_json_rpc(
         &rpc_base,
         9121,
-        "openhuman.meetings_create",
+        "aura.meetings_create",
         json!({ "title": "Export test meeting", "source": "manual" }),
     )
     .await;
@@ -1562,7 +1562,7 @@ async fn json_rpc_meetings_export_pdf_and_docx_write_files() {
     let chunk = post_json_rpc(
         &rpc_base,
         9122,
-        "openhuman.meetings_append_transcript_chunk",
+        "aura.meetings_append_transcript_chunk",
         json!({
             "meeting_id": meeting_id,
             "start_ms": 0,
@@ -1578,7 +1578,7 @@ async fn json_rpc_meetings_export_pdf_and_docx_write_files() {
         let export = post_json_rpc(
             &rpc_base,
             9123,
-            "openhuman.meetings_export",
+            "aura.meetings_export",
             json!({ "meeting_id": meeting_id, "format": format }),
         )
         .await;
@@ -1601,7 +1601,7 @@ async fn json_rpc_meetings_export_pdf_and_docx_write_files() {
     let bad_format = post_json_rpc(
         &rpc_base,
         9124,
-        "openhuman.meetings_export",
+        "aura.meetings_export",
         json!({ "meeting_id": meeting_id, "format": "txt" }),
     )
     .await;
@@ -1623,10 +1623,10 @@ async fn json_rpc_meetings_export_pdf_and_docx_write_files() {
 /// DejaVu Sans Mono, vendored from `alexheretic/ab-glyph`'s own `dev/fonts`
 /// test fixtures (Bitstream Vera / DejaVu license — permissive,
 /// redistributable) — same fixture used by
-/// `openhuman::meetings::ocr_tests`. Used only to render a synthetic PNG
+/// `aura::meetings::ocr_tests`. Used only to render a synthetic PNG
 /// with known text for this test; never shipped in the product build.
 const MEETINGS_SCREENSHOT_TEST_FONT: &[u8] =
-    include_bytes!("../src/openhuman/meetings/test_fixtures/DejaVuSansMono.ttf");
+    include_bytes!("../src/aura/meetings/test_fixtures/DejaVuSansMono.ttf");
 
 /// Renders a small PNG containing `text` and returns it base64-encoded, for
 /// exercising `meetings_append_screenshot`'s OCR pipeline end-to-end.
@@ -1656,20 +1656,20 @@ async fn json_rpc_meetings_append_screenshot_writes_file_and_runs_ocr() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
     // See the comment in `json_rpc_meetings_create_transcript_and_finish_lifecycle`:
     // `HOME` alone does not isolate storage on Windows.
     let _workspace_guard =
-        EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", openhuman_home.as_path());
+        EnvVarGuard::set_to_path("AURA_WORKSPACE", aura_home.as_path());
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
-    let _api_url_guard = EnvVarGuard::unset("OPENHUMAN_API_URL");
+    let _api_url_guard = EnvVarGuard::unset("AURA_API_URL");
 
     let (api_addr, api_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let api_origin = format!("http://{api_addr}");
-    write_min_config(openhuman_home.as_path(), &api_origin);
+    write_min_config(aura_home.as_path(), &api_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{rpc_addr}");
@@ -1678,7 +1678,7 @@ async fn json_rpc_meetings_append_screenshot_writes_file_and_runs_ocr() {
     let create = post_json_rpc(
         &rpc_base,
         9131,
-        "openhuman.meetings_create",
+        "aura.meetings_create",
         json!({ "title": "Slides meeting", "source": "manual" }),
     )
     .await;
@@ -1695,7 +1695,7 @@ async fn json_rpc_meetings_append_screenshot_writes_file_and_runs_ocr() {
     let append = post_json_rpc(
         &rpc_base,
         9132,
-        "openhuman.meetings_append_screenshot",
+        "aura.meetings_append_screenshot",
         json!({
             "meeting_id": meeting_id,
             "captured_at_ms": 20_000,
@@ -1736,7 +1736,7 @@ async fn json_rpc_meetings_append_screenshot_writes_file_and_runs_ocr() {
     let get = post_json_rpc(
         &rpc_base,
         9133,
-        "openhuman.meetings_get",
+        "aura.meetings_get",
         json!({ "meeting_id": meeting_id }),
     )
     .await;
@@ -1762,7 +1762,7 @@ async fn json_rpc_meetings_append_screenshot_writes_file_and_runs_ocr() {
     let finish = post_json_rpc(
         &rpc_base,
         9134,
-        "openhuman.meetings_finish",
+        "aura.meetings_finish",
         json!({ "meeting_id": meeting_id, "duration_ms": 20_000 }),
     )
     .await;
@@ -1771,7 +1771,7 @@ async fn json_rpc_meetings_append_screenshot_writes_file_and_runs_ocr() {
     let rejected = post_json_rpc(
         &rpc_base,
         9135,
-        "openhuman.meetings_append_screenshot",
+        "aura.meetings_append_screenshot",
         json!({
             "meeting_id": meeting_id,
             "captured_at_ms": 30_000,
@@ -1798,17 +1798,17 @@ async fn json_rpc_thread_not_found_errors_are_structured() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
-    let _api_url_guard = EnvVarGuard::unset("OPENHUMAN_API_URL");
+    let _api_url_guard = EnvVarGuard::unset("AURA_API_URL");
 
     let (api_addr, api_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let api_origin = format!("http://{api_addr}");
-    write_min_config(openhuman_home.as_path(), &api_origin);
+    write_min_config(aura_home.as_path(), &api_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{rpc_addr}");
@@ -1817,7 +1817,7 @@ async fn json_rpc_thread_not_found_errors_are_structured() {
     let append = post_json_rpc(
         &rpc_base,
         9011,
-        "openhuman.threads_message_append",
+        "aura.threads_message_append",
         json!({
             "thread_id": thread_id,
             "message": {
@@ -1847,7 +1847,7 @@ async fn json_rpc_thread_not_found_errors_are_structured() {
     let title = post_json_rpc(
         &rpc_base,
         9012,
-        "openhuman.threads_generate_title",
+        "aura.threads_generate_title",
         json!({ "thread_id": thread_id }),
     )
     .await;
@@ -1865,25 +1865,25 @@ async fn json_rpc_thread_generate_title_falls_back_when_provider_path_is_unavail
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
-    let _api_url_guard = EnvVarGuard::unset("OPENHUMAN_API_URL");
+    let _api_url_guard = EnvVarGuard::unset("AURA_API_URL");
 
     with_chat_completion_models(|models| models.clear());
     with_chat_completion_requests(|requests| requests.clear());
 
     let (api_addr, api_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let api_origin = format!("http://{api_addr}");
-    write_min_config(openhuman_home.as_path(), &api_origin);
+    write_min_config(aura_home.as_path(), &api_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{rpc_addr}");
 
-    let create = post_json_rpc(&rpc_base, 9013, "openhuman.threads_create_new", json!({})).await;
+    let create = post_json_rpc(&rpc_base, 9013, "aura.threads_create_new", json!({})).await;
     let create_outer = assert_no_jsonrpc_error(&create, "threads_create_new");
     let created = create_outer
         .get("data")
@@ -1901,7 +1901,7 @@ async fn json_rpc_thread_generate_title_falls_back_when_provider_path_is_unavail
     let user_append = post_json_rpc(
         &rpc_base,
         9014,
-        "openhuman.threads_message_append",
+        "aura.threads_message_append",
         json!({
             "thread_id": thread_id,
             "message": {
@@ -1920,7 +1920,7 @@ async fn json_rpc_thread_generate_title_falls_back_when_provider_path_is_unavail
     let agent_append = post_json_rpc(
         &rpc_base,
         9015,
-        "openhuman.threads_message_append",
+        "aura.threads_message_append",
         json!({
             "thread_id": thread_id,
             "message": {
@@ -1939,7 +1939,7 @@ async fn json_rpc_thread_generate_title_falls_back_when_provider_path_is_unavail
     let title = post_json_rpc(
         &rpc_base,
         9016,
-        "openhuman.threads_generate_title",
+        "aura.threads_generate_title",
         json!({ "thread_id": thread_id }),
     )
     .await;
@@ -1973,17 +1973,17 @@ async fn json_rpc_thread_turn_state_lifecycle() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
-    let _api_url_guard = EnvVarGuard::unset("OPENHUMAN_API_URL");
+    let _api_url_guard = EnvVarGuard::unset("AURA_API_URL");
 
     let (api_addr, api_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let api_origin = format!("http://{api_addr}");
-    write_min_config(openhuman_home.as_path(), &api_origin);
+    write_min_config(aura_home.as_path(), &api_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{rpc_addr}");
@@ -1992,7 +1992,7 @@ async fn json_rpc_thread_turn_state_lifecycle() {
     let empty_list = post_json_rpc(
         &rpc_base,
         9101,
-        "openhuman.threads_turn_state_list",
+        "aura.threads_turn_state_list",
         json!({}),
     )
     .await;
@@ -2008,28 +2008,28 @@ async fn json_rpc_thread_turn_state_lifecycle() {
     // Drop a snapshot directly through the store — this is exactly what
     // the web-channel progress mirror does mid-turn.
     let workspace_dir = {
-        let cfg = openhuman_core::openhuman::config::Config::load_or_init()
+        let cfg = aura_core::aura::config::Config::load_or_init()
             .await
             .expect("load config");
         cfg.workspace_dir
     };
-    let mut state = openhuman_core::openhuman::threads::turn_state::TurnState::started(
+    let mut state = aura_core::aura::threads::turn_state::TurnState::started(
         "thread-turn-1",
         "req-turn-1",
         25,
         chrono::Utc::now().to_rfc3339(),
     );
-    state.lifecycle = openhuman_core::openhuman::threads::turn_state::TurnLifecycle::Streaming;
+    state.lifecycle = aura_core::aura::threads::turn_state::TurnLifecycle::Streaming;
     state.iteration = 2;
     state.streaming_text = "partial".into();
-    openhuman_core::openhuman::threads::turn_state::store::put(workspace_dir.clone(), &state)
+    aura_core::aura::threads::turn_state::store::put(workspace_dir.clone(), &state)
         .expect("seed snapshot");
 
     // get → present
     let got = post_json_rpc(
         &rpc_base,
         9102,
-        "openhuman.threads_turn_state_get",
+        "aura.threads_turn_state_get",
         json!({ "thread_id": "thread-turn-1" }),
     )
     .await;
@@ -2055,7 +2055,7 @@ async fn json_rpc_thread_turn_state_lifecycle() {
     let list = post_json_rpc(
         &rpc_base,
         9103,
-        "openhuman.threads_turn_state_list",
+        "aura.threads_turn_state_list",
         json!({}),
     )
     .await;
@@ -2072,7 +2072,7 @@ async fn json_rpc_thread_turn_state_lifecycle() {
     let cleared = post_json_rpc(
         &rpc_base,
         9104,
-        "openhuman.threads_turn_state_clear",
+        "aura.threads_turn_state_clear",
         json!({ "thread_id": "thread-turn-1" }),
     )
     .await;
@@ -2089,7 +2089,7 @@ async fn json_rpc_thread_turn_state_lifecycle() {
     let got_again = post_json_rpc(
         &rpc_base,
         9105,
-        "openhuman.threads_turn_state_get",
+        "aura.threads_turn_state_get",
         json!({ "thread_id": "thread-turn-1" }),
     )
     .await;
@@ -2109,19 +2109,19 @@ async fn json_rpc_memory_sync_and_learn() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
-    let _embed_strict_guard = EnvVarGuard::set("OPENHUMAN_MEMORY_EMBED_STRICT", "false");
-    let _embed_endpoint_guard = EnvVarGuard::set("OPENHUMAN_MEMORY_EMBED_ENDPOINT", "");
-    let _embed_model_guard = EnvVarGuard::set("OPENHUMAN_MEMORY_EMBED_MODEL", "");
+    let _embed_strict_guard = EnvVarGuard::set("AURA_MEMORY_EMBED_STRICT", "false");
+    let _embed_endpoint_guard = EnvVarGuard::set("AURA_MEMORY_EMBED_ENDPOINT", "");
+    let _embed_model_guard = EnvVarGuard::set("AURA_MEMORY_EMBED_MODEL", "");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{rpc_addr}");
@@ -2129,7 +2129,7 @@ async fn json_rpc_memory_sync_and_learn() {
     tokio::time::sleep(Duration::from_millis(100)).await;
 
     // ── memory_sync_all: returns requested:true ──────────────────────────────
-    let sync_all = post_json_rpc(&rpc_base, 7001, "openhuman.memory_sync_all", json!({})).await;
+    let sync_all = post_json_rpc(&rpc_base, 7001, "aura.memory_sync_all", json!({})).await;
     let sync_all_result = assert_no_jsonrpc_error(&sync_all, "memory_sync_all");
     assert_eq!(
         sync_all_result.get("requested"),
@@ -2141,7 +2141,7 @@ async fn json_rpc_memory_sync_and_learn() {
     let sync_ch = post_json_rpc(
         &rpc_base,
         7002,
-        "openhuman.memory_sync_channel",
+        "aura.memory_sync_channel",
         json!({ "channel_id": "test-channel-abc" }),
     )
     .await;
@@ -2158,18 +2158,18 @@ async fn json_rpc_memory_sync_and_learn() {
     );
 
     // ── memory_sync_channel: missing channel_id returns a JSON-RPC error ────
-    let sync_bad = post_json_rpc(&rpc_base, 7003, "openhuman.memory_sync_channel", json!({})).await;
+    let sync_bad = post_json_rpc(&rpc_base, 7003, "aura.memory_sync_channel", json!({})).await;
     assert!(
         sync_bad.get("error").is_some(),
         "missing channel_id must return an error, got: {sync_bad}"
     );
 
     // ── memory.init: explicit one-shot bootstrap (no auto-init fallback) ────
-    let init_resp = post_json_rpc(&rpc_base, 7003, "openhuman.memory_init", json!({})).await;
+    let init_resp = post_json_rpc(&rpc_base, 7003, "aura.memory_init", json!({})).await;
     assert_no_jsonrpc_error(&init_resp, "memory_init");
 
     // ── memory_learn_all: no namespaces → zero processed (empty store) ──────
-    let learn_all = post_json_rpc(&rpc_base, 7004, "openhuman.memory_learn_all", json!({})).await;
+    let learn_all = post_json_rpc(&rpc_base, 7004, "aura.memory_learn_all", json!({})).await;
     let learn_result = assert_no_jsonrpc_error(&learn_all, "memory_learn_all");
     let processed = learn_result
         .get("namespaces_processed")
@@ -2189,7 +2189,7 @@ async fn json_rpc_memory_sync_and_learn() {
     let learn_constrained = post_json_rpc(
         &rpc_base,
         7005,
-        "openhuman.memory_learn_all",
+        "aura.memory_learn_all",
         json!({ "namespaces": ["does-not-exist"] }),
     )
     .await;
@@ -2207,7 +2207,7 @@ async fn json_rpc_memory_sync_and_learn() {
     let ing_status = post_json_rpc(
         &rpc_base,
         7006,
-        "openhuman.memory_ingestion_status",
+        "aura.memory_ingestion_status",
         json!({}),
     )
     .await;
@@ -2232,10 +2232,10 @@ async fn json_rpc_memory_tree_end_to_end() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
     // Phase 4 (#710): disable strict embedding so ingest falls back to the
@@ -2243,13 +2243,13 @@ async fn json_rpc_memory_tree_end_to_end() {
     // CI has no local Ollama; without this the `memory_tree_ingest` call
     // would fail with `embed chunk_id=<id> during ingest` before writing
     // any chunks.
-    let _embed_strict_guard = EnvVarGuard::set("OPENHUMAN_MEMORY_EMBED_STRICT", "false");
-    let _embed_endpoint_guard = EnvVarGuard::set("OPENHUMAN_MEMORY_EMBED_ENDPOINT", "");
-    let _embed_model_guard = EnvVarGuard::set("OPENHUMAN_MEMORY_EMBED_MODEL", "");
+    let _embed_strict_guard = EnvVarGuard::set("AURA_MEMORY_EMBED_STRICT", "false");
+    let _embed_endpoint_guard = EnvVarGuard::set("AURA_MEMORY_EMBED_ENDPOINT", "");
+    let _embed_model_guard = EnvVarGuard::set("AURA_MEMORY_EMBED_MODEL", "");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let controllers = all_memory_tree_registered_controllers();
     // Sampled methods this test exercises end-to-end. Don't pin
@@ -2259,10 +2259,10 @@ async fn json_rpc_memory_tree_end_to_end() {
     // and adding a new RPC shouldn't break this smoke test. We just
     // assert the four sampled methods exercised below are registered.
     let expected_methods = vec![
-        "openhuman.memory_tree_ingest".to_string(),
-        "openhuman.memory_tree_list_chunks".to_string(),
-        "openhuman.memory_tree_get_chunk".to_string(),
-        "openhuman.memory_tree_trigger_digest".to_string(),
+        "aura.memory_tree_ingest".to_string(),
+        "aura.memory_tree_list_chunks".to_string(),
+        "aura.memory_tree_get_chunk".to_string(),
+        "aura.memory_tree_trigger_digest".to_string(),
     ];
     assert!(
         controllers.len() >= expected_methods.len(),
@@ -2414,18 +2414,18 @@ async fn json_rpc_web_chat_routing_cases_use_expected_backend_models() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
 
-    write_min_config_with_local_ai_disabled(&openhuman_home, &mock_origin);
-    let user_scoped_dir = openhuman_home.join("users").join("e2e-user");
+    write_min_config_with_local_ai_disabled(&aura_home, &mock_origin);
+    let user_scoped_dir = aura_home.join("users").join("e2e-user");
     write_min_config_with_local_ai_disabled(&user_scoped_dir, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
@@ -2435,7 +2435,7 @@ async fn json_rpc_web_chat_routing_cases_use_expected_backend_models() {
     let store = post_json_rpc(
         &rpc_base,
         1,
-        "openhuman.auth_store_session",
+        "aura.auth_store_session",
         json!({
             "token": "e2e-test-jwt",
             "user_id": "e2e-user"
@@ -2466,7 +2466,7 @@ async fn json_rpc_web_chat_routing_cases_use_expected_backend_models() {
         let web_chat = post_json_rpc(
             &rpc_base,
             100 + idx as i64,
-            "openhuman.channel_web_chat",
+            "aura.channel_web_chat",
             json!({
                 "client_id": client_id,
                 "thread_id": thread_id,
@@ -2527,18 +2527,18 @@ async fn json_rpc_web_chat_custom_reasoning_provider_uses_stored_key_and_rebuild
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
 
-    write_min_config_with_local_ai_disabled(&openhuman_home, &mock_origin);
-    let user_scoped_dir = openhuman_home.join("users").join("e2e-user");
+    write_min_config_with_local_ai_disabled(&aura_home, &mock_origin);
+    let user_scoped_dir = aura_home.join("users").join("e2e-user");
     write_min_config_with_local_ai_disabled(&user_scoped_dir, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
@@ -2548,7 +2548,7 @@ async fn json_rpc_web_chat_custom_reasoning_provider_uses_stored_key_and_rebuild
     let store = post_json_rpc(
         &rpc_base,
         6001,
-        "openhuman.auth_store_session",
+        "aura.auth_store_session",
         json!({
             "token": "e2e-test-jwt",
             "user_id": "e2e-user"
@@ -2560,7 +2560,7 @@ async fn json_rpc_web_chat_custom_reasoning_provider_uses_stored_key_and_rebuild
     let update = post_json_rpc(
         &rpc_base,
         6002,
-        "openhuman.update_model_settings",
+        "aura.update_model_settings",
         json!({
             "cloud_providers": [{
                 "id": "p_openai_1",
@@ -2578,7 +2578,7 @@ async fn json_rpc_web_chat_custom_reasoning_provider_uses_stored_key_and_rebuild
     let store_provider = post_json_rpc(
         &rpc_base,
         6003,
-        "openhuman.auth_store_provider_credentials",
+        "aura.auth_store_provider_credentials",
         json!({
             "provider": "provider:openai",
             "profile": "default",
@@ -2601,7 +2601,7 @@ async fn json_rpc_web_chat_custom_reasoning_provider_uses_stored_key_and_rebuild
     let accepted = post_json_rpc(
         &rpc_base,
         6004,
-        "openhuman.channel_web_chat",
+        "aura.channel_web_chat",
         json!({
             "client_id": client_id,
             "thread_id": thread_id,
@@ -2645,7 +2645,7 @@ async fn json_rpc_web_chat_custom_reasoning_provider_uses_stored_key_and_rebuild
     let update_again = post_json_rpc(
         &rpc_base,
         6005,
-        "openhuman.update_model_settings",
+        "aura.update_model_settings",
         json!({
             "reasoning_provider": "openai:gpt-4.1-nano"
         }),
@@ -2659,7 +2659,7 @@ async fn json_rpc_web_chat_custom_reasoning_provider_uses_stored_key_and_rebuild
     let accepted = post_json_rpc(
         &rpc_base,
         6006,
-        "openhuman.channel_web_chat",
+        "aura.channel_web_chat",
         json!({
             "client_id": client_id,
             "thread_id": thread_id,
@@ -2703,7 +2703,7 @@ async fn json_rpc_web_chat_custom_reasoning_provider_uses_stored_key_and_rebuild
     let accepted = post_json_rpc(
         &rpc_base,
         6007,
-        "openhuman.channel_web_chat",
+        "aura.channel_web_chat",
         json!({
             "client_id": client_id,
             "thread_id": thread_id,
@@ -2752,18 +2752,18 @@ async fn json_rpc_web_chat_custom_reasoning_provider_with_auth_none_omits_auth_h
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
 
-    write_min_config_with_local_ai_disabled(&openhuman_home, &mock_origin);
-    let user_scoped_dir = openhuman_home.join("users").join("e2e-user");
+    write_min_config_with_local_ai_disabled(&aura_home, &mock_origin);
+    let user_scoped_dir = aura_home.join("users").join("e2e-user");
     write_min_config_with_local_ai_disabled(&user_scoped_dir, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
@@ -2773,7 +2773,7 @@ async fn json_rpc_web_chat_custom_reasoning_provider_with_auth_none_omits_auth_h
     let store = post_json_rpc(
         &rpc_base,
         6101,
-        "openhuman.auth_store_session",
+        "aura.auth_store_session",
         json!({
             "token": "e2e-test-jwt",
             "user_id": "e2e-user"
@@ -2785,7 +2785,7 @@ async fn json_rpc_web_chat_custom_reasoning_provider_with_auth_none_omits_auth_h
     let update = post_json_rpc(
         &rpc_base,
         6102,
-        "openhuman.update_model_settings",
+        "aura.update_model_settings",
         json!({
             "cloud_providers": [{
                 "id": "p_proxy_1",
@@ -2799,7 +2799,7 @@ async fn json_rpc_web_chat_custom_reasoning_provider_with_auth_none_omits_auth_h
     )
     .await;
     assert_no_jsonrpc_error(&update, "update_model_settings");
-    let cfg = post_json_rpc(&rpc_base, 6102_1, "openhuman.config_get", json!({})).await;
+    let cfg = post_json_rpc(&rpc_base, 6102_1, "aura.config_get", json!({})).await;
     let cfg_outer = assert_no_jsonrpc_error(&cfg, "config_get auth-none");
     let cfg_payload = cfg_outer.get("result").unwrap_or(&cfg_outer);
     let config = cfg_payload.get("config").unwrap_or(cfg_payload);
@@ -2814,10 +2814,10 @@ async fn json_rpc_web_chat_custom_reasoning_provider_with_auth_none_omits_auth_h
             .map(Vec::len),
         Some(1)
     );
-    let loaded_config = openhuman_core::openhuman::config::load_config_with_timeout()
+    let loaded_config = aura_core::aura::config::load_config_with_timeout()
         .await
         .expect("load_config after auth-none update");
-    let (provider, model) = openhuman_core::openhuman::inference::provider::create_chat_provider(
+    let (provider, model) = aura_core::aura::inference::provider::create_chat_provider(
         "reasoning",
         &loaded_config,
     )
@@ -2842,7 +2842,7 @@ async fn json_rpc_web_chat_custom_reasoning_provider_with_auth_none_omits_auth_h
     let accepted = post_json_rpc(
         &rpc_base,
         6103,
-        "openhuman.channel_web_chat",
+        "aura.channel_web_chat",
         json!({
             "client_id": client_id,
             "thread_id": thread_id,
@@ -2900,16 +2900,16 @@ async fn json_rpc_rejects_non_object_params_with_clear_error() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{}", rpc_addr);
@@ -2918,7 +2918,7 @@ async fn json_rpc_rejects_non_object_params_with_clear_error() {
     let invalid = post_json_rpc(
         &rpc_base,
         1001,
-        "openhuman.auth_get_state",
+        "aura.auth_get_state",
         json!(["invalid", "params"]),
     )
     .await;
@@ -2941,16 +2941,16 @@ async fn json_rpc_screen_intelligence_capture_test_returns_stable_shape() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{}", rpc_addr);
@@ -2959,7 +2959,7 @@ async fn json_rpc_screen_intelligence_capture_test_returns_stable_shape() {
     let capture = post_json_rpc(
         &rpc_base,
         1002,
-        "openhuman.screen_intelligence_capture_test",
+        "aura.screen_intelligence_capture_test",
         json!({}),
     )
     .await;
@@ -3023,16 +3023,16 @@ async fn json_rpc_screen_intelligence_status_returns_stable_shape() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{}", rpc_addr);
@@ -3041,7 +3041,7 @@ async fn json_rpc_screen_intelligence_status_returns_stable_shape() {
     let status = post_json_rpc(
         &rpc_base,
         1003,
-        "openhuman.screen_intelligence_status",
+        "aura.screen_intelligence_status",
         json!({}),
     )
     .await;
@@ -3117,22 +3117,22 @@ async fn json_rpc_app_state_snapshot_returns_runtime_shape() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{}", rpc_addr);
     tokio::time::sleep(Duration::from_millis(100)).await;
 
-    let snapshot = post_json_rpc(&rpc_base, 1004, "openhuman.app_state_snapshot", json!({})).await;
+    let snapshot = post_json_rpc(&rpc_base, 1004, "aura.app_state_snapshot", json!({})).await;
     let result = assert_no_jsonrpc_error(&snapshot, "app_state_snapshot");
     let body = result.get("result").unwrap_or(result);
 
@@ -3202,16 +3202,16 @@ async fn json_rpc_app_state_update_local_state_round_trips_into_snapshot() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{}", rpc_addr);
@@ -3220,7 +3220,7 @@ async fn json_rpc_app_state_update_local_state_round_trips_into_snapshot() {
     let update = post_json_rpc(
         &rpc_base,
         10041,
-        "openhuman.app_state_update_local_state",
+        "aura.app_state_update_local_state",
         json!({
             "encryptionKey": "  secret-key  ",
             "onboardingTasks": {
@@ -3238,7 +3238,7 @@ async fn json_rpc_app_state_update_local_state_round_trips_into_snapshot() {
         Some("secret-key")
     );
 
-    let snapshot = post_json_rpc(&rpc_base, 10042, "openhuman.app_state_snapshot", json!({})).await;
+    let snapshot = post_json_rpc(&rpc_base, 10042, "aura.app_state_snapshot", json!({})).await;
     let snapshot_result = assert_no_jsonrpc_error(&snapshot, "app_state_snapshot after update");
     let body = snapshot_result.get("result").unwrap_or(&snapshot_result);
     let local_state = body
@@ -3267,23 +3267,23 @@ async fn json_rpc_wallet_setup_round_trips_status() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{}", rpc_addr);
     tokio::time::sleep(Duration::from_millis(100)).await;
     let encrypted_mnemonic = encrypt_test_mnemonic().await;
 
-    let initial_status = post_json_rpc(&rpc_base, 1005, "openhuman.wallet_status", json!({})).await;
+    let initial_status = post_json_rpc(&rpc_base, 1005, "aura.wallet_status", json!({})).await;
     let initial_body = assert_no_jsonrpc_error(&initial_status, "wallet_status_initial");
     let initial_result = initial_body.get("result").unwrap_or(initial_body);
     assert_eq!(
@@ -3295,7 +3295,7 @@ async fn json_rpc_wallet_setup_round_trips_status() {
     let setup = post_json_rpc(
         &rpc_base,
         1006,
-        "openhuman.wallet_setup",
+        "aura.wallet_setup",
         json!({
             "consentGranted": true,
             "source": "generated",
@@ -3327,7 +3327,7 @@ async fn json_rpc_wallet_setup_round_trips_status() {
     );
 
     let persisted_status =
-        post_json_rpc(&rpc_base, 1007, "openhuman.wallet_status", json!({})).await;
+        post_json_rpc(&rpc_base, 1007, "aura.wallet_status", json!({})).await;
     let persisted_body = assert_no_jsonrpc_error(&persisted_status, "wallet_status_persisted");
     let persisted_result = persisted_body.get("result").unwrap_or(persisted_body);
     assert_eq!(
@@ -3374,24 +3374,24 @@ async fn json_rpc_wallet_execution_surface_round_trips() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
     let (wallet_rpc_addr, raw_txs) = start_mock_wallet_evm_rpc().await;
     let _evm_provider_guard = EnvVarGuard::set(
-        "OPENHUMAN_WALLET_RPC_EVM",
+        "AURA_WALLET_RPC_EVM",
         &format!("http://{wallet_rpc_addr}"),
     );
-    let _btc_provider_guard = EnvVarGuard::unset("OPENHUMAN_WALLET_RPC_BTC");
-    let _sol_provider_guard = EnvVarGuard::unset("OPENHUMAN_WALLET_RPC_SOLANA");
-    let _tron_provider_guard = EnvVarGuard::unset("OPENHUMAN_WALLET_RPC_TRON");
+    let _btc_provider_guard = EnvVarGuard::unset("AURA_WALLET_RPC_BTC");
+    let _sol_provider_guard = EnvVarGuard::unset("AURA_WALLET_RPC_SOLANA");
+    let _tron_provider_guard = EnvVarGuard::unset("AURA_WALLET_RPC_TRON");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{}", rpc_addr);
@@ -3402,7 +3402,7 @@ async fn json_rpc_wallet_execution_surface_round_trips() {
     let setup = post_json_rpc(
         &rpc_base,
         2001,
-        "openhuman.wallet_setup",
+        "aura.wallet_setup",
         json!({
             "consentGranted": true,
             "source": "imported",
@@ -3423,7 +3423,7 @@ async fn json_rpc_wallet_execution_surface_round_trips() {
     let assets = post_json_rpc(
         &rpc_base,
         2002,
-        "openhuman.wallet_supported_assets",
+        "aura.wallet_supported_assets",
         json!({}),
     )
     .await;
@@ -3451,7 +3451,7 @@ async fn json_rpc_wallet_execution_surface_round_trips() {
     );
 
     // chain_status: every chain is configured, so the provider row is ready.
-    let cs = post_json_rpc(&rpc_base, 2003, "openhuman.wallet_chain_status", json!({})).await;
+    let cs = post_json_rpc(&rpc_base, 2003, "aura.wallet_chain_status", json!({})).await;
     let body = assert_no_jsonrpc_error(&cs, "wallet_chain_status");
     let result = body.get("result").unwrap_or(&body);
     let rows = result.as_array().expect("chain_status array");
@@ -3463,7 +3463,7 @@ async fn json_rpc_wallet_execution_surface_round_trips() {
     );
 
     // balances: zero placeholders for each derived account.
-    let balances = post_json_rpc(&rpc_base, 2004, "openhuman.wallet_balances", json!({})).await;
+    let balances = post_json_rpc(&rpc_base, 2004, "aura.wallet_balances", json!({})).await;
     let body = assert_no_jsonrpc_error(&balances, "wallet_balances");
     let result = body.get("result").unwrap_or(&body);
     let rows = result.as_array().expect("balances array");
@@ -3476,7 +3476,7 @@ async fn json_rpc_wallet_execution_surface_round_trips() {
     let prep = post_json_rpc(
         &rpc_base,
         2005,
-        "openhuman.wallet_prepare_transfer",
+        "aura.wallet_prepare_transfer",
         json!({
             "chain": "evm",
             "toAddress": "0x000000000000000000000000000000000000dEaD",
@@ -3504,7 +3504,7 @@ async fn json_rpc_wallet_execution_surface_round_trips() {
     let bad = post_json_rpc(
         &rpc_base,
         2006,
-        "openhuman.wallet_execute_prepared",
+        "aura.wallet_execute_prepared",
         json!({ "quoteId": quote_id, "confirmed": false }),
     )
     .await;
@@ -3517,7 +3517,7 @@ async fn json_rpc_wallet_execution_surface_round_trips() {
     let exec = post_json_rpc(
         &rpc_base,
         2007,
-        "openhuman.wallet_execute_prepared",
+        "aura.wallet_execute_prepared",
         json!({ "quoteId": quote_id, "confirmed": true }),
     )
     .await;
@@ -3548,7 +3548,7 @@ async fn json_rpc_wallet_execution_surface_round_trips() {
     let dup = post_json_rpc(
         &rpc_base,
         2008,
-        "openhuman.wallet_execute_prepared",
+        "aura.wallet_execute_prepared",
         json!({ "quoteId": quote_id, "confirmed": true }),
     )
     .await;
@@ -3562,17 +3562,17 @@ async fn json_rpc_wallet_execution_surface_round_trips() {
 }
 
 /// #883 — when `chat_onboarding_completed` is unset in config.toml (fresh
-/// user), the `openhuman.app_state_snapshot` RPC must surface the flag as
+/// user), the `aura.app_state_snapshot` RPC must surface the flag as
 /// `false` so the React welcome-lockdown kicks in.
 #[tokio::test]
 async fn json_rpc_app_state_snapshot_chat_onboarding_defaults_false() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
@@ -3591,11 +3591,11 @@ default_temperature = 0.7
 encrypt = false
 "#
     );
-    std::fs::create_dir_all(&openhuman_home).expect("mkdir openhuman");
-    std::fs::write(openhuman_home.join("config.toml"), &cfg).expect("write config");
-    std::fs::create_dir_all(openhuman_home.join("users").join("local")).expect("mkdir users/local");
+    std::fs::create_dir_all(&aura_home).expect("mkdir aura");
+    std::fs::write(aura_home.join("config.toml"), &cfg).expect("write config");
+    std::fs::create_dir_all(aura_home.join("users").join("local")).expect("mkdir users/local");
     std::fs::write(
-        openhuman_home
+        aura_home
             .join("users")
             .join("local")
             .join("config.toml"),
@@ -3607,7 +3607,7 @@ encrypt = false
     let rpc_base = format!("http://{}", rpc_addr);
     tokio::time::sleep(Duration::from_millis(100)).await;
 
-    let snapshot = post_json_rpc(&rpc_base, 1005, "openhuman.app_state_snapshot", json!({})).await;
+    let snapshot = post_json_rpc(&rpc_base, 1005, "aura.app_state_snapshot", json!({})).await;
     let result = assert_no_jsonrpc_error(&snapshot, "app_state_snapshot");
     let body = result.get("result").unwrap_or(result);
 
@@ -3626,16 +3626,16 @@ async fn json_rpc_screen_intelligence_vision_recent_returns_empty_without_sessio
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{}", rpc_addr);
@@ -3644,7 +3644,7 @@ async fn json_rpc_screen_intelligence_vision_recent_returns_empty_without_sessio
     let recent = post_json_rpc(
         &rpc_base,
         1004,
-        "openhuman.screen_intelligence_vision_recent",
+        "aura.screen_intelligence_vision_recent",
         json!({ "limit": 10 }),
     )
     .await;
@@ -3671,16 +3671,16 @@ async fn json_rpc_autocomplete_runtime_settings_and_logs_flow() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config_with_local_ai_disabled(&openhuman_home, &mock_origin);
+    write_min_config_with_local_ai_disabled(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{}", rpc_addr);
@@ -3689,7 +3689,7 @@ async fn json_rpc_autocomplete_runtime_settings_and_logs_flow() {
     let set_style = post_json_rpc(
         &rpc_base,
         2001,
-        "openhuman.autocomplete_set_style",
+        "aura.autocomplete_set_style",
         json!({
             "enabled": true,
             "debounce_ms": 180,
@@ -3732,7 +3732,7 @@ async fn json_rpc_autocomplete_runtime_settings_and_logs_flow() {
         "expected structured set_style log line: {set_style_outer}"
     );
 
-    let cfg = post_json_rpc(&rpc_base, 2002, "openhuman.config_get", json!({})).await;
+    let cfg = post_json_rpc(&rpc_base, 2002, "aura.config_get", json!({})).await;
     let cfg_outer = assert_no_jsonrpc_error(&cfg, "get_config");
     let cfg_payload = cfg_outer.get("result").unwrap_or(cfg_outer);
     let cfg_autocomplete = cfg_payload
@@ -3757,7 +3757,7 @@ async fn json_rpc_autocomplete_runtime_settings_and_logs_flow() {
     let start = post_json_rpc(
         &rpc_base,
         2003,
-        "openhuman.autocomplete_start",
+        "aura.autocomplete_start",
         json!({ "debounce_ms": 180 }),
     )
     .await;
@@ -3778,7 +3778,7 @@ async fn json_rpc_autocomplete_runtime_settings_and_logs_flow() {
     );
 
     let status_running =
-        post_json_rpc(&rpc_base, 2004, "openhuman.autocomplete_status", json!({})).await;
+        post_json_rpc(&rpc_base, 2004, "aura.autocomplete_status", json!({})).await;
     let status_running_outer = assert_no_jsonrpc_error(&status_running, "autocomplete_status");
     let status_running_payload = status_running_outer
         .get("result")
@@ -3805,7 +3805,7 @@ async fn json_rpc_autocomplete_runtime_settings_and_logs_flow() {
     let current = post_json_rpc(
         &rpc_base,
         2005,
-        "openhuman.autocomplete_current",
+        "aura.autocomplete_current",
         json!({ "context": "Please review this changeset and" }),
     )
     .await;
@@ -3833,7 +3833,7 @@ async fn json_rpc_autocomplete_runtime_settings_and_logs_flow() {
     let accept = post_json_rpc(
         &rpc_base,
         2006,
-        "openhuman.autocomplete_accept",
+        "aura.autocomplete_accept",
         json!({
             "suggestion": " share your thoughts.",
             "skip_apply": true
@@ -3868,7 +3868,7 @@ async fn json_rpc_autocomplete_runtime_settings_and_logs_flow() {
     let stop = post_json_rpc(
         &rpc_base,
         2007,
-        "openhuman.autocomplete_stop",
+        "aura.autocomplete_stop",
         json!({ "reason": "json_rpc_e2e" }),
     )
     .await;
@@ -3880,7 +3880,7 @@ async fn json_rpc_autocomplete_runtime_settings_and_logs_flow() {
     );
 
     let status_stopped =
-        post_json_rpc(&rpc_base, 2008, "openhuman.autocomplete_status", json!({})).await;
+        post_json_rpc(&rpc_base, 2008, "aura.autocomplete_status", json!({})).await;
     let status_stopped_outer = assert_no_jsonrpc_error(&status_stopped, "autocomplete_status");
     let status_stopped_payload = status_stopped_outer
         .get("result")
@@ -3905,17 +3905,17 @@ async fn json_rpc_local_ai_device_profile_and_presets() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
-    let _tier_guard = EnvVarGuard::unset("OPENHUMAN_LOCAL_AI_TIER");
+    let _tier_guard = EnvVarGuard::unset("AURA_LOCAL_AI_TIER");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{}", rpc_addr);
@@ -3925,7 +3925,7 @@ async fn json_rpc_local_ai_device_profile_and_presets() {
     let profile = post_json_rpc(
         &rpc_base,
         30,
-        "openhuman.inference_device_profile",
+        "aura.inference_device_profile",
         json!({}),
     )
     .await;
@@ -3949,7 +3949,7 @@ async fn json_rpc_local_ai_device_profile_and_presets() {
     );
 
     // --- presets ---
-    let presets = post_json_rpc(&rpc_base, 31, "openhuman.inference_presets", json!({})).await;
+    let presets = post_json_rpc(&rpc_base, 31, "aura.inference_presets", json!({})).await;
     let presets_result = assert_no_jsonrpc_error(&presets, "presets");
     let presets_payload = presets_result.get("result").unwrap_or(presets_result);
     let presets_arr = presets_payload
@@ -3990,7 +3990,7 @@ async fn json_rpc_local_ai_device_profile_and_presets() {
     let apply = post_json_rpc(
         &rpc_base,
         32,
-        "openhuman.inference_apply_preset",
+        "aura.inference_apply_preset",
         json!({"tier": "ram_2_4gb"}),
     )
     .await;
@@ -4011,7 +4011,7 @@ async fn json_rpc_local_ai_device_profile_and_presets() {
 
     // --- verify presets reflects the change ---
     let presets_after =
-        post_json_rpc(&rpc_base, 33, "openhuman.inference_presets", json!({})).await;
+        post_json_rpc(&rpc_base, 33, "aura.inference_presets", json!({})).await;
     let presets_after_result = assert_no_jsonrpc_error(&presets_after, "presets_after");
     let presets_after_payload = presets_after_result
         .get("result")
@@ -4028,7 +4028,7 @@ async fn json_rpc_local_ai_device_profile_and_presets() {
     let bad_apply = post_json_rpc(
         &rpc_base,
         34,
-        "openhuman.inference_apply_preset",
+        "aura.inference_apply_preset",
         json!({"tier": "ultra"}),
     )
     .await;
@@ -4046,19 +4046,19 @@ async fn json_rpc_local_ai_lm_studio_config_diagnostics_and_prompt() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
-    let _tier_guard = EnvVarGuard::unset("OPENHUMAN_LOCAL_AI_TIER");
-    let _lm_env_guard = EnvVarGuard::unset("OPENHUMAN_LM_STUDIO_BASE_URL");
+    let _tier_guard = EnvVarGuard::unset("AURA_LOCAL_AI_TIER");
+    let _lm_env_guard = EnvVarGuard::unset("AURA_LM_STUDIO_BASE_URL");
     let _lm_alias_env_guard = EnvVarGuard::unset("LM_STUDIO_BASE_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let lm_app = Router::new()
         .route(
@@ -4119,7 +4119,7 @@ async fn json_rpc_local_ai_lm_studio_config_diagnostics_and_prompt() {
     let update = post_json_rpc(
         &rpc_base,
         36,
-        "openhuman.inference_update_local_settings",
+        "aura.inference_update_local_settings",
         json!({
             "runtime_enabled": true,
             "opt_in_confirmed": true,
@@ -4151,7 +4151,7 @@ async fn json_rpc_local_ai_lm_studio_config_diagnostics_and_prompt() {
     );
 
     let diagnostics =
-        post_json_rpc(&rpc_base, 37, "openhuman.inference_diagnostics", json!({})).await;
+        post_json_rpc(&rpc_base, 37, "aura.inference_diagnostics", json!({})).await;
     let diagnostics_result = assert_no_jsonrpc_error(&diagnostics, "lm_studio_diagnostics");
     assert_eq!(
         diagnostics_result.get("provider").and_then(Value::as_str),
@@ -4174,7 +4174,7 @@ async fn json_rpc_local_ai_lm_studio_config_diagnostics_and_prompt() {
     let prompt = post_json_rpc(
         &rpc_base,
         38,
-        "openhuman.inference_prompt",
+        "aura.inference_prompt",
         json!({
             "prompt": "hello",
             "max_tokens": 16,
@@ -4198,19 +4198,19 @@ async fn json_rpc_inference_namespace_lm_studio_prompt_and_status() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
-    let _tier_guard = EnvVarGuard::unset("OPENHUMAN_LOCAL_AI_TIER");
-    let _lm_env_guard = EnvVarGuard::unset("OPENHUMAN_LM_STUDIO_BASE_URL");
+    let _tier_guard = EnvVarGuard::unset("AURA_LOCAL_AI_TIER");
+    let _lm_env_guard = EnvVarGuard::unset("AURA_LM_STUDIO_BASE_URL");
     let _lm_alias_env_guard = EnvVarGuard::unset("LM_STUDIO_BASE_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let lm_app = Router::new()
         .route(
@@ -4256,7 +4256,7 @@ async fn json_rpc_inference_namespace_lm_studio_prompt_and_status() {
     let update = post_json_rpc(
         &rpc_base,
         360,
-        "openhuman.inference_update_local_settings",
+        "aura.inference_update_local_settings",
         json!({
             "runtime_enabled": true,
             "opt_in_confirmed": true,
@@ -4269,7 +4269,7 @@ async fn json_rpc_inference_namespace_lm_studio_prompt_and_status() {
     .await;
     assert_no_jsonrpc_error(&update, "update_local_ai_settings for inference namespace");
 
-    let status = post_json_rpc(&rpc_base, 361, "openhuman.inference_status", json!({})).await;
+    let status = post_json_rpc(&rpc_base, 361, "aura.inference_status", json!({})).await;
     let status_result = assert_no_jsonrpc_error(&status, "inference_status");
     let status_payload = status_result.get("result").unwrap_or(status_result);
     assert_eq!(
@@ -4280,7 +4280,7 @@ async fn json_rpc_inference_namespace_lm_studio_prompt_and_status() {
     let prompt = post_json_rpc(
         &rpc_base,
         362,
-        "openhuman.inference_prompt",
+        "aura.inference_prompt",
         json!({
             "prompt": "hello",
             "max_tokens": 16,
@@ -4297,7 +4297,7 @@ async fn json_rpc_inference_namespace_lm_studio_prompt_and_status() {
     let summarize = post_json_rpc(
         &rpc_base,
         363,
-        "openhuman.inference_summarize",
+        "aura.inference_summarize",
         json!({
             "text": "summarize me",
             "max_tokens": 16
@@ -4310,7 +4310,7 @@ async fn json_rpc_inference_namespace_lm_studio_prompt_and_status() {
         "hello from inference namespace"
     );
 
-    // openhuman.inference_update_model_settings — mutate `default_model`
+    // aura.inference_update_model_settings — mutate `default_model`
     // through the RPC transport so a controller-registration or param-shape
     // regression surfaces here instead of in the settings-save UI flow.
     // (We assert on `default_model` because that field is exposed by
@@ -4318,7 +4318,7 @@ async fn json_rpc_inference_namespace_lm_studio_prompt_and_status() {
     let model_update = post_json_rpc(
         &rpc_base,
         366,
-        "openhuman.inference_update_model_settings",
+        "aura.inference_update_model_settings",
         json!({ "default_model": "e2e-updated-model" }),
     )
     .await;
@@ -4326,7 +4326,7 @@ async fn json_rpc_inference_namespace_lm_studio_prompt_and_status() {
     let client_cfg = post_json_rpc(
         &rpc_base,
         367,
-        "openhuman.inference_get_client_config",
+        "aura.inference_get_client_config",
         json!({}),
     )
     .await;
@@ -4341,7 +4341,7 @@ async fn json_rpc_inference_namespace_lm_studio_prompt_and_status() {
         "inference_get_client_config did not reflect updated default_model: {client_cfg_result}"
     );
 
-    // openhuman.inference_list_models — no cloud provider configured for this
+    // aura.inference_list_models — no cloud provider configured for this
     // local-only test, so we expect a structured error rather than a panic.
     // Asserting an error here proves the controller is registered and reaches
     // its handler over the RPC transport (the empty-picker symptom CodeRabbit
@@ -4349,7 +4349,7 @@ async fn json_rpc_inference_namespace_lm_studio_prompt_and_status() {
     let list_models = post_json_rpc(
         &rpc_base,
         368,
-        "openhuman.inference_list_models",
+        "aura.inference_list_models",
         json!({ "provider_id": "does-not-exist" }),
     )
     .await;
@@ -4368,18 +4368,18 @@ async fn json_rpc_inference_prompt_requires_external_ollama_runtime_when_unreach
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
-    let _tier_guard = EnvVarGuard::unset("OPENHUMAN_LOCAL_AI_TIER");
-    let _ollama_url_guard = EnvVarGuard::set("OPENHUMAN_OLLAMA_BASE_URL", "http://127.0.0.1:1");
+    let _tier_guard = EnvVarGuard::unset("AURA_LOCAL_AI_TIER");
+    let _ollama_url_guard = EnvVarGuard::set("AURA_OLLAMA_BASE_URL", "http://127.0.0.1:1");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{}", rpc_addr);
@@ -4388,7 +4388,7 @@ async fn json_rpc_inference_prompt_requires_external_ollama_runtime_when_unreach
     let update = post_json_rpc(
         &rpc_base,
         364,
-        "openhuman.inference_update_local_settings",
+        "aura.inference_update_local_settings",
         json!({
             "runtime_enabled": true,
             "opt_in_confirmed": true,
@@ -4403,7 +4403,7 @@ async fn json_rpc_inference_prompt_requires_external_ollama_runtime_when_unreach
     let prompt = post_json_rpc(
         &rpc_base,
         365,
-        "openhuman.inference_prompt",
+        "aura.inference_prompt",
         json!({
             "prompt": "hello",
             "max_tokens": 16,
@@ -4437,19 +4437,19 @@ async fn billing_rpc_e2e() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     // Pre-create the user-scoped config so store_session finds correct settings.
-    let user_scoped_dir = openhuman_home.join("users").join("e2e-user");
+    let user_scoped_dir = aura_home.join("users").join("e2e-user");
     write_min_config(&user_scoped_dir, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
@@ -4461,7 +4461,7 @@ async fn billing_rpc_e2e() {
     let store = post_json_rpc(
         &rpc_base,
         1,
-        "openhuman.auth_store_session",
+        "aura.auth_store_session",
         json!({ "token": "e2e-billing-jwt", "user_id": "e2e-user" }),
     )
     .await;
@@ -4480,7 +4480,7 @@ async fn billing_rpc_e2e() {
     let plan = post_json_rpc(
         &rpc_base,
         2,
-        "openhuman.billing_get_current_plan",
+        "aura.billing_get_current_plan",
         json!({}),
     )
     .await;
@@ -4503,7 +4503,7 @@ async fn billing_rpc_e2e() {
     let purchase = post_json_rpc(
         &rpc_base,
         3,
-        "openhuman.billing_purchase_plan",
+        "aura.billing_purchase_plan",
         json!({ "plan": "pro" }),
     )
     .await;
@@ -4521,7 +4521,7 @@ async fn billing_rpc_e2e() {
     let portal = post_json_rpc(
         &rpc_base,
         4,
-        "openhuman.billing_create_portal_session",
+        "aura.billing_create_portal_session",
         json!({}),
     )
     .await;
@@ -4539,7 +4539,7 @@ async fn billing_rpc_e2e() {
     let top_up = post_json_rpc(
         &rpc_base,
         5,
-        "openhuman.billing_top_up",
+        "aura.billing_top_up",
         json!({ "amountUsd": 10.0, "gateway": "stripe" }),
     )
     .await;
@@ -4555,7 +4555,7 @@ async fn billing_rpc_e2e() {
     let charge = post_json_rpc(
         &rpc_base,
         6,
-        "openhuman.billing_create_coinbase_charge",
+        "aura.billing_create_coinbase_charge",
         json!({ "plan": "pro" }),
     )
     .await;
@@ -4587,19 +4587,19 @@ async fn team_rpc_e2e() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     // Pre-create the user-scoped config so store_session finds correct settings.
-    let user_scoped_dir = openhuman_home.join("users").join("e2e-user");
+    let user_scoped_dir = aura_home.join("users").join("e2e-user");
     write_min_config(&user_scoped_dir, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
@@ -4611,7 +4611,7 @@ async fn team_rpc_e2e() {
     let store = post_json_rpc(
         &rpc_base,
         1,
-        "openhuman.auth_store_session",
+        "aura.auth_store_session",
         json!({ "token": "e2e-team-jwt", "user_id": "e2e-user" }),
     )
     .await;
@@ -4631,7 +4631,7 @@ async fn team_rpc_e2e() {
     let members = post_json_rpc(
         &rpc_base,
         2,
-        "openhuman.team_list_members",
+        "aura.team_list_members",
         json!({ "teamId": team_id }),
     )
     .await;
@@ -4650,7 +4650,7 @@ async fn team_rpc_e2e() {
     let invite = post_json_rpc(
         &rpc_base,
         3,
-        "openhuman.team_create_invite",
+        "aura.team_create_invite",
         json!({ "teamId": team_id, "maxUses": 3, "expiresInDays": 7 }),
     )
     .await;
@@ -4665,7 +4665,7 @@ async fn team_rpc_e2e() {
     let invites = post_json_rpc(
         &rpc_base,
         4,
-        "openhuman.team_list_invites",
+        "aura.team_list_invites",
         json!({ "teamId": team_id }),
     )
     .await;
@@ -4683,7 +4683,7 @@ async fn team_rpc_e2e() {
     let revoke = post_json_rpc(
         &rpc_base,
         5,
-        "openhuman.team_revoke_invite",
+        "aura.team_revoke_invite",
         json!({ "teamId": team_id, "inviteId": "inv-1" }),
     )
     .await;
@@ -4693,7 +4693,7 @@ async fn team_rpc_e2e() {
     let remove = post_json_rpc(
         &rpc_base,
         6,
-        "openhuman.team_remove_member",
+        "aura.team_remove_member",
         json!({ "teamId": team_id, "userId": "user-2" }),
     )
     .await;
@@ -4703,7 +4703,7 @@ async fn team_rpc_e2e() {
     let role_change = post_json_rpc(
         &rpc_base,
         7,
-        "openhuman.team_change_member_role",
+        "aura.team_change_member_role",
         json!({ "teamId": team_id, "userId": "user-1", "role": "MEMBER" }),
     )
     .await;
@@ -4718,16 +4718,16 @@ async fn about_app_rpc_list_lookup_and_search() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{}", rpc_addr);
@@ -4741,7 +4741,7 @@ async fn about_app_rpc_list_lookup_and_search() {
             .unwrap_or_else(|| outer.clone())
     }
 
-    let list = post_json_rpc(&rpc_base, 200, "openhuman.about_app_list", json!({})).await;
+    let list = post_json_rpc(&rpc_base, 200, "aura.about_app_list", json!({})).await;
     let list_outer = assert_no_jsonrpc_error(&list, "about_app_list");
     let list_result = inner(list_outer);
     let capabilities = list_result
@@ -4758,7 +4758,7 @@ async fn about_app_rpc_list_lookup_and_search() {
     let filtered = post_json_rpc(
         &rpc_base,
         201,
-        "openhuman.about_app_list",
+        "aura.about_app_list",
         json!({ "category": "local_ai" }),
     )
     .await;
@@ -4778,7 +4778,7 @@ async fn about_app_rpc_list_lookup_and_search() {
     let lookup = post_json_rpc(
         &rpc_base,
         202,
-        "openhuman.about_app_lookup",
+        "aura.about_app_lookup",
         json!({ "id": "team.generate_invite_codes" }),
     )
     .await;
@@ -4796,7 +4796,7 @@ async fn about_app_rpc_list_lookup_and_search() {
     let search = post_json_rpc(
         &rpc_base,
         203,
-        "openhuman.about_app_search",
+        "aura.about_app_search",
         json!({ "query": "invite" }),
     )
     .await;
@@ -4827,10 +4827,10 @@ async fn voice_status_returns_availability() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
     let _whisper_guard = EnvVarGuard::unset("WHISPER_BIN");
@@ -4838,7 +4838,7 @@ async fn voice_status_returns_availability() {
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{}", rpc_addr);
@@ -4846,7 +4846,7 @@ async fn voice_status_returns_availability() {
     tokio::time::sleep(Duration::from_millis(100)).await;
 
     // voice_status does not require auth — it only checks filesystem availability
-    let status = post_json_rpc(&rpc_base, 1, "openhuman.voice_status", json!({})).await;
+    let status = post_json_rpc(&rpc_base, 1, "aura.voice_status", json!({})).await;
     let result = assert_no_jsonrpc_error(&status, "voice_status");
 
     // Without whisper/piper installed in the test env, both should be unavailable
@@ -4888,16 +4888,16 @@ async fn notification_settings_roundtrip_and_disabled_ingest_skip() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{}", rpc_addr);
@@ -4906,7 +4906,7 @@ async fn notification_settings_roundtrip_and_disabled_ingest_skip() {
     let set = post_json_rpc(
         &rpc_base,
         4001,
-        "openhuman.notification_settings_set",
+        "aura.notification_settings_set",
         json!({
             "provider": "gmail",
             "enabled": false,
@@ -4921,7 +4921,7 @@ async fn notification_settings_roundtrip_and_disabled_ingest_skip() {
     let get = post_json_rpc(
         &rpc_base,
         4002,
-        "openhuman.notification_settings_get",
+        "aura.notification_settings_get",
         json!({ "provider": "gmail" }),
     )
     .await;
@@ -4949,7 +4949,7 @@ async fn notification_settings_roundtrip_and_disabled_ingest_skip() {
     let ingest = post_json_rpc(
         &rpc_base,
         4003,
-        "openhuman.notification_ingest",
+        "aura.notification_ingest",
         json!({
             "provider": "gmail",
             "account_id": "acct-1",
@@ -4979,10 +4979,10 @@ async fn credentials_crud_roundtrip() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
@@ -4990,7 +4990,7 @@ async fn credentials_crud_roundtrip() {
     // well-formed, even though provider-credential calls don't hit the network.
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{}", rpc_addr);
@@ -5000,7 +5000,7 @@ async fn credentials_crud_roundtrip() {
     let store = post_json_rpc(
         &rpc_base,
         5001,
-        "openhuman.auth_store_provider_credentials",
+        "aura.auth_store_provider_credentials",
         json!({
             "provider": "openai",
             "profile": "default",
@@ -5033,7 +5033,7 @@ async fn credentials_crud_roundtrip() {
     let list_all = post_json_rpc(
         &rpc_base,
         5002,
-        "openhuman.auth_list_provider_credentials",
+        "aura.auth_list_provider_credentials",
         json!({}),
     )
     .await;
@@ -5052,7 +5052,7 @@ async fn credentials_crud_roundtrip() {
     let list_filtered = post_json_rpc(
         &rpc_base,
         5003,
-        "openhuman.auth_list_provider_credentials",
+        "aura.auth_list_provider_credentials",
         json!({ "provider": "openai" }),
     )
     .await;
@@ -5072,7 +5072,7 @@ async fn credentials_crud_roundtrip() {
     let remove = post_json_rpc(
         &rpc_base,
         5004,
-        "openhuman.auth_remove_provider_credentials",
+        "aura.auth_remove_provider_credentials",
         json!({
             "provider": "openai",
             "profile": "default"
@@ -5091,7 +5091,7 @@ async fn credentials_crud_roundtrip() {
     let list_after = post_json_rpc(
         &rpc_base,
         5005,
-        "openhuman.auth_list_provider_credentials",
+        "aura.auth_list_provider_credentials",
         json!({}),
     )
     .await;
@@ -5110,11 +5110,11 @@ async fn credentials_crud_roundtrip() {
     rpc_join.abort();
 }
 
-/// End-to-end coverage for `openhuman.skills_uninstall`.
+/// End-to-end coverage for `aura.skills_uninstall`.
 ///
 /// Validates that the RPC method is registered, wire-decodes
 /// `UninstallSkillParams`, resolves the slug against
-/// `~/.openhuman/skills/<slug>/`, removes the directory on success, and
+/// `~/.aura/skills/<slug>/`, removes the directory on success, and
 /// forwards the core error message verbatim for the two documented
 /// failure modes (missing SKILL.md and path traversal). Previously only
 /// the `uninstall_skill(...)` helper was tested — the wire layer
@@ -5126,9 +5126,9 @@ async fn skills_uninstall_rpc_e2e() {
     let home = tmp.path();
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
 
-    let skills_root = home.join(".openhuman").join("skills");
+    let skills_root = home.join(".aura").join("skills");
     std::fs::create_dir_all(&skills_root).expect("mkdir skills root");
 
     // Seed a skill whose on-disk slug differs from its frontmatter name —
@@ -5150,7 +5150,7 @@ async fn skills_uninstall_rpc_e2e() {
     let ok = post_json_rpc(
         &rpc_base,
         6001,
-        "openhuman.skills_uninstall",
+        "aura.skills_uninstall",
         json!({ "name": slug }),
     )
     .await;
@@ -5183,7 +5183,7 @@ async fn skills_uninstall_rpc_e2e() {
     let missing = post_json_rpc(
         &rpc_base,
         6002,
-        "openhuman.skills_uninstall",
+        "aura.skills_uninstall",
         json!({ "name": "does-not-exist" }),
     )
     .await;
@@ -5204,7 +5204,7 @@ async fn skills_uninstall_rpc_e2e() {
     let traversal = post_json_rpc(
         &rpc_base,
         6003,
-        "openhuman.skills_uninstall",
+        "aura.skills_uninstall",
         json!({ "name": "../etc" }),
     )
     .await;
@@ -5368,12 +5368,12 @@ async fn rpc_update_apply_can_be_disabled_by_config_policy() {
     ensure_test_rpc_auth();
 
     let tmp = tempdir().expect("tempdir");
-    let _workspace_guard = EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", tmp.path());
+    let _workspace_guard = EnvVarGuard::set_to_path("AURA_WORKSPACE", tmp.path());
 
-    let mut config = openhuman_core::openhuman::config::Config {
+    let mut config = aura_core::aura::config::Config {
         workspace_dir: tmp.path().join("workspace"),
         config_path: tmp.path().join("config.toml"),
-        ..openhuman_core::openhuman::config::Config::default()
+        ..aura_core::aura::config::Config::default()
     };
     config.update.rpc_mutations_enabled = false;
     config
@@ -5391,10 +5391,10 @@ async fn rpc_update_apply_can_be_disabled_by_config_policy() {
         .json(&json!({
             "jsonrpc": "2.0",
             "id": 1,
-            "method": "openhuman.update_apply",
+            "method": "aura.update_apply",
             "params": {
                 "download_url": "https://github.com/owner/repo/releases/download/v1/x",
-                "asset_name": "openhuman-core-x86_64-unknown-linux-gnu"
+                "asset_name": "aura-core-x86_64-unknown-linux-gnu"
             }
         }))
         .send()
@@ -5419,7 +5419,7 @@ async fn rpc_update_apply_can_be_disabled_by_config_policy() {
 
 /// End-to-end coverage for issue #1149: storing a managed-DM channel
 /// credential under `channel:<slug>:<mode>` and immediately observing
-/// `connected:true` from `openhuman.channels_status`.
+/// `connected:true` from `aura.channels_status`.
 ///
 /// Before the fix, `channels_status` always returned `connected:false`
 /// because the underlying `list_provider_credentials` call used an
@@ -5437,16 +5437,16 @@ async fn channels_status_reflects_managed_dm_credential_e2e() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{}", rpc_addr);
@@ -5456,7 +5456,7 @@ async fn channels_status_reflects_managed_dm_credential_e2e() {
     let baseline = post_json_rpc(
         &rpc_base,
         7001,
-        "openhuman.channels_status",
+        "aura.channels_status",
         json!({ "channel": "telegram" }),
     )
     .await;
@@ -5480,7 +5480,7 @@ async fn channels_status_reflects_managed_dm_credential_e2e() {
     let store = post_json_rpc(
         &rpc_base,
         7002,
-        "openhuman.auth_store_provider_credentials",
+        "aura.auth_store_provider_credentials",
         json!({
             "provider": "channel:telegram:managed_dm",
             "profile": "default",
@@ -5496,7 +5496,7 @@ async fn channels_status_reflects_managed_dm_credential_e2e() {
     let after = post_json_rpc(
         &rpc_base,
         7003,
-        "openhuman.channels_status",
+        "aura.channels_status",
         json!({ "channel": "telegram" }),
     )
     .await;
@@ -5537,22 +5537,22 @@ async fn whatsapp_data_ingest_and_query_e2e() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     // Init the whatsapp_data global before the router handles any requests.
     // Reset first so we attach to *this* test's tempdir even if a sibling
     // test left a stale handle pointing at an already-dropped tempdir.
-    openhuman_core::openhuman::whatsapp_data::global::reset_for_tests();
-    openhuman_core::openhuman::whatsapp_data::global::init(openhuman_home.clone())
+    aura_core::aura::whatsapp_data::global::reset_for_tests();
+    aura_core::aura::whatsapp_data::global::init(aura_home.clone())
         .expect("whatsapp_data global init");
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
@@ -5565,7 +5565,7 @@ async fn whatsapp_data_ingest_and_query_e2e() {
     let ingest = post_json_rpc(
         &rpc_base,
         9001,
-        "openhuman.whatsapp_data_ingest",
+        "aura.whatsapp_data_ingest",
         json!({
             "account_id": "e2e-acct@c.us",
             "chats": {
@@ -5649,7 +5649,7 @@ async fn whatsapp_data_ingest_and_query_e2e() {
     let list_chats = post_json_rpc(
         &rpc_base,
         9002,
-        "openhuman.whatsapp_data_list_chats",
+        "aura.whatsapp_data_list_chats",
         json!({ "account_id": "e2e-acct@c.us" }),
     )
     .await;
@@ -5679,7 +5679,7 @@ async fn whatsapp_data_ingest_and_query_e2e() {
     let list_msgs = post_json_rpc(
         &rpc_base,
         9003,
-        "openhuman.whatsapp_data_list_messages",
+        "aura.whatsapp_data_list_messages",
         json!({
             "chat_id": "alice@c.us",
             "account_id": "e2e-acct@c.us"
@@ -5711,7 +5711,7 @@ async fn whatsapp_data_ingest_and_query_e2e() {
     let search = post_json_rpc(
         &rpc_base,
         9004,
-        "openhuman.whatsapp_data_search_messages",
+        "aura.whatsapp_data_search_messages",
         json!({ "query": "umbrella" }),
     )
     .await;
@@ -5741,7 +5741,7 @@ async fn whatsapp_data_ingest_and_query_e2e() {
     let second_ingest = post_json_rpc(
         &rpc_base,
         9005,
-        "openhuman.whatsapp_data_ingest",
+        "aura.whatsapp_data_ingest",
         json!({
             "account_id": "other-acct@c.us",
             "chats": {
@@ -5770,7 +5770,7 @@ async fn whatsapp_data_ingest_and_query_e2e() {
     let scoped_search = post_json_rpc(
         &rpc_base,
         9006,
-        "openhuman.whatsapp_data_search_messages",
+        "aura.whatsapp_data_search_messages",
         json!({
             "query": "umbrella",
             "account_id": "e2e-acct@c.us"
@@ -5807,23 +5807,23 @@ async fn whatsapp_memory_doc_ingest_e2e() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
     // Disable strict embedding so ingest falls back to the Inert
     // (zero-vector) embedder when no Ollama endpoint is reachable. CI
     // has no local Ollama; without this the memory_doc_ingest call
     // would fail at the chunk-embedding step.
-    let _embed_strict_guard = EnvVarGuard::set("OPENHUMAN_MEMORY_EMBED_STRICT", "false");
-    let _embed_endpoint_guard = EnvVarGuard::set("OPENHUMAN_MEMORY_EMBED_ENDPOINT", "");
-    let _embed_model_guard = EnvVarGuard::set("OPENHUMAN_MEMORY_EMBED_MODEL", "");
+    let _embed_strict_guard = EnvVarGuard::set("AURA_MEMORY_EMBED_STRICT", "false");
+    let _embed_endpoint_guard = EnvVarGuard::set("AURA_MEMORY_EMBED_ENDPOINT", "");
+    let _embed_model_guard = EnvVarGuard::set("AURA_MEMORY_EMBED_MODEL", "");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{}", rpc_addr);
@@ -5833,7 +5833,7 @@ async fn whatsapp_memory_doc_ingest_e2e() {
     let ingest = post_json_rpc(
         &rpc_base,
         9101,
-        "openhuman.memory_doc_ingest",
+        "aura.memory_doc_ingest",
         json!({
             "namespace": "whatsapp-web:test-acct@c.us",
             "key": "alice@c.us:2026-05-07",
@@ -5854,7 +5854,7 @@ async fn whatsapp_memory_doc_ingest_e2e() {
     let doc_list = post_json_rpc(
         &rpc_base,
         9102,
-        "openhuman.memory_doc_list",
+        "aura.memory_doc_list",
         json!({ "namespace": "whatsapp-web:test-acct@c.us" }),
     )
     .await;
@@ -5905,16 +5905,16 @@ async fn whatsapp_memory_doc_ingest_e2e() {
     rpc_join.abort();
 }
 
-/// Regression guard for issue #1289: `openhuman.voice_cloud_transcribe`
+/// Regression guard for issue #1289: `aura.voice_cloud_transcribe`
 /// must stay registered in the controller registry and reachable via
 /// JSON-RPC dispatch.
 ///
 /// The user-visible symptom was "Voice transcription failed: unknown
-/// method: openhuman.voice_cloud_transcribe" — the frontend (mascot
+/// method: aura.voice_cloud_transcribe" — the frontend (mascot
 /// mic-only composer) was calling a method that wasn't reachable.
 /// This test pins both ends:
 ///
-/// 1. `/schema` exposes `openhuman.voice_cloud_transcribe` so the
+/// 1. `/schema` exposes `aura.voice_cloud_transcribe` so the
 ///    discovery surface stays in sync with the live registry.
 /// 2. Calling the method over RPC does NOT hit the dispatcher's
 ///    unknown-method branch (`Err("unknown method: …")`). The call may
@@ -5926,22 +5926,22 @@ async fn voice_cloud_transcribe_registered_e2e() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
     let (mock_addr, mock_join) = serve_on_ephemeral(mock_upstream_router()).await;
     let mock_origin = format!("http://{}", mock_addr);
-    write_min_config(&openhuman_home, &mock_origin);
+    write_min_config(&aura_home, &mock_origin);
 
     let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
     let rpc_base = format!("http://{}", rpc_addr);
     tokio::time::sleep(Duration::from_millis(100)).await;
 
-    // ── 1. /schema must list openhuman.voice_cloud_transcribe ───────────────
+    // ── 1. /schema must list aura.voice_cloud_transcribe ───────────────
     let schema = reqwest::get(format!("{rpc_base}/schema"))
         .await
         .expect("GET /schema")
@@ -5956,7 +5956,7 @@ async fn voice_cloud_transcribe_registered_e2e() {
         .filter_map(|m| m.get("method").and_then(Value::as_str))
         .collect();
     assert!(
-        names.contains(&"openhuman.voice_cloud_transcribe"),
+        names.contains(&"aura.voice_cloud_transcribe"),
         "voice_cloud_transcribe must appear in /schema dump (got {} methods)",
         names.len()
     );
@@ -5968,7 +5968,7 @@ async fn voice_cloud_transcribe_registered_e2e() {
     let resp = post_json_rpc(
         &rpc_base,
         9101,
-        "openhuman.voice_cloud_transcribe",
+        "aura.voice_cloud_transcribe",
         json!({ "audio_base64": "" }),
     )
     .await;
@@ -5996,7 +5996,7 @@ async fn json_rpc_meet_join_call_validates_and_returns_request_id() {
     let home = tmp.path();
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
@@ -6009,7 +6009,7 @@ async fn json_rpc_meet_join_call_validates_and_returns_request_id() {
     let ok = post_json_rpc(
         &rpc_base,
         9001,
-        "openhuman.meet_join_call",
+        "aura.meet_join_call",
         json!({
             "meet_url": "https://meet.google.com/abc-defg-hij",
             "display_name": "  Agent Alice  "
@@ -6039,7 +6039,7 @@ async fn json_rpc_meet_join_call_validates_and_returns_request_id() {
     let bad_host = post_json_rpc(
         &rpc_base,
         9002,
-        "openhuman.meet_join_call",
+        "aura.meet_join_call",
         json!({
             "meet_url": "https://example.com/abc-defg-hij",
             "display_name": "Agent"
@@ -6052,7 +6052,7 @@ async fn json_rpc_meet_join_call_validates_and_returns_request_id() {
     let bad_name = post_json_rpc(
         &rpc_base,
         9003,
-        "openhuman.meet_join_call",
+        "aura.meet_join_call",
         json!({
             "meet_url": "https://meet.google.com/abc-defg-hij",
             "display_name": "   "
@@ -6084,7 +6084,7 @@ async fn json_rpc_meet_agent_session_lifecycle() {
     let home = tmp.path();
 
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
-    let _workspace_guard = EnvVarGuard::unset("OPENHUMAN_WORKSPACE");
+    let _workspace_guard = EnvVarGuard::unset("AURA_WORKSPACE");
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
 
@@ -6099,7 +6099,7 @@ async fn json_rpc_meet_agent_session_lifecycle() {
     let start = post_json_rpc(
         &rpc_base,
         9101,
-        "openhuman.meet_agent_start_session",
+        "aura.meet_agent_start_session",
         json!({ "request_id": request_id, "sample_rate_hz": 16_000 }),
     )
     .await;
@@ -6124,7 +6124,7 @@ async fn json_rpc_meet_agent_session_lifecycle() {
         let r = post_json_rpc(
             &rpc_base,
             9110 + i,
-            "openhuman.meet_agent_push_listen_pcm",
+            "aura.meet_agent_push_listen_pcm",
             json!({ "request_id": request_id, "pcm_base64": loud_b64 }),
         )
         .await;
@@ -6150,7 +6150,7 @@ async fn json_rpc_meet_agent_session_lifecycle() {
         let r = post_json_rpc(
             &rpc_base,
             9130 + i,
-            "openhuman.meet_agent_push_listen_pcm",
+            "aura.meet_agent_push_listen_pcm",
             json!({ "request_id": request_id, "pcm_base64": silent_b64 }),
         )
         .await;
@@ -6172,7 +6172,7 @@ async fn json_rpc_meet_agent_session_lifecycle() {
         let r = post_json_rpc(
             &rpc_base,
             9150,
-            "openhuman.meet_agent_poll_speech",
+            "aura.meet_agent_poll_speech",
             json!({ "request_id": request_id }),
         )
         .await;
@@ -6198,7 +6198,7 @@ async fn json_rpc_meet_agent_session_lifecycle() {
     let stop = post_json_rpc(
         &rpc_base,
         9160,
-        "openhuman.meet_agent_stop_session",
+        "aura.meet_agent_stop_session",
         json!({ "request_id": request_id }),
     )
     .await;
@@ -6220,7 +6220,7 @@ async fn json_rpc_meet_agent_session_lifecycle() {
     let bogus = post_json_rpc(
         &rpc_base,
         9161,
-        "openhuman.meet_agent_stop_session",
+        "aura.meet_agent_stop_session",
         json!({ "request_id": "never-started" }),
     )
     .await;
@@ -6243,26 +6243,26 @@ async fn json_rpc_meet_agent_session_lifecycle() {
 ///    the read-only boundary the issue requires.
 #[tokio::test(flavor = "multi_thread")]
 async fn whatsapp_data_agent_tools_e2e_1341() {
-    use openhuman_core::openhuman::tools::traits::Tool;
-    use openhuman_core::openhuman::tools::{
+    use aura_core::aura::tools::traits::Tool;
+    use aura_core::aura::tools::{
         WhatsAppDataListChatsTool, WhatsAppDataListMessagesTool, WhatsAppDataSearchMessagesTool,
     };
-    use openhuman_core::openhuman::whatsapp_data::{
+    use aura_core::aura::whatsapp_data::{
         all_whatsapp_data_controller_schemas, global as wa_global, ops as wa_ops,
         types::{ChatMeta, IngestMessage, IngestRequest},
     };
 
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");
-    let openhuman_home = tmp.path().join(".openhuman");
-    std::fs::create_dir_all(&openhuman_home).expect("create openhuman home");
+    let aura_home = tmp.path().join(".aura");
+    std::fs::create_dir_all(&aura_home).expect("create aura home");
 
     // The whatsapp_data global store is process-wide. Reset before init so
     // we attach to *this* test's tempdir even if a sibling test already
     // initialised the global to a tempdir that has since been dropped (which
     // would leave the SQLite handle pointing at an unlinked file).
     wa_global::reset_for_tests();
-    wa_global::init(openhuman_home.clone()).expect("whatsapp_data global init");
+    wa_global::init(aura_home.clone()).expect("whatsapp_data global init");
 
     // ── 1. Ingest fixture data through the same path the scanner uses ─────
     let now_ts = chrono::Utc::now().timestamp();
@@ -6325,7 +6325,7 @@ async fn whatsapp_data_agent_tools_e2e_1341() {
     .expect("ingest");
 
     // Helper: parse a successful Tool response back into JSON.
-    fn parse_tool_output(result: openhuman_core::openhuman::skills::types::ToolResult) -> Value {
+    fn parse_tool_output(result: aura_core::aura::skills::types::ToolResult) -> Value {
         assert!(!result.is_error, "tool returned error: {result:?}");
         serde_json::from_str(&result.output()).expect("tool output is valid JSON")
     }

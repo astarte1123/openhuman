@@ -62,7 +62,7 @@ vi.mock('../components/commands/CommandProvider', () => ({
   default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 vi.mock('../components/DictationHotkeyManager', () => ({ default: () => null }));
-vi.mock('../components/OpenhumanLinkModal', () => ({ default: () => null }));
+vi.mock('../components/AuraLinkModal', () => ({ default: () => null }));
 vi.mock('../components/upsell/GlobalUpsellBanner', () => ({ default: () => null }));
 vi.mock('../components/walkthrough/AppWalkthrough', () => ({ default: () => null }));
 vi.mock('../features/meet/MascotFrameProducer', () => ({ MascotFrameProducer: () => null }));

@@ -12,7 +12,7 @@ import {
 function baseSpec(overrides = {}) {
   return {
     batch_id: "pilot-test",
-    base_repo: "tinyhumansai/openhuman",
+    base_repo: "tinyhumansai/aura",
     base_branch: "main",
     tracking_issue: 1480,
     agents: [
@@ -21,7 +21,7 @@ function baseSpec(overrides = {}) {
         issue: 100,
         title: "fix foo",
         branch: "cursor/a01-100-fix-foo",
-        owned_paths: ["src/openhuman/foo/"],
+        owned_paths: ["src/aura/foo/"],
       },
       {
         id: "a02",
@@ -41,7 +41,7 @@ test("validateSpec accepts a well-formed spec", () => {
 });
 
 test("validateSpec rejects wrong base_repo", () => {
-  const spec = baseSpec({ base_repo: "somefork/openhuman" });
+  const spec = baseSpec({ base_repo: "somefork/aura" });
   assert.throws(() => validateSpec(spec), SpecError);
 });
 
@@ -68,7 +68,7 @@ test("validateSpec rejects batch larger than the hard cap", () => {
       issue: 1000 + i,
       title: "t",
       branch: `cursor/${id}-${1000 + i}-x`,
-      owned_paths: [`src/openhuman/dom${i}/`],
+      owned_paths: [`src/aura/dom${i}/`],
     };
   });
   assert.throws(() => validateSpec(baseSpec({ agents })), SpecError);
@@ -109,7 +109,7 @@ test("validateSpec rejects duplicate issues", () => {
 
 test("validateSpec rejects glob characters in owned_paths", () => {
   const spec = baseSpec();
-  spec.agents[0].owned_paths = ["src/openhuman/**"];
+  spec.agents[0].owned_paths = ["src/aura/**"];
   assert.throws(() => validateSpec(spec), SpecError);
 });
 
@@ -125,7 +125,7 @@ test("findOverlaps returns empty for disjoint prefixes", () => {
 
 test("findOverlaps detects identical paths", () => {
   const spec = baseSpec();
-  spec.agents[1].owned_paths = ["src/openhuman/foo/"];
+  spec.agents[1].owned_paths = ["src/aura/foo/"];
   const collisions = findOverlaps(spec);
   assert.strictEqual(collisions.length, 1);
   assert.strictEqual(collisions[0].reason, "exact");
@@ -133,7 +133,7 @@ test("findOverlaps detects identical paths", () => {
 
 test("findOverlaps detects prefix containment in either direction", () => {
   const spec = baseSpec();
-  spec.agents[1].owned_paths = ["src/openhuman/foo/sub/"];
+  spec.agents[1].owned_paths = ["src/aura/foo/sub/"];
   const collisions = findOverlaps(spec);
   assert.strictEqual(collisions.length, 1);
   assert.strictEqual(collisions[0].reason, "prefix");

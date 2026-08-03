@@ -75,8 +75,8 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
       const b = draft.routing[w.id];
       if (JSON.stringify(a) !== JSON.stringify(b)) {
         const describe = (r: ProviderRef) =>
-          r.kind === 'openhuman'
-            ? 'openhuman'
+          r.kind === 'aura'
+            ? 'aura'
             : r.kind === 'cloud'
               ? `${r.providerSlug}:${r.model}`
               : `local:${r.model}`;
@@ -109,7 +109,7 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
           <div className="border-b border-stone-200 pb-2">
             <h2 className="text-base font-semibold text-stone-900">LLM Providers</h2>
             <p className="text-xs text-stone-500 mt-0.5">
-              Connect the language-model backends you want OpenHuman to use. Toggle a provider on to
+              Connect the language-model backends you want Aura to use. Toggle a provider on to
               add its key; toggle off to disconnect.
             </p>
           </div>
@@ -146,7 +146,7 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
                           Object.entries(draft.routing).map(([wid, ref]) => [
                             wid,
                             ref.kind === 'cloud' && ref.providerSlug === existing.slug
-                              ? ({ kind: 'openhuman' } as const)
+                              ? ({ kind: 'aura' } as const)
                               : ref,
                           ])
                         ) as typeof draft.routing;
@@ -199,7 +199,7 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
                             Object.entries(draft.routing).map(([wid, ref]) => [
                               wid,
                               ref.kind === 'cloud' && ref.providerSlug === localKind
-                                ? ({ kind: 'openhuman' } as const)
+                                ? ({ kind: 'aura' } as const)
                                 : ref,
                             ])
                           ) as typeof draft.routing;
@@ -225,14 +225,14 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
 
         {/* ═══════════════════════════════════════════════════════════════
             ROUTING — which workload uses which model. Each row is a
-            binary toggle: Default (let OpenHuman pick) or Custom (opens
+            binary toggle: Default (let Aura pick) or Custom (opens
             a popup to choose provider + model).
             ═══════════════════════════════════════════════════════════════ */}
         <div className="space-y-4">
           <div className="border-b border-stone-200 pb-2">
             <h2 className="text-base font-semibold text-stone-900">Routing</h2>
             <p className="text-xs text-stone-500 mt-0.5">
-              Pick how each workload is served. Default uses OpenHuman; Custom lets you point a
+              Pick how each workload is served. Default uses Aura; Custom lets you point a
               workload at a specific provider and model.
             </p>
           </div>
@@ -280,7 +280,7 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
             </div>
 
             <div className="text-[11px] text-stone-500">
-              Default resolves to <span className="font-mono text-stone-700">OpenHuman</span>.
+              Default resolves to <span className="font-mono text-stone-700">Aura</span>.
             </div>
           </section>
         </div>
@@ -320,7 +320,7 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
               // Persist the credential BEFORE mutating draft, so a key-write
               // failure doesn't leave the config referencing a provider with
               // no stored key.
-              if (apiKey && upserted.slug !== 'openhuman') {
+              if (apiKey && upserted.slug !== 'aura') {
                 try {
                   await setCloudProviderKey(upserted.slug, apiKey);
                 } catch (err) {
@@ -400,7 +400,7 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
               };
               // Persist the credential BEFORE mutating draft, so a key-write
               // failure can't leave config + secrets out of sync.
-              if (!isLocalRuntime && slug !== 'openhuman') {
+              if (!isLocalRuntime && slug !== 'aura') {
                 try {
                   await setCloudProviderKey(slug, apiKey);
                 } catch (err) {

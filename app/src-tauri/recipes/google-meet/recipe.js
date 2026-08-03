@@ -37,8 +37,8 @@
   // in-progress code to sessionStorage so the recipe on the next page
   // can emit a synthetic ended event for the previous session. Keyed by
   // origin (same-origin nav is guaranteed within meet.google.com).
-  const SS_CODE = 'openhuman_gmeet_currentCode';
-  const SS_STARTED_AT = 'openhuman_gmeet_startedAt';
+  const SS_CODE = 'aura_gmeet_currentCode';
+  const SS_STARTED_AT = 'aura_gmeet_startedAt';
 
   function ssGet(k) {
     try { return window.sessionStorage.getItem(k); } catch (_) { return null; }
@@ -532,4 +532,4 @@
       emitCaptionsIfChanged(currentCode, captions);
     }
   });
-})(window.__openhumanRecipe);
+})(window.__auraRecipe);

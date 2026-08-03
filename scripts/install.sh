@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# OpenHuman Installer (macOS/Linux)
+# Aura Installer (macOS/Linux)
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/tinyhumansai/openhuman/main/scripts/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/tinyhumansai/aura/main/scripts/install.sh | bash
 
 set -euo pipefail
 
@@ -14,7 +14,7 @@ for _arg in "$@"; do
 done
 
 INSTALLER_VERSION="1.0.0"
-REPO="tinyhumansai/openhuman"
+REPO="tinyhumansai/aura"
 LATEST_JSON_URL="https://github.com/${REPO}/releases/latest/download/latest.json"
 LATEST_RELEASE_API_URL="https://api.github.com/repos/${REPO}/releases/latest"
 
@@ -43,7 +43,7 @@ log_err() { echo -e "${RED}x${NC} $*" >&2; }
 
 usage() {
   cat <<'EOF'
-OpenHuman Installer
+Aura Installer
 
 Usage: install.sh [OPTIONS]
 
@@ -55,7 +55,7 @@ Options:
   --verbose         Enable verbose output
 
 Examples:
-  curl -fsSL https://raw.githubusercontent.com/tinyhumansai/openhuman/main/scripts/install.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/tinyhumansai/aura/main/scripts/install.sh | bash
   curl -fsSL ... | bash -s -- --dry-run
 EOF
 }
@@ -67,7 +67,7 @@ while [[ $# -gt 0 ]]; do
       exit 0
       ;;
     --version)
-      echo "openhuman-installer ${INSTALLER_VERSION}"
+      echo "aura-installer ${INSTALLER_VERSION}"
       exit 0
       ;;
     --channel)
@@ -117,7 +117,7 @@ case "${OS_RAW}" in
   Linux) OS="linux" ;;
   CYGWIN*|MINGW*|MSYS*)
     log_err "Windows detected. Use PowerShell installer:"
-    echo "  irm https://raw.githubusercontent.com/tinyhumansai/openhuman/main/scripts/install.ps1 | iex"
+    echo "  irm https://raw.githubusercontent.com/tinyhumansai/aura/main/scripts/install.ps1 | iex"
     exit 1
     ;;
   *)
@@ -515,7 +515,7 @@ ensure_local_bin_path() {
   if ! grep -q '.local/bin' "${config_file}"; then
     {
       echo ""
-      echo '# OpenHuman installer - ensure local user binaries are on PATH'
+      echo '# Aura installer - ensure local user binaries are on PATH'
       echo 'export PATH="$HOME/.local/bin:$PATH"'
     } >> "${config_file}"
     log_ok "Added ~/.local/bin to ${config_file}"
@@ -524,28 +524,28 @@ ensure_local_bin_path() {
 
 install_macos() {
   local apps_dir="${HOME}/Applications"
-  local app_path="${apps_dir}/OpenHuman.app"
+  local app_path="${apps_dir}/Aura.app"
   mkdir -p "${apps_dir}"
 
   if [[ "${ASSET_NAME}" =~ \.app\.tar\.gz$ ]]; then
-    log_info "Installing OpenHuman.app into ${apps_dir}"
+    log_info "Installing Aura.app into ${apps_dir}"
     if [ "${DRY_RUN}" = true ]; then
       echo "DRY RUN: tar -xzf ${DOWNLOAD_PATH} -C ${TMP_DIR}"
       echo "DRY RUN: replace ${app_path}"
     else
       tar -xzf "${DOWNLOAD_PATH}" -C "${TMP_DIR}"
-      if [ ! -d "${TMP_DIR}/OpenHuman.app" ]; then
-        log_err "Archive did not contain OpenHuman.app"
+      if [ ! -d "${TMP_DIR}/Aura.app" ]; then
+        log_err "Archive did not contain Aura.app"
         exit 1
       fi
       rm -rf "${app_path}"
-      cp -R "${TMP_DIR}/OpenHuman.app" "${app_path}"
+      cp -R "${TMP_DIR}/Aura.app" "${app_path}"
     fi
   elif [[ "${ASSET_NAME}" =~ \.dmg$ ]]; then
-    log_info "Mounting DMG and copying OpenHuman.app"
+    log_info "Mounting DMG and copying Aura.app"
     if [ "${DRY_RUN}" = true ]; then
       echo "DRY RUN: hdiutil attach ${DOWNLOAD_PATH}"
-      echo "DRY RUN: copy OpenHuman.app to ${app_path}"
+      echo "DRY RUN: copy Aura.app to ${app_path}"
     else
       if ! command -v hdiutil >/dev/null 2>&1; then
         log_err "hdiutil not available, cannot install from DMG."
@@ -553,13 +553,13 @@ install_macos() {
       fi
       mount_output="$(hdiutil attach "${DOWNLOAD_PATH}" -nobrowse)"
       mount_point="$(echo "${mount_output}" | awk '/\/Volumes\// {print $NF; exit}')"
-      if [ -z "${mount_point}" ] || [ ! -d "${mount_point}/OpenHuman.app" ]; then
-        log_err "Could not find OpenHuman.app in mounted DMG."
+      if [ -z "${mount_point}" ] || [ ! -d "${mount_point}/Aura.app" ]; then
+        log_err "Could not find Aura.app in mounted DMG."
         echo "${mount_output}"
         exit 1
       fi
       rm -rf "${app_path}"
-      cp -R "${mount_point}/OpenHuman.app" "${app_path}"
+      cp -R "${mount_point}/Aura.app" "${app_path}"
       hdiutil detach "${mount_point}" >/dev/null
     fi
   else
@@ -569,16 +569,16 @@ install_macos() {
 
   log_ok "Installed at ${app_path}"
   echo ""
-  echo "OpenHuman is ready."
+  echo "Aura is ready."
   echo "Launch: open \"${app_path}\""
   echo "Uninstall: rm -rf \"${app_path}\""
 }
 
 install_linux() {
   local bin_dir="${HOME}/.local/bin"
-  local app_path="${bin_dir}/openhuman"
+  local app_path="${bin_dir}/aura"
   local desktop_dir="${HOME}/.local/share/applications"
-  local desktop_file="${desktop_dir}/openhuman.desktop"
+  local desktop_file="${desktop_dir}/aura.desktop"
 
   mkdir -p "${bin_dir}" "${desktop_dir}"
 
@@ -602,11 +602,11 @@ install_linux() {
     cat > "${desktop_file}" <<EOF
 [Desktop Entry]
 Type=Application
-Name=OpenHuman
-Comment=OpenHuman desktop assistant
+Name=Aura
+Comment=Aura desktop assistant
 Exec=${app_path}
 TryExec=${app_path}
-Icon=${bin_dir}/openhuman.png
+Icon=${bin_dir}/aura.png
 Terminal=false
 Categories=Utility;
 EOF
@@ -614,7 +614,7 @@ EOF
 
   log_ok "Installed binary at ${app_path}"
   echo ""
-  echo "OpenHuman is ready."
+  echo "Aura is ready."
   echo "Launch: ${app_path}"
   echo "Uninstall: rm -f \"${app_path}\" \"${desktop_file}\""
 }

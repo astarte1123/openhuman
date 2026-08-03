@@ -43,8 +43,8 @@ describe('runBootCheck — local mode', () => {
     const transport = makeTransport({
       callRpc: rpcResponder({
         'core.ping': {},
-        'openhuman.service_status': { installed: false, running: false },
-        'openhuman.update_version': { result: { version: appVersion } },
+        'aura.service_status': { installed: false, running: false },
+        'aura.update_version': { result: { version: appVersion } },
       }),
     });
 
@@ -58,8 +58,8 @@ describe('runBootCheck — local mode', () => {
     const transport = makeTransport({
       callRpc: rpcResponder({
         'core.ping': {},
-        'openhuman.service_status': { installed: true, running: false },
-        'openhuman.update_version': { result: { version: appVersion } },
+        'aura.service_status': { installed: true, running: false },
+        'aura.update_version': { result: { version: appVersion } },
       }),
     });
 
@@ -71,8 +71,8 @@ describe('runBootCheck — local mode', () => {
     const transport = makeTransport({
       callRpc: rpcResponder({
         'core.ping': {},
-        'openhuman.service_status': { installed: false, running: true },
-        'openhuman.update_version': { result: { version: 'x' } },
+        'aura.service_status': { installed: false, running: true },
+        'aura.update_version': { result: { version: 'x' } },
       }),
     });
 
@@ -84,8 +84,8 @@ describe('runBootCheck — local mode', () => {
     const transport = makeTransport({
       callRpc: rpcResponder({
         'core.ping': {},
-        'openhuman.service_status': { installed: false, running: false },
-        'openhuman.update_version': { result: { version: '0.0.0-different' } },
+        'aura.service_status': { installed: false, running: false },
+        'aura.update_version': { result: { version: '0.0.0-different' } },
       }),
     });
 
@@ -97,8 +97,8 @@ describe('runBootCheck — local mode', () => {
     const transport = makeTransport({
       callRpc: rpcResponder({
         'core.ping': {},
-        'openhuman.service_status': { installed: false, running: false },
-        'openhuman.update_version': new Error('JSON-RPC error -32601 Method not found'),
+        'aura.service_status': { installed: false, running: false },
+        'aura.update_version': new Error('JSON-RPC error -32601 Method not found'),
       }),
     });
 
@@ -110,8 +110,8 @@ describe('runBootCheck — local mode', () => {
     const transport = makeTransport({
       callRpc: rpcResponder({
         'core.ping': {},
-        'openhuman.service_status': { installed: false, running: false },
-        'openhuman.update_version': new Error('method not found'),
+        'aura.service_status': { installed: false, running: false },
+        'aura.update_version': new Error('method not found'),
       }),
     });
 
@@ -155,7 +155,7 @@ describe('runBootCheck — cloud mode', () => {
     const appVersion = (await import('../../utils/config')).APP_VERSION;
 
     const transport = makeTransport({
-      callRpc: rpcResponder({ 'openhuman.update_version': { result: { version: appVersion } } }),
+      callRpc: rpcResponder({ 'aura.update_version': { result: { version: appVersion } } }),
     });
 
     const result = await runBootCheck(
@@ -167,7 +167,7 @@ describe('runBootCheck — cloud mode', () => {
 
   it('returns outdatedCloud when version differs', async () => {
     const transport = makeTransport({
-      callRpc: rpcResponder({ 'openhuman.update_version': { result: { version: '0.0.0-old' } } }),
+      callRpc: rpcResponder({ 'aura.update_version': { result: { version: '0.0.0-old' } } }),
     });
 
     const result = await runBootCheck(
@@ -179,7 +179,7 @@ describe('runBootCheck — cloud mode', () => {
 
   it('returns noVersionMethod when cloud core returns -32601', async () => {
     const transport = makeTransport({
-      callRpc: rpcResponder({ 'openhuman.update_version': new Error('-32601 Method not found') }),
+      callRpc: rpcResponder({ 'aura.update_version': new Error('-32601 Method not found') }),
     });
 
     const result = await runBootCheck(
@@ -225,8 +225,8 @@ describe('runBootCheck — error and edge branches', () => {
     const transport = makeTransport({
       callRpc: rpcResponder({
         'core.ping': {},
-        'openhuman.service_status': new Error('rpc transport blew up'),
-        'openhuman.update_version': { result: { version: appVersion } },
+        'aura.service_status': new Error('rpc transport blew up'),
+        'aura.update_version': { result: { version: appVersion } },
       }),
     });
 
@@ -238,8 +238,8 @@ describe('runBootCheck — error and edge branches', () => {
     const transport = makeTransport({
       callRpc: rpcResponder({
         'core.ping': {},
-        'openhuman.service_status': { installed: false, running: false },
-        'openhuman.update_version': { result: { version: '' } },
+        'aura.service_status': { installed: false, running: false },
+        'aura.update_version': { result: { version: '' } },
       }),
     });
 
@@ -269,10 +269,10 @@ describe('runBootCheck — error and edge branches', () => {
           if (pingCalls === 1) return {};
           throw new Error('subsequent failure');
         }
-        if (method === 'openhuman.service_status') {
+        if (method === 'aura.service_status') {
           return { installed: false, running: false };
         }
-        if (method === 'openhuman.update_version') {
+        if (method === 'aura.update_version') {
           // Generic transport error (no -32601), should map to 'unreachable'.
           throw new Error('connection reset');
         }

@@ -34,7 +34,7 @@ describe('Rewards page', () => {
       discord: {
         linked: true,
         discordId: 'discord-123',
-        inviteUrl: 'https://discord.gg/openhuman',
+        inviteUrl: 'https://discord.gg/aura',
         membershipStatus: 'member',
       },
       summary: {
@@ -57,7 +57,7 @@ describe('Rewards page', () => {
         {
           id: 'STREAK_7',
           title: '7-Day Streak',
-          description: 'Use OpenHuman on seven consecutive active days.',
+          description: 'Use Aura on seven consecutive active days.',
           actionLabel: 'Keep your streak alive for 7 days',
           unlocked: true,
           progressLabel: 'Unlocked',
@@ -108,7 +108,7 @@ describe('Rewards page', () => {
         discord: {
           linked: true,
           discordId: 'discord-123',
-          inviteUrl: 'https://discord.gg/openhuman',
+          inviteUrl: 'https://discord.gg/aura',
           membershipStatus: 'member',
         },
         summary: {
@@ -131,7 +131,7 @@ describe('Rewards page', () => {
           {
             id: 'STREAK_7',
             title: '7-Day Streak',
-            description: 'Use OpenHuman on seven consecutive active days.',
+            description: 'Use Aura on seven consecutive active days.',
             actionLabel: 'Keep your streak alive for 7 days',
             unlocked: true,
             progressLabel: 'Unlocked',
@@ -167,7 +167,7 @@ describe('Rewards page', () => {
       discord: {
         linked: false,
         discordId: null,
-        inviteUrl: 'https://discord.gg/openhuman',
+        inviteUrl: 'https://discord.gg/aura',
         membershipStatus: 'not_linked',
       },
       summary: {
@@ -207,7 +207,7 @@ describe('Rewards page', () => {
       discord: {
         linked: false,
         discordId: null,
-        inviteUrl: 'https://discord.gg/openhuman',
+        inviteUrl: 'https://discord.gg/aura',
         membershipStatus: 'not_linked',
       },
       summary: {
@@ -246,7 +246,7 @@ describe('Rewards page', () => {
       discord: {
         linked: false,
         discordId: null,
-        inviteUrl: 'https://discord.gg/openhuman',
+        inviteUrl: 'https://discord.gg/aura',
         membershipStatus: 'not_linked',
       },
       summary: {
@@ -280,6 +280,6 @@ describe('Rewards page', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Join Discord' }));
 
-    expect(openUrl).toHaveBeenCalledWith('https://discord.gg/openhuman');
+    expect(openUrl).toHaveBeenCalledWith('https://discord.gg/aura');
   });
 });

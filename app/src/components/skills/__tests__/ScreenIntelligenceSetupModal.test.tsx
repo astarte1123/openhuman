@@ -20,7 +20,7 @@ vi.mock('../../../utils/tauriCommands', async () => {
   const actual = await vi.importActual<Record<string, unknown>>('../../../utils/tauriCommands');
   return {
     ...actual,
-    openhumanUpdateScreenIntelligenceSettings: vi.fn().mockResolvedValue(undefined),
+    auraUpdateScreenIntelligenceSettings: vi.fn().mockResolvedValue(undefined),
   };
 });
 

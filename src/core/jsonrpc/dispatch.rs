@@ -68,7 +68,7 @@ pub(super) async fn rpc_handler(
             // Param-validation failures ("unknown param 'x' for ns.fn",
             // "missing required param 'x'", "invalid params: …") are also
             // pure boundary mismatches: either the caller is a frontend on a
-            // different release than the running core (OPENHUMAN-TAURI-20:
+            // different release than the running core (AURA-TAURI-20:
             // v0.53.22 UI shipped `api_key` before the matching schema input
             // landed in #1467) or it is straight client-bug input. Sentry
             // cannot help — we can neither retro-fix already-shipped
@@ -113,7 +113,7 @@ pub(super) async fn rpc_handler(
                 // query params, or pasted-through provider error text that
                 // includes tokens. `sanitize_api_error` runs the same scrub
                 // used in the SessionExpired publish path below.
-                let redacted = crate::openhuman::inference::provider::ops::sanitize_api_error(
+                let redacted = crate::aura::inference::provider::ops::sanitize_api_error(
                     &display_message,
                 );
                 tracing::warn!(
@@ -180,7 +180,7 @@ pub async fn invoke_method(state: AppState, method: &str, params: Value) -> Resu
             crate::core::event_bus::publish_global(
                 crate::core::event_bus::DomainEvent::SessionExpired {
                     source: format!("jsonrpc.invoke_method:{method}"),
-                    reason: crate::openhuman::inference::provider::ops::sanitize_api_error(msg),
+                    reason: crate::aura::inference::provider::ops::sanitize_api_error(msg),
                 },
             );
         }
@@ -200,7 +200,7 @@ pub async fn invoke_method(state: AppState, method: &str, params: Value) -> Resu
 /// the user mis-configured an OpenAI / Anthropic key). The strict
 /// classifier in `observability` is for the agent / web-channel
 /// `report_error_or_expected` call sites, where matching too loosely would
-/// silence actionable BYO-key configuration errors (OPENHUMAN-TAURI-26
+/// silence actionable BYO-key configuration errors (AURA-TAURI-26
 /// rationale: the agent-layer demote must NOT also swallow generic
 /// provider 401s).
 ///

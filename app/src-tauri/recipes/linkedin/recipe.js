@@ -314,4 +314,4 @@
   };
 
   api.log('info', '[linkedin-recipe] v0.3 ready');
-})(window.__openhumanRecipe);
+})(window.__auraRecipe);

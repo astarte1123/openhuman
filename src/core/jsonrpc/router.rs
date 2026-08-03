@@ -38,7 +38,7 @@ pub fn build_core_http_router(socketio_enabled: bool) -> Router {
         .route("/ws/dictation", get(dictation_ws_handler))
         .route("/auth/telegram", get(telegram_auth_handler))
         // OpenAI-compatible inference endpoint (/v1/chat/completions, /v1/models)
-        .nest("/v1", crate::openhuman::inference::http::router())
+        .nest("/v1", crate::aura::inference::http::router())
         .fallback(not_found_handler)
         .layer(middleware::from_fn(http_request_log_middleware))
         .layer(middleware::from_fn(crate::core::auth::rpc_auth_middleware))
@@ -140,7 +140,7 @@ async fn events_handler(
     Query(query): Query<EventsQuery>,
 ) -> Sse<impl tokio_stream::Stream<Item = Result<Event, std::convert::Infallible>>> {
     let client_id = query.client_id;
-    let rx = crate::openhuman::channels::providers::web::subscribe_web_channel_events();
+    let rx = crate::aura::channels::providers::web::subscribe_web_channel_events();
     let stream = tokio_stream::wrappers::BroadcastStream::new(rx).filter_map(move |item| {
         let event = match item {
             Ok(ev) => ev,
@@ -173,7 +173,7 @@ async fn webhook_events_handler() -> Response {
 
 /// Handler for the root endpoint, returning server information and available endpoints.
 async fn root_handler() -> impl IntoResponse {
-    let api_server = match crate::openhuman::config::Config::load_or_init().await {
+    let api_server = match crate::aura::config::Config::load_or_init().await {
         Ok(cfg) => crate::api::config::effective_backend_api_url(&cfg.api_url),
         Err(_) => crate::api::config::effective_backend_api_url(&None),
     };
@@ -181,7 +181,7 @@ async fn root_handler() -> impl IntoResponse {
     (
         StatusCode::OK,
         Json(json!({
-            "name": "openhuman",
+            "name": "aura",
             "ok": true,
             "api_server": api_server,
             "endpoints": {
@@ -215,7 +215,7 @@ async fn not_found_handler() -> impl IntoResponse {
 
 /// Resolves the port for the core server from environment variables or defaults.
 pub(super) fn core_port() -> u16 {
-    std::env::var("OPENHUMAN_CORE_PORT")
+    std::env::var("AURA_CORE_PORT")
         .ok()
         .and_then(|v| v.parse::<u16>().ok())
         .unwrap_or(7788)
@@ -223,7 +223,7 @@ pub(super) fn core_port() -> u16 {
 
 /// Resolves the bind address host for the core server from environment variables or defaults.
 pub(super) fn core_host() -> String {
-    std::env::var("OPENHUMAN_CORE_HOST")
+    std::env::var("AURA_CORE_HOST")
         .ok()
         .filter(|s| !s.is_empty())
         .unwrap_or_else(|| "127.0.0.1".to_string())

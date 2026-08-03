@@ -4,8 +4,8 @@ import {
   isTauri,
   MEMORY_CONTEXT_WINDOWS,
   type MemoryContextWindow,
-  openhumanGetConfig,
-  openhumanUpdateMemorySettings,
+  auraGetConfig,
+  auraUpdateMemorySettings,
 } from '../../../utils/tauriCommands';
 
 interface PresetMeta {
@@ -17,7 +17,7 @@ interface PresetMeta {
 /**
  * Plain-language framing for each preset. The actual character budgets
  * live in the Rust core (`MemoryContextWindow::limits` in
- * `src/openhuman/config/schema/agent.rs`) — these strings only describe
+ * `src/aura/config/schema/agent.rs`) — these strings only describe
  * the UX tradeoff so users can pick without doing math.
  */
 export const MEMORY_WINDOW_PRESET_META: Record<MemoryContextWindow, PresetMeta> = {
@@ -63,8 +63,8 @@ interface Props {
 /**
  * Stepped memory-context window selector.
  *
- * - Reads the persisted preference from the core via `openhuman.get_config`.
- * - Writes it back via `openhuman.update_memory_settings` (the core
+ * - Reads the persisted preference from the core via `aura.get_config`.
+ * - Writes it back via `aura.update_memory_settings` (the core
  *   owns the actual char-budget mapping).
  * - Renders four options with plain-language hints so users understand
  *   the cost / continuity tradeoff.
@@ -83,7 +83,7 @@ const MemoryWindowControl = ({ onError, onSaved }: Props) => {
     let cancelled = false;
     const load = async () => {
       try {
-        const response = await openhumanGetConfig();
+        const response = await auraGetConfig();
         if (cancelled) return;
         setCurrent(extractCurrentWindow(response.result));
       } catch (err) {
@@ -105,7 +105,7 @@ const MemoryWindowControl = ({ onError, onSaved }: Props) => {
     setSaving(next);
     try {
       if (isTauri()) {
-        await openhumanUpdateMemorySettings({ memory_window: next });
+        await auraUpdateMemorySettings({ memory_window: next });
       }
       setCurrent(next);
       onSaved?.(next);
@@ -128,7 +128,7 @@ const MemoryWindowControl = ({ onError, onSaved }: Props) => {
         <div>
           <h3 className="text-base font-semibold">Long-term memory window</h3>
           <p className="text-sm text-muted-foreground">
-            How much remembered context OpenHuman injects into every new agent run. Larger windows
+            How much remembered context Aura injects into every new agent run. Larger windows
             feel more aware of past conversations but use more tokens — and cost more — on every
             run.
           </p>

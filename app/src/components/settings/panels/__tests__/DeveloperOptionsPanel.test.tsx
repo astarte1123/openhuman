@@ -199,7 +199,7 @@ describe('DeveloperOptionsPanel — App logs row', () => {
 
   test('shows the resolved log path on mount', async () => {
     hoisted.invoke.mockImplementation((cmd: string) => {
-      if (cmd === 'logs_folder_path') return Promise.resolve('/tmp/openhuman/logs');
+      if (cmd === 'logs_folder_path') return Promise.resolve('/tmp/aura/logs');
       return Promise.resolve();
     });
     vi.resetModules();
@@ -207,7 +207,7 @@ describe('DeveloperOptionsPanel — App logs row', () => {
     renderWithProviders(<Panel />);
 
     await waitFor(() => {
-      expect(screen.getByText('/tmp/openhuman/logs')).toBeInTheDocument();
+      expect(screen.getByText('/tmp/aura/logs')).toBeInTheDocument();
     });
     expect(hoisted.invoke).toHaveBeenCalledWith('logs_folder_path');
   });

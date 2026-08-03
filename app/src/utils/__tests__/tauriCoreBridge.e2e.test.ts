@@ -10,15 +10,15 @@ vi.mock('../../services/coreRpcClient', () => ({ callCoreRpc: vi.fn() }));
 describe('Web → frontend JSON-RPC → Core bridge', () => {
   const mockIsTauri = isTauri as Mock;
   const mockCallCoreRpc = callCoreRpc as Mock;
-  let openhumanServiceStatus: typeof import('../tauriCommands').openhumanServiceStatus;
-  let openhumanAgentServerStatus: typeof import('../tauriCommands').openhumanAgentServerStatus;
+  let auraServiceStatus: typeof import('../tauriCommands').auraServiceStatus;
+  let auraAgentServerStatus: typeof import('../tauriCommands').auraAgentServerStatus;
 
   beforeEach(async () => {
     vi.clearAllMocks();
     mockIsTauri.mockReturnValue(true);
     const actual = await vi.importActual<typeof import('../tauriCommands')>('../tauriCommands');
-    openhumanServiceStatus = actual.openhumanServiceStatus;
-    openhumanAgentServerStatus = actual.openhumanAgentServerStatus;
+    auraServiceStatus = actual.auraServiceStatus;
+    auraAgentServerStatus = actual.auraAgentServerStatus;
   });
 
   test('routes service status via JSON-RPC client and returns core payload', async () => {
@@ -27,9 +27,9 @@ describe('Web → frontend JSON-RPC → Core bridge', () => {
 
     mockCallCoreRpc.mockResolvedValueOnce(rpcResponse);
 
-    const response = await openhumanServiceStatus();
+    const response = await auraServiceStatus();
 
-    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'openhuman.service_status' });
+    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'aura.service_status' });
     expect(response).toEqual(rpcResponse);
     expect(response.result.state).toBe(expectedState);
   });
@@ -42,9 +42,9 @@ describe('Web → frontend JSON-RPC → Core bridge', () => {
 
     mockCallCoreRpc.mockResolvedValueOnce(rpcResponse);
 
-    const response = await openhumanAgentServerStatus();
+    const response = await auraAgentServerStatus();
 
-    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'openhuman.agent_server_status' });
+    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'aura.agent_server_status' });
     expect(response.result.running).toBe(true);
     expect(response.result.url).toContain('127.0.0.1');
   });
@@ -52,7 +52,7 @@ describe('Web → frontend JSON-RPC → Core bridge', () => {
   test('fails fast in web-only mode without Tauri runtime', async () => {
     mockIsTauri.mockReturnValue(false);
 
-    await expect(openhumanServiceStatus()).rejects.toThrow('Not running in Tauri');
+    await expect(auraServiceStatus()).rejects.toThrow('Not running in Tauri');
     expect(mockCallCoreRpc).not.toHaveBeenCalled();
   });
 });

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bootstrap a fresh git worktree for OpenHuman dev.
+# Bootstrap a fresh git worktree for Aura dev.
 #
 # `git worktree add` only checks out the tree. Submodules, untracked env
 # files, and the staged core binary under app/src-tauri/binaries/ don't come
@@ -37,11 +37,11 @@ done
 # but will run main's code) OR build fresh from this worktree (slow, runs
 # this branch's code). Default to fresh build — the whole point of a
 # worktree is testing divergent code.
-BIN="$WORKTREE_ROOT/app/src-tauri/binaries/openhuman-core-aarch64-apple-darwin"
+BIN="$WORKTREE_ROOT/app/src-tauri/binaries/aura-core-aarch64-apple-darwin"
 if [[ ! -e "$BIN" ]]; then
   echo "[bootstrap] building + staging core sidecar from this worktree..."
   mkdir -p "$(dirname "$BIN")"
-  (cd "$WORKTREE_ROOT" && cargo build --bin openhuman-core)
+  (cd "$WORKTREE_ROOT" && cargo build --bin aura-core)
   (cd "$WORKTREE_ROOT/app" && pnpm core:stage)
 fi
 

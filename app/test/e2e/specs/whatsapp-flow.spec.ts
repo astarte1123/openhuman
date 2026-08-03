@@ -105,12 +105,12 @@ describe('WhatsApp account integration smoke', () => {
     // that the modal vanished. The Accounts rail tooltip and the modal both
     // render the literal string "WhatsApp Web", so a DOM text assertion alone
     // cannot distinguish them. The store handle is exposed on
-    // `window.__OPENHUMAN_STORE__` from `app/src/store/index.ts`.
+    // `window.__AURA_STORE__` from `app/src/store/index.ts`.
     const registered = await browser.waitUntil(
       async () =>
         await browser.execute(() => {
-          const winAny = window as unknown as { __OPENHUMAN_STORE__?: { getState: () => unknown } };
-          const state = winAny.__OPENHUMAN_STORE__?.getState() as
+          const winAny = window as unknown as { __AURA_STORE__?: { getState: () => unknown } };
+          const state = winAny.__AURA_STORE__?.getState() as
             | { accounts?: { accounts?: Record<string, { provider?: string }> } }
             | undefined;
           if (!state) return false;

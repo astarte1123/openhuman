@@ -96,12 +96,12 @@ describe('Slack account integration smoke', () => {
     // backing-state mock-effect that proves registration. The Slack tile
     // label and the post-pick rail tooltip share the literal string "Slack",
     // so a pure DOM assertion cannot distinguish them. The store handle is
-    // exposed on `window.__OPENHUMAN_STORE__` from `app/src/store/index.ts`.
+    // exposed on `window.__AURA_STORE__` from `app/src/store/index.ts`.
     const registered = await browser.waitUntil(
       async () =>
         await browser.execute(() => {
-          const winAny = window as unknown as { __OPENHUMAN_STORE__?: { getState: () => unknown } };
-          const state = winAny.__OPENHUMAN_STORE__?.getState() as
+          const winAny = window as unknown as { __AURA_STORE__?: { getState: () => unknown } };
+          const state = winAny.__AURA_STORE__?.getState() as
             | { accounts?: { accounts?: Record<string, { provider?: string }> } }
             | undefined;
           if (!state) return false;

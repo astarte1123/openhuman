@@ -10,7 +10,7 @@ import { behavior, MOCK_JWT } from "../state.mjs";
  *   2. App opens that URL in the system browser.
  *   3. User logs in at the provider, provider redirects back to the backend
  *      callback, the backend exchanges the code and finally redirects to the
- *      desktop deep link `openhuman://oauth/success?integrationId=…&provider=…`
+ *      desktop deep link `aura://oauth/success?integrationId=…&provider=…`
  *      (see app/src/utils/desktopDeepLinkListener.ts).
  *   4. The Tauri shell receives the deep link, the app marks the integration
  *      connected.
@@ -63,10 +63,10 @@ export function handleOAuth(ctx) {
       : clampDelay(mockBehavior.oauthAutoRedirectMs, 50);
 
     const target = errorCode
-      ? `openhuman://oauth/error?provider=${encodeURIComponent(
+      ? `aura://oauth/error?provider=${encodeURIComponent(
           params.provider || provider,
         )}&error=${encodeURIComponent(errorCode)}`
-      : `openhuman://oauth/success?integrationId=${encodeURIComponent(
+      : `aura://oauth/success?integrationId=${encodeURIComponent(
           integrationId,
         )}&provider=${encodeURIComponent(params.provider || provider)}`;
 
@@ -89,7 +89,7 @@ export function handleOAuth(ctx) {
       // Redirect to the desktop error deep link.
       setCors(res);
       res.writeHead(302, {
-        Location: `openhuman://oauth/error?provider=${encodeURIComponent(
+        Location: `aura://oauth/error?provider=${encodeURIComponent(
           provider,
         )}&error=${encodeURIComponent(errorCode)}`,
       });
@@ -103,7 +103,7 @@ export function handleOAuth(ctx) {
       `mock-${provider}-integration`;
     setCors(res);
     res.writeHead(302, {
-      Location: `openhuman://oauth/success?integrationId=${encodeURIComponent(
+      Location: `aura://oauth/success?integrationId=${encodeURIComponent(
         integrationId,
       )}&provider=${encodeURIComponent(provider)}`,
     });
@@ -221,7 +221,7 @@ function renderOAuthPage({ provider, target, autoRedirectMs, errorCode }) {
   <h1>${heading}</h1>
   <p>${blurb}</p>
   <p>Target: <code>${safeTarget}</code></p>
-  <p><a class="button" id="continue" href="${safeTarget}">Continue to OpenHuman</a></p>
+  <p><a class="button" id="continue" href="${safeTarget}">Continue to Aura</a></p>
   ${autoRedirectScript}
 </body>
 </html>`;

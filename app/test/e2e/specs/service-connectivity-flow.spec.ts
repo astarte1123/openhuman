@@ -36,8 +36,8 @@ const DEFAULT_MOCK_STATE: ServiceMockState = {
 };
 
 const mockStateFile =
-  process.env.OPENHUMAN_SERVICE_MOCK_STATE_FILE ||
-  path.join(process.env.OPENHUMAN_WORKSPACE || os.tmpdir(), 'service-mock-state.json');
+  process.env.AURA_SERVICE_MOCK_STATE_FILE ||
+  path.join(process.env.AURA_WORKSPACE || os.tmpdir(), 'service-mock-state.json');
 
 function stepLog(message: string, context?: unknown): void {
   const stamp = new Date().toISOString();
@@ -70,12 +70,12 @@ async function waitForServiceStateText(stateText: string, timeoutMs = 15_000): P
 // causing cascading failures in stop/restart/uninstall tests. Skip on Linux.
 describe('Service connectivity flow (UI ↔ Rust service)', () => {
   before(async function beforeSuite() {
-    if (process.env.OPENHUMAN_SERVICE_MOCK !== '1' || process.platform === 'linux') {
+    if (process.env.AURA_SERVICE_MOCK !== '1' || process.platform === 'linux') {
       this.skip();
     }
 
     stepLog('Starting suite with service mock mode enabled', {
-      openhumanServiceMock: process.env.OPENHUMAN_SERVICE_MOCK,
+      auraServiceMock: process.env.AURA_SERVICE_MOCK,
       mockStateFile,
     });
     await writeMockState(DEFAULT_MOCK_STATE);
@@ -98,7 +98,7 @@ describe('Service connectivity flow (UI ↔ Rust service)', () => {
   });
 
   it('shows the blocking gate when service is not installed', async () => {
-    await waitForText('OpenHuman Service Required', 20_000);
+    await waitForText('Aura Service Required', 20_000);
     await waitForServiceStateText('NotInstalled');
 
     expect(await textExists('Install Service')).toBe(true);
@@ -161,7 +161,7 @@ describe('Service connectivity flow (UI ↔ Rust service)', () => {
     stepLog('Attempting start while failure is injected');
     await clickButton('Start Service');
     await waitForText('simulated start failure', 10_000);
-    await waitForText('OpenHuman Service Required', 10_000);
+    await waitForText('Aura Service Required', 10_000);
 
     const latest = await readMockState();
     expect(latest.running).toBe(false);
@@ -193,7 +193,7 @@ describe('Service connectivity flow (UI ↔ Rust service)', () => {
     stepLog('Making service + agent healthy and refreshing');
     await clickButton('Refresh');
 
-    await browser.waitUntil(async () => !(await textExists('OpenHuman Service Required')), {
+    await browser.waitUntil(async () => !(await textExists('Aura Service Required')), {
       timeout: 20_000,
       timeoutMsg: 'Service blocking gate did not clear after healthy status',
     });
@@ -211,7 +211,7 @@ describe('Service connectivity flow (UI ↔ Rust service)', () => {
     });
     stepLog('Injected sudden disconnect state; waiting for polling-based gate re-block');
 
-    await browser.waitUntil(async () => textExists('OpenHuman Service Required'), {
+    await browser.waitUntil(async () => textExists('Aura Service Required'), {
       timeout: 20_000,
       interval: 500,
       timeoutMsg: 'Service blocking gate did not reappear after sudden disconnect',

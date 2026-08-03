@@ -4,10 +4,10 @@
 #
 # 1. Resets `onboarding_completed` + `chat_onboarding_completed` to false
 #    in the staging user's config.toml (the path a source-built binary reads).
-# 2. Spawns a fresh `openhuman-core` binary on port 7789 with debug logs
+# 2. Spawns a fresh `aura-core` binary on port 7789 with debug logs
 #    (non-default port so it doesn't fight a running `tauri dev` on 7788).
 # 3. Connects a Socket.IO client that logs every event it receives.
-# 4. Calls `openhuman.config_set_onboarding_completed` with value=true.
+# 4. Calls `aura.config_set_onboarding_completed` with value=true.
 # 5. Watches the log up to 120s for each checkpoint in the pipeline.
 # 6. Reports pass/miss per checkpoint AND whether the socket client got
 #    a `proactive_message` event.
@@ -17,15 +17,15 @@
 set -uo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-BIN="$REPO_ROOT/target/debug/openhuman-core"
+BIN="$REPO_ROOT/target/debug/aura-core"
 PORT=7789
 USER_ID="69d9cb73e61f755583c3671f"
-# Source-built binaries default to `.openhuman-staging`. Production
-# staged binary reads `.openhuman`. We point at staging here.
-CONFIG_ROOT="${OPENHUMAN_CONFIG_ROOT:-$HOME/.openhuman-staging}"
+# Source-built binaries default to `.aura-staging`. Production
+# staged binary reads `.aura`. We point at staging here.
+CONFIG_ROOT="${AURA_CONFIG_ROOT:-$HOME/.aura-staging}"
 CONFIG_PATH="$CONFIG_ROOT/users/$USER_ID/config.toml"
-LOG_FILE="$(mktemp -t openhuman-proactive-welcome-XXXXXX).log"
-SIO_LOG="$(mktemp -t openhuman-sio-XXXXXX).log"
+LOG_FILE="$(mktemp -t aura-proactive-welcome-XXXXXX).log"
+SIO_LOG="$(mktemp -t aura-sio-XXXXXX).log"
 SIO_CLIENT_DIR="/tmp/sio-test"
 KEEP_FLAGS=0
 
@@ -38,7 +38,7 @@ done
 log() { printf "[test] %s\n" "$*"; }
 fail() { printf "[test][FAIL] %s\n" "$*" >&2; exit 1; }
 
-[[ -f "$BIN" ]] || fail "binary not built: $BIN (run: cargo build --bin openhuman-core)"
+[[ -f "$BIN" ]] || fail "binary not built: $BIN (run: cargo build --bin aura-core)"
 [[ -f "$CONFIG_PATH" ]] || fail "config not found: $CONFIG_PATH"
 
 # Flip the two onboarding keys to `false` in place, preserving any
@@ -88,7 +88,7 @@ log "starting $BIN on port $PORT (log: $LOG_FILE)"
 # Pre-seed the RPC bearer token so the single curl call below can authenticate.
 RPC_TOKEN="$(openssl rand -hex 32 2>/dev/null || python3 -c 'import secrets; print(secrets.token_hex(32))')"
 RUST_LOG=debug,hyper=info,tungstenite=info,socketioxide=info \
-    OPENHUMAN_CORE_TOKEN="$RPC_TOKEN" \
+    AURA_CORE_TOKEN="$RPC_TOKEN" \
     "$BIN" run --port "$PORT" > "$LOG_FILE" 2>&1 &
 BIN_PID=$!
 
@@ -118,10 +118,10 @@ trap cleanup EXIT
 
 log "waiting for core to be ready…"
 for _ in $(seq 1 60); do
-    grep -q "OpenHuman core is ready" "$LOG_FILE" 2>/dev/null && break
+    grep -q "Aura core is ready" "$LOG_FILE" 2>/dev/null && break
     sleep 0.5
 done
-grep -q "OpenHuman core is ready" "$LOG_FILE" || {
+grep -q "Aura core is ready" "$LOG_FILE" || {
     tail -40 "$LOG_FILE" | sed 's/^/[test][core-log] /'
     fail "core did not become ready"
 }
@@ -146,11 +146,11 @@ else
     SIO_PID=""
 fi
 
-log "POST /rpc openhuman.config_set_onboarding_completed {value:true}"
+log "POST /rpc aura.config_set_onboarding_completed {value:true}"
 RPC_RESP=$(curl -s -X POST "http://127.0.0.1:$PORT/rpc" \
     -H 'content-type: application/json' \
     -H "Authorization: Bearer $RPC_TOKEN" \
-    -d '{"jsonrpc":"2.0","id":1,"method":"openhuman.config_set_onboarding_completed","params":{"value":true}}')
+    -d '{"jsonrpc":"2.0","id":1,"method":"aura.config_set_onboarding_completed","params":{"value":true}}')
 echo "[test][rpc-response] $RPC_RESP"
 echo "$RPC_RESP" | grep -q '"result"' || fail "RPC did not return a result"
 

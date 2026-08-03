@@ -7,7 +7,7 @@
 //! the in-process core over plain HTTP JSON-RPC-over-loopback:
 //! `crate::core_rpc::core_rpc_url_value()` (`http://127.0.0.1:<port>/rpc`)
 //! POSTed with a bearer token from `crate::core_rpc::apply_auth`
-//! (`OPENHUMAN_CORE_TOKEN`). There is no native-event-bus path reachable
+//! (`AURA_CORE_TOKEN`). There is no native-event-bus path reachable
 //! from the Tauri shell process — `request_native_global` /
 //! `register_native_global` (`src/core/event_bus/native_request.rs`) are
 //! in-process-only inside the Rust core and are never exposed across the
@@ -30,7 +30,7 @@
 //!
 //! ## cpal lifecycle
 //!
-//! Mirrors `openhuman::voice::audio_capture::record_on_thread` (root
+//! Mirrors `aura::voice::audio_capture::record_on_thread` (root
 //! crate): each device's cpal `Device`/`Stream` is created, played, and
 //! dropped on its own dedicated OS thread (WASAPI backends are not
 //! `Send`-safe), signaled to stop via a shared `Arc<AtomicBool>`. Captured
@@ -151,7 +151,7 @@ pub async fn meeting_recorder_start<R: Runtime>(
     // 2) Create the meeting via core RPC first, so the very first
     // transcript-chunk push can't race an unfinished create.
     let create_result = rpc_call(
-        "openhuman.meetings_create",
+        "aura.meetings_create",
         serde_json::json!({ "title": title, "source": "meeting_recorder" }),
     )
     .await
@@ -242,7 +242,7 @@ pub async fn meeting_recorder_stop(
 
     let duration_ms = session.started_at.elapsed().as_millis() as i64;
     rpc_call(
-        "openhuman.meetings_finish",
+        "aura.meetings_finish",
         serde_json::json!({
             "meeting_id": session.meeting_id,
             "duration_ms": duration_ms,
@@ -384,7 +384,7 @@ async fn transcribe_and_push(
         return;
     }
     if let Err(err) = rpc_call(
-        "openhuman.meetings_append_transcript_chunk",
+        "aura.meetings_append_transcript_chunk",
         serde_json::json!({
             "meeting_id": meeting_id,
             "start_ms": segment.start_timestamp_ms as i64,

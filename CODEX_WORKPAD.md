@@ -89,7 +89,7 @@ No product behavior changes.
 
 ## Clean PR Extraction - 2026-05-13
 
-Implementation branch: `codex/openhuman-portfolio-lint-readiness-upstream`.
+Implementation branch: `codex/aura-portfolio-lint-readiness-upstream`.
 Base: `upstream/main` at `83bc5648`.
 
 The source checkout was already on `codex/operator-mvp-plan` with generated
@@ -118,7 +118,7 @@ Gemini secondary review:
 
 - Pre-review was attempted with `gemini-2.5-flash`, but Gemini repeatedly
   returned 429 model-capacity errors. This branch therefore has local validation
-  evidence but no completed Gemini review for the OpenHuman slice.
+  evidence but no completed Gemini review for the Aura slice.
 
 Validation on the upstream-based clean extraction branch:
 
@@ -144,7 +144,7 @@ pnpm run typecheck
 Result: passed.
 
 ```bash
-pnpm --filter openhuman-app exec vitest run --config test/vitest.config.ts src/pages/__tests__/Conversations.test.tsx src/pages/__tests__/Conversations.render.test.tsx src/components/settings/panels/__tests__/RecoveryPhrasePanel.test.tsx
+pnpm --filter aura-app exec vitest run --config test/vitest.config.ts src/pages/__tests__/Conversations.test.tsx src/pages/__tests__/Conversations.render.test.tsx src/components/settings/panels/__tests__/RecoveryPhrasePanel.test.tsx
 ```
 
 Result: passed, `3` files and `24` tests. Vitest still emitted the known Node
@@ -157,7 +157,7 @@ git diff --check
 Result: passed.
 
 ```bash
-pnpm --filter openhuman-app exec prettier --check .
+pnpm --filter aura-app exec prettier --check .
 ```
 
 Result: passed from `app/`.

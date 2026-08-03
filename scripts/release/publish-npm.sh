@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Publish the openhuman npm package for a given version.
+# Publish the aura npm package for a given version.
 #
 # Usage:
 #   publish-npm.sh <tag>
@@ -27,8 +27,8 @@ if [[ "${DRY_RUN:-}" == "true" ]]; then
   PUBLISH_ARGS+=(--dry-run)
 fi
 
-# SKIP_OPENHUMAN_BINARY_DOWNLOAD prevents postinstall from running
+# SKIP_AURA_BINARY_DOWNLOAD prevents postinstall from running
 # during publish (the binary doesn't exist yet on the publish runner)
-SKIP_OPENHUMAN_BINARY_DOWNLOAD=1 npm publish "${PUBLISH_ARGS[@]}"
+SKIP_AURA_BINARY_DOWNLOAD=1 npm publish "${PUBLISH_ARGS[@]}"
 
-echo "[npm] Published openhuman@${VERSION}"
+echo "[npm] Published aura@${VERSION}"

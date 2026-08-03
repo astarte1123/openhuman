@@ -6,12 +6,12 @@
 //!   via the per-browser `CefAudioHandler` exposed by our vendored
 //!   `tauri-runtime-cef::audio` extension, downsamples to 16 kHz mono
 //!   PCM16LE, batches into ~100 ms chunks, and posts them to core via
-//!   `openhuman.meet_agent_push_listen_pcm`. Zero OS-level audio
+//!   `aura.meet_agent_push_listen_pcm`. Zero OS-level audio
 //!   permission needed: we read frames straight out of the renderer.
 //!
 //! - [`speak_pump`] — drains synthesized PCM the brain enqueued (via
-//!   `openhuman.meet_agent_poll_speech`) and writes it into the
-//!   Chromium `pipe://openhuman/<request_id>` fake-audio source we
+//!   `aura.meet_agent_poll_speech`) and writes it into the
+//!   Chromium `pipe://aura/<request_id>` fake-audio source we
 //!   patch in the vendored CEF subtree. PR1 ships the pump scaffolding;
 //!   the Chromium-side patch lands in a follow-up slice.
 //!
@@ -106,7 +106,7 @@ pub async fn start<R: Runtime>(
     // Tell core to open its session first so the very first PCM push
     // doesn't race the start RPC.
     rpc_call(
-        "openhuman.meet_agent_start_session",
+        "aura.meet_agent_start_session",
         serde_json::json!({
             "request_id": request_id,
             "sample_rate_hz": 16_000,
@@ -239,7 +239,7 @@ pub async fn stop<R: Runtime>(
     }
 
     match rpc_call(
-        "openhuman.meet_agent_stop_session",
+        "aura.meet_agent_stop_session",
         serde_json::json!({ "request_id": request_id }),
     )
     .await

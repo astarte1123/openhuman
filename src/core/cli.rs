@@ -1,4 +1,4 @@
-//! Command-line interface for the OpenHuman core binary.
+//! Command-line interface for the Aura core binary.
 //!
 //! This module handles argument parsing, subcommand dispatching, and help printing
 //! for the CLI. It supports commands for running the server, making RPC calls,
@@ -23,7 +23,7 @@ const CLI_BANNER: &str = r#"
 ▝▚▄▞▘█                ▐▌ ▐▌
      ▀
 
-Contribute & Star us on GitHub: https://github.com/tinyhumansai/openhuman
+Contribute & Star us on GitHub: https://github.com/tinyhumansai/aura
 
 "#;
 
@@ -60,15 +60,15 @@ pub fn run_from_cli_args(args: &[String]) -> Result<()> {
     // Match on the first argument to determine the subcommand.
     match args[0].as_str() {
         "run" | "serve" => run_server_command(&args[1..]),
-        "mcp" | "mcp-server" => crate::openhuman::mcp_server::run_stdio_from_cli(&args[1..]),
+        "mcp" | "mcp-server" => crate::aura::mcp_server::run_stdio_from_cli(&args[1..]),
         "call" => run_call_command(&args[1..]),
         // Domain-specific CLI adapters that don't follow the generic namespace pattern.
         "screen-intelligence" => {
-            crate::openhuman::screen_intelligence::cli::run_screen_intelligence_command(&args[1..])
+            crate::aura::screen_intelligence::cli::run_screen_intelligence_command(&args[1..])
         }
-        "text-input" => crate::openhuman::text_input::cli::run_text_input_command(&args[1..]),
+        "text-input" => crate::aura::text_input::cli::run_text_input_command(&args[1..]),
         "tree-summarizer" => {
-            crate::openhuman::tree_summarizer::cli::run_tree_summarizer_command(&args[1..])
+            crate::aura::tree_summarizer::cli::run_tree_summarizer_command(&args[1..])
         }
         "memory" => crate::core::memory_cli::run_memory_command(&args[1..]),
         "agent" => {
@@ -79,7 +79,7 @@ pub fn run_from_cli_args(args: &[String]) -> Result<()> {
             crate::core::agent_cli::run_agent_command(&args[1..])
         }
         "sentry-test" => run_sentry_test_command(&args[1..]),
-        // Generic namespace dispatcher: `openhuman <namespace> <function> ...`
+        // Generic namespace dispatcher: `aura <namespace> <function> ...`
         namespace => run_namespace_command(namespace, &args[1..], &grouped),
     }
 }
@@ -92,7 +92,7 @@ pub fn run_from_cli_args(args: &[String]) -> Result<()> {
 /// triggers a panic so the panic integration is exercised too.
 ///
 /// Requires a DSN resolvable at runtime — either via the
-/// `OPENHUMAN_CORE_SENTRY_DSN` env var (or the legacy `OPENHUMAN_SENTRY_DSN`
+/// `AURA_CORE_SENTRY_DSN` env var (or the legacy `AURA_SENTRY_DSN`
 /// alias) or baked into the binary at build time via `option_env!`. Absent a
 /// DSN, the command exits non-zero with a diagnostic instead of silently
 /// producing no telemetry.
@@ -116,15 +116,15 @@ fn run_sentry_test_command(args: &[String]) -> Result<()> {
                 i += 1;
             }
             "-h" | "--help" => {
-                println!("Usage: openhuman sentry-test [--message <text>] [--panic]");
+                println!("Usage: aura sentry-test [--message <text>] [--panic]");
                 println!();
                 println!("  --message <text>  Body of the Error-level event sent to Sentry");
-                println!("                    (default: \"openhuman sentry-test ping\")");
+                println!("                    (default: \"aura sentry-test ping\")");
                 println!("  --panic           After capturing the event, trigger a panic so the");
                 println!("                    panic integration reports it as a separate event.");
                 println!();
                 println!(
-                    "Requires OPENHUMAN_CORE_SENTRY_DSN (or the legacy OPENHUMAN_SENTRY_DSN alias)"
+                    "Requires AURA_CORE_SENTRY_DSN (or the legacy AURA_SENTRY_DSN alias)"
                 );
                 println!("at runtime, or baked into the binary at build time via option_env!. On");
                 println!("success, prints the event UUID to stdout.");
@@ -145,13 +145,13 @@ fn run_sentry_test_command(args: &[String]) -> Result<()> {
         None => {
             return Err(anyhow::anyhow!(
                 "Sentry is not initialized in this binary — no DSN is resolvable. \
-                 Set OPENHUMAN_CORE_SENTRY_DSN (or the legacy OPENHUMAN_SENTRY_DSN alias) \
+                 Set AURA_CORE_SENTRY_DSN (or the legacy AURA_SENTRY_DSN alias) \
                  in the environment (or rebuild with it defined at compile time) and try again."
             ));
         }
     }
 
-    let msg = message.unwrap_or_else(|| "openhuman sentry-test ping".to_string());
+    let msg = message.unwrap_or_else(|| "aura sentry-test ping".to_string());
 
     sentry::configure_scope(|scope| {
         scope.set_tag("test", "true");
@@ -174,7 +174,7 @@ fn run_sentry_test_command(args: &[String]) -> Result<()> {
         eprintln!(
             "[sentry-test] Triggering panic as requested — the panic integration should capture it."
         );
-        panic!("openhuman sentry-test intentional panic");
+        panic!("aura sentry-test intentional panic");
     }
 
     Ok(())
@@ -187,13 +187,13 @@ fn run_sentry_test_command(args: &[String]) -> Result<()> {
 ///
 /// Precedence:
 /// 1. Variables already set in the process environment are **not** overwritten.
-/// 2. If `OPENHUMAN_DOTENV_PATH` is set, that file is loaded.
+/// 2. If `AURA_DOTENV_PATH` is set, that file is loaded.
 /// 3. Otherwise, it searches for `.env` in the current working directory.
 fn load_dotenv_for_cli() -> Result<()> {
-    match std::env::var("OPENHUMAN_DOTENV_PATH") {
+    match std::env::var("AURA_DOTENV_PATH") {
         Ok(path) if !path.trim().is_empty() => {
             dotenvy::from_path(&path).map_err(|e| {
-                anyhow::anyhow!("failed to load dotenv from OPENHUMAN_DOTENV_PATH={path}: {e}")
+                anyhow::anyhow!("failed to load dotenv from AURA_DOTENV_PATH={path}: {e}")
             })?;
         }
         _ => {
@@ -254,19 +254,19 @@ fn run_server_command(args: &[String]) -> Result<()> {
                 i += 1;
             }
             "-h" | "--help" => {
-                println!("Usage: openhuman run [--host <addr>] [--port <u16>] [--jsonrpc-only] [--autocomplete-logs] [-v|--verbose]");
+                println!("Usage: aura run [--host <addr>] [--port <u16>] [--jsonrpc-only] [--autocomplete-logs] [-v|--verbose]");
                 println!();
                 println!(
-                    "  --host <addr>    Bind address (default: 127.0.0.1 or OPENHUMAN_CORE_HOST)"
+                    "  --host <addr>    Bind address (default: 127.0.0.1 or AURA_CORE_HOST)"
                 );
                 println!(
-                    "  --port <u16>     Listen address port (default: 7788 or OPENHUMAN_CORE_PORT)"
+                    "  --port <u16>     Listen address port (default: 7788 or AURA_CORE_PORT)"
                 );
                 println!("  --jsonrpc-only   HTTP JSON-RPC only; disable Socket.IO");
                 autocomplete_cli_adapter::print_run_scope_help_line();
                 println!("  -v, --verbose    Shorthand for RUST_LOG=debug when RUST_LOG is unset");
                 println!();
-                println!("Logging: set RUST_LOG (e.g. RUST_LOG=debug openhuman run). Default level is info.");
+                println!("Logging: set RUST_LOG (e.g. RUST_LOG=debug aura run). Default level is info.");
                 return Ok(());
             }
             other => return Err(anyhow::anyhow!("unknown run arg: {other}")),
@@ -316,7 +316,7 @@ fn run_call_command(args: &[String]) -> Result<()> {
                 i += 2;
             }
             "-h" | "--help" => {
-                println!("Usage: openhuman call --method <name> [--params '<json>']");
+                println!("Usage: aura call --method <name> [--params '<json>']");
                 return Ok(());
             }
             other => return Err(anyhow::anyhow!("unknown call arg: {other}")),
@@ -338,7 +338,7 @@ fn run_call_command(args: &[String]) -> Result<()> {
     Ok(())
 }
 
-/// Dispatches commands that fall under a specific namespace (e.g., `openhuman <namespace> <function>`).
+/// Dispatches commands that fall under a specific namespace (e.g., `aura <namespace> <function>`).
 ///
 /// It looks up the function schema for validation and executes the request.
 ///
@@ -354,7 +354,7 @@ fn run_namespace_command(
 ) -> Result<()> {
     let Some(schemas) = grouped.get(namespace) else {
         return Err(anyhow::anyhow!(
-            "unknown namespace '{namespace}'. Run `openhuman --help` to see available namespaces."
+            "unknown namespace '{namespace}'. Run `aura --help` to see available namespaces."
         ));
     };
 
@@ -376,7 +376,7 @@ fn run_namespace_command(
     let function = args[0].as_str();
     let Some(schema) = schemas.iter().find(|s| s.function == function).cloned() else {
         return Err(anyhow::anyhow!(
-            "unknown function '{namespace} {function}'. Run `openhuman {namespace} --help`."
+            "unknown function '{namespace} {function}'. Run `aura {namespace} --help`."
         ));
     };
 
@@ -517,26 +517,26 @@ fn grouped_schemas() -> BTreeMap<String, Vec<ControllerSchema>> {
 
 /// Prints the general help message listing available commands and namespaces.
 fn print_general_help(grouped: &BTreeMap<String, Vec<ControllerSchema>>) {
-    println!("OpenHuman core CLI\n");
+    println!("Aura core CLI\n");
     println!("Usage:");
-    println!("  openhuman run [--host <addr>] [--port <u16>] [--jsonrpc-only] [--verbose]");
-    println!("  openhuman call --method <name> [--params '<json>']");
+    println!("  aura run [--host <addr>] [--port <u16>] [--jsonrpc-only] [--verbose]");
+    println!("  aura call --method <name> [--params '<json>']");
     println!(
-        "  openhuman mcp [-v|--verbose]              (stdio MCP server; read-only memory tools)"
+        "  aura mcp [-v|--verbose]              (stdio MCP server; read-only memory tools)"
     );
-    println!("  openhuman skills <subcommand> [options]   (skill development runtime)");
-    println!("  openhuman agent <subcommand> [options]    (inspect agent definitions & prompts)");
-    println!("  openhuman voice [--hotkey <combo>] [--mode <tap|push>]  (voice dictation server)");
-    println!("  openhuman tree-summarizer <subcommand> [options]  (summary tree CLI)");
-    println!("  openhuman sentry-test [--message <text>] [--panic]  (verify Sentry wiring)");
-    println!("  openhuman <namespace> <function> [--param value ...]\n");
+    println!("  aura skills <subcommand> [options]   (skill development runtime)");
+    println!("  aura agent <subcommand> [options]    (inspect agent definitions & prompts)");
+    println!("  aura voice [--hotkey <combo>] [--mode <tap|push>]  (voice dictation server)");
+    println!("  aura tree-summarizer <subcommand> [options]  (summary tree CLI)");
+    println!("  aura sentry-test [--message <text>] [--panic]  (verify Sentry wiring)");
+    println!("  aura <namespace> <function> [--param value ...]\n");
     println!("Available namespaces:");
     for namespace in grouped.keys() {
         let description = all::namespace_description(namespace.as_str())
             .unwrap_or("No namespace description available.");
         println!("  {namespace} - {description}");
     }
-    println!("\nUse `openhuman <namespace> --help` to see functions.");
+    println!("\nUse `aura <namespace> --help` to see functions.");
 }
 
 /// Prints help for a specific namespace, listing its functions.
@@ -549,7 +549,7 @@ fn print_namespace_help(namespace: &str, schemas: &[ControllerSchema]) {
     for schema in schemas {
         println!("  {} - {}", schema.function, schema.description);
     }
-    println!("\nUse `openhuman {namespace} <function> --help` for parameters.");
+    println!("\nUse `aura {namespace} <function> --help` for parameters.");
     autocomplete_cli_adapter::maybe_print_namespace_help_footer(namespace);
 }
 

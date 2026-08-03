@@ -11,9 +11,9 @@ import { renderWithProviders } from '../../../../test/test-utils';
 const hoisted = vi.hoisted(() => ({ getMode: vi.fn(), setApiKey: vi.fn(), clearApiKey: vi.fn() }));
 
 vi.mock('../../../../utils/tauriCommands', () => ({
-  openhumanComposioGetMode: hoisted.getMode,
-  openhumanComposioSetApiKey: hoisted.setApiKey,
-  openhumanComposioClearApiKey: hoisted.clearApiKey,
+  auraComposioGetMode: hoisted.getMode,
+  auraComposioSetApiKey: hoisted.setApiKey,
+  auraComposioClearApiKey: hoisted.clearApiKey,
 }));
 
 vi.mock('../../hooks/useSettingsNavigation', () => ({
@@ -64,7 +64,7 @@ describe('ComposioPanel', () => {
     await waitFor(() => expect(screen.queryByText('Loading…')).toBeNull());
 
     const backendRadio = screen.getByLabelText(
-      'Managed (OpenHuman handles it for you)'
+      'Managed (Aura handles it for you)'
     ) as HTMLInputElement;
     const directRadio = screen.getByLabelText(
       'Direct (bring your own API key)'
@@ -182,7 +182,7 @@ describe('ComposioPanel', () => {
     renderWithProviders(<Panel />);
     await waitFor(() => expect(screen.queryByText('Loading…')).toBeNull());
 
-    fireEvent.click(screen.getByLabelText('Managed (OpenHuman handles it for you)'));
+    fireEvent.click(screen.getByLabelText('Managed (Aura handles it for you)'));
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
     // No dialog appeared — clearApiKey was invoked straight through.
@@ -243,7 +243,7 @@ describe('ComposioPanel', () => {
     renderWithProviders(<Panel />);
     await waitFor(() => expect(screen.queryByText('Loading…')).toBeNull());
 
-    fireEvent.click(screen.getByLabelText('Managed (OpenHuman handles it for you)'));
+    fireEvent.click(screen.getByLabelText('Managed (Aura handles it for you)'));
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
     await waitFor(() => {
@@ -279,7 +279,7 @@ describe('ComposioPanel', () => {
     renderWithProviders(<Panel />);
     await waitFor(() => expect(screen.queryByText('Loading…')).toBeNull());
 
-    expect(screen.getByLabelText('Managed (OpenHuman handles it for you)')).toBeInTheDocument();
+    expect(screen.getByLabelText('Managed (Aura handles it for you)')).toBeInTheDocument();
   });
 
   test('trigger-webhook gap is surfaced in the Direct mode description', async () => {

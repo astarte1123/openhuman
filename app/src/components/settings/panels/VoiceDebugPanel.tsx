@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useT } from '../../../lib/i18n/I18nContext';
 import {
-  openhumanGetVoiceServerSettings,
-  openhumanUpdateVoiceServerSettings,
-  openhumanVoiceServerStatus,
-  openhumanVoiceStatus,
+  auraGetVoiceServerSettings,
+  auraUpdateVoiceServerSettings,
+  auraVoiceServerStatus,
+  auraVoiceStatus,
   type VoiceServerSettings,
   type VoiceServerStatus,
   type VoiceStatus,
@@ -43,9 +43,9 @@ const VoiceDebugPanel = () => {
   const loadData = async (forceSettings = false) => {
     try {
       const [settingsResponse, serverResponse, voiceResponse] = await Promise.all([
-        openhumanGetVoiceServerSettings(),
-        openhumanVoiceServerStatus(),
-        openhumanVoiceStatus(),
+        auraGetVoiceServerSettings(),
+        auraVoiceServerStatus(),
+        auraVoiceStatus(),
       ]);
       // Only overwrite local settings if there are no unsaved edits,
       // or if explicitly forced (e.g. after save or initial load).
@@ -93,7 +93,7 @@ const VoiceDebugPanel = () => {
     setError(null);
     setNotice(null);
     try {
-      await openhumanUpdateVoiceServerSettings({
+      await auraUpdateVoiceServerSettings({
         auto_start: settings.auto_start,
         hotkey: settings.hotkey,
         activation_mode: settings.activation_mode,

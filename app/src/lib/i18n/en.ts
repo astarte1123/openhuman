@@ -136,7 +136,7 @@ const en: TranslationMap = {
   'clearData.failedPersist': 'Failed to clear persisted app state. Please try again.',
 
   // Welcome page
-  'welcome.title': 'Welcome to OpenHuman',
+  'welcome.title': 'Welcome to Aura',
   'welcome.subtitle':
     'Your personal AI super intelligence. Private, simple and extremely powerful.',
   'welcome.connectPrompt': 'Configure RPC URL (Advanced)',
@@ -155,7 +155,7 @@ const en: TranslationMap = {
     'Your device is connected. Keep the app running to keep the connection alive. Message your agent with the button below.',
   'home.statusBackendOnly': 'Reconnecting to backend… your agent will be available again shortly.',
   'home.statusCoreUnreachable':
-    "Local core sidecar isn't responding. The OpenHuman background process may have crashed or failed to start.",
+    "Local core sidecar isn't responding. The Aura background process may have crashed or failed to start.",
   'home.statusInternetOffline':
     'Your device is offline right now. Check your network or restart the app to reconnect.',
   'home.restartCore': 'Restart Core',
@@ -217,7 +217,7 @@ const en: TranslationMap = {
   'rewards.share': 'Share',
 
   // Onboarding
-  'onboarding.welcome': "Hi. I'm OpenHuman.",
+  'onboarding.welcome': "Hi. I'm Aura.",
   'onboarding.welcomeDesc':
     'Your super-intelligent AI assistant that runs on your computer. Private, simple, and extremely powerful.',
   'onboarding.context': 'Context Gathering',
@@ -229,16 +229,16 @@ const en: TranslationMap = {
   'onboarding.referral': 'Referral',
   'onboarding.referralDesc': 'Apply a referral code if you have one.',
   'onboarding.finish': 'Finish Setup',
-  'onboarding.finishDesc': "You're all set! Start using OpenHuman.",
+  'onboarding.finishDesc': "You're all set! Start using Aura.",
   'onboarding.skip': 'Skip',
   'onboarding.getStarted': 'Get Started',
 
   // Onboarding: runtime-choice step (Cloud vs Custom)
-  'onboarding.runtimeChoice.title': 'How would you like to run OpenHuman?',
+  'onboarding.runtimeChoice.title': 'How would you like to run Aura?',
   'onboarding.runtimeChoice.subtitle':
     'Pick the setup that fits you best. You can change this later in Settings.',
   'onboarding.runtimeChoice.cloud.title': 'Simple',
-  'onboarding.runtimeChoice.cloud.tagline': 'Let OpenHuman manage everything for you.',
+  'onboarding.runtimeChoice.cloud.tagline': 'Let Aura manage everything for you.',
   'onboarding.runtimeChoice.cloud.f1': 'Built-in security',
   'onboarding.runtimeChoice.cloud.f2': 'Token compression to stretch your usage further',
   'onboarding.runtimeChoice.cloud.f3': 'One subscription, every model included',
@@ -278,7 +278,7 @@ const en: TranslationMap = {
   'onboarding.custom.stepperMemory': 'Memory',
   'onboarding.custom.stepCounter': 'Step {n} of {total}',
   'onboarding.custom.defaultTitle': 'Default',
-  'onboarding.custom.defaultSubtitle': 'Let OpenHuman manage it for you.',
+  'onboarding.custom.defaultSubtitle': 'Let Aura manage it for you.',
   'onboarding.custom.configureTitle': 'Configure',
   'onboarding.custom.configureSubtitle': "I'll pick what to use.",
   'onboarding.custom.progressAriaLabel': 'Onboarding progress',
@@ -294,7 +294,7 @@ const en: TranslationMap = {
   'onboarding.custom.inference.subtitle':
     'Which language model should answer your questions and run your agents?',
   'onboarding.custom.inference.defaultDesc':
-    'OpenHuman routes every workload to a sensible default model. No keys, no setup.',
+    'Aura routes every workload to a sensible default model. No keys, no setup.',
   'onboarding.custom.inference.configureDesc':
     'Bring your own OpenAI or Anthropic key. We use it for every text-based workload.',
 
@@ -302,7 +302,7 @@ const en: TranslationMap = {
   'onboarding.custom.voice.title': 'Voice',
   'onboarding.custom.voice.subtitle': 'Speech-to-text and text-to-speech for voice mode.',
   'onboarding.custom.voice.defaultDesc':
-    'OpenHuman ships with managed STT/TTS that just works. Nothing to wire up.',
+    'Aura ships with managed STT/TTS that just works. Nothing to wire up.',
   'onboarding.custom.voice.configureDesc':
     'Use your own ElevenLabs / OpenAI Whisper / etc. Configure in Settings › Voice.',
 
@@ -311,24 +311,24 @@ const en: TranslationMap = {
   'onboarding.custom.oauth.subtitle':
     'Gmail, Slack, Notion, and other connected services that need OAuth.',
   'onboarding.custom.oauth.defaultDesc':
-    'OpenHuman runs a managed Composio workspace. One click to connect each service later.',
+    'Aura runs a managed Composio workspace. One click to connect each service later.',
   'onboarding.custom.oauth.configureDesc':
     'Bring your own Composio account / API key. Configure in Settings › Connections.',
 
   // Onboarding: Custom > Search
   'onboarding.custom.search.title': 'Web Search',
-  'onboarding.custom.search.subtitle': 'How OpenHuman searches the web on your behalf.',
+  'onboarding.custom.search.subtitle': 'How Aura searches the web on your behalf.',
   'onboarding.custom.search.defaultDesc':
-    'OpenHuman uses a managed search backend. No keys needed.',
+    'Aura uses a managed search backend. No keys needed.',
   'onboarding.custom.search.configureDesc':
     'Bring your own search provider key (Tavily, Brave, etc.). Configure in Settings › Tools.',
 
   // Onboarding: Custom > Memory
   'onboarding.custom.memory.title': 'Memory',
   'onboarding.custom.memory.subtitle':
-    'How OpenHuman remembers your context, preferences, and prior conversations.',
+    'How Aura remembers your context, preferences, and prior conversations.',
   'onboarding.custom.memory.defaultDesc':
-    'OpenHuman manages memory storage and retrieval automatically. Nothing to set up.',
+    'Aura manages memory storage and retrieval automatically. Nothing to set up.',
   'onboarding.custom.memory.configureDesc':
     'Inspect, export, or wipe memory yourself. Configure in Settings › Memory.',
 
@@ -402,7 +402,7 @@ const en: TranslationMap = {
   'misc.downloading': 'Downloading...',
   'misc.installing': 'Installing...',
   'misc.beta':
-    'OpenHuman is in early beta. Feel free to share feedback or report any bugs you run into — every report helps us ship faster.',
+    'Aura is in early beta. Feel free to share feedback or report any bugs you run into — every report helps us ship faster.',
   'misc.betaFeedback': 'Send feedback',
 
   // Mnemonic / Recovery
@@ -428,11 +428,11 @@ const en: TranslationMap = {
   'privacy.anonymizedAnalytics': 'Anonymized Analytics',
   'privacy.shareAnonymizedData': 'Share Anonymized Usage Data',
   'privacy.shareAnonymizedDataDesc':
-    'Help improve OpenHuman by sharing anonymous crash reports and usage analytics. All data is fully anonymized — no personal data, messages, wallet keys, or session information is ever collected.',
+    'Help improve Aura by sharing anonymous crash reports and usage analytics. All data is fully anonymized — no personal data, messages, wallet keys, or session information is ever collected.',
   'privacy.meetingFollowUps': 'Meeting follow-ups',
   'privacy.autoHandoffMeet': 'Auto-handoff Google Meet transcripts to the orchestrator',
   'privacy.autoHandoffMeetDesc':
-    "When a Google Meet call ends, OpenHuman's orchestrator can read the transcript and may take actions like drafting messages, scheduling follow-ups, or posting summaries to your connected Slack workspace. Off by default.",
+    "When a Google Meet call ends, Aura's orchestrator can read the transcript and may take actions like drafting messages, scheduling follow-ups, or posting summaries to your connected Slack workspace. Off by default.",
   'privacy.analyticsDisclaimer':
     'All analytics and bug reports are fully anonymized. When enabled, we collect only crash information, device type, and the file location of errors. We never access your messages, session data, wallet keys, API keys, or any personally identifiable information. You can change this setting at any time.',
 
@@ -501,7 +501,7 @@ const en: TranslationMap = {
 
   // Settings: Tools
   'settings.tools.chooseCapabilities':
-    'Choose which capabilities OpenHuman can use on your behalf.',
+    'Choose which capabilities Aura can use on your behalf.',
   'settings.tools.saveChanges': 'Save Changes',
   'settings.tools.preferencesSaved': 'Preferences saved',
   'settings.tools.saveFailed': 'Failed to save preferences. Try again.',
@@ -1033,9 +1033,9 @@ const en: TranslationMap = {
   'bootCheck.tokenRequired': "We'll need an auth token to connect.",
   'bootCheck.chooseCoreMode': 'Select a Runtime',
   'bootCheck.connectToCore': 'Connect to Your Runtime',
-  'bootCheck.desktopDescription': 'OpenHuman needs a runtime to think. Pick where it should live.',
+  'bootCheck.desktopDescription': 'Aura needs a runtime to think. Pick where it should live.',
   'bootCheck.webDescription':
-    'On the web, OpenHuman connects to a runtime you control. Drop in its URL and auth token below, or grab the desktop app to run one right on your machine.',
+    'On the web, Aura connects to a runtime you control. Drop in its URL and auth token below, or grab the desktop app to run one right on your machine.',
   'bootCheck.preferDesktop': 'Rather keep everything on your own device?',
   'bootCheck.downloadDesktop': 'Get the Desktop App',
   'bootCheck.localRecommended': 'Run Locally (Recommended)',
@@ -1061,7 +1061,7 @@ const en: TranslationMap = {
   'bootCheck.quit': 'Quit',
   'bootCheck.legacyDetected': 'Legacy Background Runtime Detected',
   'bootCheck.legacyDescription':
-    'A separately-installed OpenHuman daemon is already running on this device. We need to clear it out before the built-in runtime can take over.',
+    'A separately-installed Aura daemon is already running on this device. We need to clear it out before the built-in runtime can take over.',
   'bootCheck.removing': 'Removing…',
   'bootCheck.removeContinue': 'Remove and Continue',
   'bootCheck.localNeedsRestart': 'Local Runtime Needs a Restart',

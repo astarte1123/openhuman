@@ -35,7 +35,7 @@ export type WorkloadId =
 export type WorkloadGroup = 'chat' | 'background';
 
 export type ProviderRef =
-  | { kind: 'openhuman' }
+  | { kind: 'aura' }
   | { kind: 'cloud'; providerSlug: string; model: string }
   | { kind: 'local'; model: string };
 

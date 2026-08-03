@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * OpenHuman Tools Discovery Script
+ * Aura Tools Discovery Script
  *
  * Discovers all available tools from the V8 skills runtime and generates
  * a comprehensive TOOLS.md file following OpenClaw framework standards.
@@ -140,7 +140,7 @@ function generateMockToolsForDevelopment() {
  */
 async function main() {
   try {
-    console.log("🚀 Starting OpenHuman tools discovery...");
+    console.log("🚀 Starting Aura tools discovery...");
 
     // Discover all available tools
     const tools = await discoverTools();

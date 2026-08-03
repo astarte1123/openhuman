@@ -22,9 +22,9 @@ export interface AlignmentFrame {
 }
 
 /**
- * Normalized response from the core RPC `openhuman.voice_reply_synthesize`.
+ * Normalized response from the core RPC `aura.voice_reply_synthesize`.
  * The core does the messy "tolerate multiple backend response shapes" work
- * (see `src/openhuman/voice/reply_speech.rs`) so the UI can stay strict.
+ * (see `src/aura/voice/reply_speech.rs`) so the UI can stay strict.
  */
 export interface TtsResponse {
   audio_base64: string;
@@ -60,7 +60,7 @@ export async function synthesizeSpeech(text: string, opts: TtsOptions = {}): Pro
   ttsLog('synthesize chars=%d (raw=%d) voice=%s', spoken.length, text.length, voiceId ?? 'default');
 
   const result = await callCoreRpc<TtsResponse>({
-    method: 'openhuman.voice_reply_synthesize',
+    method: 'aura.voice_reply_synthesize',
     params,
   });
 

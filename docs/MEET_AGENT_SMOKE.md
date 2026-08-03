@@ -1,18 +1,18 @@
 # Meet-agent live loop — smoke test runbook
 
 End-to-end validation that the agent hears, thinks, and speaks on a
-real Google Meet call. Two laptops are easiest (Laptop A runs OpenHuman
+real Google Meet call. Two laptops are easiest (Laptop A runs Aura
 + joins the Meet as the agent; Laptop B is the human host who creates
 the call and listens to the agent's voice).
 
 ## Pre-flight
 
-1. Sign in to OpenHuman so a backend session token exists. Without
+1. Sign in to Aura so a backend session token exists. Without
    it, all three brain stages (STT/LLM/TTS) silently fall back to
    stubs and you'll only hear a 200 ms tone — useful for plumbing
    smoke but not the real loop.
 2. Ensure the vendored `tauri-cef` submodule is on
-   `feat/openhuman-audio-handler` (or whatever branch carries the
+   `feat/aura-audio-handler` (or whatever branch carries the
    `audio` module — see `app/src-tauri/vendor/tauri-cef`).
 3. `pnpm tauri dev` in the repo root.
 
@@ -21,18 +21,18 @@ the call and listens to the agent's voice).
 1. **Laptop B**: create a Meet call at <https://meet.google.com/new>,
    stay in the lobby.
 2. **Laptop A**:
-   - Open OpenHuman → Intelligence → Calls.
-   - Paste the Meet URL, set display name (e.g. "OpenHuman Agent").
+   - Open Aura → Intelligence → Calls.
+   - Paste the Meet URL, set display name (e.g. "Aura Agent").
    - Click *Join*.
    - A dedicated CEF window opens. The window title bar reads
-     "Meet — OpenHuman Agent".
+     "Meet — Aura Agent".
 3. **Laptop B**: admit the agent from the lobby.
 4. Confirm Meet's live captions are on. The captions bridge auto-clicks
    "Turn on captions" up to ~30 times over the first minute; if the
    button isn't found (Meet UI rolls), enable CC manually.
 5. Speak a wake-word phrase into the call mic. Examples:
-   - "Hey, OpenHuman — remember to email Bob about the launch."
-   - "Hey OpenHuman, follow up with the design team next week."
+   - "Hey, Aura — remember to email Bob about the launch."
+   - "Hey Aura, follow up with the design team next week."
 
    The agent should reply with a short canned ack ("Got it.",
    "Noted.", "Adding that.", "On it.", or "Captured.") routed back
@@ -47,7 +47,7 @@ the call and listens to the agent's voice).
   log lines (those modules are kept in tree as `_legacy_listen` for a
   future opt-in).
 
-- Tail the file logs (`~/Library/Application Support/OpenHuman/logs/`):
+- Tail the file logs (`~/Library/Application Support/Aura/logs/`):
 
   ```text
   [meet-audio] inject reload requested session=…
@@ -62,15 +62,15 @@ the call and listens to the agent's voice).
   Meet's caption region — either CC is off (auto-enable failed) or
   Meet rolled the DOM and the `aria-label="Captions"` selector
   needs updating in `captions_bridge.js`. Confirm via the embedded
-  page console: `window.__openhumanCaptionsBridgeInfo()` — the
+  page console: `window.__auraCaptionsBridgeInfo()` — the
   `region_found` field should be `true` once captions are on.
 
 ### Speak path (agent → Meet)
 
 - Inspect the embedded Meet page's console (right-click → Inspect; or
   attach via the CDP port 19222 on Laptop A): you should see
-  `[openhuman-audio-bridge] feed failed: …` only on errors.
-- Run `window.__openhumanAudioBridgeInfo()` in the console:
+  `[aura-audio-bridge] feed failed: …` only on errors.
+- Run `window.__auraAudioBridgeInfo()` in the console:
 
   ```json
   { "installed": true, "sample_rate": 16000, "audio_context_state": "running",
@@ -82,7 +82,7 @@ the call and listens to the agent's voice).
 
 ### Mascot webcam
 
-- Laptop B sees the OpenHuman mascot SVG in the agent's tile.
+- Laptop B sees the Aura mascot SVG in the agent's tile.
   Confirms `--use-file-for-fake-video-capture` is still active (the
   speak path doesn't break it).
 
@@ -90,7 +90,7 @@ the call and listens to the agent's voice).
 
 - macOS prompt for screen recording / microphone permission.
 - macOS prompt for installing a system audio driver / kext.
-- The OpenHuman main window's mic indicator turning on (we tap CEF's
+- The Aura main window's mic indicator turning on (we tap CEF's
   audio at the renderer level, not via the OS mic).
 
 ## Common failure modes
@@ -108,6 +108,6 @@ the call and listens to the agent's voice).
 - Close the meet-call window. The window-destroyed handler tears down
   `meet_audio` (drops the audio handler registration → silences
   capture immediately, signals the speak pump → exits) and calls
-  `openhuman.meet_agent_stop_session` which logs the listened/spoken
+  `aura.meet_agent_stop_session` which logs the listened/spoken
   totals.
 - Per-call data dir is wiped automatically.

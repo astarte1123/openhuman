@@ -53,9 +53,9 @@ export function validateSpec(spec) {
   ) {
     throw new SpecError("batch_id must be a kebab-case slug", "batch_id");
   }
-  if (spec.base_repo !== "tinyhumansai/openhuman") {
+  if (spec.base_repo !== "tinyhumansai/aura") {
     throw new SpecError(
-      `base_repo must be "tinyhumansai/openhuman" (got "${spec.base_repo}")`,
+      `base_repo must be "tinyhumansai/aura" (got "${spec.base_repo}")`,
       "base_repo",
     );
   }

@@ -74,7 +74,7 @@ export default function IntelligenceSubconsciousTab({
   // which thread the user lands on.
   //
   // Route is `/chat`, NOT `/conversations`. The repo's CLAUDE.md hash-
-  // route list is stale — `BottomTabBar` and `OpenhumanLinkModal` both
+  // route list is stale — `BottomTabBar` and `AuraLinkModal` both
   // navigate to `/chat`. Using `/conversations` falls through to a home
   // redirect so the user ends up on `/home` instead of the new thread.
   const handleNavigateToReflectionThread = (threadId: string) => {

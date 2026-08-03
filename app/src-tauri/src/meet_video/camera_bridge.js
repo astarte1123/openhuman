@@ -1,7 +1,7 @@
-// OpenHuman Meet camera bridge.
+// Aura Meet camera bridge.
 //
 // Replaces the agent's outbound video stream with a pre-rendered mascot
-// frame stream produced by the main OpenHuman renderer (a hidden
+// frame stream produced by the main Aura renderer (a hidden
 // Remotion composition). Runs post-reload via Runtime.evaluate (see
 // `inject.rs` for the rationale).
 //
@@ -17,16 +17,16 @@
 // behavior the bridge had before the frame bus existed; keeps Meet
 // from showing a black or frozen camera if the producer crashes.
 //
-// The `__OPENHUMAN_*` placeholders are substituted from Rust at install
+// The `__AURA_*` placeholders are substituted from Rust at install
 // time so the script is fully self-contained — no network fetch from
 // inside meet.google.com's origin sandbox.
 (function () {
-  if (window.__openhumanCameraBridge) return;
-  const TAG = '[openhuman-camera-bridge]';
+  if (window.__auraCameraBridge) return;
+  const TAG = '[aura-camera-bridge]';
   const W = 640;
   const H = 480;
   const FPS = 30;
-  const FRAME_BUS_PORT = __OPENHUMAN_FRAME_BUS_PORT__;
+  const FRAME_BUS_PORT = __AURA_FRAME_BUS_PORT__;
   // The static-SVG path is **cold-start only**: we use it before the
   // first remote frame arrives so the camera isn't black during the
   // ~1s producer connect handshake. Once any remote frame has been
@@ -35,16 +35,16 @@
   // visually (different artwork) and read as flicker. Drawing a stale
   // bitmap is much less jarring; if the producer truly dies the user
   // sees a frozen feed (with a tiny synthetic bob to keep the codec
-  // sending), which we can detect via __openhumanCameraBridgeInfo.
+  // sending), which we can detect via __auraCameraBridgeInfo.
   const TOGGLE_INTERVAL_MS = 5000;
 
   const MASCOTS = {
-    idle: '__OPENHUMAN_MASCOT_IDLE_DATAURI__',
-    thinking: '__OPENHUMAN_MASCOT_THINKING_DATAURI__',
+    idle: '__AURA_MASCOT_IDLE_DATAURI__',
+    thinking: '__AURA_MASCOT_THINKING_DATAURI__',
   };
 
   // Mood drives the fallback only — the WS path renders whatever the
-  // producer sends. Kept so `__openhumanSetMood` still works during
+  // producer sends. Kept so `__auraSetMood` still works during
   // outages.
   let currentMood = 'idle';
   const moodImgs = { idle: null, thinking: null };
@@ -165,7 +165,7 @@
 
   // ---- render loop -----------------------------------------------------
   // setInterval, NOT requestAnimationFrame: Meet is frequently
-  // backgrounded behind the main openhuman window during the agent
+  // backgrounded behind the main aura window during the agent
   // flow, and Chromium throttles rAF to ~0Hz in background tabs.
   // setInterval keeps firing regardless of focus, which is what we need
   // for the outbound camera to stay live.
@@ -216,7 +216,7 @@
   if (fakeVideoTrack) {
     try {
       Object.defineProperty(fakeVideoTrack, 'label', {
-        value: 'OpenHuman Mascot',
+        value: 'Aura Mascot',
         configurable: true,
       });
     } catch (_) {}
@@ -277,7 +277,7 @@
   };
 
   // ---- host API --------------------------------------------------------
-  window.__openhumanSetMood = function (mood) {
+  window.__auraSetMood = function (mood) {
     if (!Object.prototype.hasOwnProperty.call(MASCOTS, mood)) {
       console.warn(TAG, 'unknown mood', mood);
       return false;
@@ -288,7 +288,7 @@
     }
     return true;
   };
-  window.__openhumanCameraBridgeInfo = function () {
+  window.__auraCameraBridgeInfo = function () {
     return {
       installed: true,
       currentMood: currentMood,
@@ -308,9 +308,9 @@
   // frames are fresh). Once the agent state machine wires real mood
   // calls we can drop this.
   setInterval(function () {
-    window.__openhumanSetMood(currentMood === 'idle' ? 'thinking' : 'idle');
+    window.__auraSetMood(currentMood === 'idle' ? 'thinking' : 'idle');
   }, TOGGLE_INTERVAL_MS);
 
-  window.__openhumanCameraBridge = true;
+  window.__auraCameraBridge = true;
   console.log(TAG, 'installed frame_bus_port=' + FRAME_BUS_PORT);
 })();

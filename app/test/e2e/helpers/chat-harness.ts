@@ -74,8 +74,8 @@ export async function clickSend(): Promise<boolean> {
  *  no thread is selected yet. */
 export async function getSelectedThreadId(): Promise<string | null> {
   return (await browser.execute(() => {
-    const winAny = window as unknown as { __OPENHUMAN_STORE__?: { getState: () => unknown } };
-    const state = winAny.__OPENHUMAN_STORE__?.getState() as
+    const winAny = window as unknown as { __AURA_STORE__?: { getState: () => unknown } };
+    const state = winAny.__AURA_STORE__?.getState() as
       | { thread?: { selectedThreadId?: string | null } }
       | undefined;
     return state?.thread?.selectedThreadId ?? null;

@@ -5,7 +5,7 @@
 use anyhow::Result;
 
 use crate::core::logging::CliLogDefault;
-use crate::openhuman::autocomplete::ops::{autocomplete_start_cli, AutocompleteStartCliOptions};
+use crate::aura::autocomplete::ops::{autocomplete_start_cli, AutocompleteStartCliOptions};
 
 pub struct NamespacePreparse {
     pub args: Vec<String>,
@@ -140,7 +140,7 @@ fn parse_autocomplete_start_cli_options(args: &[String]) -> Result<AutocompleteS
 
 /// Prints help information for the `autocomplete start` command.
 fn print_autocomplete_start_help() {
-    println!("Usage: openhuman autocomplete start [--debounce-ms <u64>] [--serve|--spawn]");
+    println!("Usage: aura autocomplete start [--debounce-ms <u64>] [--serve|--spawn]");
     println!();
     println!("  --debounce-ms <u64>  Override debounce in milliseconds.");
     println!("  --serve              Run autocomplete loop in the current foreground process.");

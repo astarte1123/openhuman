@@ -28,9 +28,9 @@ const CustomRoutingDialog = ({
   onClose,
   onSubmit,
 }: CustomRoutingDialogProps) => {
-  // Non-openhuman cloud providers + local-ollama (if available) are the
-  // "Custom" options. OpenHuman is excluded — it's the Default path.
-  const customCloud = cloudProviders.filter(p => p.slug !== 'openhuman');
+  // Non-aura cloud providers + local-ollama (if available) are the
+  // "Custom" options. Aura is excluded — it's the Default path.
+  const customCloud = cloudProviders.filter(p => p.slug !== 'aura');
   const localAvailable = ollamaRunning && localModels.length > 0;
 
   const initialSource: CustomDialogSource | null =

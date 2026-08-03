@@ -4,7 +4,7 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 APP_DIR="$REPO_ROOT/app"
-APP_BUNDLE="$REPO_ROOT/app/src-tauri/target/release/bundle/macos/OpenHuman.app"
+APP_BUNDLE="$REPO_ROOT/app/src-tauri/target/release/bundle/macos/Aura.app"
 DMG_DIR="$REPO_ROOT/app/src-tauri/target/release/bundle/dmg"
 TEMP_ENV_CREATED=0
 TMP_TAURI_CONF=""
@@ -47,17 +47,17 @@ echo "[dry-run] Building frontend bundle"
   npm run build:app
 )
 
-echo "[dry-run] Building release openhuman-core for $HOST_TRIPLE"
-cargo build --release --manifest-path "$REPO_ROOT/Cargo.toml" --bin openhuman-core
+echo "[dry-run] Building release aura-core for $HOST_TRIPLE"
+cargo build --release --manifest-path "$REPO_ROOT/Cargo.toml" --bin aura-core
 
 echo "[dry-run] Staging sidecar"
 bash "$REPO_ROOT/scripts/release/stage-sidecar.sh" \
   "$HOST_TRIPLE" \
   "target/release" \
-  "openhuman-core" \
-  "openhuman-core"
+  "aura-core" \
+  "aura-core"
 
-TMP_TAURI_CONF="$(mktemp "${TMPDIR:-/tmp}/openhuman-tauri-dry-run.XXXXXX").json"
+TMP_TAURI_CONF="$(mktemp "${TMPDIR:-/tmp}/aura-tauri-dry-run.XXXXXX").json"
 node -e '
   const fs = require("fs");
   const input = process.argv[1];
@@ -92,10 +92,10 @@ if [[ -z "$DMG_PATH" ]]; then
 fi
 
 CORE_BIN="$(
-  find "$APP_BUNDLE/Contents" -maxdepth 4 -type f -name 'openhuman-core*' ! -name '*.sig' | head -n 1
+  find "$APP_BUNDLE/Contents" -maxdepth 4 -type f -name 'aura-core*' ! -name '*.sig' | head -n 1
 )"
 if [[ -z "$CORE_BIN" ]]; then
-  echo "[dry-run] ERROR: packaged openhuman-core binary not found in app bundle" >&2
+  echo "[dry-run] ERROR: packaged aura-core binary not found in app bundle" >&2
   exit 1
 fi
 

@@ -1,4 +1,4 @@
-const STORAGE_PREFIX = 'openhuman:upsell:';
+const STORAGE_PREFIX = 'aura:upsell:';
 
 export function dismissBanner(bannerId: string): void {
   localStorage.setItem(`${STORAGE_PREFIX}${bannerId}`, JSON.stringify({ dismissedAt: Date.now() }));

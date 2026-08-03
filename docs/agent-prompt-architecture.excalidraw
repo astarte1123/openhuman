@@ -1,7 +1,7 @@
 {
   "type": "excalidraw",
   "version": 2,
-  "source": "openhuman-478",
+  "source": "aura-478",
   "elements": [
     {
       "id": "title",
@@ -10,7 +10,7 @@
       "y": 20,
       "width": 500,
       "height": 40,
-      "text": "OpenHuman Agent Prompt Architecture",
+      "text": "Aura Agent Prompt Architecture",
       "fontSize": 28,
       "fontFamily": 1,
       "textAlign": "center",
@@ -118,7 +118,7 @@
       "y": 145,
       "width": 360,
       "height": 200,
-      "text": "System prompt (from workspace .md files):\n\n✅ AGENTS.md — Orchestrator routing logic\n   \"Pick the right tool, synthesise the result\"\n\n✅ SOUL.md — Personality, voice, tone\n   \"Smart friend who helps get stuff done\"\n\n✅ IDENTITY.md — Mission, values, boundaries\n   \"What OpenHuman is and isn't\"\n\n✅ USER.md — User adaptation rules\n   \"Traders want speed, researchers want depth\"\n\n✅ BOOTSTRAP.md — First interaction flow\n   \"Greet warmly, discover role, ask what's needed\"",
+      "text": "System prompt (from workspace .md files):\n\n✅ AGENTS.md — Orchestrator routing logic\n   \"Pick the right tool, synthesise the result\"\n\n✅ SOUL.md — Personality, voice, tone\n   \"Smart friend who helps get stuff done\"\n\n✅ IDENTITY.md — Mission, values, boundaries\n   \"What Aura is and isn't\"\n\n✅ USER.md — User adaptation rules\n   \"Traders want speed, researchers want depth\"\n\n✅ BOOTSTRAP.md — First interaction flow\n   \"Greet warmly, discover role, ask what's needed\"",
       "fontSize": 12,
       "fontFamily": 3,
       "textAlign": "left",

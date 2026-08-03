@@ -14,8 +14,8 @@ use std::time::Duration;
 use serde_json::json;
 use tempfile::tempdir;
 
-use openhuman_core::openhuman::embeddings::NoopEmbedding;
-use openhuman_core::openhuman::memory::{
+use aura_core::aura::embeddings::NoopEmbedding;
+use aura_core::aura::memory::{
     MemoryClient, MemoryIngestionConfig, MemoryIngestionRequest, NamespaceDocumentInput,
     UnifiedMemory,
 };

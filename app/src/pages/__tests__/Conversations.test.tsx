@@ -67,10 +67,10 @@ describe('formatThreadLoadError', () => {
     expect(
       formatThreadLoadError({
         name: 'Error',
-        message: 'Core RPC openhuman.threads_list timed out after 30000ms',
+        message: 'Core RPC aura.threads_list timed out after 30000ms',
         code: undefined,
       })
-    ).toBe('Core RPC openhuman.threads_list timed out after 30000ms');
+    ).toBe('Core RPC aura.threads_list timed out after 30000ms');
   });
 
   it('falls back to String(err) for objects with no message field', () => {

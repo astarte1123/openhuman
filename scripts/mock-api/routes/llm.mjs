@@ -81,7 +81,7 @@ function sendRuleError(res, rule) {
 // ── Streaming helpers ─────────────────────────────────────────────
 //
 // When the agent harness calls the OpenAI-compatible endpoint with
-// `stream: true`, openhuman/providers/compatible.rs expects SSE chunks
+// `stream: true`, aura/providers/compatible.rs expects SSE chunks
 // shaped like:
 //
 //   data: {"choices":[{"delta":{"content":"hello"},"finish_reason":null}]}
@@ -452,7 +452,7 @@ async function streamScriptToResponse({ res, model, script, defaultDelayMs }) {
  *   POST /__admin/behavior  body: {"llmKeywordRules": "<json-string>"}
  *
  * This mirrors the Rust-side `KeywordScriptedProvider` in
- * `src/openhuman/agent/harness/test_support.rs` so the same testing
+ * `src/aura/agent/harness/test_support.rs` so the same testing
  * mental model applies on both sides of the FFI.
  */
 

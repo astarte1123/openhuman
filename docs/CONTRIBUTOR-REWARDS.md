@@ -1,6 +1,6 @@
 # Contributor Rewards Automation
 
-OpenHuman uses `.github/workflows/contributor-rewards.yml` to invite eligible
+Aura uses `.github/workflows/contributor-rewards.yml` to invite eligible
 contributors into the Discord and merch reward flow.
 
 ## Triggers
@@ -23,7 +23,7 @@ The workflow creates these labels if they do not already exist:
 Each reward comment includes a hidden marker scoped to the GitHub login:
 
 ```html
-<!-- openhuman-contributor-reward:user=<login> -->
+<!-- aura-contributor-reward:user=<login> -->
 ```
 
 Automatic first-merged-PR rewards are skipped when the same login already has a

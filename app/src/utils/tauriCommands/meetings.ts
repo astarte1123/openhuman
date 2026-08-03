@@ -1,11 +1,11 @@
 /**
  * Meetings domain commands (core RPC).
  *
- * Mirrors `cron.ts` exactly — `src/openhuman/meetings/schemas.rs` says its
+ * Mirrors `cron.ts` exactly — `src/aura/meetings/schemas.rs` says its
  * controller schemas "follow cron::schemas exactly". Field/type shapes below
- * are taken from `src/openhuman/meetings/types.rs` (Meeting / TranscriptChunk
+ * are taken from `src/aura/meetings/types.rs` (Meeting / TranscriptChunk
  * / MeetingStatus) and the *actual* `RpcOutcome<T>` value each
- * `src/openhuman/meetings/ops.rs` function wraps (not the `schemas.rs`
+ * `src/aura/meetings/ops.rs` function wraps (not the `schemas.rs`
  * `outputs` metadata, which only documents field names for the schema
  * catalog and does not necessarily match the wire shape):
  *   - `meetings_list`            -> RpcOutcome<Vec<Meeting>>          (bare array)
@@ -74,14 +74,14 @@ export interface MeetingScreenshot {
   created_at: string;
 }
 
-export async function openhumanMeetingsList(): Promise<CommandResponse<Meeting[]>> {
+export async function auraMeetingsList(): Promise<CommandResponse<Meeting[]>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
-  return await callCoreRpc<CommandResponse<Meeting[]>>({ method: 'openhuman.meetings_list' });
+  return await callCoreRpc<CommandResponse<Meeting[]>>({ method: 'aura.meetings_list' });
 }
 
-export async function openhumanMeetingsGet(
+export async function auraMeetingsGet(
   meetingId: string
 ): Promise<
   CommandResponse<{ meeting: Meeting; chunks: TranscriptChunk[]; screenshots: MeetingScreenshot[] }>
@@ -95,10 +95,10 @@ export async function openhumanMeetingsGet(
       chunks: TranscriptChunk[];
       screenshots: MeetingScreenshot[];
     }>
-  >({ method: 'openhuman.meetings_get', params: { meeting_id: meetingId } });
+  >({ method: 'aura.meetings_get', params: { meeting_id: meetingId } });
 }
 
-export async function openhumanMeetingsUpdateTitle(
+export async function auraMeetingsUpdateTitle(
   meetingId: string,
   title: string
 ): Promise<CommandResponse<Meeting>> {
@@ -106,43 +106,43 @@ export async function openhumanMeetingsUpdateTitle(
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<Meeting>>({
-    method: 'openhuman.meetings_update_title',
+    method: 'aura.meetings_update_title',
     params: { meeting_id: meetingId, title },
   });
 }
 
-export async function openhumanMeetingsDelete(
+export async function auraMeetingsDelete(
   meetingId: string
 ): Promise<CommandResponse<{ deleted: boolean }>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<{ deleted: boolean }>>({
-    method: 'openhuman.meetings_delete',
+    method: 'aura.meetings_delete',
     params: { meeting_id: meetingId },
   });
 }
 
-export async function openhumanMeetingsSummarize(
+export async function auraMeetingsSummarize(
   meetingId: string
 ): Promise<CommandResponse<{ summary: string }>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<{ summary: string }>>({
-    method: 'openhuman.meetings_summarize',
+    method: 'aura.meetings_summarize',
     params: { meeting_id: meetingId },
   });
 }
 
-export async function openhumanMeetingsSearch(
+export async function auraMeetingsSearch(
   query: string
 ): Promise<CommandResponse<TranscriptSearchResult[]>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<TranscriptSearchResult[]>>({
-    method: 'openhuman.meetings_search',
+    method: 'aura.meetings_search',
     params: { query },
   });
 }
@@ -150,7 +150,7 @@ export async function openhumanMeetingsSearch(
 export type MeetingExportFormat = 'pdf' | 'docx';
 
 /** Renders a meeting's transcript + summary to disk and returns its path. */
-export async function openhumanMeetingsExport(
+export async function auraMeetingsExport(
   meetingId: string,
   format: MeetingExportFormat
 ): Promise<CommandResponse<{ path: string }>> {
@@ -158,7 +158,7 @@ export async function openhumanMeetingsExport(
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<{ path: string }>>({
-    method: 'openhuman.meetings_export',
+    method: 'aura.meetings_export',
     params: { meeting_id: meetingId, format },
   });
 }
@@ -170,7 +170,7 @@ export async function openhumanMeetingsExport(
  * future in-app "add a screenshot manually" affordance can reuse the exact
  * same wire contract.
  */
-export async function openhumanMeetingsAppendScreenshot(
+export async function auraMeetingsAppendScreenshot(
   meetingId: string,
   capturedAtMs: number,
   imageBase64: string
@@ -179,7 +179,7 @@ export async function openhumanMeetingsAppendScreenshot(
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<MeetingScreenshot>>({
-    method: 'openhuman.meetings_append_screenshot',
+    method: 'aura.meetings_append_screenshot',
     params: { meeting_id: meetingId, captured_at_ms: capturedAtMs, image_base64: imageBase64 },
   });
 }

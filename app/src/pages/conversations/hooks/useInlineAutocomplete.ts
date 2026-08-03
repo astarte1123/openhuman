@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { isTauri, openhumanAutocompleteCurrent } from '../../../utils/tauriCommands';
+import { isTauri, auraAutocompleteCurrent } from '../../../utils/tauriCommands';
 import type { InputMode } from '../../Conversations';
 
 const AUTOCOMPLETE_POLL_DEBOUNCE_MS = 320;
@@ -41,7 +41,7 @@ export const useInlineAutocomplete = ({
       const requestSeq = autocompleteRequestSeqRef.current + 1;
       autocompleteRequestSeqRef.current = requestSeq;
 
-      void openhumanAutocompleteCurrent({ context: inputValue })
+      void auraAutocompleteCurrent({ context: inputValue })
         .then(response => {
           if (autocompleteRequestSeqRef.current !== requestSeq) return;
           setInlineSuggestionValue(response.result.suggestion?.value ?? '');

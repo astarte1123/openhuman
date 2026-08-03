@@ -91,7 +91,7 @@ describe('openUrl', () => {
   });
 
   it('falls back to window.open when tauriOpenUrl rejects on an http URL (CEF IPC race recovery, #1472)', async () => {
-    // Concrete repro for OPENHUMAN-REACT-T/S/R: CEF embedder
+    // Concrete repro for AURA-REACT-T/S/R: CEF embedder
     // injects `window.ipc.postMessage` after `on_after_created`. A
     // click landing in that gap causes `tauriOpenUrl` to reject with
     // a TypeError. For http(s) URLs the safe recovery is to hand off

@@ -3,9 +3,9 @@
  * ------------------
  *
  * Centered white modal that installs a skill via
- * `openhuman.skills_install_from_url`. The Rust side fetches a single
+ * `aura.skills_install_from_url`. The Rust side fetches a single
  * `SKILL.md` file over HTTPS and writes it into
- * `<workspace>/.openhuman/skills/<slug>/SKILL.md`. URLs are allow-listed
+ * `<workspace>/.aura/skills/<slug>/SKILL.md`. URLs are allow-listed
  * (https only, no private/loopback/link-local/multicast/cloud-metadata
  * hosts) and a wall-clock timeout applies (default 60s, max 600s).
  * `github.com/<o>/<r>/blob/<b>/<p>.md` URLs are auto-rewritten to their
@@ -82,7 +82,7 @@ interface CategorizedError {
 /**
  * Map the stable Rust error prefixes from `install_skill_from_url` to a
  * short human-readable title + hint. See
- * `src/openhuman/skills/ops.rs::install_skill_from_url` for the full list.
+ * `src/aura/skills/ops.rs::install_skill_from_url` for the full list.
  */
 function categorizeInstallError(raw: string): CategorizedError {
   const msg = raw.trim();
@@ -132,7 +132,7 @@ function categorizeInstallError(raw: string): CategorizedError {
   if (lower.startsWith('write failed:')) {
     return {
       title: 'Could not write SKILL.md',
-      hint: 'The workspace skills directory was not writable. Check filesystem permissions for `<workspace>/.openhuman/skills/`.',
+      hint: 'The workspace skills directory was not writable. Check filesystem permissions for `<workspace>/.aura/skills/`.',
     };
   }
   return {
@@ -255,7 +255,7 @@ export default function InstallSkillDialog({ onClose, onInstalled }: Props) {
               </h2>
               <p className="mt-0.5 text-xs text-stone-500">
                 Fetches a single <code className="font-mono">SKILL.md</code> over HTTPS and installs
-                it under <code className="font-mono">.openhuman/skills/</code>. HTTPS only; private
+                it under <code className="font-mono">.aura/skills/</code>. HTTPS only; private
                 and loopback hosts are blocked.
               </p>
             </div>

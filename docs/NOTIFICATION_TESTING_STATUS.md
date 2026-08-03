@@ -17,8 +17,8 @@ This file is a quick-reference checklist: what is done, what is still needed, an
 | Dispatch logs added (`[cef-notify] dispatch` / dropped) | `vendor/tauri-cef/crates/tauri-runtime-cef/src/notification.rs` |
 | `on_context_created` install logs in runtime shim | `vendor/tauri-cef/crates/tauri-runtime-cef/src/notification.rs` |
 | `on_context_created` install logs in helper shim | `vendor/tauri-cef/cef-helper/src/notification.rs` |
-| Debug markers: `window.__OPENHUMAN_CEF_NOTIFICATION_SHIM`, `__OPENHUMAN_CEF_NOTIFICATION_ORIGIN` | `vendor/tauri-cef/cef-helper/src/notification.rs` |
-| Manual test entry point: `window.__openhumanFireNotification(title, opts)` | `vendor/tauri-cef/cef-helper/src/notification.rs` |
+| Debug markers: `window.__AURA_CEF_NOTIFICATION_SHIM`, `__AURA_CEF_NOTIFICATION_ORIGIN` | `vendor/tauri-cef/cef-helper/src/notification.rs` |
+| Manual test entry point: `window.__auraFireNotification(title, opts)` | `vendor/tauri-cef/cef-helper/src/notification.rs` |
 | `ensure-tauri-cli.sh` reinstalls vendored CLI when tauri-cef sources are newer | `scripts/ensure-tauri-cli.sh` |
 
 ### tauri-plugin-notification (vendored to stop init-script conflict)
@@ -31,12 +31,12 @@ This file is a quick-reference checklist: what is done, what is still needed, an
 
 **Why this mattered:** Without this change, the plugin injected a JS shim that forwarded `new Notification(...)` to `http://ipc.localhost/plugin:notification|notify`. That IPC always fails with 500 in third-party webviews (Slack), overwriting the CEF shim and blocking all notification delivery.
 
-### openhuman-cursor app shell
+### aura-cursor app shell
 
 | Change | File |
 |--------|------|
 | Default notification toggle set to `true` | `src/notification_settings/mod.rs` |
-| `OPENHUMAN_DISABLE_SLACK_SCANNER=1` env bypass for DevTools inspection | `src/webview_accounts/mod.rs` |
+| `AURA_DISABLE_SLACK_SCANNER=1` env bypass for DevTools inspection | `src/webview_accounts/mod.rs` |
 | Platform-specific OS notification with click detection added | `src/webview_accounts/mod.rs` |
 | macOS: `mac-notification-sys` + `wait_for_click` + `std::thread::spawn` | `src/webview_accounts/mod.rs` |
 | Linux: `notify-rust` + `wait_for_action` + `std::thread::spawn` | `src/webview_accounts/mod.rs` |
@@ -81,7 +81,7 @@ Once the scanner registry is registered:
 3. Have someone send you a Slack message from another device
 4. Watch the log:
    ```bash
-   tail -f /tmp/openhuman-dev-app.log | grep --line-buffered "notify-cef\|notify-click\|scanner\|unread"
+   tail -f /tmp/aura-dev-app.log | grep --line-buffered "notify-cef\|notify-click\|scanner\|unread"
    ```
 5. Expected log sequence:
    ```
@@ -103,8 +103,8 @@ Before relying on real messages, confirm the helper shim is active via DevTools:
 2. Find the Slack page target → click **Inspect**
 3. In Console, run:
    ```js
-   window.__OPENHUMAN_CEF_NOTIFICATION_SHIM   // should be true
-   window.__OPENHUMAN_CEF_NOTIFICATION_ORIGIN  // should be the Slack URL
+   window.__AURA_CEF_NOTIFICATION_SHIM   // should be true
+   window.__AURA_CEF_NOTIFICATION_ORIGIN  // should be the Slack URL
    ```
 4. If both are present, the CEF helper shim installed correctly
 
@@ -113,7 +113,7 @@ Before relying on real messages, confirm the helper shim is active via DevTools:
 With DevTools open on the Slack target:
 
 ```js
-window.__openhumanFireNotification("Slack CEF test", { body: "Manual trigger" })
+window.__auraFireNotification("Slack CEF test", { body: "Manual trigger" })
 ```
 
 Expected log:
@@ -128,10 +128,10 @@ And an OS notification toast should appear. If no toast appears, the blocker is 
 
 Once notifications are working reliably, remove:
 
-- `window.__OPENHUMAN_CEF_NOTIFICATION_SHIM` global marker
-- `window.__OPENHUMAN_CEF_NOTIFICATION_ORIGIN` global marker
-- `window.__openhumanFireNotification` manual trigger
-- `window.__OPENHUMAN_CEF_NOTIFICATION_CONSTRUCTOR` saved reference
+- `window.__AURA_CEF_NOTIFICATION_SHIM` global marker
+- `window.__AURA_CEF_NOTIFICATION_ORIGIN` global marker
+- `window.__auraFireNotification` manual trigger
+- `window.__AURA_CEF_NOTIFICATION_CONSTRUCTOR` saved reference
 - `[cef-helper-notify]` `eprintln!` calls in `cef-helper/src/notification.rs` (or replace with proper `log::debug!`)
 
 ---
@@ -149,7 +149,7 @@ cd app && pnpm dev:app
 Live log location:
 
 ```bash
-tail -f /tmp/openhuman-dev-app.log | grep --line-buffered "notify-cef\|notify-click\|scanner\|unread\|cef-notify"
+tail -f /tmp/aura-dev-app.log | grep --line-buffered "notify-cef\|notify-click\|scanner\|unread\|cef-notify"
 ```
 
 ---

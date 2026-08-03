@@ -20,12 +20,12 @@
 //! it.
 
 use chrono::{TimeZone, Utc};
-use openhuman_core::openhuman::config::Config;
-use openhuman_core::openhuman::memory::tree::canonicalize::chat::{ChatBatch, ChatMessage};
-use openhuman_core::openhuman::memory::tree::canonicalize::email::{EmailMessage, EmailThread};
-use openhuman_core::openhuman::memory::tree::ingest::{ingest_chat, ingest_email};
-use openhuman_core::openhuman::memory::tree::jobs::drain_until_idle;
-use openhuman_core::openhuman::tools::{
+use aura_core::aura::config::Config;
+use aura_core::aura::memory::tree::canonicalize::chat::{ChatBatch, ChatMessage};
+use aura_core::aura::memory::tree::canonicalize::email::{EmailMessage, EmailThread};
+use aura_core::aura::memory::tree::ingest::{ingest_chat, ingest_email};
+use aura_core::aura::memory::tree::jobs::drain_until_idle;
+use aura_core::aura::tools::{
     MemoryTreeFetchLeavesTool, MemoryTreeQueryTopicTool, MemoryTreeSearchEntitiesTool, Tool,
 };
 use serde_json::{json, Value};
@@ -33,7 +33,7 @@ use tempfile::TempDir;
 
 /// Build a Config rooted at `tmp/workspace`. The nested `workspace` dir
 /// matches what `resolve_config_dir_for_workspace` would derive when
-/// `OPENHUMAN_WORKSPACE` points at `tmp` — so the same workspace_dir is
+/// `AURA_WORKSPACE` points at `tmp` — so the same workspace_dir is
 /// used both by the explicit ingest path and by `load_config_with_timeout`
 /// inside the tool wrappers.
 fn test_config() -> (TempDir, Config) {
@@ -55,7 +55,7 @@ fn test_config() -> (TempDir, Config) {
 // ── RAII env guard shared by all tests in this file ──────────────────────────
 
 /// Process-wide mutex that serialises every test in this binary that
-/// mutates `OPENHUMAN_WORKSPACE`. Cargo runs integration-test binaries
+/// mutates `AURA_WORKSPACE`. Cargo runs integration-test binaries
 /// multi-threaded by default (`test-threads = num_cpus`), so without
 /// this serialisation two tests would race on the env var: test A sets
 /// it to `/tmp/aaa`, test B overwrites it with `/tmp/bbb`, then when
@@ -75,7 +75,7 @@ struct EnvGuard {
     prev: Option<std::ffi::OsString>,
     /// Last field — dropped after `Drop::drop` has already restored
     /// the env var, so the next test acquires the lock against a
-    /// clean `OPENHUMAN_WORKSPACE` value.
+    /// clean `AURA_WORKSPACE` value.
     _lock: std::sync::MutexGuard<'static, ()>,
 }
 
@@ -94,21 +94,21 @@ impl Drop for EnvGuard {
     }
 }
 
-/// Sets `OPENHUMAN_WORKSPACE` to `tmp.path()` and returns an RAII guard that
+/// Sets `AURA_WORKSPACE` to `tmp.path()` and returns an RAII guard that
 /// restores the previous value on drop. This makes the tool wrappers (which
 /// call `load_config_with_timeout` internally) resolve to the same workspace
 /// that was used for ingest.
 ///
 /// The returned guard also holds [`ENV_LOCK`] for its lifetime, so concurrent
 /// tests in the same binary cannot stomp on each other's
-/// `OPENHUMAN_WORKSPACE` setting.
+/// `AURA_WORKSPACE` setting.
 fn set_workspace_env(tmp: &TempDir) -> EnvGuard {
     let lock = ENV_LOCK.lock().unwrap_or_else(|p| p.into_inner());
-    let prev = std::env::var_os("OPENHUMAN_WORKSPACE");
+    let prev = std::env::var_os("AURA_WORKSPACE");
     // SAFETY: see EnvGuard::Drop above.
-    unsafe { std::env::set_var("OPENHUMAN_WORKSPACE", tmp.path()) };
+    unsafe { std::env::set_var("AURA_WORKSPACE", tmp.path()) };
     EnvGuard {
-        key: "OPENHUMAN_WORKSPACE",
+        key: "AURA_WORKSPACE",
         prev,
         _lock: lock,
     }
@@ -155,7 +155,7 @@ fn alice_phoenix_thread() -> EmailThread {
 /// TOML was updated accordingly.
 #[test]
 fn orchestrator_lists_memory_tree_tools() {
-    let toml = include_str!("../src/openhuman/agent/agents/orchestrator/agent.toml");
+    let toml = include_str!("../src/aura/agent/agents/orchestrator/agent.toml");
     // Exact entry match — substring match would also hit comments or prefixed names.
     let has_memory_tree_entry = toml
         .lines()
@@ -212,7 +212,7 @@ async fn orchestrator_query_topic_tool_returns_alice_phoenix_hits() {
     // wrappers always go through that loader (mirrors the production RPC
     // handlers in retrieval/schemas.rs).
     //
-    // Pointing OPENHUMAN_WORKSPACE at `tmp` (not `tmp/workspace`) makes
+    // Pointing AURA_WORKSPACE at `tmp` (not `tmp/workspace`) makes
     // `resolve_config_dir_for_workspace` derive `tmp/workspace` as the
     // resolved workspace_dir — matching what we already passed into
     // `ingest_email` via `cfg.workspace_dir`.

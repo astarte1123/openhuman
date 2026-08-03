@@ -1,7 +1,7 @@
 /**
  * Chat Service — RPC-based chat transport.
  *
- * Chat messages are SENT via core RPC (`openhuman.channel_web_chat`).
+ * Chat messages are SENT via core RPC (`aura.channel_web_chat`).
  * Responses and events stream back over the existing Socket.IO connection
  * (tool_call, tool_result, chat_done, chat_error) via the web-channel
  * event bridge in the Rust core.
@@ -644,7 +644,7 @@ export async function chatSend(params: ChatSendParams): Promise<void> {
   }
 
   await callCoreRpc({
-    method: 'openhuman.channel_web_chat',
+    method: 'aura.channel_web_chat',
     params: {
       client_id: clientId,
       thread_id: params.threadId,
@@ -665,7 +665,7 @@ export async function chatCancel(threadId: string): Promise<boolean> {
 
   try {
     await callCoreRpc({
-      method: 'openhuman.channel_web_cancel',
+      method: 'aura.channel_web_cancel',
       params: { client_id: clientId, thread_id: threadId },
     });
     return true;

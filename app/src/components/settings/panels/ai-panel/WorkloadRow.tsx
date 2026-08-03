@@ -25,11 +25,11 @@ const WorkloadRow = ({
   const selectedCloud =
     ref_.kind === 'cloud' ? cloudProviders.find(c => c.slug === ref_.providerSlug) : undefined;
 
-  const isDefault = ref_.kind === 'openhuman';
+  const isDefault = ref_.kind === 'aura';
 
   let resolved: string;
-  if (ref_.kind === 'openhuman') {
-    resolved = 'OpenHuman (default)';
+  if (ref_.kind === 'aura') {
+    resolved = 'Aura (default)';
   } else if (ref_.kind === 'cloud') {
     if (!selectedCloud) resolved = `${ref_.providerSlug} · ${ref_.model}`;
     else resolved = `${selectedCloud.label} · ${ref_.model}`;
@@ -57,7 +57,7 @@ const WorkloadRow = ({
       <div className="inline-flex shrink-0 items-center rounded-lg bg-stone-100 p-0.5">
         <button
           type="button"
-          onClick={() => onChange({ kind: 'openhuman' })}
+          onClick={() => onChange({ kind: 'aura' })}
           className={`${segmentBase} ${isDefault ? activeSegment : inactiveSegment}`}>
           Default
         </button>

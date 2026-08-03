@@ -9,7 +9,7 @@ const EMAIL_MAGIC_LINK_TIMEOUT_MS = 15_000;
  * POST /auth/email/send-link
  * @param email - The user's email address.
  * @param frontendRedirectUri - Where the backend should redirect after verification
- *   (e.g. "openhuman://" for desktop, or the web app origin for web).
+ *   (e.g. "aura://" for desktop, or the web app origin for web).
  */
 export async function sendEmailMagicLink(
   email: string,
@@ -52,7 +52,7 @@ export async function sendEmailMagicLink(
  */
 export async function consumeLoginToken(loginToken: string): Promise<string> {
   const response = await callCoreRpc<{ result: { jwtToken: string } }>({
-    method: 'openhuman.auth.consume_login_token',
+    method: 'aura.auth.consume_login_token',
     params: { loginToken },
   });
   const jwtToken = response.result?.jwtToken;

@@ -14,7 +14,7 @@ if ! source "$REPO_ROOT/scripts/install.sh" --source-only 2>/dev/null; then
 fi
 
 resolved=$(resolve_asset_url "$FIXTURE" "linux" "x86_64")
-expected="https://example.invalid/openhuman_0.0.0-test_amd64.AppImage"
+expected="https://example.invalid/aura_0.0.0-test_amd64.AppImage"
 if [[ "$resolved" != "$expected" ]]; then
   echo "FAIL: expected $expected, got $resolved"
   exit 1
@@ -56,7 +56,7 @@ assert_retry_shape() {
     esac
   }
 
-  if ! curl_head_with_http_fallback "https://example.invalid/OpenHuman.app.tar.gz"; then
+  if ! curl_head_with_http_fallback "https://example.invalid/Aura.app.tar.gz"; then
     echo "FAIL: reachability fallback should succeed when HTTP/1.1 retry succeeds"
     exit 1
   fi
@@ -73,7 +73,7 @@ assert_retry_shape() {
     esac
   }
 
-  if ! curl_get_file "https://example.invalid/latest.json" "/tmp/openhuman-test-latest.json"; then
+  if ! curl_get_file "https://example.invalid/latest.json" "/tmp/aura-test-latest.json"; then
     echo "FAIL: metadata fetch fallback should succeed when HTTP/1.1 retry succeeds"
     exit 1
   fi
@@ -90,7 +90,7 @@ assert_retry_shape() {
     esac
   }
 
-  if ! curl_download_file "https://example.invalid/OpenHuman.app.tar.gz" "/tmp/openhuman-test-download"; then
+  if ! curl_download_file "https://example.invalid/Aura.app.tar.gz" "/tmp/aura-test-download"; then
     echo "FAIL: download fallback should succeed when HTTP/1.1 retry succeeds"
     exit 1
   fi

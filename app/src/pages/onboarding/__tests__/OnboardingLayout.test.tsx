@@ -23,7 +23,7 @@ import { useOnboardingContext } from '../OnboardingContext';
 // while writing to localStorage by default so existing assertions still pass.
 // Covers the catch block in completeAndExit (OnboardingLayout.tsx:138).
 const mockSetWalkthroughPending = vi.fn(() => {
-  localStorage.setItem('openhuman:walkthrough_pending', 'true');
+  localStorage.setItem('aura:walkthrough_pending', 'true');
 });
 vi.mock('../../../components/walkthrough/AppWalkthrough', () => ({
   setWalkthroughPending: () => mockSetWalkthroughPending(),
@@ -183,7 +183,7 @@ describe('OnboardingLayout — Joyride walkthrough integration (#1123)', () => {
     });
 
     // [#1123] Walkthrough pending flag should be set instead of welcome thread
-    expect(localStorage.getItem('openhuman:walkthrough_pending')).toBe('true');
+    expect(localStorage.getItem('aura:walkthrough_pending')).toBe('true');
   });
 
   // [#1123] Old test — welcome thread in Redux state — replaced:
@@ -233,7 +233,7 @@ describe('OnboardingLayout — Joyride walkthrough integration (#1123)', () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const { mockSetOnboardingCompletedFlag, mockSetOnboardingTasks } = await setupLayout();
     mockSetOnboardingTasks.mockRejectedValueOnce(
-      new Error('Core RPC openhuman.app_state_snapshot timed out after 30000ms')
+      new Error('Core RPC aura.app_state_snapshot timed out after 30000ms')
     );
 
     await act(async () => {

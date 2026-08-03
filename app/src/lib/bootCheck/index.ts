@@ -99,13 +99,13 @@ async function waitForCore(
 }
 
 /**
- * Check `openhuman.service_status`.  Returns true when a separate
+ * Check `aura.service_status`.  Returns true when a separate
  * background daemon (distinct from our embedded core) is detected.
  */
 async function isDaemonRunning(callRpc: BootCheckTransport['callRpc']): Promise<boolean> {
   try {
     const result = await callRpc<{ installed?: boolean; running?: boolean }>(
-      'openhuman.service_status',
+      'aura.service_status',
       {}
     );
     const detected = Boolean(result?.installed || result?.running);
@@ -135,15 +135,15 @@ type VersionCheckResult = 'match' | 'outdated' | 'noVersionMethod' | 'unreachabl
 
 async function checkVersion(callRpc: BootCheckTransport['callRpc']): Promise<VersionCheckResult> {
   try {
-    // `openhuman.update_version` is wrapped by RpcOutcome::single_log
-    // (see src/openhuman/update/ops.rs + src/rpc/mod.rs::into_cli_compatible_json):
+    // `aura.update_version` is wrapped by RpcOutcome::single_log
+    // (see src/aura/update/ops.rs + src/rpc/mod.rs::into_cli_compatible_json):
     // when logs are present the response shape is `{ result: VersionInfo, logs }`,
     // and VersionInfo is `{ version, target_triple, asset_prefix }`. Earlier
     // attempts read `result.version_info.version` (no such field) and then
     // `result.version` (skipped the RpcOutcome `result` wrapper) — both
     // yielded '' and pinned every boot to "outdated local".
     const response = await callRpc<{ result?: { version?: string } }>(
-      'openhuman.update_version',
+      'aura.update_version',
       {}
     );
     const coreVersion = response?.result?.version ?? '';

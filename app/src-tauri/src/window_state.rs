@@ -8,7 +8,7 @@
 //! resized it.
 //!
 //! This module persists a tiny TOML record at
-//! `<openhuman_dir>/window_state.toml` capturing the outer position and
+//! `<aura_dir>/window_state.toml` capturing the outer position and
 //! outer size of the main window in physical pixels. On launch the
 //! record is read and applied before the window is shown. On restart we
 //! save first, hide the window, then call `app.restart()`.
@@ -36,7 +36,7 @@ struct WindowState {
 }
 
 fn state_path() -> Option<PathBuf> {
-    cef_profile::default_root_openhuman_dir()
+    cef_profile::default_root_aura_dir()
         .ok()
         .map(|root| root.join(STATE_FILE))
 }

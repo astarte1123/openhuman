@@ -4,7 +4,7 @@
 # The stock `@tauri-apps/cli` / upstream `tauri-cli` does NOT know how to bundle
 # the CEF (Chromium Embedded Framework) runtime into the `.app` bundle's
 # `Contents/Frameworks/` — so running `cargo tauri dev` with it produces an
-# `OpenHuman.app` that panics at startup inside
+# `Aura.app` that panics at startup inside
 # `cef::library_loader::LibraryLoader::new(...)` with:
 #   "No such file or directory" (Os { code: 2 })
 #
@@ -26,9 +26,9 @@ if [[ ! -f "$VENDOR_CARGO_TOML" ]]; then
 fi
 
 # Pin a single CEF binary distribution location for *every* cef-dll-sys build:
-#   - the main app's cef-dll-sys (linked into OpenHuman / openhuman_lib)
+#   - the main app's cef-dll-sys (linked into Aura / aura_lib)
 #   - the inner `cargo build` that tauri-bundler's build.rs runs to produce
-#     the embedded cef-helper that becomes OpenHuman Helper.app/*.
+#     the embedded cef-helper that becomes Aura Helper.app/*.
 # If these disagree on which CEF dist to use, the helper processes will abort
 # with `CefApp_0_CToCpp called with invalid version -1` because the helper's
 # bindings and the loaded framework are out of sync.

@@ -42,34 +42,34 @@ CREATED_TEMP_CEF_CACHE=""
 # ------------------------------------------------------------------------------
 # Workspace + config
 # ------------------------------------------------------------------------------
-if [ -z "${OPENHUMAN_WORKSPACE:-}" ]; then
-  OPENHUMAN_WORKSPACE="$(mktemp -d)"
-  CREATED_TEMP_WORKSPACE="$OPENHUMAN_WORKSPACE"
-  export OPENHUMAN_WORKSPACE
-  echo "[runner] Using temporary OPENHUMAN_WORKSPACE: $OPENHUMAN_WORKSPACE"
+if [ -z "${AURA_WORKSPACE:-}" ]; then
+  AURA_WORKSPACE="$(mktemp -d)"
+  CREATED_TEMP_WORKSPACE="$AURA_WORKSPACE"
+  export AURA_WORKSPACE
+  echo "[runner] Using temporary AURA_WORKSPACE: $AURA_WORKSPACE"
 else
-  echo "[runner] Using OPENHUMAN_WORKSPACE from environment: $OPENHUMAN_WORKSPACE"
+  echo "[runner] Using AURA_WORKSPACE from environment: $AURA_WORKSPACE"
 fi
 
 # Place the CEF cache directory OUTSIDE the workspace. By default the Tauri
-# shell roots it under `$OPENHUMAN_WORKSPACE/users/<id>/cef`, but our
-# `mega-flow` spec calls `openhuman.config_reset_local_data` between
-# sub-scenarios — that RPC does `remove_dir_all($OPENHUMAN_WORKSPACE)`,
+# shell roots it under `$AURA_WORKSPACE/users/<id>/cef`, but our
+# `mega-flow` spec calls `aura.config_reset_local_data` between
+# sub-scenarios — that RPC does `remove_dir_all($AURA_WORKSPACE)`,
 # which yanks CEF's cache out from under the running process and kills
 # the WebDriver session (every later sub-test then fails with
 # "invalid session id"). Pointing CEF at a sibling tmpdir via the
-# `OPENHUMAN_CEF_CACHE_PATH` escape hatch (`cef_profile.rs:7`) keeps it
+# `AURA_CEF_CACHE_PATH` escape hatch (`cef_profile.rs:7`) keeps it
 # unaffected by the reset.
-if [ -z "${OPENHUMAN_CEF_CACHE_PATH:-}" ]; then
-  OPENHUMAN_CEF_CACHE_PATH="$(mktemp -d)"
-  CREATED_TEMP_CEF_CACHE="$OPENHUMAN_CEF_CACHE_PATH"
-  export OPENHUMAN_CEF_CACHE_PATH
-  echo "[runner] Using temporary OPENHUMAN_CEF_CACHE_PATH: $OPENHUMAN_CEF_CACHE_PATH"
+if [ -z "${AURA_CEF_CACHE_PATH:-}" ]; then
+  AURA_CEF_CACHE_PATH="$(mktemp -d)"
+  CREATED_TEMP_CEF_CACHE="$AURA_CEF_CACHE_PATH"
+  export AURA_CEF_CACHE_PATH
+  echo "[runner] Using temporary AURA_CEF_CACHE_PATH: $AURA_CEF_CACHE_PATH"
 fi
 
-if [ "${OPENHUMAN_SERVICE_MOCK:-0}" = "1" ] && [ -z "${OPENHUMAN_SERVICE_MOCK_STATE_FILE:-}" ]; then
-  OPENHUMAN_SERVICE_MOCK_STATE_FILE="$OPENHUMAN_WORKSPACE/service-mock-state.json"
-  export OPENHUMAN_SERVICE_MOCK_STATE_FILE
+if [ "${AURA_SERVICE_MOCK:-0}" = "1" ] && [ -z "${AURA_SERVICE_MOCK_STATE_FILE:-}" ]; then
+  AURA_SERVICE_MOCK_STATE_FILE="$AURA_WORKSPACE/service-mock-state.json"
+  export AURA_SERVICE_MOCK_STATE_FILE
 fi
 
 cleanup() {
@@ -138,12 +138,12 @@ export BACKEND_URL="http://127.0.0.1:${E2E_MOCK_PORT}"
 export APPIUM_PORT
 export CEF_CDP_PORT
 
-echo "[runner] Killing any running OpenHuman instances..."
+echo "[runner] Killing any running Aura instances..."
 case "$OS" in
-  Darwin) pkill -f "OpenHuman" 2>/dev/null || true ;;
-  Linux)  pkill -f "OpenHuman" 2>/dev/null || true ;;
+  Darwin) pkill -f "Aura" 2>/dev/null || true ;;
+  Linux)  pkill -f "Aura" 2>/dev/null || true ;;
   MINGW*|MSYS*|CYGWIN*|Windows_NT)
-    taskkill //F //IM "OpenHuman.exe" 2>/dev/null || true
+    taskkill //F //IM "Aura.exe" 2>/dev/null || true
     ;;
 esac
 sleep 1
@@ -151,27 +151,27 @@ sleep 1
 echo "[runner] Cleaning cached app data..."
 case "$OS" in
   Darwin)
-    rm -rf ~/Library/WebKit/com.openhuman.app
-    rm -rf ~/Library/Caches/com.openhuman.app
-    rm -rf "$HOME/Library/Application Support/com.openhuman.app"
-    rm -rf "$HOME/Library/Saved Application State/com.openhuman.app.savedState"
+    rm -rf ~/Library/WebKit/com.aura.app
+    rm -rf ~/Library/Caches/com.aura.app
+    rm -rf "$HOME/Library/Application Support/com.aura.app"
+    rm -rf "$HOME/Library/Saved Application State/com.aura.app.savedState"
     ;;
   Linux)
-    rm -rf "$HOME/.local/share/com.openhuman.app" 2>/dev/null || true
-    rm -rf "$HOME/.cache/com.openhuman.app" 2>/dev/null || true
-    rm -rf "$HOME/.config/com.openhuman.app" 2>/dev/null || true
+    rm -rf "$HOME/.local/share/com.aura.app" 2>/dev/null || true
+    rm -rf "$HOME/.cache/com.aura.app" 2>/dev/null || true
+    rm -rf "$HOME/.config/com.aura.app" 2>/dev/null || true
     ;;
   MINGW*|MSYS*|CYGWIN*|Windows_NT)
-    rm -rf "${APPDATA:-$HOME/AppData/Roaming}/com.openhuman.app" 2>/dev/null || true
-    rm -rf "${LOCALAPPDATA:-$HOME/AppData/Local}/com.openhuman.app" 2>/dev/null || true
+    rm -rf "${APPDATA:-$HOME/AppData/Roaming}/com.aura.app" 2>/dev/null || true
+    rm -rf "${LOCALAPPDATA:-$HOME/AppData/Local}/com.aura.app" 2>/dev/null || true
     ;;
 esac
 
 # Mock URL must reach the core sidecar — XCUITest doesn't inherit env,
 # and CEF child processes won't either. Pinning via config.toml works
-# on every platform. The runner always sets OPENHUMAN_WORKSPACE above;
-# Config::load_or_init gives that path precedence over $HOME/.openhuman.
-E2E_CONFIG_DIR="${OPENHUMAN_WORKSPACE:-$HOME/.openhuman}"
+# on every platform. The runner always sets AURA_WORKSPACE above;
+# Config::load_or_init gives that path precedence over $HOME/.aura.
+E2E_CONFIG_DIR="${AURA_WORKSPACE:-$HOME/.aura}"
 E2E_CONFIG_FILE="$E2E_CONFIG_DIR/config.toml"
 mkdir -p "$E2E_CONFIG_DIR"
 if [ -f "$E2E_CONFIG_FILE" ]; then
@@ -204,22 +204,22 @@ resolve_app_binary() {
   case "$OS" in
     Darwin)
       for base in \
-        "$APP_DIR/src-tauri/target/debug/bundle/macos/OpenHuman.app/Contents/MacOS/OpenHuman" \
-        "$REPO_ROOT/target/debug/bundle/macos/OpenHuman.app/Contents/MacOS/OpenHuman"; do
+        "$APP_DIR/src-tauri/target/debug/bundle/macos/Aura.app/Contents/MacOS/Aura" \
+        "$REPO_ROOT/target/debug/bundle/macos/Aura.app/Contents/MacOS/Aura"; do
         if [ -x "$base" ]; then echo "$base"; return; fi
       done
       ;;
     Linux)
       for candidate in \
-        "$APP_DIR/src-tauri/target/debug/OpenHuman" \
-        "$REPO_ROOT/target/debug/OpenHuman"; do
+        "$APP_DIR/src-tauri/target/debug/Aura" \
+        "$REPO_ROOT/target/debug/Aura"; do
         if [ -x "$candidate" ]; then echo "$candidate"; return; fi
       done
       ;;
     MINGW*|MSYS*|CYGWIN*|Windows_NT)
       for candidate in \
-        "$APP_DIR/src-tauri/target/debug/OpenHuman.exe" \
-        "$REPO_ROOT/target/debug/OpenHuman.exe"; do
+        "$APP_DIR/src-tauri/target/debug/Aura.exe" \
+        "$REPO_ROOT/target/debug/Aura.exe"; do
         if [ -x "$candidate" ]; then echo "$candidate"; return; fi
       done
       ;;
@@ -228,16 +228,16 @@ resolve_app_binary() {
 
 APP_BIN="$(resolve_app_binary)"
 if [ -z "${APP_BIN:-}" ] || [ ! -x "$APP_BIN" ]; then
-  echo "ERROR: built OpenHuman binary not found. Run 'pnpm test:e2e:build' first." >&2
+  echo "ERROR: built Aura binary not found. Run 'pnpm test:e2e:build' first." >&2
   exit 1
 fi
 
 # ------------------------------------------------------------------------------
 # Ensure a dbus session bus exists on Linux.
 #
-# The Tauri `single-instance` plugin (used inside OpenHuman) talks to dbus
+# The Tauri `single-instance` plugin (used inside Aura) talks to dbus
 # via zbus on Linux. If DBUS_SESSION_BUS_ADDRESS is missing or set to
-# `disabled:` (which is the openhuman_ci container default), the plugin
+# `disabled:` (which is the aura_ci container default), the plugin
 # panics during plugin setup:
 #   panicked at plugins/single-instance/src/platform_impl/linux.rs:57
 #   Result::unwrap() on Err(Address("unsupported transport 'disabled'"))
@@ -260,7 +260,7 @@ fi
 # ------------------------------------------------------------------------------
 # Make CEF runtime libraries discoverable.
 #
-# macOS bundles the framework into `OpenHuman.app/Contents/Frameworks/` so the
+# macOS bundles the framework into `Aura.app/Contents/Frameworks/` so the
 # OS resolves it automatically. On Linux + Windows we build with --no-bundle
 # (faster, no .deb / .msi staging needed for tests), which means the bare
 # binary has no co-located libcef.so / libcef.dll. CEF lives in the
@@ -323,7 +323,7 @@ esac
 # Launch CEF app — CDP on 19222 is already enabled in lib.rs (see CLAUDE.md).
 # ------------------------------------------------------------------------------
 LOG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}"
-APP_LOG="$LOG_DIR/openhuman-e2e-app-${LOG_SUFFIX}.log"
+APP_LOG="$LOG_DIR/aura-e2e-app-${LOG_SUFFIX}.log"
 APP_ARGS=()
 # CEF/Chromium needs extra coaxing in headless / containerized Linux runs:
 #
@@ -496,7 +496,7 @@ if [ -n "$CHROMIUM_FULL_VERSION" ] && [ ! -x "$CD_BINARY" ]; then
     if command -v unzip >/dev/null 2>&1; then
       (cd "$CD_CACHE_DIR" && unzip -o -q chromedriver.zip)
     else
-      # The openhuman_ci docker image doesn't ship `unzip`; use Python's
+      # The aura_ci docker image doesn't ship `unzip`; use Python's
       # stdlib zipfile so we don't have to add a system package install.
       python3 -c "import sys,zipfile; zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])" \
         "$CD_ZIP" "$CD_CACHE_DIR"

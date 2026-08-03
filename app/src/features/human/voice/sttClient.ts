@@ -60,20 +60,20 @@ export async function transcribeCloud(
   let result: CloudTranscribeResult;
   try {
     result = await callCoreRpc<CloudTranscribeResult>({
-      method: 'openhuman.voice_cloud_transcribe',
+      method: 'aura.voice_cloud_transcribe',
       params,
     });
   } catch (err) {
     // Issue #1289: an "unknown method" error means the bundled core
     // sidecar is older than the frontend (e.g. a stale dev build, or a
     // cached binary the desktop auto-update hasn't refreshed yet).
-    // The raw "unknown method: openhuman.voice_cloud_transcribe" string
+    // The raw "unknown method: aura.voice_cloud_transcribe" string
     // is opaque to end users — surface an actionable message instead.
     const msg = err instanceof Error ? err.message : String(err);
     if (msg.includes('unknown method')) {
       sttLog('transcribe rpc stale-sidecar path hit; rewriting unknown-method error: %s', msg);
       throw new Error(
-        'Voice transcription is unavailable in this build. Restart the OpenHuman desktop app to pick up the latest core sidecar.'
+        'Voice transcription is unavailable in this build. Restart the Aura desktop app to pick up the latest core sidecar.'
       );
     }
     sttLog('transcribe rpc failed (passthrough): %O', err);
@@ -104,7 +104,7 @@ export interface FactoryTranscribeResult {
 }
 
 /**
- * Factory-dispatched transcription. Hits `openhuman.voice_stt_dispatch`
+ * Factory-dispatched transcription. Hits `aura.voice_stt_dispatch`
  * — the core resolves the provider from config (or `opts.provider` when
  * the caller forces one). Returns the transcript only; the renderer
  * surfaces the provider id via debug logs.
@@ -143,7 +143,7 @@ export async function transcribeWithFactory(
   let result: FactoryTranscribeResult;
   try {
     result = await callCoreRpc<FactoryTranscribeResult>({
-      method: 'openhuman.voice_stt_dispatch',
+      method: 'aura.voice_stt_dispatch',
       params,
     });
   } catch (err) {
@@ -151,7 +151,7 @@ export async function transcribeWithFactory(
     if (msg.includes('unknown method')) {
       sttLog('[voice-stt] dispatch stale-sidecar path: %s', msg);
       throw new Error(
-        'Voice transcription is unavailable in this build. Restart the OpenHuman desktop app to pick up the latest core sidecar.'
+        'Voice transcription is unavailable in this build. Restart the Aura desktop app to pick up the latest core sidecar.'
       );
     }
     sttLog('[voice-stt] dispatch failed (passthrough): %O', err);

@@ -23,36 +23,36 @@ Applies to every release, all platforms.
 
 ### Public installer script
 
-- [ ] **`scripts/install.sh` downloads the latest asset on a proxy/VPN network** — From a clean checkout, run `bash scripts/install.sh --dry-run --verbose`, then run the public `curl -fsSL https://raw.githubusercontent.com/tinyhumansai/openhuman/main/scripts/install.sh | bash` flow on one macOS or Linux host. Expected: release metadata resolves, the asset downloads successfully, and transient GitHub/CDN HTTP/2 failures retry over HTTP/1.1 instead of surfacing `curl: (16) Error in the HTTP2 framing layer`.
+- [ ] **`scripts/install.sh` downloads the latest asset on a proxy/VPN network** — From a clean checkout, run `bash scripts/install.sh --dry-run --verbose`, then run the public `curl -fsSL https://raw.githubusercontent.com/tinyhumansai/aura/main/scripts/install.sh | bash` flow on one macOS or Linux host. Expected: release metadata resolves, the asset downloads successfully, and transient GitHub/CDN HTTP/2 failures retry over HTTP/1.1 instead of surfacing `curl: (16) Error in the HTTP2 framing layer`.
 
 ### macOS
 
-- [ ] **Gatekeeper accepts the signed `.app` on first launch** — Double-click the `.app` from a fresh download (Quarantine attribute set). Expected: app opens without `"OpenHuman" cannot be opened because the developer cannot be verified` dialog. If it appears, the build is unsigned or the notarization stapler is missing.
-- [ ] **`codesign --verify --deep --strict <path-to-OpenHuman.app>` exits 0** — Run from terminal. Expected: no output, exit 0. Any `code object is not signed at all` or `invalid signature` output blocks the release.
-- [ ] **DMG drag-to-Applications flow works** — Mount the `.dmg`, drag `OpenHuman.app` to the `Applications` alias. Expected: copy completes; eject succeeds; first launch from `/Applications` does not re-prompt Gatekeeper.
-- [ ] **Accessibility permission prompt fires on first agent run** — Trigger an agent action that uses Accessibility (e.g. window-control skill). Expected: macOS prompts `OpenHuman would like to control this computer using accessibility features`. Granting it allows the action; denying it surfaces a clear in-app fallback.
+- [ ] **Gatekeeper accepts the signed `.app` on first launch** — Double-click the `.app` from a fresh download (Quarantine attribute set). Expected: app opens without `"Aura" cannot be opened because the developer cannot be verified` dialog. If it appears, the build is unsigned or the notarization stapler is missing.
+- [ ] **`codesign --verify --deep --strict <path-to-Aura.app>` exits 0** — Run from terminal. Expected: no output, exit 0. Any `code object is not signed at all` or `invalid signature` output blocks the release.
+- [ ] **DMG drag-to-Applications flow works** — Mount the `.dmg`, drag `Aura.app` to the `Applications` alias. Expected: copy completes; eject succeeds; first launch from `/Applications` does not re-prompt Gatekeeper.
+- [ ] **Accessibility permission prompt fires on first agent run** — Trigger an agent action that uses Accessibility (e.g. window-control skill). Expected: macOS prompts `Aura would like to control this computer using accessibility features`. Granting it allows the action; denying it surfaces a clear in-app fallback.
 - [ ] **Input Monitoring prompt fires on first hotkey use** — Press the registered global hotkey for the first time. Expected: `Input Monitoring` prompt; granting it makes the hotkey trigger; denying it does not crash the app.
 - [ ] **Screen Recording prompt fires on first screen-share** — Use the screen-share skill or `getDisplayMedia` shim. Expected: `Screen Recording` prompt; granted → picker shows windows + screens; denied → in-app message explaining the requirement.
 - [ ] **Microphone prompt fires on first voice capture** — Start a voice session. Expected: standard mic prompt; granted → capture begins; denied → fallback message, no panic.
-- [ ] **Bluetooth prompt fires on first Gmeet call (regression watch — see #1288)** — Open the Google Meet webview account and join a meeting from a fresh install. Expected: macOS prompts `OpenHuman would like to use Bluetooth` the first time the device picker enumerates audio peripherals; granted → AirPods/headsets appear in the picker; denied → fallback to built-in mic, no crash. Hard fail mode (key absent) is a SIGABRT before the prompt can render.
-- [ ] **Location prompt does not crash on Gmeet room-finder probe** — If Gmeet surfaces nearby-room suggestions, the first probe should trigger `OpenHuman would like to use your current location`; granting or denying must NOT crash the app. (Probe path is webview-driven; only verify the no-crash invariant here.)
-- [ ] **File picker does not crash on Documents/Downloads/Desktop selections** — From an embedded app (Slack, Discord, Telegram), trigger a file upload and pick a file from `Documents`, `Downloads`, and `Desktop` in turn. Expected: macOS prompts `OpenHuman would like to access files in your <Folder> folder` the first time per folder; deny + retry must not crash.
+- [ ] **Bluetooth prompt fires on first Gmeet call (regression watch — see #1288)** — Open the Google Meet webview account and join a meeting from a fresh install. Expected: macOS prompts `Aura would like to use Bluetooth` the first time the device picker enumerates audio peripherals; granted → AirPods/headsets appear in the picker; denied → fallback to built-in mic, no crash. Hard fail mode (key absent) is a SIGABRT before the prompt can render.
+- [ ] **Location prompt does not crash on Gmeet room-finder probe** — If Gmeet surfaces nearby-room suggestions, the first probe should trigger `Aura would like to use your current location`; granting or denying must NOT crash the app. (Probe path is webview-driven; only verify the no-crash invariant here.)
+- [ ] **File picker does not crash on Documents/Downloads/Desktop selections** — From an embedded app (Slack, Discord, Telegram), trigger a file upload and pick a file from `Documents`, `Downloads`, and `Desktop` in turn. Expected: macOS prompts `Aura would like to access files in your <Folder> folder` the first time per folder; deny + retry must not crash.
 
 ### Windows
 
 - [ ] **SmartScreen does not block install** — Run the installer from a fresh download. Expected: SmartScreen passes (signed binary). If `Windows protected your PC` appears, the EV signature is missing or the reputation has not built up — escalate before shipping.
 - [ ] **Installer creates Start Menu + Desktop shortcuts** — Defaults preserved. Expected: both shortcuts launch the app.
-- [ ] **App registers `openhuman://` URL scheme** — From a browser, click an `openhuman://oauth/success?...` link. Expected: OS prompts to open in OpenHuman; clicking through delivers the deep link.
+- [ ] **App registers `aura://` URL scheme** — From a browser, click an `aura://oauth/success?...` link. Expected: OS prompts to open in Aura; clicking through delivers the deep link.
 
 ### Linux
 
-- [ ] **`.deb` and/or `.AppImage` install on a clean Ubuntu 22.04** — `sudo dpkg -i openhuman_*.deb` or `chmod +x openhuman-*.AppImage && ./openhuman-*.AppImage`. Expected: no missing-dependency errors; app launches.
+- [ ] **`.deb` and/or `.AppImage` install on a clean Ubuntu 22.04** — `sudo dpkg -i aura_*.deb` or `chmod +x aura-*.AppImage && ./aura-*.AppImage`. Expected: no missing-dependency errors; app launches.
 - [ ] **OS-native notification toasts fire** — Trigger a notification from inside the app (e.g. memory captured, agent finished). Expected: a libnotify-style toast appears outside the app window. (CI Linux sees only Xvfb; this surface verifies on a real desktop.)
-- [ ] **Headless supervisor update stages without self-exit** — On a Linux service deployment with `[update] restart_strategy = "supervisor"` and `rpc_mutations_enabled = false`, stage a new core binary through the documented operator flow. Expected: the running process stays up until the supervisor restart, the staged binary is present on disk, and `systemctl restart openhuman` (or equivalent) picks up the new version.
+- [ ] **Headless supervisor update stages without self-exit** — On a Linux service deployment with `[update] restart_strategy = "supervisor"` and `rpc_mutations_enabled = false`, stage a new core binary through the documented operator flow. Expected: the running process stays up until the supervisor restart, the staged binary is present on disk, and `systemctl restart aura` (or equivalent) picks up the new version.
 
 ### Cross-platform
 
-- [ ] **First launch flow completes for a brand-new user** — Fresh OS user account, no `~/.openhuman` directory. Walk through onboarding to first agent reply. Expected: no crashes, no permission deadlocks, no stale-config errors.
+- [ ] **First launch flow completes for a brand-new user** — Fresh OS user account, no `~/.aura` directory. Walk through onboarding to first agent reply. Expected: no crashes, no permission deadlocks, no stale-config errors.
 - [ ] **Auto-update download + relaunch succeeds** — Install the previous release, point the updater feed at this release, trigger an update check. Expected: download completes, relaunch installs the new binary, version string in `Settings > About` matches the release tag.
 - [ ] **Logging out + logging back in preserves nothing private** — Sign out, sign in as a different user. Expected: no leaked memory, threads, or skill state from the previous session (regression watch — see #900).
 

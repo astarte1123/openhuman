@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useCoreState } from '../providers/CoreStateProvider';
 import {
   type ComposioTriggerHistoryEntry,
-  openhumanComposioListTriggerHistory,
+  auraComposioListTriggerHistory,
 } from '../utils/tauriCommands';
 
 const log = debug('composio:history');
@@ -57,7 +57,7 @@ export function useComposeioTriggerHistory(limit = 100): ComposeioTriggerHistory
     isRefreshingRef.current = true;
     setLoading(true);
     try {
-      const response = await openhumanComposioListTriggerHistory(limit);
+      const response = await auraComposioListTriggerHistory(limit);
       if (!sessionTokenRef.current || sessionTokenRef.current !== requestToken) {
         return;
       }

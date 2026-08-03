@@ -1,7 +1,7 @@
 use anyhow::Result;
 use async_trait::async_trait;
-use openhuman_core::openhuman::agent::memory_loader::{DefaultMemoryLoader, MemoryLoader};
-use openhuman_core::openhuman::memory::{Memory, MemoryCategory, MemoryEntry};
+use aura_core::aura::agent::memory_loader::{DefaultMemoryLoader, MemoryLoader};
+use aura_core::aura::memory::{Memory, MemoryCategory, MemoryEntry};
 use std::sync::Arc;
 
 struct ScriptedMemory {
@@ -26,7 +26,7 @@ impl Memory for ScriptedMemory {
         &self,
         query: &str,
         _limit: usize,
-        _opts: openhuman_core::openhuman::memory::RecallOpts<'_>,
+        _opts: aura_core::aura::memory::RecallOpts<'_>,
     ) -> Result<Vec<MemoryEntry>> {
         if query.contains("working.user") {
             Ok(self.working.clone())
@@ -54,7 +54,7 @@ impl Memory for ScriptedMemory {
 
     async fn namespace_summaries(
         &self,
-    ) -> Result<Vec<openhuman_core::openhuman::memory::NamespaceSummary>> {
+    ) -> Result<Vec<aura_core::aura::memory::NamespaceSummary>> {
         Ok(Vec::new())
     }
 

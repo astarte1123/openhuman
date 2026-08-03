@@ -28,7 +28,7 @@ import {
   hexEncodeThreadId,
   typeIntoComposer,
 } from '../helpers/chat-harness';
-import { callOpenhumanRpc } from '../helpers/core-rpc';
+import { callAuraRpc } from '../helpers/core-rpc';
 import { clickText, clickToggle, textExists } from '../helpers/element-helpers';
 import { resetApp } from '../helpers/reset-app';
 import { navigateViaHash } from '../helpers/shared-flows';
@@ -125,8 +125,8 @@ describe('Chat harness — wallet flow', () => {
 
     await browser.waitUntil(
       async () => {
-        const status = await callOpenhumanRpc<{ result: { configured: boolean } }>(
-          'openhuman.wallet_status',
+        const status = await callAuraRpc<{ result: { configured: boolean } }>(
+          'aura.wallet_status',
           {}
         );
         return status.ok && status.result?.result?.configured === true;
@@ -134,9 +134,9 @@ describe('Chat harness — wallet flow', () => {
       { timeout: 20_000, timeoutMsg: 'wallet_status never became configured' }
     );
 
-    const walletState = await callOpenhumanRpc<{
+    const walletState = await callAuraRpc<{
       result: { content_utf8: string; truncated: boolean };
-    }>('openhuman.test_support_read_workspace_file', {
+    }>('aura.test_support_read_workspace_file', {
       rel_path: 'state/wallet-state.json',
       max_bytes: 131_072,
     });
@@ -183,12 +183,12 @@ describe('Chat harness — wallet flow', () => {
 
     await browser.waitUntil(
       async () => {
-        const quotes = await callOpenhumanRpc<{
+        const quotes = await callAuraRpc<{
           result: {
             count: number;
             quotes: Array<{ toAddress: string; amountRaw: string; status: string; kind: string }>;
           };
-        }>('openhuman.test_support_wallet_prepared_quotes', {});
+        }>('aura.test_support_wallet_prepared_quotes', {});
         if (!quotes.ok) return false;
         return (quotes.result?.result?.quotes ?? []).some(
           quote =>
@@ -211,8 +211,8 @@ describe('Chat harness — wallet flow', () => {
     expect(llmHits.length).toBeGreaterThanOrEqual(4);
 
     const relPath = `memory/conversations/threads/${hexEncodeThreadId(threadId)}.jsonl`;
-    const read = await callOpenhumanRpc<{ result: { content_utf8: string } }>(
-      'openhuman.test_support_read_workspace_file',
+    const read = await callAuraRpc<{ result: { content_utf8: string } }>(
+      'aura.test_support_read_workspace_file',
       { rel_path: relPath, max_bytes: 131_072 }
     );
     expect(read.ok).toBe(true);

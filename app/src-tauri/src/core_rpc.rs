@@ -2,7 +2,7 @@
 
 use reqwest::RequestBuilder;
 
-const CORE_RPC_URL_ENV: &str = "OPENHUMAN_CORE_RPC_URL";
+const CORE_RPC_URL_ENV: &str = "AURA_CORE_RPC_URL";
 pub(crate) fn core_rpc_url_value() -> String {
     std::env::var(CORE_RPC_URL_ENV).unwrap_or_else(|_| {
         format!(

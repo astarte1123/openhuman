@@ -20,14 +20,14 @@
  *            (no auth backend at 127.0.0.1:1 / picks a closed port).
  *     4. Switch back to Local, click Continue. BootCheckGate runs `runBootCheck`
  *        against the embedded local core (which is already up — the e2e build
- *        seeds `VITE_OPENHUMAN_E2E_DEFAULT_CORE_MODE=local`) and we land back
+ *        seeds `VITE_AURA_E2E_DEFAULT_CORE_MODE=local`) and we land back
  *        on Welcome with the OAuth provider row visible.
  *
  *   Phase 2 — Provider login (deep-link bypass simulates the OAuth round-trip):
  *     5. Welcome shows OAuth provider buttons. We don't click them (that opens
  *        the system browser), instead we simulate the post-OAuth deep link
  *        callback — exactly the same code path the real providers exercise
- *        when the backend redirects back to `openhuman://auth?token=...&key=auth`.
+ *        when the backend redirects back to `aura://auth?token=...&key=auth`.
  *     6. Walk onboarding (if shown) until we reach Home.
  *     7. Verify mock backend recorded the auth/me profile fetch.
  *
@@ -157,8 +157,8 @@ describe('Runtime picker → login → onboarding → home → logout', () => {
     await waitForWebView(15_000);
     await waitForAppReady(15_000);
 
-    // Welcome.tsx: "Welcome to OpenHuman" + at least one provider button.
-    expect(await waitForText('Welcome to OpenHuman', 15_000)).toBeTruthy();
+    // Welcome.tsx: "Welcome to Aura" + at least one provider button.
+    expect(await waitForText('Welcome to Aura', 15_000)).toBeTruthy();
     expect(await textExists('Select a Runtime')).toBe(true);
   });
 
@@ -310,7 +310,7 @@ describe('Runtime picker → login → onboarding → home → logout', () => {
       let onHome = false;
       while (Date.now() < deadline) {
         const hash = (await browser.execute(() => window.location.hash)) as string;
-        const stillOnWelcome = await textExists('Welcome to OpenHuman');
+        const stillOnWelcome = await textExists('Welcome to Aura');
         if (!stillOnWelcome && (hash.startsWith('#/home') || hash.startsWith('#/chat'))) {
           onHome = true;
           break;
@@ -334,7 +334,7 @@ describe('Runtime picker → login → onboarding → home → logout', () => {
 
     // logoutViaSettings already asserts the logged-out marker; double-check
     // the Welcome OAuth row reappeared so we know the route reset cleanly.
-    expect(await waitForText('Welcome to OpenHuman', 15_000)).toBeTruthy();
+    expect(await waitForText('Welcome to Aura', 15_000)).toBeTruthy();
     expect(await textExists('Select a Runtime')).toBe(true);
   });
 });

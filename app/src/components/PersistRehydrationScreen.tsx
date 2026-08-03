@@ -55,7 +55,7 @@ function PersistRehydrationScreen() {
     <div className="fixed inset-0 flex items-center justify-center bg-canvas-50 p-6">
       <div className="max-w-sm w-full space-y-4 rounded-xl border border-stone-200 bg-white p-6 shadow-soft text-center">
         <p className="text-sm font-medium text-stone-900">
-          OpenHuman is taking longer than usual to load.
+          Aura is taking longer than usual to load.
         </p>
         <p className="text-xs text-stone-500 leading-relaxed">
           Local app state may be corrupted. Resetting will sign you out and clear cached data on

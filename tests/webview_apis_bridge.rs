@@ -4,15 +4,15 @@
 //!
 //! ```text
 //! client::request                                      ← core-side code we ship
-//!   → ws://127.0.0.1:$OPENHUMAN_WEBVIEW_APIS_PORT
+//!   → ws://127.0.0.1:$AURA_WEBVIEW_APIS_PORT
 //!   → mock WS server (this test)                       ← stands in for Tauri
 //!   → JSON response
 //!   → decoded back into typed GmailLabel Vec
 //! ```
 //!
-//! Tests are serial because they all mutate the `OPENHUMAN_WEBVIEW_APIS_PORT`
+//! Tests are serial because they all mutate the `AURA_WEBVIEW_APIS_PORT`
 //! env var and share the lazy global `CLIENT` inside
-//! `openhuman_core::openhuman::webview_apis::client`.
+//! `aura_core::aura::webview_apis::client`.
 
 use std::net::SocketAddr;
 
@@ -22,7 +22,7 @@ use tokio::net::TcpListener;
 use tokio::sync::Mutex;
 use tokio_tungstenite::tungstenite::Message;
 
-use openhuman_core::openhuman::webview_apis::{client, types::GmailLabel};
+use aura_core::aura::webview_apis::{client, types::GmailLabel};
 
 /// The webview_apis client caches its WebSocket connection (and the
 /// reader/writer tasks that service it) in a process-global `OnceLock`.
@@ -46,7 +46,7 @@ async fn ensure_mock_server() -> u16 {
         .await
         .expect("bind");
     let port = listener.local_addr().unwrap().port();
-    std::env::set_var("OPENHUMAN_WEBVIEW_APIS_PORT", port.to_string());
+    std::env::set_var("AURA_WEBVIEW_APIS_PORT", port.to_string());
     *guard = Some(port);
     tokio::spawn(async move {
         loop {

@@ -1,11 +1,11 @@
 use anyhow::Result;
 use async_trait::async_trait;
-use openhuman_core::openhuman::agent::dispatcher::XmlToolDispatcher;
-use openhuman_core::openhuman::agent::Agent;
-use openhuman_core::openhuman::context::prompt::SystemPromptBuilder;
-use openhuman_core::openhuman::inference::provider::{ChatRequest, ChatResponse, Provider};
-use openhuman_core::openhuman::memory::{Memory, MemoryCategory, MemoryEntry};
-use openhuman_core::openhuman::tools::{Tool, ToolResult};
+use aura_core::aura::agent::dispatcher::XmlToolDispatcher;
+use aura_core::aura::agent::Agent;
+use aura_core::aura::context::prompt::SystemPromptBuilder;
+use aura_core::aura::inference::provider::{ChatRequest, ChatResponse, Provider};
+use aura_core::aura::memory::{Memory, MemoryCategory, MemoryEntry};
+use aura_core::aura::tools::{Tool, ToolResult};
 use std::collections::HashSet;
 use std::sync::Arc;
 
@@ -82,7 +82,7 @@ impl Memory for StubMemory {
         &self,
         _query: &str,
         _limit: usize,
-        _opts: openhuman_core::openhuman::memory::RecallOpts<'_>,
+        _opts: aura_core::aura::memory::RecallOpts<'_>,
     ) -> Result<Vec<MemoryEntry>> {
         Ok(Vec::new())
     }
@@ -106,7 +106,7 @@ impl Memory for StubMemory {
 
     async fn namespace_summaries(
         &self,
-    ) -> Result<Vec<openhuman_core::openhuman::memory::NamespaceSummary>> {
+    ) -> Result<Vec<aura_core::aura::memory::NamespaceSummary>> {
         Ok(Vec::new())
     }
 
@@ -123,7 +123,7 @@ impl Memory for StubMemory {
     }
 }
 
-fn base_builder() -> openhuman_core::openhuman::agent::AgentBuilder {
+fn base_builder() -> aura_core::aura::agent::AgentBuilder {
     Agent::builder()
         .provider(Box::new(StubProvider))
         .tools(vec![
@@ -177,7 +177,7 @@ fn builder_applies_defaults_and_exposes_public_accessors() {
     assert_eq!(agent.tool_specs().len(), 2);
     assert_eq!(
         agent.model_name(),
-        openhuman_core::openhuman::config::DEFAULT_MODEL
+        aura_core::aura::config::DEFAULT_MODEL
     );
     assert_eq!(agent.temperature(), 0.7);
     assert_eq!(agent.workspace_dir(), std::path::Path::new("."));

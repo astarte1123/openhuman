@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "OpenHuman",
+  "productName": "Aura",
   "version": "0.53.49",
-  "identifier": "com.openhuman.app",
+  "identifier": "com.aura.app",
   "build": {
     "beforeDevCommand": "pnpm run dev",
     "devUrl": "http://localhost:1420",
@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "OpenHuman",
+        "title": "Aura",
         "width": 1000,
         "height": 800,
         "visible": false,
@@ -45,7 +45,7 @@
       "icons/icon.ico"
     ],
     "resources": [
-      "../../src/openhuman/agent/prompts",
+      "../../src/aura/agent/prompts",
       "recipes/**/*"
     ],
     "linux": {
@@ -75,13 +75,13 @@
       "active": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDc0OTREMjkxREFCNUIzRTEKUldUaHM3WGFrZEtVZEJzZWtMTlc5dGxnT0R2Q3hUTWVaclJWSm9JUFpPcVFUV2RBSG5oNFN6UjQK",
       "endpoints": [
-        "https://github.com/tinyhumansai/openhuman/releases/latest/download/latest.json"
+        "https://github.com/tinyhumansai/aura/releases/latest/download/latest.json"
       ]
     },
     "deep-link": {
       "desktop": {
         "schemes": [
-          "openhuman"
+          "aura"
         ]
       }
     }

@@ -1,6 +1,6 @@
 import packageJson from '../../package.json';
 
-const APP_ENV = (import.meta.env.VITE_OPENHUMAN_APP_ENV as string | undefined)
+const APP_ENV = (import.meta.env.VITE_AURA_APP_ENV as string | undefined)
   ?.trim()
   .toLowerCase();
 
@@ -16,12 +16,12 @@ const DEFAULT_BACKEND_URL =
  * falls back to this constant. Never read this constant directly from product
  * code that needs the live endpoint — call `getCoreRpcUrl()` instead.
  *
- * Override at build time via `VITE_OPENHUMAN_CORE_RPC_URL`.
+ * Override at build time via `VITE_AURA_CORE_RPC_URL`.
  */
 export const CORE_RPC_URL =
-  import.meta.env.VITE_OPENHUMAN_CORE_RPC_URL || 'http://127.0.0.1:7788/rpc';
+  import.meta.env.VITE_AURA_CORE_RPC_URL || 'http://127.0.0.1:7788/rpc';
 
-/** Matches core `OPENHUMAN_TOOL_TIMEOUT_SECS` (default 120s, max 3600s). */
+/** Matches core `AURA_TOOL_TIMEOUT_SECS` (default 120s, max 3600s). */
 const DEFAULT_TOOL_TIMEOUT_SECS = 120;
 const MAX_TOOL_TIMEOUT_SECS = 3600;
 
@@ -62,9 +62,9 @@ export const CORE_RPC_TIMEOUT_MS = parseCoreRpcTimeoutMs();
 export const IS_DEV = import.meta.env.DEV;
 export const IS_PROD = import.meta.env.PROD;
 export const E2E_RESTART_APP_AS_RELOAD =
-  import.meta.env.VITE_OPENHUMAN_E2E_RESTART_APP_AS_RELOAD === 'true';
+  import.meta.env.VITE_AURA_E2E_RESTART_APP_AS_RELOAD === 'true';
 export const E2E_DEFAULT_CORE_MODE =
-  (import.meta.env.VITE_OPENHUMAN_E2E_DEFAULT_CORE_MODE as string | undefined) || '';
+  (import.meta.env.VITE_AURA_E2E_DEFAULT_CORE_MODE as string | undefined) || '';
 
 /**
  * True when the build behaves like a dev build for runtime purposes — either
@@ -91,7 +91,7 @@ export const CONSUMER_FIRST_SESSION_ENABLED =
   import.meta.env.VITE_CONSUMER_FIRST_SESSION === 'true';
 
 export const SKILLS_GITHUB_REPO =
-  import.meta.env.VITE_SKILLS_GITHUB_REPO || 'tinyhumansai/openhuman-skills';
+  import.meta.env.VITE_SKILLS_GITHUB_REPO || 'tinyhumansai/aura-skills';
 
 /** Google Analytics 4 Measurement ID. Leave blank to disable GA. Skipped in dev builds. */
 export const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined;
@@ -104,7 +104,7 @@ export const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN as string | undefined;
  *
  * **Not runtime-authoritative in Tauri.** In the desktop app, `getBackendUrl()`
  * (in `services/backendUrl.ts`) asks the core sidecar for the live API URL via
- * `openhuman.config_resolve_api_url`. If that call fails or returns an empty
+ * `aura.config_resolve_api_url`. If that call fails or returns an empty
  * URL, `getBackendUrl()` **throws** — it does not fall back to this constant.
  * This constant is only used in web/non-Tauri mode (where the sidecar is not
  * present).
@@ -116,7 +116,7 @@ export const BACKEND_URL =
 
 /** Telegram bot username used for managed DM linking when backend does not return a launch URL. */
 export const TELEGRAM_BOT_USERNAME =
-  (import.meta.env.VITE_TELEGRAM_BOT_USERNAME as string | undefined) || 'openhuman_bot';
+  (import.meta.env.VITE_TELEGRAM_BOT_USERNAME as string | undefined) || 'aura_bot';
 
 /** Dev only: auto-inject JWT token to skip login flow. */
 export const DEV_JWT_TOKEN = import.meta.env.DEV
@@ -128,7 +128,7 @@ export const APP_VERSION = packageJson.version;
 /**
  * Deployment environment reported to Sentry and other observability surfaces.
  *
- * Derived from `VITE_OPENHUMAN_APP_ENV` (set by CI for production / staging
+ * Derived from `VITE_AURA_APP_ENV` (set by CI for production / staging
  * bundles). Falls back to `development` in non-production builds so local
  * debugging never mingles with real user events.
  */
@@ -144,18 +144,18 @@ export const BUILD_SHA = ((import.meta.env.VITE_BUILD_SHA as string | undefined)
   .slice(0, 12);
 
 /**
- * Canonical Sentry release identifier: `openhuman@<version>[+<short_sha>]`.
+ * Canonical Sentry release identifier: `aura@<version>[+<short_sha>]`.
  *
  * Matches the tag the Rust core sidecar reports (see `src/main.rs`) so events
  * from the frontend, the core, and source-map uploads all group under the
  * same release in the Sentry dashboard.
  */
 export const SENTRY_RELEASE = BUILD_SHA
-  ? `openhuman@${APP_VERSION}+${BUILD_SHA}`
-  : `openhuman@${APP_VERSION}`;
+  ? `aura@${APP_VERSION}+${BUILD_SHA}`
+  : `aura@${APP_VERSION}`;
 
 /**
- * Minimum **desktop app** semver required for OAuth deep-link completion (`openhuman://oauth/success`).
+ * Minimum **desktop app** semver required for OAuth deep-link completion (`aura://oauth/success`).
  *
  * **Build-time embedding:** This value is baked into each shipped installer. Raising the floor for
  * users already on an older build requires them to install a **new** release (or use in-app update
@@ -171,7 +171,7 @@ export const MINIMUM_SUPPORTED_APP_VERSION =
 /** URL for the latest app release download page. Used for OAuth version-gate recovery and crash-recovery prompts. Override via VITE_LATEST_APP_DOWNLOAD_URL for deployment-specific download pages. */
 export const LATEST_APP_DOWNLOAD_URL =
   (import.meta.env.VITE_LATEST_APP_DOWNLOAD_URL as string | undefined)?.trim() ||
-  'https://github.com/tinyhumansai/openhuman/releases/latest';
+  'https://github.com/tinyhumansai/aura/releases/latest';
 
 /**
  * Set `VITE_SENTRY_SMOKE_TEST=true` in one build (or in `.env.local`) to

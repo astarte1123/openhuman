@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # One-time setup: create a stable local code-signing certificate for the
-# openhuman-core sidecar. Run this once per development machine.
+# aura-core sidecar. Run this once per development machine.
 #
 # Why: macOS TCC identifies unsigned binaries by content hash (Mach-O UUID).
 # Every `pnpm core:stage` recompiles the sidecar, changing its hash, so TCC
@@ -9,20 +9,20 @@
 #
 # After running this script:
 #   1. pnpm core:stage        (signs the sidecar with the new cert)
-#   2. In OpenHuman → Request Permissions (removes old stale TCC entry,
+#   2. In Aura → Request Permissions (removes old stale TCC entry,
 #      registers current binary)
 #   3. Grant in System Settings → Refresh Status
 #   From this point the grant survives future `pnpm core:stage` runs.
 
 set -euo pipefail
 
-IDENTITY="OpenHuman Dev Signer"
+IDENTITY="Aura Dev Signer"
 KEYCHAIN="$HOME/Library/Keychains/login.keychain-db"
 TMPDIR_CERT=$(mktemp -d)
-KEY="$TMPDIR_CERT/openhuman-dev.key"
-CERT="$TMPDIR_CERT/openhuman-dev.crt"
-P12="$TMPDIR_CERT/openhuman-dev.p12"
-P12_PASS="${OPENHUMAN_P12_PASS:-openhuman-dev}"
+KEY="$TMPDIR_CERT/aura-dev.key"
+CERT="$TMPDIR_CERT/aura-dev.crt"
+P12="$TMPDIR_CERT/aura-dev.p12"
+P12_PASS="${AURA_P12_PASS:-aura-dev}"
 
 cleanup() {
   rm -rf "$TMPDIR_CERT"
@@ -94,7 +94,7 @@ security import "$P12" \
 # the key's trusted-applications ACL, but macOS additionally requires the
 # *partition list* to be committed via `set-key-partition-list` before that
 # access actually takes effect. Without this step, the first `codesign`
-# invocation during `pnpm --filter openhuman-app dev:app` aborts with
+# invocation during `pnpm --filter aura-app dev:app` aborts with
 # `errSecInternalComponent` (or pops a Keychain password dialog for every
 # helper bundle, mid-build).
 #
@@ -120,7 +120,7 @@ echo "[setup-dev-codesign] Done. Certificate \"$IDENTITY\" added to login Keycha
 echo ""
 echo "Next steps:"
 echo "  1. pnpm core:stage          — rebuilds and signs the sidecar"
-echo "  2. In OpenHuman click 'Request Permissions' to register the signed binary"
+echo "  2. In Aura click 'Request Permissions' to register the signed binary"
 echo "  3. Grant in System Settings → Privacy & Security → Accessibility"
 echo "  4. Click 'Refresh Status'"
 echo ""

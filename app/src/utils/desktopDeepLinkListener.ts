@@ -37,14 +37,14 @@ const getOAuthErrorMessage = (provider: string, errorCode: string): string => {
       return 'Twitter/X sign-in was cancelled. Try again and approve access to continue.';
     }
 
-    return 'Twitter/X sign-in failed before OpenHuman received authorization. Check the Twitter Developer Portal app settings: OAuth 2.0 must be enabled, callback URL must match the backend redirect URL exactly, and the client ID, client secret, and requested scopes must match the OpenHuman backend configuration.';
+    return 'Twitter/X sign-in failed before Aura received authorization. Check the Twitter Developer Portal app settings: OAuth 2.0 must be enabled, callback URL must match the backend redirect URL exactly, and the client ID, client secret, and requested scopes must match the Aura backend configuration.';
   }
 
   if (errorCode === 'access_denied' || errorCode === 'user_denied') {
     return 'Sign-in was cancelled. Try again and approve access to continue.';
   }
 
-  return 'OAuth sign-in failed before OpenHuman received authorization. Check the provider app settings and try again.';
+  return 'OAuth sign-in failed before Aura received authorization. Check the provider app settings and try again.';
 };
 
 const emitOAuthError = (provider: string, errorCode: string, message: string) => {
@@ -94,7 +94,7 @@ const applySessionToken = async (sessionToken: string): Promise<void> => {
 };
 
 /**
- * Handle an `openhuman://auth?token=...` deep link for login.
+ * Handle an `aura://auth?token=...` deep link for login.
  */
 const handleAuthDeepLink = async (parsed: URL) => {
   const token = parsed.searchParams.get('token');
@@ -121,7 +121,7 @@ const handleAuthDeepLink = async (parsed: URL) => {
     const rawMessage = error instanceof Error ? error.message : String(error);
     if (isDecryptionFailure(rawMessage)) {
       failDeepLinkAuthProcessing(
-        "Sign-in failed because OpenHuman couldn't decrypt locally stored data. " +
+        "Sign-in failed because Aura couldn't decrypt locally stored data. " +
           'This usually means the encryption key on this device no longer matches ' +
           'your stored secrets. Clear app data to start fresh.',
         { requiresAppDataReset: true }
@@ -142,7 +142,7 @@ const isDecryptionFailure = (message: string): boolean => {
 };
 
 /**
- * Handle `openhuman://payment/success?session_id=...` deep links.
+ * Handle `aura://payment/success?session_id=...` deep links.
  * Fired when a Stripe checkout session completes and the browser redirects
  * back to the desktop app.
  */
@@ -178,8 +178,8 @@ const handlePaymentDeepLink = async (parsed: URL) => {
 };
 
 /**
- * Handle `openhuman://oauth/success?...`
- * and `openhuman://oauth/error?error=...&provider=...` deep links.
+ * Handle `aura://oauth/success?...`
+ * and `aura://oauth/error?error=...&provider=...` deep links.
  */
 const handleOAuthDeepLink = async (parsed: URL) => {
   // pathname is "/success" or "/error" (hostname is "oauth")
@@ -212,8 +212,8 @@ const handleOAuthDeepLink = async (parsed: URL) => {
     if (!versionGate.ok) {
       const msg =
         versionGate.current === 'unknown'
-          ? `OpenHuman could not verify this build against the minimum required for OAuth (${versionGate.minimum}). Install the latest release, then try connecting again.`
-          : `This OpenHuman build (${versionGate.current}) is older than the minimum required for OAuth (${versionGate.minimum}). Install the latest release, then try connecting again.`;
+          ? `Aura could not verify this build against the minimum required for OAuth (${versionGate.minimum}). Install the latest release, then try connecting again.`
+          : `This Aura build (${versionGate.current}) is older than the minimum required for OAuth (${versionGate.minimum}). Install the latest release, then try connecting again.`;
       console.warn(`[DeepLink][oauth:stale-app] ${msg}`);
       try {
         await openUrl(versionGate.downloadUrl);
@@ -268,11 +268,11 @@ const handleOAuthDeepLink = async (parsed: URL) => {
 /**
  * Handle a list of deep link URLs delivered by the Tauri deep-link plugin.
  * Routes to the appropriate handler based on the URL hostname:
- *   - `openhuman://auth?token=...` → login flow
- *   - `openhuman://oauth/success?...` → OAuth completion
- *   - `openhuman://oauth/error?...` → OAuth failure
- *   - `openhuman://payment/success?session_id=...` → Stripe payment confirmation
- *   - `openhuman://payment/cancel` → Stripe payment cancellation
+ *   - `aura://auth?token=...` → login flow
+ *   - `aura://oauth/success?...` → OAuth completion
+ *   - `aura://oauth/error?...` → OAuth failure
+ *   - `aura://payment/success?session_id=...` → Stripe payment confirmation
+ *   - `aura://payment/cancel` → Stripe payment cancellation
  */
 const handleDeepLinkUrls = async (urls: string[] | null | undefined) => {
   if (!urls || urls.length === 0) {
@@ -283,7 +283,7 @@ const handleDeepLinkUrls = async (urls: string[] | null | undefined) => {
 
   try {
     const parsed = new URL(url);
-    if (parsed.protocol !== 'openhuman:') {
+    if (parsed.protocol !== 'aura:') {
       console.warn('[DeepLink] Ignoring unsupported protocol:', parsed.protocol);
       return;
     }
@@ -310,7 +310,7 @@ const handleDeepLinkUrls = async (urls: string[] | null | undefined) => {
 
 /**
  * Set up listeners for deep links so that when the desktop app is opened
- * via a URL like `openhuman://auth?token=...`, we can react to it.
+ * via a URL like `aura://auth?token=...`, we can react to it.
  * Only works in Tauri desktop app environment.
  */
 export const setupDesktopDeepLinkListener = async () => {
@@ -330,9 +330,9 @@ export const setupDesktopDeepLinkListener = async () => {
     });
 
     if (typeof window !== 'undefined') {
-      // window.__simulateDeepLink('openhuman://auth?token=1234567890')
-      // window.__simulateDeepLink('openhuman://oauth/success?integrationId=69cafd0b103bd070232d3223&provider=notion')
-      // window.__simulateDeepLink('openhuman://oauth/success?integrationId=69cafd0b103bd070232d3223&skillId=discord')
+      // window.__simulateDeepLink('aura://auth?token=1234567890')
+      // window.__simulateDeepLink('aura://oauth/success?integrationId=69cafd0b103bd070232d3223&provider=notion')
+      // window.__simulateDeepLink('aura://oauth/success?integrationId=69cafd0b103bd070232d3223&skillId=discord')
       const win = window as Window & { __simulateDeepLink?: (url: string) => Promise<void> };
       win.__simulateDeepLink = (url: string) => handleDeepLinkUrls([url]);
     }

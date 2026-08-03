@@ -133,7 +133,7 @@ const zhCN: TranslationMap = {
   'clearData.failedPersist': '清除持久化应用状态失败，请重试。',
 
   // Welcome page
-  'welcome.title': '欢迎使用 OpenHuman',
+  'welcome.title': '欢迎使用 Aura',
   'welcome.subtitle': '你的私人 AI 超级智能。私密、简单、强大。',
   'welcome.connectPrompt': '输入 Core RPC 地址以开始使用',
   'welcome.selectRuntime': '选择运行时',
@@ -149,7 +149,7 @@ const zhCN: TranslationMap = {
   'home.askAssistant': '向你的助手提问...',
   'home.statusOk': '你的设备已连接。保持应用运行以维持连接，通过下方按钮向你的智能体发送消息。',
   'home.statusBackendOnly': '正在重新连接后端…你的智能体很快将再次可用。',
-  'home.statusCoreUnreachable': '本地核心 sidecar 无响应。OpenHuman 后台进程可能已崩溃或未能启动。',
+  'home.statusCoreUnreachable': '本地核心 sidecar 无响应。Aura 后台进程可能已崩溃或未能启动。',
   'home.statusInternetOffline': '你的设备当前处于离线状态。请检查网络或重启应用以重新连接。',
   'home.restartCore': '重启核心',
   'home.restartingCore': '正在重启核心…',
@@ -210,7 +210,7 @@ const zhCN: TranslationMap = {
   'rewards.share': '分享',
 
   // Onboarding
-  'onboarding.welcome': '欢迎使用 OpenHuman',
+  'onboarding.welcome': '欢迎使用 Aura',
   'onboarding.welcomeDesc': '只需几步即可完成设置。',
   'onboarding.context': '上下文收集',
   'onboarding.contextDesc': '连接你日常使用的工具与服务。',
@@ -221,15 +221,15 @@ const zhCN: TranslationMap = {
   'onboarding.referral': '邀请码',
   'onboarding.referralDesc': '如果你有邀请码，可以在此使用。',
   'onboarding.finish': '完成设置',
-  'onboarding.finishDesc': '一切就绪！开始使用 OpenHuman。',
+  'onboarding.finishDesc': '一切就绪！开始使用 Aura。',
   'onboarding.skip': '跳过',
   'onboarding.getStarted': '开始使用',
 
   // Onboarding: runtime-choice step (Cloud vs Custom)
-  'onboarding.runtimeChoice.title': '你希望如何运行 OpenHuman？',
+  'onboarding.runtimeChoice.title': '你希望如何运行 Aura？',
   'onboarding.runtimeChoice.subtitle': '选择最适合你的设置。之后可在设置中更改。',
   'onboarding.runtimeChoice.cloud.title': '简单模式',
-  'onboarding.runtimeChoice.cloud.tagline': '让 OpenHuman 为你管理一切。',
+  'onboarding.runtimeChoice.cloud.tagline': '让 Aura 为你管理一切。',
   'onboarding.runtimeChoice.cloud.f1': '内置安全保护',
   'onboarding.runtimeChoice.cloud.f2': '令牌压缩，让用量更耐用',
   'onboarding.runtimeChoice.cloud.f3': '一个订阅，包含所有模型',
@@ -268,7 +268,7 @@ const zhCN: TranslationMap = {
   'onboarding.custom.stepperMemory': '记忆',
   'onboarding.custom.stepCounter': '第 {n} 步，共 {total} 步',
   'onboarding.custom.defaultTitle': '默认',
-  'onboarding.custom.defaultSubtitle': '让 OpenHuman 为你管理。',
+  'onboarding.custom.defaultSubtitle': '让 Aura 为你管理。',
   'onboarding.custom.configureTitle': '配置',
   'onboarding.custom.configureSubtitle': '我来选择使用什么。',
   'onboarding.custom.progressAriaLabel': '入门进度',
@@ -283,14 +283,14 @@ const zhCN: TranslationMap = {
   'onboarding.custom.inference.title': '推理（文本）',
   'onboarding.custom.inference.subtitle': '哪个语言模型应该回答你的问题并运行你的智能体？',
   'onboarding.custom.inference.defaultDesc':
-    'OpenHuman 会为每种工作负载路由到合适的默认模型。无需密钥，无需设置。',
+    'Aura 会为每种工作负载路由到合适的默认模型。无需密钥，无需设置。',
   'onboarding.custom.inference.configureDesc':
     '使用你自己的 OpenAI 或 Anthropic 密钥。我们会将它用于所有文本类工作负载。',
 
   // Onboarding: Custom > Voice
   'onboarding.custom.voice.title': '语音',
   'onboarding.custom.voice.subtitle': '用于语音模式的语音转文本和文本转语音。',
-  'onboarding.custom.voice.defaultDesc': 'OpenHuman 内置托管的 STT/TTS，开箱即用。无需额外配置。',
+  'onboarding.custom.voice.defaultDesc': 'Aura 内置托管的 STT/TTS，开箱即用。无需额外配置。',
   'onboarding.custom.voice.configureDesc':
     '使用你自己的 ElevenLabs、OpenAI Whisper 等服务。在设置 › 语音中配置。',
 
@@ -298,21 +298,21 @@ const zhCN: TranslationMap = {
   'onboarding.custom.oauth.title': '连接（OAuth）',
   'onboarding.custom.oauth.subtitle': 'Gmail、Slack、Notion 以及其他需要 OAuth 的连接服务。',
   'onboarding.custom.oauth.defaultDesc':
-    'OpenHuman 使用托管的 Composio 工作区。之后每个服务都可一键连接。',
+    'Aura 使用托管的 Composio 工作区。之后每个服务都可一键连接。',
   'onboarding.custom.oauth.configureDesc':
     '使用你自己的 Composio 账户或 API 密钥。在设置 › 连接中配置。',
 
   // Onboarding: Custom > Search
   'onboarding.custom.search.title': '网页搜索',
-  'onboarding.custom.search.subtitle': 'OpenHuman 如何代表你搜索网页。',
-  'onboarding.custom.search.defaultDesc': 'OpenHuman 使用托管搜索后端。无需密钥。',
+  'onboarding.custom.search.subtitle': 'Aura 如何代表你搜索网页。',
+  'onboarding.custom.search.defaultDesc': 'Aura 使用托管搜索后端。无需密钥。',
   'onboarding.custom.search.configureDesc':
     '使用你自己的搜索提供商密钥（Tavily、Brave 等）。在设置 › 工具中配置。',
 
   // Onboarding: Custom > Memory
   'onboarding.custom.memory.title': '记忆',
-  'onboarding.custom.memory.subtitle': 'OpenHuman 如何记住你的上下文、偏好和历史对话。',
-  'onboarding.custom.memory.defaultDesc': 'OpenHuman 会自动管理记忆存储和检索。无需设置。',
+  'onboarding.custom.memory.subtitle': 'Aura 如何记住你的上下文、偏好和历史对话。',
+  'onboarding.custom.memory.defaultDesc': 'Aura 会自动管理记忆存储和检索。无需设置。',
   'onboarding.custom.memory.configureDesc': '你可以自行查看、导出或清除记忆。在设置 › 记忆中配置。',
 
   // Accounts
@@ -409,11 +409,11 @@ const zhCN: TranslationMap = {
   'privacy.anonymizedAnalytics': '匿名分析',
   'privacy.shareAnonymizedData': '分享匿名使用数据',
   'privacy.shareAnonymizedDataDesc':
-    '通过分享匿名崩溃报告和使用分析来帮助改进 OpenHuman。所有数据完全匿名——不会收集任何个人数据、消息、钱包密钥或会话信息。',
+    '通过分享匿名崩溃报告和使用分析来帮助改进 Aura。所有数据完全匿名——不会收集任何个人数据、消息、钱包密钥或会话信息。',
   'privacy.meetingFollowUps': '会议跟进',
   'privacy.autoHandoffMeet': '自动将 Google Meet 转录交给编排器',
   'privacy.autoHandoffMeetDesc':
-    '当 Google Meet 通话结束时，OpenHuman 的编排器可以阅读转录内容，并可能执行起草消息、安排跟进、或将摘要发布到已连接的 Slack 工作区等操作。默认关闭。',
+    '当 Google Meet 通话结束时，Aura 的编排器可以阅读转录内容，并可能执行起草消息、安排跟进、或将摘要发布到已连接的 Slack 工作区等操作。默认关闭。',
   'privacy.analyticsDisclaimer':
     '所有分析和错误报告完全匿名。启用后，我们仅收集崩溃信息、设备类型和错误的文件位置。我们永远不会访问你的消息、会话数据、钱包密钥、API 密钥或任何个人可识别信息。你可以随时更改此设置。',
 
@@ -479,7 +479,7 @@ const zhCN: TranslationMap = {
   'settings.billing.browserOpenFailed': '无法自动打开浏览器。请使用上方按钮。',
 
   // Settings: Tools
-  'settings.tools.chooseCapabilities': '选择 OpenHuman 可代表你使用的能力。',
+  'settings.tools.chooseCapabilities': '选择 Aura 可代表你使用的能力。',
   'settings.tools.saveChanges': '保存更改',
   'settings.tools.preferencesSaved': '偏好设置已保存',
   'settings.tools.saveFailed': '保存偏好失败，请重试。',
@@ -994,9 +994,9 @@ const zhCN: TranslationMap = {
   'bootCheck.tokenRequired': '请输入核心认证令牌。',
   'bootCheck.chooseCoreMode': '选择核心模式',
   'bootCheck.connectToCore': '连接到你的核心',
-  'bootCheck.desktopDescription': 'OpenHuman 需要一个运行中的核心才能工作。请选择连接方式。',
+  'bootCheck.desktopDescription': 'Aura 需要一个运行中的核心才能工作。请选择连接方式。',
   'bootCheck.webDescription':
-    '网页版 OpenHuman 连接到由你控制的远程核心。请输入其 URL 和认证令牌，或安装桌面版在本地运行核心。',
+    '网页版 Aura 连接到由你控制的远程核心。请输入其 URL 和认证令牌，或安装桌面版在本地运行核心。',
   'bootCheck.preferDesktop': '更希望在自己的设备上运行一切？',
   'bootCheck.downloadDesktop': '下载桌面应用',
   'bootCheck.localRecommended': '本地（推荐）',
@@ -1020,7 +1020,7 @@ const zhCN: TranslationMap = {
   'bootCheck.quit': '退出',
   'bootCheck.legacyDetected': '检测到旧版后台核心',
   'bootCheck.legacyDescription':
-    '此设备上正在运行一个单独安装的 OpenHuman 守护进程。必须先将其移除，嵌入式核心才能接管。',
+    '此设备上正在运行一个单独安装的 Aura 守护进程。必须先将其移除，嵌入式核心才能接管。',
   'bootCheck.removing': '正在移除…',
   'bootCheck.removeContinue': '移除并继续',
   'bootCheck.localNeedsRestart': '本地核心需要重启',

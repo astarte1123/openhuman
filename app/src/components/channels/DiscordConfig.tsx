@@ -206,7 +206,7 @@ const DiscordConfig = ({ definition }: DiscordConfigProps) => {
             );
             try {
               const oauthResponse = await callCoreRpc<{ result: { oauthUrl?: string } }>({
-                method: 'openhuman.auth.oauth_connect',
+                method: 'aura.auth.oauth_connect',
                 params: { provider: 'discord', skillId: 'discord' },
               });
               if (oauthResponse.result?.oauthUrl) {
@@ -332,7 +332,7 @@ const DiscordConfig = ({ definition }: DiscordConfigProps) => {
                 </div>
                 <p className="text-xs text-stone-500">
                   In Discord, send <code className="font-mono font-medium">!start {linkToken}</code>{' '}
-                  to the OpenHuman bot. Token expires in 5 minutes.
+                  to the Aura bot. Token expires in 5 minutes.
                 </p>
                 <p className="text-xs text-amber-600 font-medium">
                   Save this command — this token is shown only once.

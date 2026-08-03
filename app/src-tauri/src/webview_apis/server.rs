@@ -22,9 +22,9 @@ use tokio_tungstenite::tungstenite::Message;
 use super::router;
 
 /// Env var the Tauri host writes (before spawning core) and core reads
-/// (in `src/openhuman/webview_apis/client.rs`) so both agree on the
+/// (in `src/aura/webview_apis/client.rs`) so both agree on the
 /// port without a discovery round-trip.
-pub const PORT_ENV: &str = "OPENHUMAN_WEBVIEW_APIS_PORT";
+pub const PORT_ENV: &str = "AURA_WEBVIEW_APIS_PORT";
 
 /// The port the server is bound to. `0` before `start()` resolves it.
 static RESOLVED_PORT: AtomicU16 = AtomicU16::new(0);
@@ -48,7 +48,7 @@ pub fn resolved_port() -> u16 {
 /// (by the caller in `lib.rs`) so the core sidecar can discover it.
 ///
 /// We deliberately ignore any pre-existing `PORT_ENV` value here:
-/// honouring it caused Sentry OPENHUMAN-TAURI-82 on Windows — if a
+/// honouring it caused Sentry AURA-TAURI-82 on Windows — if a
 /// previous run wrote `PORT_ENV=49342` into the user's environment
 /// (or the env was inherited from a parent process / leftover dev
 /// session), the next launch would attempt to re-bind that exact
@@ -273,7 +273,7 @@ impl Response {
 mod tests {
     use super::*;
 
-    /// Regression test for Sentry OPENHUMAN-TAURI-82.
+    /// Regression test for Sentry AURA-TAURI-82.
     ///
     /// If `PORT_ENV` carries a stale value pointing at a port that is
     /// already in use (the failure mode reported on Windows: a previous

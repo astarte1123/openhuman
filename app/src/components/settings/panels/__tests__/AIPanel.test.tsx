@@ -11,9 +11,9 @@ import {
 import { creditsApi } from '../../../../services/api/creditsApi';
 import { renderWithProviders } from '../../../../test/test-utils';
 import {
-  openhumanHeartbeatSettingsGet,
-  openhumanHeartbeatSettingsSet,
-  openhumanHeartbeatTickNow,
+  auraHeartbeatSettingsGet,
+  auraHeartbeatSettingsSet,
+  auraHeartbeatTickNow,
 } from '../../../../utils/tauriCommands/heartbeat';
 import AIPanel from '../AIPanel';
 
@@ -34,8 +34,8 @@ vi.mock('../../../../services/api/aiSettingsApi', () => ({
   setCloudProviderKey: vi.fn(),
   clearCloudProviderKey: vi.fn(),
   serializeProviderRef: vi.fn((r: { kind: string; providerSlug?: string; model?: string }) =>
-    r.kind === 'openhuman'
-      ? 'openhuman'
+    r.kind === 'aura'
+      ? 'aura'
       : r.kind === 'local'
         ? `ollama:${r.model}`
         : `${r.providerSlug}:${r.model}`
@@ -52,9 +52,9 @@ vi.mock('../../hooks/useSettingsNavigation', () => ({
 }));
 
 vi.mock('../../../../utils/tauriCommands/heartbeat', () => ({
-  openhumanHeartbeatSettingsGet: vi.fn(),
-  openhumanHeartbeatSettingsSet: vi.fn(),
-  openhumanHeartbeatTickNow: vi.fn(),
+  auraHeartbeatSettingsGet: vi.fn(),
+  auraHeartbeatSettingsSet: vi.fn(),
+  auraHeartbeatTickNow: vi.fn(),
 }));
 
 vi.mock('../../../../services/api/creditsApi', () => ({
@@ -67,22 +67,22 @@ const baseSettings = {
   cloudProviders: [
     {
       id: 'p_oh_x',
-      slug: 'openhuman',
-      label: 'OpenHuman',
-      endpoint: 'https://api.openhuman.ai/v1',
-      auth_style: 'openhuman_jwt' as const,
+      slug: 'aura',
+      label: 'Aura',
+      endpoint: 'https://api.aura.ai/v1',
+      auth_style: 'aura_jwt' as const,
       has_api_key: false,
     },
   ],
   routing: {
-    reasoning: { kind: 'openhuman' as const },
-    agentic: { kind: 'openhuman' as const },
-    coding: { kind: 'openhuman' as const },
-    memory: { kind: 'openhuman' as const },
-    embeddings: { kind: 'openhuman' as const },
-    heartbeat: { kind: 'openhuman' as const },
-    learning: { kind: 'openhuman' as const },
-    subconscious: { kind: 'openhuman' as const },
+    reasoning: { kind: 'aura' as const },
+    agentic: { kind: 'aura' as const },
+    coding: { kind: 'aura' as const },
+    memory: { kind: 'aura' as const },
+    embeddings: { kind: 'aura' as const },
+    heartbeat: { kind: 'aura' as const },
+    learning: { kind: 'aura' as const },
+    subconscious: { kind: 'aura' as const },
   },
 };
 
@@ -152,15 +152,15 @@ describe('AIPanel', () => {
     vi.clearAllMocks();
     vi.mocked(loadAISettings).mockResolvedValue(baseSettings);
     vi.mocked(loadLocalProviderSnapshot).mockResolvedValue(baseLocalSnapshot);
-    vi.mocked(openhumanHeartbeatSettingsGet).mockResolvedValue({
+    vi.mocked(auraHeartbeatSettingsGet).mockResolvedValue({
       result: { settings: baseHeartbeatSettings },
       logs: [],
     });
-    vi.mocked(openhumanHeartbeatSettingsSet).mockResolvedValue({
+    vi.mocked(auraHeartbeatSettingsSet).mockResolvedValue({
       result: { settings: baseHeartbeatSettings },
       logs: [],
     });
-    vi.mocked(openhumanHeartbeatTickNow).mockResolvedValue({
+    vi.mocked(auraHeartbeatTickNow).mockResolvedValue({
       result: {
         summary: {
           source_events: 3,
@@ -191,12 +191,12 @@ describe('AIPanel', () => {
     expect(screen.getAllByText(/^Routing$/).length).toBeGreaterThan(0);
   });
 
-  it('renders the OpenHuman primary card after load', async () => {
+  it('renders the Aura primary card after load', async () => {
     renderWithProviders(<AIPanel />);
-    // The OpenHuman label now appears in multiple places (provider card,
-    // each workload routing row's "↳ OpenHuman" resolution hint), so we
+    // The Aura label now appears in multiple places (provider card,
+    // each workload routing row's "↳ Aura" resolution hint), so we
     // assert at-least-one match rather than getByText.
-    await waitFor(() => expect(screen.getAllByText(/OpenHuman/i).length).toBeGreaterThan(0));
+    await waitFor(() => expect(screen.getAllByText(/Aura/i).length).toBeGreaterThan(0));
   });
 
   it('renders all eight workload labels', async () => {
@@ -236,13 +236,13 @@ describe('AIPanel', () => {
           providerSlug: 'anthropic',
           model: 'claude-3-5-sonnet-20241022',
         },
-        agentic: { kind: 'openhuman' as const },
-        coding: { kind: 'openhuman' as const },
-        memory: { kind: 'openhuman' as const },
-        embeddings: { kind: 'openhuman' as const },
-        heartbeat: { kind: 'openhuman' as const },
-        learning: { kind: 'openhuman' as const },
-        subconscious: { kind: 'openhuman' as const },
+        agentic: { kind: 'aura' as const },
+        coding: { kind: 'aura' as const },
+        memory: { kind: 'aura' as const },
+        embeddings: { kind: 'aura' as const },
+        heartbeat: { kind: 'aura' as const },
+        learning: { kind: 'aura' as const },
+        subconscious: { kind: 'aura' as const },
       },
     };
 
@@ -391,12 +391,12 @@ describe('AIPanel', () => {
       routing: {
         reasoning: { kind: 'cloud' as const, providerSlug: 'openai', model: 'gpt-4o' },
         agentic: { kind: 'cloud' as const, providerSlug: 'openai', model: 'gpt-4o-mini' },
-        coding: { kind: 'openhuman' as const },
-        memory: { kind: 'openhuman' as const },
-        embeddings: { kind: 'openhuman' as const },
-        heartbeat: { kind: 'openhuman' as const },
-        learning: { kind: 'openhuman' as const },
-        subconscious: { kind: 'openhuman' as const },
+        coding: { kind: 'aura' as const },
+        memory: { kind: 'aura' as const },
+        embeddings: { kind: 'aura' as const },
+        heartbeat: { kind: 'aura' as const },
+        learning: { kind: 'aura' as const },
+        subconscious: { kind: 'aura' as const },
       },
     };
     vi.mocked(loadAISettings).mockResolvedValue(settingsWithOpenAI);
@@ -426,11 +426,11 @@ describe('AIPanel', () => {
       nextSettings.cloudProviders.find((p: { slug: string }) => p.slug === 'openai')
     ).toBeUndefined();
 
-    // Routing entries that were pinned to openai must be reset to openhuman.
-    expect(nextSettings.routing.reasoning).toEqual({ kind: 'openhuman' });
-    expect(nextSettings.routing.agentic).toEqual({ kind: 'openhuman' });
-    // Entries that were already openhuman remain unchanged.
-    expect(nextSettings.routing.coding).toEqual({ kind: 'openhuman' });
+    // Routing entries that were pinned to openai must be reset to aura.
+    expect(nextSettings.routing.reasoning).toEqual({ kind: 'aura' });
+    expect(nextSettings.routing.agentic).toEqual({ kind: 'aura' });
+    // Entries that were already aura remain unchanged.
+    expect(nextSettings.routing.coding).toEqual({ kind: 'aura' });
   });
 
   // ─── API-key dialog: failed setCloudProviderKey does not add provider ────────
@@ -522,11 +522,11 @@ describe('AIPanel', () => {
 
   it('patches heartbeat controls and runs a manual planner tick', async () => {
     let currentSettings = { ...baseHeartbeatSettings };
-    vi.mocked(openhumanHeartbeatSettingsGet).mockImplementation(async () => ({
+    vi.mocked(auraHeartbeatSettingsGet).mockImplementation(async () => ({
       result: { settings: currentSettings },
       logs: [],
     }));
-    vi.mocked(openhumanHeartbeatSettingsSet).mockImplementation(async patch => {
+    vi.mocked(auraHeartbeatSettingsSet).mockImplementation(async patch => {
       currentSettings = { ...currentSettings, ...patch };
       return { result: { settings: currentSettings }, logs: [] };
     });
@@ -538,7 +538,7 @@ describe('AIPanel', () => {
       const row = screen.getByText(label).parentElement!.parentElement!;
       fireEvent.click(within(row).getByRole('switch'));
       await waitFor(() =>
-        expect(vi.mocked(openhumanHeartbeatSettingsSet)).toHaveBeenLastCalledWith(expectedPatch)
+        expect(vi.mocked(auraHeartbeatSettingsSet)).toHaveBeenLastCalledWith(expectedPatch)
       );
     };
 
@@ -551,51 +551,51 @@ describe('AIPanel', () => {
 
     fireEvent.change(screen.getByLabelText('Calendar cap'), { target: { value: '3' } });
     await waitFor(() =>
-      expect(vi.mocked(openhumanHeartbeatSettingsSet)).toHaveBeenLastCalledWith({
+      expect(vi.mocked(auraHeartbeatSettingsSet)).toHaveBeenLastCalledWith({
         max_calendar_connections_per_tick: 3,
       })
     );
 
     fireEvent.change(screen.getByLabelText('Meeting lookahead'), { target: { value: '120' } });
     await waitFor(() =>
-      expect(vi.mocked(openhumanHeartbeatSettingsSet)).toHaveBeenLastCalledWith({
+      expect(vi.mocked(auraHeartbeatSettingsSet)).toHaveBeenLastCalledWith({
         meeting_lookahead_minutes: 120,
       })
     );
 
     fireEvent.change(screen.getByLabelText('Reminder lookahead'), { target: { value: '60' } });
     await waitFor(() =>
-      expect(vi.mocked(openhumanHeartbeatSettingsSet)).toHaveBeenLastCalledWith({
+      expect(vi.mocked(auraHeartbeatSettingsSet)).toHaveBeenLastCalledWith({
         reminder_lookahead_minutes: 60,
       })
     );
 
     fireEvent.change(screen.getByLabelText('Interval'), { target: { value: '30' } });
     await waitFor(() =>
-      expect(vi.mocked(openhumanHeartbeatSettingsSet)).toHaveBeenLastCalledWith({
+      expect(vi.mocked(auraHeartbeatSettingsSet)).toHaveBeenLastCalledWith({
         interval_minutes: 30,
       })
     );
 
     fireEvent.click(screen.getByRole('button', { name: 'Planner tick now' }));
-    await waitFor(() => expect(vi.mocked(openhumanHeartbeatTickNow)).toHaveBeenCalled());
+    await waitFor(() => expect(vi.mocked(auraHeartbeatTickNow)).toHaveBeenCalled());
     await waitFor(() => expect(screen.getByText(/Planner: 3 source events/)).toBeInTheDocument());
 
     fireEvent.click(screen.getByRole('button', { name: 'Refresh' }));
     fireEvent.click(screen.getByRole('button', { name: 'Reload' }));
-    await waitFor(() => expect(vi.mocked(openhumanHeartbeatSettingsGet)).toHaveBeenCalled());
+    await waitFor(() => expect(vi.mocked(auraHeartbeatSettingsGet)).toHaveBeenCalled());
   });
 
   it('shows heartbeat load and planner errors without crashing diagnostics', async () => {
-    vi.mocked(openhumanHeartbeatSettingsGet).mockRejectedValueOnce(new Error('heartbeat offline'));
-    vi.mocked(openhumanHeartbeatTickNow).mockRejectedValueOnce(new Error('tick failed'));
+    vi.mocked(auraHeartbeatSettingsGet).mockRejectedValueOnce(new Error('heartbeat offline'));
+    vi.mocked(auraHeartbeatTickNow).mockRejectedValueOnce(new Error('tick failed'));
 
     renderWithProviders(<AIPanel />);
 
     await waitFor(() => expect(screen.getByText('heartbeat offline')).toBeInTheDocument());
     expect(screen.getByText('Heartbeat controls unavailable.')).toBeInTheDocument();
 
-    vi.mocked(openhumanHeartbeatSettingsGet).mockResolvedValueOnce({
+    vi.mocked(auraHeartbeatSettingsGet).mockResolvedValueOnce({
       result: { settings: baseHeartbeatSettings },
       logs: [],
     });

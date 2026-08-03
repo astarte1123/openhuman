@@ -1,6 +1,6 @@
-// OpenHuman webview-accounts recipe runtime.
+// Aura webview-accounts recipe runtime.
 // Injected via WebviewBuilder.initialization_script BEFORE page JS runs.
-// Exposes a small `window.__openhumanRecipe` API per-provider recipes use
+// Exposes a small `window.__auraRecipe` API per-provider recipes use
 // to scrape the DOM and pipe state back to Rust.
 //
 // Runs in the loaded service's origin (e.g. https://mail.google.com).
@@ -25,9 +25,9 @@
 // window.Notification + ServiceWorkerRegistration.prototype.showNotification
 // with V8 native bindings (see the tauri-cef fork).
 (function () {
-  if (window.__openhumanRecipe) return;
+  if (window.__auraRecipe) return;
 
-  const ctx = window.__OPENHUMAN_RECIPE_CTX__ || { accountId: 'unknown', provider: 'unknown' };
+  const ctx = window.__AURA_RECIPE_CTX__ || { accountId: 'unknown', provider: 'unknown' };
   const POLL_MS = 2000;
 
   function rawInvoke(cmd, payload) {
@@ -93,7 +93,7 @@
     },
   };
 
-  window.__openhumanRecipe = api;
+  window.__auraRecipe = api;
   send('log', { level: 'info', msg: '[recipe-runtime] ready provider=' + ctx.provider + ' accountId=' + ctx.accountId });
 
   // --- #713 getDisplayMedia shim ---
@@ -104,7 +104,7 @@
   // the primary display (issue #713 AC2: "OS screen/window picker appears").
   //
   // The picker UI is injected DIRECTLY into the child webview's own DOM
-  // rather than rendered as a React modal in the main OpenHuman window.
+  // rather than rendered as a React modal in the main Aura window.
   // Two reasons:
   //   (a) Works uniformly for every embedded provider — Meet, Slack
   //       Huddles, Discord, Zoom — without per-provider host-side glue.
@@ -372,7 +372,7 @@
         }
 
         const root = document.createElement('div');
-        root.setAttribute('data-openhuman-screen-share-picker', '');
+        root.setAttribute('data-aura-screen-share-picker', '');
         root.style.cssText = [
           'all: initial',
           'position: fixed',

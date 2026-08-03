@@ -1,6 +1,6 @@
 # Open PR Reconciliation Handoff - 2026-05-13
 
-Snapshot taken from `tinyhumansai/openhuman` on 2026-05-13 after fetching
+Snapshot taken from `tinyhumansai/aura` on 2026-05-13 after fetching
 `upstream/main` at `2b64ea8a` (`chore(release): v0.53.43`). The queue is
 moving quickly; refresh the PR list before acting.
 
@@ -57,22 +57,22 @@ rebased, merged, or closed.
 | `src/core/observability.rs` | #1676, #1634, #1633, #1632, #1623 | Highest overlap. Pick a canonical observability stack order before rebasing. |
 | `app/src-tauri/src/lib.rs` | #1634, #1633, #1632, #1420 | Tauri shell overlap; avoid mixing iOS shell work with observability fixes. |
 | `src/main.rs` | #1634, #1633, #1632 | Observability initialization overlap. |
-| `src/openhuman/integrations/client.rs` | #1676, #1632, #1630 | Integrations error classification and local-AI fallback interact. |
+| `src/aura/integrations/client.rs` | #1676, #1632, #1630 | Integrations error classification and local-AI fallback interact. |
 | `app/src/App.tsx` | #1518, #1420 | Broad UI architecture conflict between i18n and iOS routing. |
 | `app/src/pages/Settings.tsx` | #1671, #1420 | BYO Composio settings conflicts with iOS settings changes. |
-| `src/core/all.rs`, `src/openhuman/about_app/catalog.rs`, `src/openhuman/mod.rs` | #1677, #1420 | Core module/catalog registration overlap. |
-| `src/openhuman/agent/harness/*`, `src/openhuman/channels/runtime/dispatch.rs` | #1634, #1519, #1488 | Agent runtime, learning, and delegation work should not proceed independently. |
-| `src/openhuman/credentials/profiles.rs` | #1641, #1636 | Windows retry and stale-lock recovery need one canonical credential-lock PR. |
+| `src/core/all.rs`, `src/aura/about_app/catalog.rs`, `src/aura/mod.rs` | #1677, #1420 | Core module/catalog registration overlap. |
+| `src/aura/agent/harness/*`, `src/aura/channels/runtime/dispatch.rs` | #1634, #1519, #1488 | Agent runtime, learning, and delegation work should not proceed independently. |
+| `src/aura/credentials/profiles.rs` | #1641, #1636 | Windows retry and stale-lock recovery need one canonical credential-lock PR. |
 | `Cargo.toml`, `Cargo.lock`, `pnpm-lock.yaml` | #1462, #1420 | Dependency/lockfile churn; #1462 appears stale and should not be used as a base. |
 
 ## Validation Gates
 
-OpenHuman PRs carry both local and CI gates. For code PRs, the minimum gate is
+Aura PRs carry both local and CI gates. For code PRs, the minimum gate is
 the smallest focused command that proves the changed surface plus the relevant
 global merge checks:
 
 - PR body/template gate: `pnpm pr:checklist <body-file>`.
-- Formatting: `pnpm --filter openhuman-app format:check`; Rust changes also
+- Formatting: `pnpm --filter aura-app format:check`; Rust changes also
   need `cargo fmt --manifest-path Cargo.toml --all --check` and, for Tauri,
   `cargo fmt --manifest-path app/src-tauri/Cargo.toml --all --check`.
 - TypeScript: `pnpm typecheck` for app-facing TypeScript changes.
@@ -92,10 +92,10 @@ Current blocker pattern:
 - #1633 has a failed PR checklist and requested changes; fix the body/checklist
   before spending compute on broad tests.
 - Before rebasing or repairing any existing PR, refresh metadata with `gh pr
-  view <number> --repo tinyhumansai/openhuman --json
+  view <number> --repo tinyhumansai/aura --json
   body,changedFiles,mergeStateStatus,mergeable,state,statusCheckRollup`.
 - If validating an existing PR body, feed the actual body into the checklist
-  parser: `gh pr view <number> --repo tinyhumansai/openhuman --json body --jq
+  parser: `gh pr view <number> --repo tinyhumansai/aura --json body --jq
   .body | pnpm pr:checklist -`.
 
 ## Recommended Reconciliation Order
@@ -128,7 +128,7 @@ routing. The next safe slice is a small reconciliation task:
 
 - Target: canonicalize #1462 disposition.
 - Work:
-  - Refresh metadata first with `gh pr view 1462 --repo tinyhumansai/openhuman
+  - Refresh metadata first with `gh pr view 1462 --repo tinyhumansai/aura
     --json body,changedFiles,mergeStateStatus,mergeable,state,statusCheckRollup`.
   - Fetch `refs/pull/1462/head` and compare it against `upstream/main`.
   - Identify whether the branch contains any unique, still-relevant code.
@@ -142,7 +142,7 @@ routing. The next safe slice is a small reconciliation task:
 - Validation:
   - `git diff --name-status upstream/main...refs/tmp/pr-1462`
   - `git log --left-right --cherry-pick --oneline upstream/main...refs/tmp/pr-1462`
-  - `gh pr view 1462 --repo tinyhumansai/openhuman --json body --jq .body |
+  - `gh pr view 1462 --repo tinyhumansai/aura --json body --jq .body |
     pnpm pr:checklist -`
   - `pnpm pr:checklist <generated-body>` only if a replacement PR is opened.
 

@@ -8,8 +8,8 @@
 #   docker compose -f e2e/docker-compose.yml run --rm e2e
 #
 # To build the CI image locally (if you can't pull from GHCR):
-#   docker build -t openhuman-ci -f .github/Dockerfile .
-#   IMAGE=openhuman-ci docker compose -f e2e/docker-compose.yml run --rm e2e
+#   docker build -t aura-ci -f .github/Dockerfile .
+#   IMAGE=aura-ci docker compose -f e2e/docker-compose.yml run --rm e2e
 #
 FROM ubuntu:22.04
 
@@ -43,4 +43,4 @@ RUN cargo install tauri-driver --version 2.0.5
 WORKDIR /app
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["yarn", "workspace", "openhuman-app", "test:e2e:all"]
+CMD ["yarn", "workspace", "aura-app", "test:e2e:all"]

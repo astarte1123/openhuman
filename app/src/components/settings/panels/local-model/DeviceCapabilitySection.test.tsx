@@ -6,7 +6,7 @@ import DeviceCapabilitySection from './DeviceCapabilitySection';
 const mockApplyPreset = vi.fn();
 
 vi.mock('../../../../utils/tauriCommands', () => ({
-  openhumanLocalAiApplyPreset: (...args: unknown[]) => mockApplyPreset(...args),
+  auraLocalAiApplyPreset: (...args: unknown[]) => mockApplyPreset(...args),
 }));
 
 const makePresetsData = (overrides: Record<string, unknown> = {}) => ({

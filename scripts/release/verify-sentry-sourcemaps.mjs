@@ -18,7 +18,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 // Use `fileURLToPath` rather than `new URL(...).pathname` — on Windows the
-// latter returns a leading-slash path like `/D:/a/openhuman/...` which
+// latter returns a leading-slash path like `/D:/a/aura/...` which
 // `path.resolve` then mangles into `D:\D:\a\...` (duplicate drive letter),
 // causing the verifier to ENOENT on `dist/assets`.
 const HERE = dirname(fileURLToPath(import.meta.url));

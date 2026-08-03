@@ -5,15 +5,15 @@
  * Architecture (per design discussion 2026-05-12):
  *   - One Appium Mac2 session, one app launch — no per-scenario restarts.
  *   - Drive the app through:
- *       1. Deep links (`openhuman://auth?…`, `openhuman://oauth/success?…`) —
+ *       1. Deep links (`aura://auth?…`, `aura://oauth/success?…`) —
  *          Mac2 supports these natively via `macos: deepLink`.
  *       2. Mock backend behavior knobs and the in-process request log.
  *       3. Core JSON-RPC for state inspection and `composio_*` calls.
  *   - Assertions read from the mock request log and RPC results — never from
  *     the CEF WebView accessibility tree (which exposes zero DOM to XCUITest).
- *   - Between scenarios, reset state in-app via `openhuman.config_reset_local_data`
+ *   - Between scenarios, reset state in-app via `aura.config_reset_local_data`
  *     (mirrors the production "Clear app data + log out" flow) + mock admin reset.
- *     Then re-write `~/.openhuman/config.toml` so the mock URL persists across
+ *     Then re-write `~/.aura/config.toml` so the mock URL persists across
  *     the reset and the next scenario starts pointing at the mock.
  *
  * What this covers (the "major user flows" set):
@@ -31,7 +31,7 @@ import os from 'node:os';
 import path from 'node:path';
 
 import { waitForApp } from '../helpers/app-helpers';
-import { callOpenhumanRpc } from '../helpers/core-rpc';
+import { callAuraRpc } from '../helpers/core-rpc';
 import { triggerDeepLink } from '../helpers/deep-link-helpers';
 import { hasAppChrome } from '../helpers/element-helpers';
 import {
@@ -47,7 +47,7 @@ import {
 const LOG = '[MegaFlow]';
 const MOCK_PORT = Number(process.env.E2E_MOCK_PORT || 18473);
 const HOME = process.env.HOME || os.homedir();
-const CONFIG_DIR = path.join(HOME, '.openhuman');
+const CONFIG_DIR = path.join(HOME, '.aura');
 const CONFIG_FILE = path.join(CONFIG_DIR, 'config.toml');
 const MOCK_URL = `http://127.0.0.1:${MOCK_PORT}`;
 
@@ -75,10 +75,10 @@ async function resetEverything(label: string): Promise<void> {
   // Mock-side reset is enough to give each scenario a clean slate for the
   // assertions this spec actually makes (request log + mock behavior +
   // fresh per-scenario deep-link tokens). The destructive
-  // `openhuman.config_reset_local_data` call this used to make was
+  // `aura.config_reset_local_data` call this used to make was
   // killing the CEF/WDIO session on Linux mid-spec — `reset_local_data`
-  // does `remove_dir_all($OPENHUMAN_WORKSPACE)` plus
-  // `remove_dir_all(~/.openhuman)` while CEF is still mid-flight,
+  // does `remove_dir_all($AURA_WORKSPACE)` plus
+  // `remove_dir_all(~/.aura)` while CEF is still mid-flight,
   // and the renderer doesn't survive that on Linux/CEF (every
   // sub-test after the first then fails with `invalid session id`).
   //
@@ -138,7 +138,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     clearRequestLog();
     setMockBehavior('jwt', 'mega-login-1');
 
-    await triggerDeepLink('openhuman://auth?token=mega-login-token');
+    await triggerDeepLink('aura://auth?token=mega-login-token');
 
     const consume = await waitForMockRequest('POST', '/telegram/login-tokens/', 20_000);
     expect(consume).toBeDefined();
@@ -167,7 +167,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     ).toString('base64url');
     const bypassJwt = `eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.${payload}.sig`;
 
-    await triggerDeepLink(`openhuman://auth?token=${encodeURIComponent(bypassJwt)}&key=auth`);
+    await triggerDeepLink(`aura://auth?token=${encodeURIComponent(bypassJwt)}&key=auth`);
 
     const me = await waitForMockRequest('GET', '/auth/me', 15_000);
     expect(me).toBeDefined();
@@ -180,7 +180,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
   });
 
   // -------------------------------------------------------------------------
-  // Scenario 3 — Gmail OAuth completion via `openhuman://oauth/success`.
+  // Scenario 3 — Gmail OAuth completion via `aura://oauth/success`.
   // The deep-link handler dispatches a custom 'oauth:success' event and
   // navigates to /skills. The app refreshes integration state, which manifests
   // as a `GET /auth/integrations` call against the mock.
@@ -189,12 +189,12 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     await resetEverything('after Scenario 2');
 
     // Login first — `oauth:success` is only meaningful for an authenticated user.
-    await triggerDeepLink('openhuman://auth?token=mega-gmail-token');
+    await triggerDeepLink('aura://auth?token=mega-gmail-token');
     await waitForMockRequest('POST', '/telegram/login-tokens/', 15_000);
     await waitForMockRequest('GET', '/auth/me', 10_000);
     clearRequestLog();
 
-    await triggerDeepLink('openhuman://oauth/success?integrationId=mock-gmail-int&provider=google');
+    await triggerDeepLink('aura://oauth/success?integrationId=mock-gmail-int&provider=google');
 
     // The handler navigates to /skills and dispatches CustomEvent('oauth:success').
     // Downstream listeners refresh integration state — observable as a fresh
@@ -215,7 +215,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     await resetEverything('after Scenario 3');
 
     // Re-login since reset wipes the session.
-    await triggerDeepLink('openhuman://auth?token=mega-composio-token');
+    await triggerDeepLink('aura://auth?token=mega-composio-token');
     await waitForMockRequest('POST', '/telegram/login-tokens/', 15_000);
 
     // Seed connections + available triggers; start with an empty active list.
@@ -227,7 +227,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
       composioActiveTriggers: JSON.stringify([]),
     });
 
-    const before = await callOpenhumanRpc('openhuman.composio_list_triggers', {});
+    const before = await callAuraRpc('aura.composio_list_triggers', {});
     expect(before.ok).toBe(true);
     const beforeList = (before.result?.triggers ??
       before.value?.result?.triggers ??
@@ -235,13 +235,13 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     expect(Array.isArray(beforeList)).toBe(true);
     expect(beforeList).toHaveLength(0);
 
-    const enable = await callOpenhumanRpc('openhuman.composio_enable_trigger', {
+    const enable = await callAuraRpc('aura.composio_enable_trigger', {
       connection_id: 'c1',
       slug: 'GMAIL_NEW_GMAIL_MESSAGE',
     });
     expect(enable.ok).toBe(true);
 
-    const after = await callOpenhumanRpc('openhuman.composio_list_triggers', {});
+    const after = await callAuraRpc('aura.composio_list_triggers', {});
     expect(after.ok).toBe(true);
     const afterList = (after.result?.triggers ?? after.value?.result?.triggers ?? []) as unknown[];
     expect(afterList.length).toBeGreaterThan(0);
@@ -255,11 +255,11 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
   it('Gmail OAuth: error deep link does not crash the session', async () => {
     await resetEverything('after Scenario 4');
 
-    await triggerDeepLink('openhuman://auth?token=mega-error-token');
+    await triggerDeepLink('aura://auth?token=mega-error-token');
     await waitForMockRequest('POST', '/telegram/login-tokens/', 15_000);
     clearRequestLog();
 
-    await triggerDeepLink('openhuman://oauth/error?provider=google&error=access_denied');
+    await triggerDeepLink('aura://oauth/error?provider=google&error=access_denied');
 
     // Give the handler a moment to emit its error event.
     await browser.pause(2_000);
@@ -270,7 +270,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
       (await waitForMockRequest('GET', '/auth/integrations', 3_000));
     // It's OK if neither call fires (the error path may not trigger a refresh),
     // but the RPC layer must still be alive.
-    const ping = await callOpenhumanRpc('core.ping', {});
+    const ping = await callAuraRpc('core.ping', {});
     expect(ping.ok).toBe(true);
     console.log(`${LOG} oauth error: core.ping still ok after error deep link`);
     if (post) console.log(`${LOG} post-error follow-up:`, post.url);
@@ -286,14 +286,14 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     await resetEverything('before stale-thread scenario');
 
     // Login so the RPC layer has an authenticated session.
-    await triggerDeepLink('openhuman://auth?token=mega-stale-thread-token');
+    await triggerDeepLink('aura://auth?token=mega-stale-thread-token');
     await waitForMockRequest('POST', '/telegram/login-tokens/', 15_000);
     clearRequestLog();
 
     // Attempt to append a message to a thread ID that does not exist.
     // The core must return a structured error (kind=ThreadNotFound) rather
     // than a hard crash or an opaque 500.
-    const result = await callOpenhumanRpc('openhuman.threads_message_append', {
+    const result = await callAuraRpc('aura.threads_message_append', {
       thread_id: 'stale-thread-does-not-exist',
       role: 'user',
       content: 'hello from mega-flow stale thread test',
@@ -309,7 +309,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     console.log(`${LOG} stale-thread: error returned = ${errorMessage}`);
 
     // Core must still respond to ping — the error must not have torn down the session.
-    const ping = await callOpenhumanRpc('core.ping', {});
+    const ping = await callAuraRpc('core.ping', {});
     expect(ping.ok).toBe(true);
     console.log(`${LOG} stale-thread: core.ping healthy after structured error`);
   });
@@ -322,12 +322,12 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     await resetEverything('before unknown-method scenario');
 
     // Login so the RPC relay is authenticated.
-    await triggerDeepLink('openhuman://auth?token=mega-unknown-method-token');
+    await triggerDeepLink('aura://auth?token=mega-unknown-method-token');
     await waitForMockRequest('POST', '/telegram/login-tokens/', 15_000);
     clearRequestLog();
 
     // Call a method name that no controller has registered.
-    const result = await callOpenhumanRpc('openhuman.nonexistent_method_for_capability_test', {});
+    const result = await callAuraRpc('aura.nonexistent_method_for_capability_test', {});
 
     // Must fail — the core does not have this method.
     expect(result.ok).toBe(false);
@@ -338,7 +338,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     console.log(`${LOG} unknown-method: error = ${errorMsg}`);
 
     // Session must survive — core.ping must still respond.
-    const ping = await callOpenhumanRpc('core.ping', {});
+    const ping = await callAuraRpc('core.ping', {});
     expect(ping.ok).toBe(true);
     console.log(`${LOG} unknown-method: core.ping healthy after method-not-found`);
   });
@@ -350,7 +350,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
   it('post-reset: a fresh login still works end-to-end', async () => {
     await resetEverything('final');
 
-    await triggerDeepLink('openhuman://auth?token=mega-post-reset-token');
+    await triggerDeepLink('aura://auth?token=mega-post-reset-token');
     const consume = await waitForMockRequest('POST', '/telegram/login-tokens/', 20_000);
     expect(consume).toBeDefined();
     const me = await waitForMockRequest('GET', '/auth/me', 15_000);
@@ -371,12 +371,12 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
   it('WhatsApp read-only: ingest then list_chats returns expected shape', async () => {
     await resetEverything('after Scenario 6');
 
-    await triggerDeepLink('openhuman://auth?token=mega-whatsapp-token');
+    await triggerDeepLink('aura://auth?token=mega-whatsapp-token');
     await waitForMockRequest('POST', '/telegram/login-tokens/', 15_000);
     clearRequestLog();
 
     // Seed two chats via the internal ingest path.
-    const ingest = await callOpenhumanRpc('openhuman.whatsapp_data_ingest', {
+    const ingest = await callAuraRpc('aura.whatsapp_data_ingest', {
       account_id: 'wa-e2e@test',
       chats: { 'chat-jid-1@test': { name: 'E2E Chat Alpha' }, 'chat-jid-2@test': { name: null } },
       messages: [
@@ -401,7 +401,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     }
 
     // list_chats is always agent-facing and must be reachable.
-    const list = await callOpenhumanRpc('openhuman.whatsapp_data_list_chats', {});
+    const list = await callAuraRpc('aura.whatsapp_data_list_chats', {});
     expect(list.ok).toBe(true);
     // Result has a "chats" array — may be empty if ingest was unavailable.
     const chats: unknown[] =
@@ -413,24 +413,24 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     console.log(`${LOG} whatsapp list_chats returned ${chats.length} chat(s)`);
 
     // Session must still be healthy.
-    const ping = await callOpenhumanRpc('core.ping', {});
+    const ping = await callAuraRpc('core.ping', {});
     expect(ping.ok).toBe(true);
   });
 
   // -------------------------------------------------------------------------
   // Scenario 8 — Spawn-depth limit.
-  // SKIPPED: `openhuman.agent_run` does not exist; the closest RPC methods
-  // (`openhuman.agent_chat`, `openhuman.agent_chat_simple`) drive a single
+  // SKIPPED: `aura.agent_run` does not exist; the closest RPC methods
+  // (`aura.agent_chat`, `aura.agent_chat_simple`) drive a single
   // agent turn and don't accept a depth parameter. The mock LLM provides no
   // deterministic way to force nested spawns to depth ≥ 4.  A depth-limit
   // test would require either a dedicated RPC method (e.g.
-  // `openhuman.agent_run` with a `spawn_depth` field) or a mock LLM that
+  // `aura.agent_run` with a `spawn_depth` field) or a mock LLM that
   // can reliably emit nested tool-call chains — neither is present.
   // -------------------------------------------------------------------------
 
   // -------------------------------------------------------------------------
   // Scenario 9 — Accessibility permission flow.
-  // SKIPPED: No `openhuman.accessibility_*` RPC surface exists in the Rust
+  // SKIPPED: No `aura.accessibility_*` RPC surface exists in the Rust
   // controller registry.  The `accessibility` domain name appears only in
   // directory listings; it has no `schemas.rs` with registered controllers.
   // If a future PR adds accessibility controllers, add scenarios here.
@@ -447,12 +447,12 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     await resetEverything('after Scenario 7');
 
     // ── User A login ──────────────────────────────────────────────────────
-    await triggerDeepLink('openhuman://auth?token=mega-acct-switch-user-a');
+    await triggerDeepLink('aura://auth?token=mega-acct-switch-user-a');
     await waitForMockRequest('POST', '/telegram/login-tokens/', 15_000);
     clearRequestLog();
 
     // Create a thread as user A.
-    const createA = await callOpenhumanRpc('openhuman.threads_create_new', {
+    const createA = await callAuraRpc('aura.threads_create_new', {
       title: 'Thread for user A',
     });
     expect(createA.ok).toBe(true);
@@ -461,7 +461,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     console.log(`${LOG} acct-switch: user A thread id = ${threadId || '(unknown)'}`);
 
     // List threads — must have at least 1.
-    const listA = await callOpenhumanRpc('openhuman.threads_list', {});
+    const listA = await callAuraRpc('aura.threads_list', {});
     expect(listA.ok).toBe(true);
     const threadsA: unknown[] =
       listA.result?.result?.threads ?? listA.result?.threads ?? listA.value?.result?.threads ?? [];
@@ -471,12 +471,12 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     // ── Switch to user B (reset wipes the local data + session) ──────────
     await resetEverything('account switch to user B');
 
-    await triggerDeepLink('openhuman://auth?token=mega-acct-switch-user-b');
+    await triggerDeepLink('aura://auth?token=mega-acct-switch-user-b');
     await waitForMockRequest('POST', '/telegram/login-tokens/', 15_000);
     clearRequestLog();
 
     // User B must see zero threads (fresh workspace).
-    const listB = await callOpenhumanRpc('openhuman.threads_list', {});
+    const listB = await callAuraRpc('aura.threads_list', {});
     expect(listB.ok).toBe(true);
     const threadsB: unknown[] =
       listB.result?.result?.threads ?? listB.result?.threads ?? listB.value?.result?.threads ?? [];
@@ -491,11 +491,11 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     // still serves the RPC surface and the thread list starts empty again.
     await resetEverything('account switch back to user A');
 
-    await triggerDeepLink('openhuman://auth?token=mega-acct-switch-user-a');
+    await triggerDeepLink('aura://auth?token=mega-acct-switch-user-a');
     await waitForMockRequest('POST', '/telegram/login-tokens/', 15_000);
     clearRequestLog();
 
-    const listA2 = await callOpenhumanRpc('openhuman.threads_list', {});
+    const listA2 = await callAuraRpc('aura.threads_list', {});
     expect(listA2.ok).toBe(true);
     const threadsA2: unknown[] =
       listA2.result?.result?.threads ??
@@ -510,7 +510,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
       `${LOG} acct-switch: user A (re-login) sees ${threadsA2.length} thread(s) — RPC healthy`
     );
 
-    const ping = await callOpenhumanRpc('core.ping', {});
+    const ping = await callAuraRpc('core.ping', {});
     expect(ping.ok).toBe(true);
   });
 
@@ -531,7 +531,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
   it('Composio + webhook: enable trigger then simulate inbound webhook hit via mock ingress', async () => {
     await resetEverything('after Scenario 10');
 
-    await triggerDeepLink('openhuman://auth?token=mega-composio-webhook-token');
+    await triggerDeepLink('aura://auth?token=mega-composio-webhook-token');
     await waitForMockRequest('POST', '/telegram/login-tokens/', 15_000);
     clearRequestLog();
 
@@ -545,7 +545,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     });
 
     // Step 1 — enable trigger.
-    const enable = await callOpenhumanRpc('openhuman.composio_enable_trigger', {
+    const enable = await callAuraRpc('aura.composio_enable_trigger', {
       connection_id: 'c2',
       slug: 'GITHUB_PULL_REQUEST_EVENT',
     });
@@ -554,7 +554,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
 
     // Step 2 — register an echo tunnel so the core has a tunnel ID to work with.
     const tunnelUuid = 'mega-flow-composio-tunnel';
-    const register = await callOpenhumanRpc('openhuman.webhooks_register_echo', {
+    const register = await callAuraRpc('aura.webhooks_register_echo', {
       tunnel_uuid: tunnelUuid,
       tunnel_name: 'Mega Flow Composio Tunnel',
       backend_tunnel_id: 'backend-mega-composio',
@@ -588,7 +588,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     expect(ingressHit).toBeDefined();
 
     // Step 4 — verify the enabled trigger is still listed.
-    const list = await callOpenhumanRpc('openhuman.composio_list_triggers', {});
+    const list = await callAuraRpc('aura.composio_list_triggers', {});
     expect(list.ok).toBe(true);
     const triggers: unknown[] = list.result?.triggers ?? list.value?.result?.triggers ?? [];
     expect(triggers.length).toBeGreaterThan(0);
@@ -596,27 +596,27 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
       `${LOG} composio+webhook: list_triggers after ingest has ${triggers.length} entry(s)`
     );
 
-    const ping = await callOpenhumanRpc('core.ping', {});
+    const ping = await callAuraRpc('core.ping', {});
     expect(ping.ok).toBe(true);
   });
 
   // -------------------------------------------------------------------------
   // Scenario 12 — update.version RPC contract.
-  // Calls `openhuman.update_version` and asserts the response contains a
+  // Calls `aura.update_version` and asserts the response contains a
   // semver-shaped `version` string, a non-empty `target_triple`, and an
-  // `asset_prefix` that starts with `openhuman-core-`.  No network call to
-  // update.openhuman.app (or github.com) is expected — the version RPC is
+  // `asset_prefix` that starts with `aura-core-`.  No network call to
+  // update.aura.app (or github.com) is expected — the version RPC is
   // entirely local and must not appear in the mock request log.
   // -------------------------------------------------------------------------
   it('update.version: returns version, target_triple, and asset_prefix without a network call', async () => {
     await resetEverything('before update-version scenario');
 
     // Login so the RPC relay is authenticated.
-    await triggerDeepLink('openhuman://auth?token=mega-update-version-token');
+    await triggerDeepLink('aura://auth?token=mega-update-version-token');
     await waitForMockRequest('POST', '/telegram/login-tokens/', 15_000);
     clearRequestLog();
 
-    const result = await callOpenhumanRpc('openhuman.update_version', {});
+    const result = await callAuraRpc('aura.update_version', {});
     expect(result.ok).toBe(true);
 
     // The version_info envelope may be one or two levels deep depending on
@@ -646,33 +646,33 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     expect(triple.length).toBeGreaterThan(0);
     console.log(`${LOG} update.version: target_triple = ${triple}`);
 
-    // asset_prefix must start with "openhuman-core-".
+    // asset_prefix must start with "aura-core-".
     const prefix: string = info?.asset_prefix ?? '';
     expect(typeof prefix).toBe('string');
-    expect(prefix.startsWith('openhuman-core-')).toBe(true);
+    expect(prefix.startsWith('aura-core-')).toBe(true);
     console.log(`${LOG} update.version: asset_prefix = ${prefix}`);
 
     // No outbound HTTP call should have been made — version is purely local.
     const outbound = getRequestLog().find(
-      r => r.url.includes('github.com') || r.url.includes('update.openhuman.app')
+      r => r.url.includes('github.com') || r.url.includes('update.aura.app')
     );
     expect(outbound).toBeUndefined();
 
-    const ping = await callOpenhumanRpc('core.ping', {});
+    const ping = await callAuraRpc('core.ping', {});
     expect(ping.ok).toBe(true);
   });
 
   // -------------------------------------------------------------------------
   // Scenario 13 — notification dedup.
   // Ingests the same notification (same provider + title + body) twice via
-  // `openhuman.notification_ingest`, then reads back with
-  // `openhuman.notification_list` and asserts only one record was stored.
+  // `aura.notification_ingest`, then reads back with
+  // `aura.notification_list` and asserts only one record was stored.
   // Data is persisted entirely to local SQLite — no mock backend call.
   // -------------------------------------------------------------------------
   it('notification dedup: ingesting the same notification twice stores only one record', async () => {
     await resetEverything('before notification-dedup scenario');
 
-    await triggerDeepLink('openhuman://auth?token=mega-notification-dedup-token');
+    await triggerDeepLink('aura://auth?token=mega-notification-dedup-token');
     await waitForMockRequest('POST', '/telegram/login-tokens/', 15_000);
     clearRequestLog();
 
@@ -685,20 +685,20 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     };
 
     // First ingest — must succeed.
-    const first = await callOpenhumanRpc('openhuman.notification_ingest', notifPayload);
+    const first = await callAuraRpc('aura.notification_ingest', notifPayload);
     expect(first.ok).toBe(true);
     const firstSkipped: boolean = first.result?.skipped ?? first.result?.result?.skipped ?? false;
     console.log(`${LOG} dedup: first ingest skipped=${firstSkipped}`);
 
     // Second ingest with identical params — must also return ok (not crash).
-    const second = await callOpenhumanRpc('openhuman.notification_ingest', notifPayload);
+    const second = await callAuraRpc('aura.notification_ingest', notifPayload);
     expect(second.ok).toBe(true);
     const secondSkipped: boolean =
       second.result?.skipped ?? second.result?.result?.skipped ?? false;
     console.log(`${LOG} dedup: second ingest skipped=${secondSkipped}`);
 
     // List all notifications for the gmail provider.
-    const list = await callOpenhumanRpc('openhuman.notification_list', {
+    const list = await callAuraRpc('aura.notification_list', {
       provider: 'gmail',
       limit: 50,
     });
@@ -721,27 +721,27 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     expect(matchingItems.length).toBeLessThanOrEqual(1);
     console.log(`${LOG} dedup: found ${matchingItems.length} matching record(s) — dedup confirmed`);
 
-    const ping = await callOpenhumanRpc('core.ping', {});
+    const ping = await callAuraRpc('core.ping', {});
     expect(ping.ok).toBe(true);
   });
 
   // -------------------------------------------------------------------------
   // Scenario 14 — Conversation thread CRUD smoke.
-  // Creates a thread via `openhuman.threads_create_new`, appends a message
-  // via `openhuman.threads_message_append`, then reads messages back with
-  // `openhuman.threads_messages_list` and asserts the message is present.
+  // Creates a thread via `aura.threads_create_new`, appends a message
+  // via `aura.threads_message_append`, then reads messages back with
+  // `aura.threads_messages_list` and asserts the message is present.
   // Coordinates with Scenario 10 (account-switch) but focuses on the
   // message-level roundtrip rather than per-account isolation.
   // -------------------------------------------------------------------------
   it('thread CRUD smoke: create → append message → list messages roundtrip', async () => {
     await resetEverything('before thread-crud-smoke scenario');
 
-    await triggerDeepLink('openhuman://auth?token=mega-thread-crud-token');
+    await triggerDeepLink('aura://auth?token=mega-thread-crud-token');
     await waitForMockRequest('POST', '/telegram/login-tokens/', 15_000);
     clearRequestLog();
 
     // Step 1 — create a fresh thread.
-    const create = await callOpenhumanRpc('openhuman.threads_create_new', {});
+    const create = await callAuraRpc('aura.threads_create_new', {});
     expect(create.ok).toBe(true);
     const threadId: string =
       create.result?.result?.id ?? create.result?.id ?? create.value?.result?.id ?? '';
@@ -752,7 +752,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     // Step 2 — append a user message.
     const now = new Date().toISOString();
     const msgId = `msg-e2e-batch3-${Date.now()}`;
-    const append = await callOpenhumanRpc('openhuman.threads_message_append', {
+    const append = await callAuraRpc('aura.threads_message_append', {
       thread_id: threadId,
       message: {
         id: msgId,
@@ -768,7 +768,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
 
     // Step 3 — list messages for the thread and assert the appended message
     // appears in the result.
-    const msgList = await callOpenhumanRpc('openhuman.threads_messages_list', {
+    const msgList = await callAuraRpc('aura.threads_messages_list', {
       thread_id: threadId,
     });
     expect(msgList.ok).toBe(true);
@@ -790,7 +790,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
       `${LOG} thread-crud: message ${msgId} confirmed in list (${messages.length} total)`
     );
 
-    const ping = await callOpenhumanRpc('core.ping', {});
+    const ping = await callAuraRpc('core.ping', {});
     expect(ping.ok).toBe(true);
   });
 });

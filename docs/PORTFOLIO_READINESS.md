@@ -19,8 +19,8 @@ Run from the repo root:
 ```bash
 pnpm run typecheck
 pnpm run lint
-pnpm --filter openhuman-app exec vitest run --config test/vitest.config.ts src/pages/__tests__/Conversations.test.tsx src/pages/__tests__/Conversations.render.test.tsx src/components/settings/panels/__tests__/RecoveryPhrasePanel.test.tsx
-pnpm --filter openhuman-app exec prettier --check .
+pnpm --filter aura-app exec vitest run --config test/vitest.config.ts src/pages/__tests__/Conversations.test.tsx src/pages/__tests__/Conversations.render.test.tsx src/components/settings/panels/__tests__/RecoveryPhrasePanel.test.tsx
+pnpm --filter aura-app exec prettier --check .
 cargo fmt --manifest-path Cargo.toml --all --check
 cargo fmt --manifest-path app/src-tauri/Cargo.toml --all --check
 cargo check --manifest-path app/src-tauri/Cargo.toml
@@ -34,7 +34,7 @@ Latest clean-branch portfolio-readiness run:
   React compiler `set-state-in-effect`.
 - Focused Vitest coverage for the touched React areas passed: `3` files and
 -  `24` tests across Conversations and Recovery Phrase panel tests.
-- `pnpm --filter openhuman-app exec prettier --check .`: passed from `app/`.
+- `pnpm --filter aura-app exec prettier --check .`: passed from `app/`.
 - Rust format checks for the root and Tauri manifests passed.
 - `cargo check --manifest-path app/src-tauri/Cargo.toml`: passed with existing
   Rust warnings.

@@ -68,7 +68,7 @@ const developerItems = [
   {
     id: 'tools',
     title: 'Tools',
-    description: 'Enable or disable capabilities OpenHuman can use on your behalf',
+    description: 'Enable or disable capabilities Aura can use on your behalf',
     route: 'tools',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

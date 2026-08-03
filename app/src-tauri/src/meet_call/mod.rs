@@ -1,6 +1,6 @@
 //! Tauri command surface for the "Join a Google Meet call" feature.
 //!
-//! The core (`src/openhuman/meet/`) validates the meet URL + display name
+//! The core (`src/aura/meet/`) validates the meet URL + display name
 //! and mints a `request_id`. The frontend then invokes
 //! [`meet_call_open_window`] to actually pop a top-level CEF webview that
 //! navigates to the Meet URL with a fresh data directory so the join is
@@ -9,7 +9,7 @@
 //! ## Why a top-level window and not a child of the main webview?
 //!
 //! Meet calls are a discrete activity the user wants to see (and resize /
-//! position) independently of the OpenHuman main window. The existing
+//! position) independently of the Aura main window. The existing
 //! `webview_accounts` machinery is account-bound and embeds child
 //! webviews inside the main window — the wrong shape for an ad-hoc call.
 //!
@@ -139,7 +139,7 @@ pub async fn meet_call_open_window<R: Runtime>(
     // Positioning off-screen keeps the window technically visible so
     // the renderer fully boots (WebRTC negotiates, getUserMedia fires,
     // CDP attaches, layout is real, clicks hit), but the user never
-    // sees a meet window. The main OpenHuman UI is the only surface.
+    // sees a meet window. The main Aura UI is the only surface.
     //
     // The Y coordinate `-30000` is large enough to clear any sane
     // multi-monitor topology (macOS spaces, vertical stacks, etc.)
@@ -150,7 +150,7 @@ pub async fn meet_call_open_window<R: Runtime>(
         .resizable(true)
         .position(-30000.0, -30000.0)
         // Critical: do NOT take focus on creation. If this window
-        // becomes the macOS key window, the main OpenHuman window is
+        // becomes the macOS key window, the main Aura window is
         // demoted to "non-key" and Chromium throttles its renderer +
         // worker timers down to ~1Hz — which starves the
         // MascotFrameProducer to ~1fps and produces the visible

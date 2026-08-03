@@ -3,7 +3,7 @@ import { type ComponentProps, useRef, useState } from 'react';
 import ScreenIntelligenceDebugPanel from '../../../components/intelligence/ScreenIntelligenceDebugPanel';
 import { useScreenIntelligenceState } from '../../../features/screen-intelligence/useScreenIntelligenceState';
 import { useT } from '../../../lib/i18n/I18nContext';
-import { isTauri, openhumanUpdateScreenIntelligenceSettings } from '../../../utils/tauriCommands';
+import { isTauri, auraUpdateScreenIntelligenceSettings } from '../../../utils/tauriCommands';
 import SettingsHeader from '../components/SettingsHeader';
 import { useSettingsNavigation } from '../hooks/useSettingsNavigation';
 
@@ -72,7 +72,7 @@ const ScreenAwarenessDebugPanel = () => {
     setIsSavingConfig(true);
     try {
       const fps = Number(baselineFps);
-      await openhumanUpdateScreenIntelligenceSettings({
+      await auraUpdateScreenIntelligenceSettings({
         enabled: status?.config.enabled ?? false,
         policy_mode:
           status?.config.policy_mode === 'whitelist_only'

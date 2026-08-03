@@ -87,14 +87,14 @@ function MeetingBotsBanner({ onClick }: { onClick: () => void }) {
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-semibold text-stone-900">
-              Send OpenHuman to a meeting
+              Send Aura to a meeting
             </h2>
             <span className="rounded-full bg-primary-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-700">
               New
             </span>
           </div>
           <p className="mt-0.5 line-clamp-1 text-[11px] leading-relaxed text-stone-600">
-            Drop a Google Meet link and OpenHuman joins as a guest, talks, listens, and waves
+            Drop a Google Meet link and Aura joins as a guest, talks, listens, and waves
             back.
           </p>
         </div>
@@ -117,7 +117,7 @@ interface ModalProps {
 function MeetingBotsModal({ onClose, onToast }: ModalProps) {
   const [platform, setPlatform] = useState<MascotMeetPlatform>('gmeet');
   const [meetUrl, setMeetUrl] = useState('');
-  const [displayName, setDisplayName] = useState('OpenHuman');
+  const [displayName, setDisplayName] = useState('Aura');
   const [submitting, setSubmitting] = useState(false);
   const [capacityGated, setCapacityGated] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -125,7 +125,7 @@ function MeetingBotsModal({ onClose, onToast }: ModalProps) {
   const selected = PLATFORMS.find(p => p.platform === platform) ?? PLATFORMS[0];
   const isComingSoon = !!selected.comingSoon;
 
-  // Esc closes the modal — matches the OpenhumanLinkModal pattern.
+  // Esc closes the modal — matches the AuraLinkModal pattern.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -147,7 +147,7 @@ function MeetingBotsModal({ onClose, onToast }: ModalProps) {
       await joinMeetingViaMascotBot({ platform, meetUrl, displayName });
       onToast?.({
         type: 'success',
-        title: 'OpenHuman is joining the meeting',
+        title: 'Aura is joining the meeting',
         message: 'It should appear as a participant in a few seconds.',
       });
       setMeetUrl('');
@@ -159,13 +159,13 @@ function MeetingBotsModal({ onClose, onToast }: ModalProps) {
         setError(message);
         onToast?.({
           type: 'error',
-          title: err.isCapacityGated ? 'OpenHuman is busy' : 'Could not start OpenHuman',
+          title: err.isCapacityGated ? 'Aura is busy' : 'Could not start Aura',
           message,
         });
       } else {
-        const message = err instanceof Error ? err.message : 'Failed to start OpenHuman.';
+        const message = err instanceof Error ? err.message : 'Failed to start Aura.';
         setError(message);
-        onToast?.({ type: 'error', title: 'Could not start OpenHuman', message });
+        onToast?.({ type: 'error', title: 'Could not start Aura', message });
       }
     } finally {
       setSubmitting(false);
@@ -176,7 +176,7 @@ function MeetingBotsModal({ onClose, onToast }: ModalProps) {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Send OpenHuman to a meeting"
+      aria-label="Send Aura to a meeting"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
       onClick={onClose}>
       <div
@@ -192,9 +192,9 @@ function MeetingBotsModal({ onClose, onToast }: ModalProps) {
             className="absolute right-3 top-3 rounded-full p-1 text-stone-500 hover:bg-white/80 hover:text-stone-800">
             ✕
           </button>
-          <h2 className="text-base font-semibold text-stone-900">Send OpenHuman to a meeting</h2>
+          <h2 className="text-base font-semibold text-stone-900">Send Aura to a meeting</h2>
           <p className="mt-1 text-xs leading-relaxed text-stone-600">
-            OpenHuman joins as an anonymous guest, streams its video into the call, and replies
+            Aura joins as an anonymous guest, streams its video into the call, and replies
             via the agent.
           </p>
         </div>

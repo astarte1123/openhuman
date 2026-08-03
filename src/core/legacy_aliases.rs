@@ -22,79 +22,79 @@
 /// key for easier diffing against the frontend table.
 const LEGACY_ALIASES: &[(&str, &str)] = &[
     (
-        "openhuman.get_analytics_settings",
-        "openhuman.config_get_analytics_settings",
+        "aura.get_analytics_settings",
+        "aura.config_get_analytics_settings",
     ),
     (
-        "openhuman.get_composio_trigger_settings",
-        "openhuman.config_get_composio_trigger_settings",
+        "aura.get_composio_trigger_settings",
+        "aura.config_get_composio_trigger_settings",
     ),
-    ("openhuman.get_config", "openhuman.config_get"),
+    ("aura.get_config", "aura.config_get"),
     (
-        "openhuman.get_runtime_flags",
-        "openhuman.config_get_runtime_flags",
+        "aura.get_runtime_flags",
+        "aura.config_get_runtime_flags",
     ),
-    ("openhuman.ping", "core.ping"),
+    ("aura.ping", "core.ping"),
     (
-        "openhuman.set_browser_allow_all",
-        "openhuman.config_set_browser_allow_all",
-    ),
-    (
-        "openhuman.update_analytics_settings",
-        "openhuman.config_update_analytics_settings",
+        "aura.set_browser_allow_all",
+        "aura.config_set_browser_allow_all",
     ),
     (
-        "openhuman.update_browser_settings",
-        "openhuman.config_update_browser_settings",
+        "aura.update_analytics_settings",
+        "aura.config_update_analytics_settings",
     ),
     (
-        "openhuman.update_composio_trigger_settings",
-        "openhuman.config_update_composio_trigger_settings",
+        "aura.update_browser_settings",
+        "aura.config_update_browser_settings",
     ),
     (
-        "openhuman.update_local_ai_settings",
-        "openhuman.inference_update_local_settings",
+        "aura.update_composio_trigger_settings",
+        "aura.config_update_composio_trigger_settings",
     ),
     (
-        "openhuman.update_memory_settings",
-        "openhuman.config_update_memory_settings",
+        "aura.update_local_ai_settings",
+        "aura.inference_update_local_settings",
     ),
     (
-        "openhuman.update_model_settings",
-        "openhuman.inference_update_model_settings",
+        "aura.update_memory_settings",
+        "aura.config_update_memory_settings",
     ),
     (
-        "openhuman.update_runtime_settings",
-        "openhuman.config_update_runtime_settings",
+        "aura.update_model_settings",
+        "aura.inference_update_model_settings",
     ),
     (
-        "openhuman.update_screen_intelligence_settings",
-        "openhuman.config_update_screen_intelligence_settings",
+        "aura.update_runtime_settings",
+        "aura.config_update_runtime_settings",
     ),
     (
-        "openhuman.workspace_onboarding_flag_exists",
-        "openhuman.config_workspace_onboarding_flag_exists",
+        "aura.update_screen_intelligence_settings",
+        "aura.config_update_screen_intelligence_settings",
     ),
     (
-        "openhuman.workspace_onboarding_flag_set",
-        "openhuman.config_workspace_onboarding_flag_set",
+        "aura.workspace_onboarding_flag_exists",
+        "aura.config_workspace_onboarding_flag_exists",
     ),
     (
-        "openhuman.local_ai_apply_preset",
-        "openhuman.inference_apply_preset",
+        "aura.workspace_onboarding_flag_set",
+        "aura.config_workspace_onboarding_flag_set",
     ),
     (
-        "openhuman.local_ai_device_profile",
-        "openhuman.inference_device_profile",
+        "aura.local_ai_apply_preset",
+        "aura.inference_apply_preset",
     ),
     (
-        "openhuman.local_ai_diagnostics",
-        "openhuman.inference_diagnostics",
+        "aura.local_ai_device_profile",
+        "aura.inference_device_profile",
     ),
-    ("openhuman.local_ai_presets", "openhuman.inference_presets"),
     (
-        "openhuman.providers_list_models",
-        "openhuman.inference_list_models",
+        "aura.local_ai_diagnostics",
+        "aura.inference_diagnostics",
+    ),
+    ("aura.local_ai_presets", "aura.inference_presets"),
+    (
+        "aura.providers_list_models",
+        "aura.inference_list_models",
     ),
 ];
 
@@ -281,15 +281,15 @@ mod tests {
 
     #[test]
     fn parse_core_rpc_methods_extracts_entries_and_skips_comments() {
-        let source = "export const CORE_RPC_METHODS = {\n  // a comment that should be skipped\n  alphaMethod: 'openhuman.alpha',\n  betaMethod: 'openhuman.beta',\n} as const;\n";
+        let source = "export const CORE_RPC_METHODS = {\n  // a comment that should be skipped\n  alphaMethod: 'aura.alpha',\n  betaMethod: 'aura.beta',\n} as const;\n";
         let methods = parse_core_rpc_methods(source);
         assert_eq!(
             methods.get("alphaMethod").map(String::as_str),
-            Some("openhuman.alpha")
+            Some("aura.alpha")
         );
         assert_eq!(
             methods.get("betaMethod").map(String::as_str),
-            Some("openhuman.beta")
+            Some("aura.beta")
         );
         assert_eq!(methods.len(), 2);
     }
@@ -298,29 +298,29 @@ mod tests {
     #[should_panic(expected = "malformed CORE_RPC_METHODS entry")]
     fn parse_core_rpc_methods_panics_on_non_colon_line() {
         let source =
-            "export const CORE_RPC_METHODS = {\n  alphaMethod 'openhuman.alpha',\n} as const;\n";
+            "export const CORE_RPC_METHODS = {\n  alphaMethod 'aura.alpha',\n} as const;\n";
         let _ = parse_core_rpc_methods(source);
     }
 
     #[test]
     fn parse_frontend_legacy_aliases_resolves_core_method_refs_and_literals() {
-        let source = "export const CORE_RPC_METHODS = {\n  alphaMethod: 'openhuman.alpha',\n} as const;\n\nexport const LEGACY_METHOD_ALIASES: Record<string, CoreRpcMethod> = {\n  'openhuman.legacy_alpha': CORE_RPC_METHODS.alphaMethod,\n  'openhuman.legacy_literal': 'openhuman.literal_target',\n};\n";
+        let source = "export const CORE_RPC_METHODS = {\n  alphaMethod: 'aura.alpha',\n} as const;\n\nexport const LEGACY_METHOD_ALIASES: Record<string, CoreRpcMethod> = {\n  'aura.legacy_alpha': CORE_RPC_METHODS.alphaMethod,\n  'aura.legacy_literal': 'aura.literal_target',\n};\n";
         let core_methods = parse_core_rpc_methods(source);
         let aliases = parse_frontend_legacy_aliases(source, &core_methods);
         assert_eq!(
-            aliases.get("openhuman.legacy_alpha").map(String::as_str),
-            Some("openhuman.alpha")
+            aliases.get("aura.legacy_alpha").map(String::as_str),
+            Some("aura.alpha")
         );
         assert_eq!(
-            aliases.get("openhuman.legacy_literal").map(String::as_str),
-            Some("openhuman.literal_target")
+            aliases.get("aura.legacy_literal").map(String::as_str),
+            Some("aura.literal_target")
         );
     }
 
     #[test]
     #[should_panic(expected = "legacy alias references unknown CORE_RPC_METHODS")]
     fn parse_frontend_legacy_aliases_panics_on_unknown_core_method_ref() {
-        let source = "export const CORE_RPC_METHODS = {\n  alphaMethod: 'openhuman.alpha',\n} as const;\n\nexport const LEGACY_METHOD_ALIASES: Record<string, CoreRpcMethod> = {\n  'openhuman.legacy_alpha': CORE_RPC_METHODS.doesNotExist,\n};\n";
+        let source = "export const CORE_RPC_METHODS = {\n  alphaMethod: 'aura.alpha',\n} as const;\n\nexport const LEGACY_METHOD_ALIASES: Record<string, CoreRpcMethod> = {\n  'aura.legacy_alpha': CORE_RPC_METHODS.doesNotExist,\n};\n";
         let core_methods = parse_core_rpc_methods(source);
         let _ = parse_frontend_legacy_aliases(source, &core_methods);
     }
@@ -339,19 +339,19 @@ mod tests {
     #[test]
     fn resolve_legacy_rewrites_composio_trigger_settings() {
         // The specific case observed in Sentry: older bundles called the
-        // bare `openhuman.update_composio_trigger_settings` against a core
+        // bare `aura.update_composio_trigger_settings` against a core
         // that only registers the namespaced form.
         assert_eq!(
-            resolve_legacy("openhuman.update_composio_trigger_settings"),
-            "openhuman.config_update_composio_trigger_settings",
+            resolve_legacy("aura.update_composio_trigger_settings"),
+            "aura.config_update_composio_trigger_settings",
         );
     }
 
     #[test]
     fn resolve_legacy_passes_through_unknown_methods() {
         assert_eq!(
-            resolve_legacy("openhuman.memory_list_namespaces"),
-            "openhuman.memory_list_namespaces"
+            resolve_legacy("aura.memory_list_namespaces"),
+            "aura.memory_list_namespaces"
         );
         assert_eq!(resolve_legacy("does.not.exist"), "does.not.exist");
         assert_eq!(resolve_legacy(""), "");
@@ -375,7 +375,7 @@ mod tests {
     fn resolve_legacy_returned_str_equals_table_value() {
         // Sanity check: the function returns the canonical str slice from
         // the table when it matches, not a copy of the input.
-        let out = resolve_legacy("openhuman.ping");
+        let out = resolve_legacy("aura.ping");
         assert_eq!(out, "core.ping");
     }
 

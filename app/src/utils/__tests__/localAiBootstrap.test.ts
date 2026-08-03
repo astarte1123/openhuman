@@ -6,8 +6,8 @@ import {
 } from '../localAiBootstrap';
 
 vi.mock('../tauriCommands', () => ({
-  openhumanLocalAiApplyPreset: vi.fn(),
-  openhumanLocalAiPresets: vi.fn(),
+  auraLocalAiApplyPreset: vi.fn(),
+  auraLocalAiPresets: vi.fn(),
 }));
 
 describe('localAiBootstrap', () => {
@@ -17,7 +17,7 @@ describe('localAiBootstrap', () => {
 
   it('applies the recommended preset when no tier is selected', async () => {
     const tauriCommands = await import('../tauriCommands');
-    vi.mocked(tauriCommands.openhumanLocalAiPresets).mockResolvedValue({
+    vi.mocked(tauriCommands.auraLocalAiPresets).mockResolvedValue({
       presets: [],
       recommended_tier: 'ram_2_4gb',
       current_tier: 'ram_2_4gb',
@@ -32,7 +32,7 @@ describe('localAiBootstrap', () => {
         gpu_description: 'Test GPU',
       },
     });
-    vi.mocked(tauriCommands.openhumanLocalAiApplyPreset).mockResolvedValue({
+    vi.mocked(tauriCommands.auraLocalAiApplyPreset).mockResolvedValue({
       applied_tier: 'ram_2_4gb',
       chat_model_id: 'gemma3:1b-it-qat',
       vision_model_id: '',
@@ -41,15 +41,15 @@ describe('localAiBootstrap', () => {
     });
     const result = await bootstrapLocalAiWithRecommendedPreset(false, '[test]');
 
-    expect(tauriCommands.openhumanLocalAiPresets).toHaveBeenCalledOnce();
-    expect(tauriCommands.openhumanLocalAiApplyPreset).toHaveBeenCalledWith('ram_2_4gb');
+    expect(tauriCommands.auraLocalAiPresets).toHaveBeenCalledOnce();
+    expect(tauriCommands.auraLocalAiApplyPreset).toHaveBeenCalledWith('ram_2_4gb');
     expect(result.preset.hadSelectedTier).toBe(false);
     expect(result.preset.appliedTier).toBe('ram_2_4gb');
   });
 
   it('skips preset application when a tier is already selected', async () => {
     const tauriCommands = await import('../tauriCommands');
-    vi.mocked(tauriCommands.openhumanLocalAiPresets).mockResolvedValue({
+    vi.mocked(tauriCommands.auraLocalAiPresets).mockResolvedValue({
       presets: [],
       recommended_tier: 'ram_2_4gb',
       current_tier: 'ram_2_4gb',
@@ -67,7 +67,7 @@ describe('localAiBootstrap', () => {
 
     const result = await ensureRecommendedLocalAiPresetIfNeeded('[test]');
 
-    expect(tauriCommands.openhumanLocalAiApplyPreset).not.toHaveBeenCalled();
+    expect(tauriCommands.auraLocalAiApplyPreset).not.toHaveBeenCalled();
     expect(result.hadSelectedTier).toBe(true);
     expect(result.selectedTier).toBe('ram_2_4gb');
   });

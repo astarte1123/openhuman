@@ -32,7 +32,7 @@ describe('threadApi', () => {
     const { threadApi } = await import('./threadApi');
     const result = await threadApi.getThreads();
 
-    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'openhuman.threads_list' });
+    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'aura.threads_list' });
     expect(result.count).toBe(1);
     expect(result.threads[0].id).toBe('default-thread');
   });
@@ -52,7 +52,7 @@ describe('threadApi', () => {
     const result = await threadApi.appendMessage('default-thread', message);
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.threads_message_append',
+      method: 'aura.threads_message_append',
       params: { thread_id: 'default-thread', message },
     });
     expect(result).toEqual(message);
@@ -77,7 +77,7 @@ describe('threadApi', () => {
     );
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.threads_generate_title',
+      method: 'aura.threads_generate_title',
       params: {
         thread_id: 'default-thread',
         assistant_message: 'I can draft the invoice follow-up note for you.',
@@ -97,14 +97,14 @@ describe('threadApi', () => {
     const { threadApi } = await import('./threadApi');
     await expect(threadApi.getTaskBoard('thread-1')).resolves.toEqual(taskBoard);
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.threads_task_board_get',
+      method: 'aura.threads_task_board_get',
       params: { thread_id: 'thread-1' },
     });
 
     mockCallCoreRpc.mockResolvedValueOnce({ data: { taskBoard } });
     await expect(threadApi.putTaskBoard('thread-1', taskBoard.cards)).resolves.toEqual(taskBoard);
     expect(mockCallCoreRpc).toHaveBeenLastCalledWith({
-      method: 'openhuman.threads_task_board_put',
+      method: 'aura.threads_task_board_put',
       params: { thread_id: 'thread-1', cards: taskBoard.cards },
     });
   });

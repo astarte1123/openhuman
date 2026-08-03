@@ -7,7 +7,7 @@
 # Prerequisites:
 #   - .env with BACKEND_URL, JWT_TOKEN, CREDENTIAL_ID, SKILLS_DATA_DIR
 #   - OAuth credential at $SKILLS_DATA_DIR/notion/oauth_credential.json
-#   - openhuman-skills repo available (auto-detected or via SKILL_DEBUG_DIR)
+#   - aura-skills repo available (auto-detected or via SKILL_DEBUG_DIR)
 #
 # Usage:
 #   bash scripts/debug-notion-sync-memory.sh

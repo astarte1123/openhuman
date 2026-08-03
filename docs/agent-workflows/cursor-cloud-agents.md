@@ -1,8 +1,8 @@
 # Cursor Cloud Agents — parallel workflow
 
-Operator playbook for running 15–20 [Cursor Cloud Agents](https://docs.cursor.com/agents/cloud) in parallel against OpenHuman. Companion to [`codex-pr-checklist.md`](codex-pr-checklist.md); the same merge gates apply.
+Operator playbook for running 15–20 [Cursor Cloud Agents](https://docs.cursor.com/agents/cloud) in parallel against Aura. Companion to [`codex-pr-checklist.md`](codex-pr-checklist.md); the same merge gates apply.
 
-This doc closes [`tinyhumansai/openhuman#1480`](https://github.com/tinyhumansai/openhuman/issues/1480).
+This doc closes [`tinyhumansai/aura#1480`](https://github.com/tinyhumansai/aura/issues/1480).
 
 ## TL;DR
 
@@ -31,7 +31,7 @@ A batch is a JSON file living under `docs/agent-workflows/batches/` (gitignored 
 ```json
 {
   "batch_id": "pilot-2026-05-15",
-  "base_repo": "tinyhumansai/openhuman",
+  "base_repo": "tinyhumansai/aura",
   "base_branch": "main",
   "tracking_issue": 1480,
   "agents": [
@@ -40,7 +40,7 @@ A batch is a JSON file living under `docs/agent-workflows/batches/` (gitignored 
       "issue": 1234,
       "title": "short slug for the branch name",
       "branch": "cursor/a01-1234-short-slug",
-      "owned_paths": ["app/src/features/foo/", "src/openhuman/foo/"],
+      "owned_paths": ["app/src/features/foo/", "src/aura/foo/"],
       "allowed_shared_paths": ["docs/TEST-COVERAGE-MATRIX.md"],
       "labels": ["cursor-agent", "pilot"]
     }
@@ -53,7 +53,7 @@ Field rules:
 | Field                           | Required | Notes                                                                                                                                                                                             |
 | ------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `batch_id`                      | yes      | Stable identifier — appears in PR bodies and the tracking comment.                                                                                                                                |
-| `base_repo`                     | yes      | Always `tinyhumansai/openhuman` unless explicitly delegated.                                                                                                                                      |
+| `base_repo`                     | yes      | Always `tinyhumansai/aura` unless explicitly delegated.                                                                                                                                      |
 | `base_branch`                   | yes      | `main`.                                                                                                                                                                                           |
 | `tracking_issue`                | yes      | One upstream issue per batch; that issue's comment thread is the dashboard (AC #6).                                                                                                               |
 | `agents[].id`                   | yes      | Two-char + digits, e.g. `a01`–`a20`. Unique within batch.                                                                                                                                         |
@@ -65,13 +65,13 @@ Field rules:
 
 ### Why prefixes, not globs
 
-A glob ownership model (`app/src/components/**`) is tempting but makes overlap detection ambiguous: does `app/src/**/*.test.ts` collide with `app/src/components/Foo/`? With prefixes the answer is mechanical: prefix containment in either direction = collision. CI files like `.github/workflows/*.yml`, the capability catalog at `src/openhuman/about_app/`, and similar shared surfaces should be assigned to **one** agent for the batch (or to no agent — the batch should be designed not to need them).
+A glob ownership model (`app/src/components/**`) is tempting but makes overlap detection ambiguous: does `app/src/**/*.test.ts` collide with `app/src/components/Foo/`? With prefixes the answer is mechanical: prefix containment in either direction = collision. CI files like `.github/workflows/*.yml`, the capability catalog at `src/aura/about_app/`, and similar shared surfaces should be assigned to **one** agent for the batch (or to no agent — the batch should be designed not to need them).
 
 ## Branch & PR conventions
 
 - Branch off **`origin/main` (upstream)** at the moment the spec is written. Each agent fetches `origin/main` itself.
 - Branch name format: `cursor/<id>-<issue>-<short-slug>` (e.g. `cursor/a04-1456-memory-namespace`). Enforced by `validate.mjs`.
-- Push to the **forking remote the Cursor workspace is configured with**, not directly to `tinyhumansai/openhuman`. PRs are opened with `--head <fork-owner>:<branch>` against `tinyhumansai/openhuman:main`.
+- Push to the **forking remote the Cursor workspace is configured with**, not directly to `tinyhumansai/aura`. PRs are opened with `--head <fork-owner>:<branch>` against `tinyhumansai/aura:main`.
 - **One PR per issue**, **one PR per branch**. If a retry is needed, update the existing PR; do not open a duplicate. Use the duplicate cleanup recipe in [`codex-pr-checklist.md`](codex-pr-checklist.md#duplicate-pr-cleanup).
 - PR title: `<area>: <short imperative> (#<issue>)`. PR body **must** follow [`.github/PULL_REQUEST_TEMPLATE.md`](../../.github/PULL_REQUEST_TEMPLATE.md) verbatim, including the `## AI Authored PR Metadata` section.
 - PR labels include at minimum `cursor-agent` and the batch id label `batch:<batch_id>` so the tracking comment can find them.
@@ -88,7 +88,7 @@ If two issues genuinely need the same module, **do not split them across agents*
 
 Agents run the same gates as any other PR. The launch comment instructs them explicitly — they do not get to drop any of these:
 
-- **Format**: `pnpm --filter openhuman-app format:check`, `cargo fmt --manifest-path Cargo.toml --all --check`, and the Tauri shell equivalent if shell files changed.
+- **Format**: `pnpm --filter aura-app format:check`, `cargo fmt --manifest-path Cargo.toml --all --check`, and the Tauri shell equivalent if shell files changed.
 - **Lint / typecheck**: `pnpm lint`, `pnpm typecheck`.
 - **Tests (focused)**: targeted Vitest for changed files, focused Rust tests via `pnpm debug rust <filter>` for changed Rust.
 - **Coverage**: agents must run `pnpm test:coverage` and `pnpm test:rust` locally and add tests for changed lines. The merge gate is `≥ 80% diff coverage`, enforced server-side by [`coverage.yml`](../../.github/workflows/coverage.yml). PRs below the threshold do not merge — agents that cannot reach the threshold must say so in the PR body, not paper over it.
@@ -98,12 +98,12 @@ If the agent's environment cannot run a gate, the PR body must report the **exac
 
 ## Secrets posture
 
-Cursor Cloud Agents inherit env from the workspace. For OpenHuman, the cloud workspace MUST be configured with:
+Cursor Cloud Agents inherit env from the workspace. For Aura, the cloud workspace MUST be configured with:
 
 - **No** `STAGING_*` / `PRODUCTION_*` secrets.
 - **No** `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or any other LLM provider key used by the production agent runtime — agents do code work, not LLM calls into production providers.
-- A scoped `GITHUB_TOKEN` with `contents:write` and `pull_requests:write` on the **fork** the workspace pushes to, plus `pull_requests:write` on `tinyhumansai/openhuman` for PR creation. **No `admin:*`, no `actions:write`, no `secrets:*`.**
-- `OPENHUMAN_APP_ENV` MUST be unset or set to `dev`. Never `staging` or `production` — staging writes `~/.openhuman-staging/core.token` referenced by [`AGENTS.md`](../../AGENTS.md) "Cursor Cloud specific instructions" and that token is **per-developer**, not for shared cloud workspaces.
+- A scoped `GITHUB_TOKEN` with `contents:write` and `pull_requests:write` on the **fork** the workspace pushes to, plus `pull_requests:write` on `tinyhumansai/aura` for PR creation. **No `admin:*`, no `actions:write`, no `secrets:*`.**
+- `AURA_APP_ENV` MUST be unset or set to `dev`. Never `staging` or `production` — staging writes `~/.aura-staging/core.token` referenced by [`AGENTS.md`](../../AGENTS.md) "Cursor Cloud specific instructions" and that token is **per-developer**, not for shared cloud workspaces.
 - `.env.local`, `app/.env.local`, and `core.token` files are gitignored and must not be committed.
 
 The agent's own environment is the smallest blast-radius surface. Production credentials are out of scope for code-writing agents.
@@ -119,7 +119,7 @@ One tracking issue per batch (`tracking_issue` in the spec). The launch script p
 
 Re-running `status` rewrites the same comment (looked up by a `<!-- batch:<id> -->` marker) so the issue thread doesn't fill with stale tables. The script reads:
 
-- `gh pr list --repo tinyhumansai/openhuman --label batch:<id> --json …` for PR + state.
+- `gh pr list --repo tinyhumansai/aura --label batch:<id> --json …` for PR + state.
 - `gh pr checks <pr>` for CI rollup.
 - The `diff-coverage.md` artifact from `coverage.yml`, if downloaded — otherwise coverage shows `—`.
 

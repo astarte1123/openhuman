@@ -1,24 +1,24 @@
-//! `openhuman memory` — CLI for memory ingestion, graph inspection, and debugging.
+//! `aura memory` — CLI for memory ingestion, graph inspection, and debugging.
 //!
 //! Provides direct access to the memory system from the command line, including
 //! document ingestion with heuristic entity/relation extraction, graph querying,
 //! and document listing.
 //!
 //! Usage:
-//!   openhuman memory ingest  <file|->  [--namespace <ns>] [--key <key>] [--title <title>] [-v]
-//!   openhuman memory docs    [--namespace <ns>]
-//!   openhuman memory graph   [--namespace <ns>] [--subject <s>] [--predicate <p>]
-//!   openhuman memory query   --namespace <ns> --query <text> [--limit <n>]
-//!   openhuman memory namespaces
+//!   aura memory ingest  <file|->  [--namespace <ns>] [--key <key>] [--title <title>] [-v]
+//!   aura memory docs    [--namespace <ns>]
+//!   aura memory graph   [--namespace <ns>] [--subject <s>] [--predicate <p>]
+//!   aura memory query   --namespace <ns> --query <text> [--limit <n>]
+//!   aura memory namespaces
 
 use anyhow::Result;
 use std::io::Read;
 use std::path::PathBuf;
 
-use crate::openhuman::memory::ingestion::{MemoryIngestionConfig, MemoryIngestionRequest};
-use crate::openhuman::memory::NamespaceDocumentInput;
+use crate::aura::memory::ingestion::{MemoryIngestionConfig, MemoryIngestionRequest};
+use crate::aura::memory::NamespaceDocumentInput;
 
-/// Entry point for `openhuman memory <subcommand>`.
+/// Entry point for `aura memory <subcommand>`.
 pub fn run_memory_command(args: &[String]) -> Result<()> {
     if args.is_empty() || is_help(&args[0]) {
         print_memory_help();
@@ -33,7 +33,7 @@ pub fn run_memory_command(args: &[String]) -> Result<()> {
         "namespaces" | "ns" => run_namespaces(&args[1..]),
         "clear" => run_clear(&args[1..]),
         other => Err(anyhow::anyhow!(
-            "unknown memory subcommand '{other}'. Run `openhuman memory --help`."
+            "unknown memory subcommand '{other}'. Run `aura memory --help`."
         )),
     }
 }
@@ -42,7 +42,7 @@ pub fn run_memory_command(args: &[String]) -> Result<()> {
 // Subcommands
 // ---------------------------------------------------------------------------
 
-/// `openhuman memory ingest <file|-> [options]`
+/// `aura memory ingest <file|-> [options]`
 ///
 /// Reads a file (or stdin with `-`) and performs full synchronous ingestion
 /// including heuristic entity/relation extraction. Outputs the ingestion result
@@ -71,7 +71,7 @@ fn run_ingest(args: &[String]) -> Result<()> {
                 i += 1;
             }
             "-h" | "--help" => {
-                println!("Usage: openhuman memory ingest <file|-> [options]");
+                println!("Usage: aura memory ingest <file|-> [options]");
                 println!();
                 println!("  <file>               Path to file to ingest (use '-' for stdin)");
                 println!("  -n, --namespace <ns>  Target namespace (default: 'cli')");
@@ -171,7 +171,7 @@ fn run_ingest(args: &[String]) -> Result<()> {
     Ok(())
 }
 
-/// `openhuman memory docs [--namespace <ns>]`
+/// `aura memory docs [--namespace <ns>]`
 fn run_docs(args: &[String]) -> Result<()> {
     let mut namespace: Option<String> = None;
     let mut verbose = false;
@@ -187,7 +187,7 @@ fn run_docs(args: &[String]) -> Result<()> {
                 i += 1;
             }
             "-h" | "--help" => {
-                println!("Usage: openhuman memory docs [--namespace <ns>] [-v]");
+                println!("Usage: aura memory docs [--namespace <ns>] [-v]");
                 return Ok(());
             }
             other => return Err(anyhow::anyhow!("unknown docs arg: {other}")),
@@ -212,7 +212,7 @@ fn run_docs(args: &[String]) -> Result<()> {
     Ok(())
 }
 
-/// `openhuman memory graph [--namespace <ns>] [--subject <s>] [--predicate <p>]`
+/// `aura memory graph [--namespace <ns>] [--subject <s>] [--predicate <p>]`
 fn run_graph_query(args: &[String]) -> Result<()> {
     let mut namespace: Option<String> = None;
     let mut subject: Option<String> = None;
@@ -237,7 +237,7 @@ fn run_graph_query(args: &[String]) -> Result<()> {
             }
             "-h" | "--help" => {
                 println!(
-                    "Usage: openhuman memory graph [--namespace <ns>] [--subject <s>] [--predicate <p>] [-v]"
+                    "Usage: aura memory graph [--namespace <ns>] [--subject <s>] [--predicate <p>] [-v]"
                 );
                 return Ok(());
             }
@@ -267,7 +267,7 @@ fn run_graph_query(args: &[String]) -> Result<()> {
     Ok(())
 }
 
-/// `openhuman memory query --namespace <ns> --query <text> [--limit <n>]`
+/// `aura memory query --namespace <ns> --query <text> [--limit <n>]`
 fn run_query(args: &[String]) -> Result<()> {
     let mut namespace: Option<String> = None;
     let mut query: Option<String> = None;
@@ -295,7 +295,7 @@ fn run_query(args: &[String]) -> Result<()> {
             }
             "-h" | "--help" => {
                 println!(
-                    "Usage: openhuman memory query --namespace <ns> --query <text> [--limit <n>] [-v]"
+                    "Usage: aura memory query --namespace <ns> --query <text> [--limit <n>] [-v]"
                 );
                 return Ok(());
             }
@@ -325,14 +325,14 @@ fn run_query(args: &[String]) -> Result<()> {
     Ok(())
 }
 
-/// `openhuman memory namespaces`
+/// `aura memory namespaces`
 fn run_namespaces(args: &[String]) -> Result<()> {
     let mut verbose = false;
     for arg in args {
         match arg.as_str() {
             "-v" | "--verbose" => verbose = true,
             "-h" | "--help" => {
-                println!("Usage: openhuman memory namespaces [-v]");
+                println!("Usage: aura memory namespaces [-v]");
                 return Ok(());
             }
             other => return Err(anyhow::anyhow!("unknown namespaces arg: {other}")),
@@ -356,7 +356,7 @@ fn run_namespaces(args: &[String]) -> Result<()> {
     Ok(())
 }
 
-/// `openhuman memory clear --namespace <ns>`
+/// `aura memory clear --namespace <ns>`
 fn run_clear(args: &[String]) -> Result<()> {
     let mut namespace: Option<String> = None;
     let mut verbose = false;
@@ -372,7 +372,7 @@ fn run_clear(args: &[String]) -> Result<()> {
                 i += 1;
             }
             "-h" | "--help" => {
-                println!("Usage: openhuman memory clear --namespace <ns> [-v]");
+                println!("Usage: aura memory clear --namespace <ns> [-v]");
                 return Ok(());
             }
             other => return Err(anyhow::anyhow!("unknown clear arg: {other}")),
@@ -432,15 +432,15 @@ fn read_input(path: &str) -> Result<String> {
     }
 }
 
-async fn create_memory_client() -> Result<crate::openhuman::memory::MemoryClientRef> {
-    let config = crate::openhuman::config::Config::load_or_init()
+async fn create_memory_client() -> Result<crate::aura::memory::MemoryClientRef> {
+    let config = crate::aura::config::Config::load_or_init()
         .await
         .unwrap_or_default();
-    crate::openhuman::memory::global::init(config.workspace_dir).map_err(anyhow::Error::msg)
+    crate::aura::memory::global::init(config.workspace_dir).map_err(anyhow::Error::msg)
 }
 
 fn print_memory_help() {
-    println!("Usage: openhuman memory <subcommand> [options]");
+    println!("Usage: aura memory <subcommand> [options]");
     println!();
     println!("Subcommands:");
     println!("  ingest <file|->     Ingest a document with heuristic extraction");
@@ -451,9 +451,9 @@ fn print_memory_help() {
     println!("  clear               Clear all data in a namespace");
     println!();
     println!("Examples:");
-    println!("  openhuman memory ingest notes.md -n my-project -v");
-    println!("  echo 'Alice works on ProjectX' | openhuman memory ingest - -n test -v");
-    println!("  openhuman memory graph -n my-project");
-    println!("  openhuman memory docs -n my-project");
-    println!("  openhuman memory query -n my-project -q 'who works on what?'");
+    println!("  aura memory ingest notes.md -n my-project -v");
+    println!("  echo 'Alice works on ProjectX' | aura memory ingest - -n test -v");
+    println!("  aura memory graph -n my-project");
+    println!("  aura memory docs -n my-project");
+    println!("  aura memory query -n my-project -q 'who works on what?'");
 }

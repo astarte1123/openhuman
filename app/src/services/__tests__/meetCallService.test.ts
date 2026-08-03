@@ -44,7 +44,7 @@ describe('joinMeetCall', () => {
     });
 
     expect(callCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.meet_join_call',
+      method: 'aura.meet_join_call',
       params: { meet_url: 'https://meet.google.com/abc-defg-hij', display_name: 'Agent Alice' },
     });
     expect(invoke).toHaveBeenCalledWith('meet_call_open_window', {

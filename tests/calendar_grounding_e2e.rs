@@ -1,11 +1,11 @@
 use anyhow::Result;
 use async_trait::async_trait;
-use openhuman_core::openhuman::agent::dispatcher::NativeToolDispatcher;
-use openhuman_core::openhuman::agent::Agent;
-use openhuman_core::openhuman::inference::provider::{
+use aura_core::aura::agent::dispatcher::NativeToolDispatcher;
+use aura_core::aura::agent::Agent;
+use aura_core::aura::inference::provider::{
     ChatMessage, ChatRequest, ChatResponse, Provider, ToolCall,
 };
-use openhuman_core::openhuman::tools::{PermissionLevel, Tool, ToolResult};
+use aura_core::aura::tools::{PermissionLevel, Tool, ToolResult};
 use parking_lot::Mutex;
 use serde_json::json;
 use std::sync::Arc;
@@ -136,9 +136,9 @@ async fn test_integrations_agent_has_current_date_context() -> Result<()> {
         iter_count: Arc::new(Mutex::new(0)),
     });
 
-    let _ = openhuman_core::openhuman::agent::harness::definition::AgentDefinitionRegistry::init_global_builtins();
+    let _ = aura_core::aura::agent::harness::definition::AgentDefinitionRegistry::init_global_builtins();
 
-    let parent = openhuman_core::openhuman::agent::harness::ParentExecutionContext {
+    let parent = aura_core::aura::agent::harness::ParentExecutionContext {
         provider: provider.clone(),
         all_tools: Arc::new(vec![Box::new(MockCalendarTool)]),
         all_tool_specs: Arc::new(vec![MockCalendarTool.spec()]),
@@ -146,20 +146,20 @@ async fn test_integrations_agent_has_current_date_context() -> Result<()> {
         temperature: 0.4,
         workspace_dir: std::env::temp_dir(),
         memory: Arc::new(StubMemory),
-        agent_config: openhuman_core::openhuman::config::AgentConfig::default(),
+        agent_config: aura_core::aura::config::AgentConfig::default(),
         skills: Arc::new(vec![]),
         memory_context: Arc::new(None),
         session_id: "test-session".into(),
         channel: "test".into(),
         connected_integrations: vec![],
-        tool_call_format: openhuman_core::openhuman::context::prompt::ToolCallFormat::PFormat,
+        tool_call_format: aura_core::aura::context::prompt::ToolCallFormat::PFormat,
         session_key: "0_test".into(),
         session_parent_prefix: None,
         on_progress: None,
     };
 
     let mut def =
-        openhuman_core::openhuman::agent::harness::definition::AgentDefinitionRegistry::global()
+        aura_core::aura::agent::harness::definition::AgentDefinitionRegistry::global()
             .unwrap()
             .get("integrations_agent")
             .unwrap()
@@ -167,20 +167,20 @@ async fn test_integrations_agent_has_current_date_context() -> Result<()> {
     // `integrations_agent` ships with `[model] hint = "agentic"`. After
     // #1710, a Hint sub-agent builds a fresh provider via the workload
     // factory instead of inheriting `parent.provider` — which here would
-    // resolve to the OpenHuman backend and fail with "No backend session"
+    // resolve to the Aura backend and fail with "No backend session"
     // before the MockCalendarProvider ever sees a request. This test only
     // asserts prompt construction (the "Current Date & Time" context), so
     // override the model spec to Inherit to keep the real integrations_agent
     // definition (prompt, tools, scope) while routing through the captured
     // mock provider. Provider *routing* for Hint sub-agents is covered by
     // `subagent_runner::ops::tests::resolve_subagent_provider_*`.
-    def.model = openhuman_core::openhuman::agent::harness::definition::ModelSpec::Inherit;
+    def.model = aura_core::aura::agent::harness::definition::ModelSpec::Inherit;
 
-    let _ = openhuman_core::openhuman::agent::harness::with_parent_context(parent, async {
-        openhuman_core::openhuman::agent::harness::run_subagent(
+    let _ = aura_core::aura::agent::harness::with_parent_context(parent, async {
+        aura_core::aura::agent::harness::run_subagent(
             &def,
             "list my calendar events for today",
-            openhuman_core::openhuman::agent::harness::SubagentRunOptions::default(),
+            aura_core::aura::agent::harness::SubagentRunOptions::default(),
         )
         .await
     })
@@ -207,13 +207,13 @@ async fn test_integrations_agent_has_current_date_context() -> Result<()> {
 struct StubMemory;
 
 #[async_trait]
-impl openhuman_core::openhuman::memory::Memory for StubMemory {
+impl aura_core::aura::memory::Memory for StubMemory {
     async fn store(
         &self,
         _: &str,
         _: &str,
         _: &str,
-        _: openhuman_core::openhuman::memory::MemoryCategory,
+        _: aura_core::aura::memory::MemoryCategory,
         _: Option<&str>,
     ) -> Result<()> {
         Ok(())
@@ -222,23 +222,23 @@ impl openhuman_core::openhuman::memory::Memory for StubMemory {
         &self,
         _: &str,
         _: usize,
-        _: openhuman_core::openhuman::memory::RecallOpts<'_>,
-    ) -> Result<Vec<openhuman_core::openhuman::memory::MemoryEntry>> {
+        _: aura_core::aura::memory::RecallOpts<'_>,
+    ) -> Result<Vec<aura_core::aura::memory::MemoryEntry>> {
         Ok(vec![])
     }
     async fn get(
         &self,
         _: &str,
         _: &str,
-    ) -> Result<Option<openhuman_core::openhuman::memory::MemoryEntry>> {
+    ) -> Result<Option<aura_core::aura::memory::MemoryEntry>> {
         Ok(None)
     }
     async fn list(
         &self,
         _: Option<&str>,
-        _: Option<&openhuman_core::openhuman::memory::MemoryCategory>,
+        _: Option<&aura_core::aura::memory::MemoryCategory>,
         _: Option<&str>,
-    ) -> Result<Vec<openhuman_core::openhuman::memory::MemoryEntry>> {
+    ) -> Result<Vec<aura_core::aura::memory::MemoryEntry>> {
         Ok(vec![])
     }
     async fn forget(&self, _: &str, _: &str) -> Result<bool> {
@@ -246,7 +246,7 @@ impl openhuman_core::openhuman::memory::Memory for StubMemory {
     }
     async fn namespace_summaries(
         &self,
-    ) -> Result<Vec<openhuman_core::openhuman::memory::NamespaceSummary>> {
+    ) -> Result<Vec<aura_core::aura::memory::NamespaceSummary>> {
         Ok(vec![])
     }
     async fn count(&self) -> Result<usize> {
