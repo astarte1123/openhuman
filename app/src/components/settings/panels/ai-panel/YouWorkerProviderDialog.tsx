@@ -16,12 +16,18 @@ const YouWorkerProviderDialog = ({
   onClose,
   onSubmit,
   onClearSecret,
+  onClearOutboundSecret,
 }: {
   initial: CloudProvider | null;
   hasExistingSecret: boolean;
   onClose: () => void;
-  onSubmit: (next: CloudProvider, clientSecret: string) => Promise<void> | void;
+  onSubmit: (
+    next: CloudProvider,
+    clientSecret: string,
+    outboundHmacSecret: string
+  ) => Promise<void> | void;
   onClearSecret: () => Promise<void> | void;
+  onClearOutboundSecret: () => Promise<void> | void;
 }) => {
   const [label, setLabel] = useState(initial?.label ?? 'YouWorker');
   const [ywBase, setYwBase] = useState(initial?.endpoint ?? '');
@@ -30,6 +36,7 @@ const YouWorkerProviderDialog = ({
   const [clientId, setClientId] = useState(initial?.clientId ?? '');
   const [subjectUuid, setSubjectUuid] = useState(initial?.subjectUuid ?? '');
   const [clientSecret, setClientSecret] = useState('');
+  const [outboundHmacSecret, setOutboundHmacSecret] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -145,6 +152,33 @@ const YouWorkerProviderDialog = ({
               }
             />
           </div>
+          <div>
+            <label
+              htmlFor="outbound-hmac-secret"
+              className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-wide text-stone-500">
+              <span>Outbound webhook HMAC secret</span>
+              <button
+                type="button"
+                onClick={() => void onClearOutboundSecret()}
+                className="text-[10px] font-medium normal-case text-coral-600 hover:text-coral-700">
+                Clear stored secret
+              </button>
+            </label>
+            <input
+              id="outbound-hmac-secret"
+              type="password"
+              autoComplete="off"
+              value={outboundHmacSecret}
+              onChange={e => setOutboundHmacSecret(e.target.value)}
+              className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-3 py-2 font-mono text-xs text-stone-900 placeholder:text-stone-400 focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-200"
+              placeholder="whsec_… (leave blank to keep unchanged)"
+            />
+            <p className="mt-1 text-[10px] text-stone-500">
+              Verifies youworker&apos;s async reply webhook. Optional to save now, but chat calls
+              will time out without it once youworker.ai can reach this app&apos;s outbound
+              endpoint.
+            </p>
+          </div>
           {error ? <p className="text-xs font-medium text-red-600">{error}</p> : null}
         </div>
         <div className="flex items-center justify-end gap-2 border-t border-stone-200 px-4 py-3">
@@ -175,7 +209,8 @@ const YouWorkerProviderDialog = ({
                     clientId: clientId.trim(),
                     subjectUuid: subjectUuid.trim(),
                   },
-                  clientSecret.trim()
+                  clientSecret.trim(),
+                  outboundHmacSecret.trim()
                 );
               } catch (err) {
                 setError(err instanceof Error ? err.message : String(err));

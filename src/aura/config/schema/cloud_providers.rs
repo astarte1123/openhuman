@@ -28,12 +28,16 @@ pub enum AuthStyle {
     AuraJwt,
     /// No auth header — e.g. local Ollama.
     None,
-    /// youworker.ai native WebSocket transport (Autentika token-exchange +
-    /// `session.create`/`attach`/`message.send` over `youworker.v1`). Needs
+    /// youworker.ai YouWorkForce REST/webhook channel (Autentika
+    /// token-exchange + `POST {yw_base}/channels/youmessage/inbound/message`,
+    /// with the terminal reply delivered async to our own HMAC-verified
+    /// outbound webhook — see `inference::provider::youworker`). Needs
     /// [`CloudProviderCreds::autentika_url`], [`CloudProviderCreds::persona`],
     /// [`CloudProviderCreds::client_id`] in addition to `endpoint` (used as
     /// `yw_base`) and the usual `provider:<slug>` stored secret (here,
-    /// `client_secret` rather than a bearer API key).
+    /// `client_secret` rather than a bearer API key). The outbound HMAC
+    /// secret is a second stored secret, keyed `provider:<slug>:outbound-hmac`
+    /// (see `youworker_webhook::outbound_hmac_key_for_slug`).
     YouWorker,
 }
 

@@ -13,7 +13,12 @@
  */
 import { useMemo, useState } from 'react';
 
-import { clearCloudProviderKey, setCloudProviderKey } from '../../../services/api/aiSettingsApi';
+import {
+  clearCloudProviderKey,
+  clearYouWorkerOutboundSecret,
+  setCloudProviderKey,
+  setYouWorkerOutboundSecret,
+} from '../../../services/api/aiSettingsApi';
 import SettingsHeader from '../components/SettingsHeader';
 import { useSettingsNavigation } from '../hooks/useSettingsNavigation';
 import BackgroundLoopControls from './ai-panel/BackgroundLoopControls';
@@ -426,7 +431,7 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
             draft.cloudProviders.find(cp => cp.slug === 'youworker')?.maskedKey ?? ''
           ).startsWith('••••')}
           onClose={() => setYouworkerDialogOpen(false)}
-          onSubmit={async (next, clientSecret) => {
+          onSubmit={async (next, clientSecret, outboundHmacSecret) => {
             setBusyAction('toggle-youworker');
             try {
               const existing = draft.cloudProviders.find(cp => cp.slug === 'youworker');
@@ -434,6 +439,9 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
               const upserted: CloudProvider = { ...next, id };
               if (clientSecret) {
                 await setCloudProviderKey('youworker', clientSecret);
+              }
+              if (outboundHmacSecret) {
+                await setYouWorkerOutboundSecret('youworker', outboundHmacSecret);
               }
               const list = existing
                 ? draft.cloudProviders.map(p => (p.id === existing.id ? upserted : p))
@@ -451,6 +459,14 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
             } catch (err) {
               const msg = err instanceof Error ? err.message : String(err);
               console.warn('[ai-settings] clearCloudProviderKey(youworker) failed', msg);
+            }
+          }}
+          onClearOutboundSecret={async () => {
+            try {
+              await clearYouWorkerOutboundSecret('youworker');
+            } catch (err) {
+              const msg = err instanceof Error ? err.message : String(err);
+              console.warn('[ai-settings] clearYouWorkerOutboundSecret failed', msg);
             }
           }}
         />

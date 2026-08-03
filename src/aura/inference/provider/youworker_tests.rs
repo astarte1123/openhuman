@@ -1,36 +1,4 @@
 use super::*;
-use serde_json::json;
-
-// ── derive_ws_url ────────────────────────────────────────────────────────────
-
-#[test]
-fn derive_ws_url_https_to_wss() {
-    assert_eq!(
-        derive_ws_url("https://dev.youworker.ai/api/v1").unwrap(),
-        "wss://dev.youworker.ai/api/v1/ws"
-    );
-}
-
-#[test]
-fn derive_ws_url_http_to_ws() {
-    assert_eq!(
-        derive_ws_url("http://localhost:8070/api/v1").unwrap(),
-        "ws://localhost:8070/api/v1/ws"
-    );
-}
-
-#[test]
-fn derive_ws_url_strips_trailing_slash() {
-    assert_eq!(
-        derive_ws_url("https://dev.youworker.ai/api/v1/").unwrap(),
-        "wss://dev.youworker.ai/api/v1/ws"
-    );
-}
-
-#[test]
-fn derive_ws_url_rejects_missing_scheme() {
-    assert!(derive_ws_url("dev.youworker.ai/api/v1").is_err());
-}
 
 // ── token_exchange_form ──────────────────────────────────────────────────────
 
@@ -52,206 +20,45 @@ fn token_exchange_form_has_the_fixed_rfc8693_fields() {
     );
 }
 
-// ── fold_transcript_delta ────────────────────────────────────────────────────
-
-// Every fixture uses the confirmed `ClientFrame`/`ServerFrame` envelope
-// (`{id, type, ts, payload}`) with content-bearing fields nested under
-// `payload`, and the confirmed block-delta shapes captured from a live
-// `dev.youworker.ai` run (see `fold_transcript_delta`'s doc comment):
-// `block.created` nests the new block's `block_id`/`type`/`markdown` under
-// `delta.block`; `block.appended`/`block.updated`/`block.finalized` carry
-// `block_id` directly on `delta`, and `block.appended`'s chunk rides
-// `delta.text` gated by `delta.field == "markdown"`, while `block.updated`'s
-// full replacement rides `delta.patch.markdown`.
+// ── inbound_message_body ─────────────────────────────────────────────────────
 
 #[test]
-fn fold_transcript_delta_ignores_other_frame_types() {
-    let mut texts = HashMap::new();
-    let mut response_block_id = None;
-    let frame = json!({ "type": "status.update", "payload": { "session_id": "s1" } });
-    let outcome = fold_transcript_delta(&frame, "s1", &mut texts, &mut response_block_id).unwrap();
-    assert_eq!(outcome, FoldOutcome::Continue);
-    assert!(texts.is_empty());
-}
-
-#[test]
-fn fold_transcript_delta_ignores_other_sessions() {
-    let mut texts = HashMap::new();
-    let mut response_block_id = None;
-    let frame = json!({
-        "type": "transcript.delta",
-        "payload": {
-            "session_id": "other-session",
-            "delta": { "op": "block.created", "block": { "block_id": "b1", "type": "response", "markdown": "" } }
-        }
-    });
-    let outcome = fold_transcript_delta(&frame, "s1", &mut texts, &mut response_block_id).unwrap();
-    assert_eq!(outcome, FoldOutcome::Continue);
-    assert!(texts.is_empty());
-}
-
-#[test]
-fn fold_transcript_delta_ignores_the_echoed_user_block() {
-    // The user's own message rides back as a `type: "user"` block.created —
-    // it must never be mistaken for the response.
-    let mut texts = HashMap::new();
-    let mut response_block_id = None;
-    let frame = json!({
-        "type": "transcript.delta",
-        "payload": {
-            "session_id": "s1",
-            "delta": { "op": "block.created", "block": { "block_id": "u1", "type": "user", "markdown": "hi" } }
-        }
-    });
-    let outcome = fold_transcript_delta(&frame, "s1", &mut texts, &mut response_block_id).unwrap();
-    assert_eq!(outcome, FoldOutcome::Continue);
-    assert!(response_block_id.is_none());
-    assert!(texts.is_empty());
-}
-
-#[test]
-fn fold_transcript_delta_accumulates_and_finalizes() {
-    let mut texts = HashMap::new();
-    let mut response_block_id = None;
-
-    let created = json!({
-        "type": "transcript.delta",
-        "payload": {
-            "session_id": "s1",
-            "delta": { "op": "block.created", "block": { "block_id": "b1", "type": "response", "markdown": "" } }
-        }
-    });
+fn inbound_message_body_has_the_fixed_fields_only() {
+    let body = inbound_message_body("conv-1", "operatore-centrale", "msg-1", "hello");
     assert_eq!(
-        fold_transcript_delta(&created, "s1", &mut texts, &mut response_block_id).unwrap(),
-        FoldOutcome::Continue
+        body,
+        serde_json::json!({
+            "conversation_ref": "conv-1",
+            "persona": "operatore-centrale",
+            "message_id": "msg-1",
+            "text": "hello",
+        })
     );
-    assert_eq!(response_block_id.as_deref(), Some("b1"));
-
-    let appended = json!({
-        "type": "transcript.delta",
-        "payload": {
-            "session_id": "s1",
-            "delta": { "op": "block.appended", "block_id": "b1", "field": "markdown", "text": "pong" }
-        }
-    });
-    assert_eq!(
-        fold_transcript_delta(&appended, "s1", &mut texts, &mut response_block_id).unwrap(),
-        FoldOutcome::Continue
-    );
-
-    let updated = json!({
-        "type": "transcript.delta",
-        "payload": {
-            "session_id": "s1",
-            "delta": { "op": "block.updated", "block_id": "b1", "patch": { "markdown": "pong" } }
-        }
-    });
-    assert_eq!(
-        fold_transcript_delta(&updated, "s1", &mut texts, &mut response_block_id).unwrap(),
-        FoldOutcome::Continue
-    );
-
-    let finalized = json!({
-        "type": "transcript.delta",
-        "payload": {
-            "session_id": "s1",
-            "delta": { "op": "block.finalized", "block_id": "b1" }
-        }
-    });
-    let outcome =
-        fold_transcript_delta(&finalized, "s1", &mut texts, &mut response_block_id).unwrap();
-    assert_eq!(outcome, FoldOutcome::Finalized("pong".to_string()));
 }
 
 #[test]
-fn fold_transcript_delta_ignores_appended_and_finalized_for_other_blocks() {
-    // A reasoning block (or any non-response block) streaming/finalizing
-    // alongside the response must never affect the tracked response text.
-    let mut texts = HashMap::new();
-    let mut response_block_id = None;
-
-    let response_created = json!({
-        "type": "transcript.delta",
-        "payload": {
-            "session_id": "s1",
-            "delta": { "op": "block.created", "block": { "block_id": "response-1", "type": "response", "markdown": "" } }
-        }
-    });
-    fold_transcript_delta(&response_created, "s1", &mut texts, &mut response_block_id).unwrap();
-
-    let reasoning_appended = json!({
-        "type": "transcript.delta",
-        "payload": {
-            "session_id": "s1",
-            "delta": { "op": "block.appended", "block_id": "reasoning-1", "field": "markdown", "text": "thinking…" }
-        }
-    });
-    let outcome = fold_transcript_delta(
-        &reasoning_appended,
-        "s1",
-        &mut texts,
-        &mut response_block_id,
-    )
-    .unwrap();
-    assert_eq!(outcome, FoldOutcome::Continue);
-
-    let reasoning_finalized = json!({
-        "type": "transcript.delta",
-        "payload": {
-            "session_id": "s1",
-            "delta": { "op": "block.finalized", "block_id": "reasoning-1" }
-        }
-    });
-    let outcome = fold_transcript_delta(
-        &reasoning_finalized,
-        "s1",
-        &mut texts,
-        &mut response_block_id,
-    )
-    .unwrap();
-    assert_eq!(outcome, FoldOutcome::Continue);
-
-    let response_appended = json!({
-        "type": "transcript.delta",
-        "payload": {
-            "session_id": "s1",
-            "delta": { "op": "block.appended", "block_id": "response-1", "field": "markdown", "text": "Answer" }
-        }
-    });
-    fold_transcript_delta(&response_appended, "s1", &mut texts, &mut response_block_id).unwrap();
-
-    let response_finalized = json!({
-        "type": "transcript.delta",
-        "payload": {
-            "session_id": "s1",
-            "delta": { "op": "block.finalized", "block_id": "response-1" }
-        }
-    });
-    let outcome = fold_transcript_delta(
-        &response_finalized,
-        "s1",
-        &mut texts,
-        &mut response_block_id,
-    )
-    .unwrap();
-    assert_eq!(outcome, FoldOutcome::Finalized("Answer".to_string()));
-}
-
-#[test]
-fn fold_transcript_delta_bails_on_error_frame() {
-    let mut texts = HashMap::new();
-    let mut response_block_id = None;
-    let frame = json!({ "type": "error", "payload": { "message": "policy_denied" } });
-    let err = fold_transcript_delta(&frame, "s1", &mut texts, &mut response_block_id).unwrap_err();
-    assert!(err.to_string().contains("policy_denied"));
+fn inbound_message_body_preserves_text_verbatim() {
+    // No trimming/mangling — the caller's already-assembled system+message
+    // text rides through unchanged.
+    let body = inbound_message_body("c", "p", "m", "line one\n\nline two  ");
+    assert_eq!(body["text"], "line one\n\nline two  ");
 }
 
 // ── Manual live smoke test ───────────────────────────────────────────────────
 //
-// Not part of `make test-unit` / CI — no network access and no credentials
-// there, matching the mock-backend-only automated suite. Run by hand once per
-// change to the wire format, with real credentials passed via env (never
-// hardcoded/committed):
+// Not part of `make test-unit` / CI — no network access there, and this test
+// additionally needs the core's own HTTP server *running and reachable from
+// youworker.ai* (e.g. via a local tunnel set as `ywf_base` on the DEV
+// deployment) so the async outbound webhook can land on
+// `POST /channels/youmessage/outbound/message` and resolve the pending turn.
+// Without that, this call always times out after `TURN_TIMEOUT` even with
+// perfectly valid credentials — the inbound POST alone only proves
+// acceptance (`202`), never completion.
+//
+// Run by hand once per change to the wire format, with real credentials
+// passed via env (never hardcoded/committed) and the core already running
+// with the matching `cloud_providers` entry + both stored secrets
+// (`client_secret` and the `outbound-hmac` secret) configured:
 //
 //   YOUWORKER_TEST_AUTENTIKA_URL=https://<workspace>.autentika.<host> \
 //   YOUWORKER_TEST_YW_BASE=https://<host>/api/v1 \
@@ -261,7 +68,7 @@ fn fold_transcript_delta_bails_on_error_frame() {
 //   YOUWORKER_TEST_SUBJECT_UUID=... \
 //   cargo test --manifest-path Cargo.toml --lib youworker_live_smoke -- --ignored --nocapture
 #[tokio::test]
-#[ignore = "hits a real youworker.ai deployment — run manually with YOUWORKER_TEST_* env vars set"]
+#[ignore = "hits a real youworker.ai deployment and needs our own webhook reachable — run manually"]
 async fn youworker_live_smoke() {
     let _ = env_logger::builder()
         .is_test(true)

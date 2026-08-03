@@ -20,6 +20,7 @@ pub mod temperature;
 pub mod thread_context;
 pub mod traits;
 pub mod youworker;
+pub mod youworker_webhook;
 
 #[allow(unused_imports)]
 pub use traits::{
