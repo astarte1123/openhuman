@@ -28,7 +28,7 @@ import {
  *    in the snapshot — message-driven progress is proxied by
  *    `metrics.featuresUsedCount` (a counter the backend bumps when a
  *    message exercises a tracked feature). We assert via
- *    `__OPENHUMAN_STORE__`-style window probe (snapshot lives in component
+ *    `__AURA_STORE__`-style window probe (snapshot lives in component
  *    state, not Redux, so we read the rendered text instead). High-usage
  *    scenario sets featuresUsedCount=6; we confirm cumulativeTokens render
  *    reflects the high number.
@@ -209,7 +209,7 @@ describe('Rewards progression & persistence', () => {
     // per phase).
     const rewardsRequestCount = await browser.execute(async () => {
       const apiBase =
-        (window as unknown as { __OPENHUMAN_API_BASE__?: string }).__OPENHUMAN_API_BASE__ ??
+        (window as unknown as { __AURA_API_BASE__?: string }).__AURA_API_BASE__ ??
         'http://127.0.0.1:18473';
       const res = await fetch(`${apiBase}/__admin/requests`);
       const json = (await res.json()) as { data?: Array<{ method: string; url: string }> };

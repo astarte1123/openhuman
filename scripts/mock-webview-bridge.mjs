@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Minimal mock of the Tauri-side webview_apis WS server. Lets you curl
-// `openhuman.webview_apis_gmail_*` against the core binary without
+// `aura.webview_apis_gmail_*` against the core binary without
 // bringing up the full Tauri shell. Usage:
 //   node scripts/mock-webview-bridge.mjs 9826
 

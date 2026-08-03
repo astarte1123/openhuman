@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-const DEFAULT_REPO = 'tinyhumansai/openhuman';
+const DEFAULT_REPO = 'tinyhumansai/aura';
 const DEFAULT_CHUNK_SIZE = 12;
 const DEFAULT_PROMPT_BODY_CHARS = 3200;
 const DEFAULT_LLM = 'codex';
@@ -532,7 +532,7 @@ function makeSchema() {
 }
 
 function invokeCodex(prompt, schema, options) {
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'openhuman-test-plan-codex-'));
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'aura-test-plan-codex-'));
   const schemaPath = path.join(tempDir, 'schema.json');
   const outputPath = path.join(tempDir, 'output.json');
   fs.writeFileSync(schemaPath, JSON.stringify(schema), 'utf8');

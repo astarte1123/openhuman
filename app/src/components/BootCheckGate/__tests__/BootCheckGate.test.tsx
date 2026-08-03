@@ -559,7 +559,7 @@ describe('BootCheckGate — picker (web build, !isTauri)', () => {
     const link = cta.querySelector('a');
     expect(link).not.toBeNull();
     expect(link?.getAttribute('href')).toMatch(
-      /github\.com\/tinyhumansai\/openhuman\/releases\/latest/
+      /github\.com\/tinyhumansai\/aura\/releases\/latest/
     );
     expect(link?.getAttribute('target')).toBe('_blank');
     expect(link?.getAttribute('rel')).toMatch(/noopener/);

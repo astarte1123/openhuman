@@ -2,7 +2,7 @@
 
 import { execFileSync } from 'node:child_process';
 
-const DEFAULT_REPO = 'tinyhumansai/openhuman';
+const DEFAULT_REPO = 'tinyhumansai/aura';
 const DEFAULT_MAX_AGE_MINUTES = 20;
 const DEFAULT_OPEN_PR_LIMIT = 200;
 const DEFAULT_EXCLUDE_WORKFLOW_PATTERNS = ['release'];

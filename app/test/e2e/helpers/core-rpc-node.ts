@@ -4,7 +4,7 @@
  *
  * Auth: the in-process core requires a per-launch bearer token that lives only
  * inside the Tauri host. For e2e, debug builds of the Tauri shell write that
- * token to `${tmpdir}/openhuman-e2e-rpc-token` (see
+ * token to `${tmpdir}/aura-e2e-rpc-token` (see
  * `app/src-tauri/src/core_process.rs`). We read it here and attach
  * `Authorization: Bearer …` to every probe + call. Release builds never write
  * the file, so this code degrades to unauthenticated requests (which the core
@@ -18,7 +18,7 @@ import type { RpcCallResult } from './core-rpc-webview';
 
 let cachedRpcUrl: string | null = null;
 
-const E2E_TOKEN_FILENAME = 'openhuman-e2e-rpc-token';
+const E2E_TOKEN_FILENAME = 'aura-e2e-rpc-token';
 
 function readBearerToken(): string | null {
   const tokenPath = path.join(os.tmpdir(), E2E_TOKEN_FILENAME);
@@ -45,12 +45,12 @@ function normalizeRpcUrl(raw: string): string {
 }
 
 function coreHost(): string {
-  return (process.env.OPENHUMAN_CORE_HOST || '127.0.0.1').trim() || '127.0.0.1';
+  return (process.env.AURA_CORE_HOST || '127.0.0.1').trim() || '127.0.0.1';
 }
 
-/** Ports to try when OPENHUMAN_CORE_PORT is unset (matches typical dev sidecar range). */
+/** Ports to try when AURA_CORE_PORT is unset (matches typical dev sidecar range). */
 function defaultPortProbeList(): number[] {
-  const raw = process.env.OPENHUMAN_CORE_PORT?.trim();
+  const raw = process.env.AURA_CORE_PORT?.trim();
   if (raw) {
     const p = Number.parseInt(raw, 10);
     if (!Number.isNaN(p) && p > 0 && p < 65536) {
@@ -84,13 +84,13 @@ async function tryPingRpc(url: string): Promise<boolean> {
 }
 
 /**
- * Resolve the sidecar JSON-RPC URL: full `OPENHUMAN_CORE_RPC_URL`, or
- * `OPENHUMAN_CORE_HOST` + `OPENHUMAN_CORE_PORT`, then probe host:port until core.ping succeeds.
+ * Resolve the sidecar JSON-RPC URL: full `AURA_CORE_RPC_URL`, or
+ * `AURA_CORE_HOST` + `AURA_CORE_PORT`, then probe host:port until core.ping succeeds.
  */
 export async function resolveCoreRpcUrl(): Promise<string> {
   if (cachedRpcUrl) return cachedRpcUrl;
 
-  const env = process.env.OPENHUMAN_CORE_RPC_URL?.trim();
+  const env = process.env.AURA_CORE_RPC_URL?.trim();
   if (env) {
     cachedRpcUrl = normalizeRpcUrl(env);
     return cachedRpcUrl;
@@ -112,11 +112,11 @@ export async function resolveCoreRpcUrl(): Promise<string> {
   }
 
   throw new Error(
-    `Core JSON-RPC not reachable: set OPENHUMAN_CORE_RPC_URL or OPENHUMAN_CORE_HOST/OPENHUMAN_CORE_PORT (tried ${host} ports ${ports.join(', ')})`
+    `Core JSON-RPC not reachable: set AURA_CORE_RPC_URL or AURA_CORE_HOST/AURA_CORE_PORT (tried ${host} ports ${ports.join(', ')})`
   );
 }
 
-export async function callOpenhumanRpcNode<T = unknown>(
+export async function callAuraRpcNode<T = unknown>(
   method: string,
   params: Record<string, unknown> = {}
 ): Promise<RpcCallResult<T>> {

@@ -30,14 +30,14 @@ export interface SetupWalletParams {
 
 export const fetchWalletStatus = async (): Promise<WalletStatus> => {
   const response = await callCoreRpc<{ result: WalletStatus }>({
-    method: 'openhuman.wallet_status',
+    method: 'aura.wallet_status',
   });
   return response.result;
 };
 
 export const setupLocalWallet = async (params: SetupWalletParams): Promise<WalletStatus> => {
   const response = await callCoreRpc<{ result: WalletStatus }>({
-    method: 'openhuman.wallet_setup',
+    method: 'aura.wallet_setup',
     params,
   });
   return response.result;

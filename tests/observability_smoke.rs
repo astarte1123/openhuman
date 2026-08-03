@@ -1,6 +1,6 @@
 //! Runtime smoke for the Sentry `before_send` filters that drop per-attempt
 //! transient-upstream provider, backend_api, integrations, and updater
-//! failures plus budget-exhausted user-state 400s (OPENHUMAN-TAURI-3M / 12 / 13).
+//! failures plus budget-exhausted user-state 400s (AURA-TAURI-3M / 12 / 13).
 //!
 //! Unit tests in `src/core/observability.rs` exercise the pure filter
 //! function. This integration test wires the actual `sentry::init` →
@@ -8,7 +8,7 @@
 //! behaves as designed: transient events are dropped, permanent events
 //! and aggregate `all_exhausted` events still surface.
 
-use openhuman_core::core::observability::{
+use aura_core::core::observability::{
     is_budget_event, is_session_expired_event, is_transient_backend_api_failure,
     is_transient_integrations_failure, is_transient_provider_http_failure,
     is_updater_transient_event,
@@ -90,7 +90,7 @@ fn drops_updater_transient_check_failure() {
     let event = event_with_tags_and_message(
         &[],
         "failed to check for updates: error sending request for url \
-         (https://github.com/tinyhumansai/openhuman/releases/latest/download/latest.json)",
+         (https://github.com/tinyhumansai/aura/releases/latest/download/latest.json)",
     );
     assert_eq!(
         count_captured(vec![event]),
@@ -139,7 +139,7 @@ fn drops_budget_exhausted_400() {
             ("failure", "non_2xx"),
             ("status", "400"),
         ],
-        r#"OpenHuman API error (400 Bad Request): {"success":false,"error":"Insufficient budget"}"#,
+        r#"Aura API error (400 Bad Request): {"success":false,"error":"Insufficient budget"}"#,
     );
 
     assert_eq!(

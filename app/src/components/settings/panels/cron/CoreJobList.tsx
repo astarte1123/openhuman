@@ -26,7 +26,7 @@ const CoreJobList = ({
       <div className="p-4 border-b border-stone-200">
         <h3 className="text-sm font-semibold text-stone-900">Core Cron Jobs</h3>
         <p className="text-xs text-stone-500 mt-1">
-          Jobs persisted in the OpenHuman core scheduler database.
+          Jobs persisted in the Aura core scheduler database.
         </p>
       </div>
 

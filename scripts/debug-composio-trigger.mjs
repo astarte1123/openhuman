@@ -7,7 +7,7 @@
 // Rust-side counterpart to
 //   backend-1/src/scripts/live-test-composio-trigger.ts
 //
-// Opens a socket.io client against the openhuman backend (same endpoint
+// Opens a socket.io client against the aura backend (same endpoint
 // the Rust core's SocketManager hits), authenticates with a JWT, and
 // waits for `composio:trigger` events to land on the socket when the
 // backend's POST /webhooks/composio receives and HMAC-verifies an
@@ -47,7 +47,7 @@
 // Env vars (loaded from .env + app/.env.local):
 //   BACKEND_URL / VITE_BACKEND_URL — backend API base
 //   JWT_TOKEN                       — bearer JWT (optional, overrides
-//                                     the `openhuman-core auth get_session_token`
+//                                     the `aura-core auth get_session_token`
 //                                     fallback)
 //   TRIGGER_SLUG                    — override via CLI flag `--trigger`
 // ──────────────────────────────────────────────────────────────────────
@@ -157,7 +157,7 @@ info('Debug', DEBUG);
 header('1. Authentication');
 
 function getSessionTokenFromCore() {
-  const coreBin = path.join(ROOT, 'target', 'debug', 'openhuman-core');
+  const coreBin = path.join(ROOT, 'target', 'debug', 'aura-core');
   if (!existsSync(coreBin)) {
     if (DEBUG) console.debug(`[debug] core binary not found at ${coreBin}`);
     return null;
@@ -185,7 +185,7 @@ if (token) {
   info('Source', 'JWT_TOKEN env');
 } else {
   token = getSessionTokenFromCore();
-  if (token) info('Source', 'target/debug/openhuman-core auth get_session_token');
+  if (token) info('Source', 'target/debug/aura-core auth get_session_token');
 }
 
 if (!token) {
@@ -314,7 +314,7 @@ console.log(
     `${C.dim}    CLEANUP=keep TRIGGER_SLUG=${TRIGGER_SLUG} \\${C.reset}\n` +
     `${C.dim}      npx ts-node -r tsconfig-paths/register \\${C.reset}\n` +
     `${C.dim}      src/scripts/live-test-composio-trigger.ts${C.reset}\n\n` +
-    `${C.dim}  Then run THIS script from the openhuman-2 repo to verify${C.reset}\n` +
+    `${C.dim}  Then run THIS script from the aura-2 repo to verify${C.reset}\n` +
     `${C.dim}  that trigger events reach the client socket.${C.reset}`,
 );
 

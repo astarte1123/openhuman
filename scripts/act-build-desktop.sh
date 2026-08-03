@@ -38,9 +38,9 @@ bash "${ROOT}/scripts/act-staging.sh" --list >/dev/null 2>&1 || true
 
 VERSION="${TAG#v}"
 VERSION="${VERSION%-staging}"
-SHA="$(git ls-remote https://github.com/tinyhumansai/openhuman "refs/tags/$TAG" | awk '{print $1}')"
+SHA="$(git ls-remote https://github.com/tinyhumansai/aura "refs/tags/$TAG" | awk '{print $1}')"
 if [ -z "$SHA" ]; then
-  echo "Tag $TAG not found on tinyhumansai/openhuman" >&2
+  echo "Tag $TAG not found on tinyhumansai/aura" >&2
   exit 1
 fi
 SHORT_SHA="${SHA:0:12}"
@@ -79,6 +79,6 @@ exec act workflow_call \
   --eventpath "$EVENT_FILE" \
   --secret-file "$SECRETS_FILE" \
   --var-file "$VARS_FILE" \
-  --env GITHUB_REPOSITORY=tinyhumansai/openhuman \
+  --env GITHUB_REPOSITORY=tinyhumansai/aura \
   --env GITHUB_REPOSITORY_OWNER=tinyhumansai \
   "$@"

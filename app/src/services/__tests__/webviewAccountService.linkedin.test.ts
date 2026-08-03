@@ -76,7 +76,7 @@ describe('webviewAccountService — LinkedIn recipe events', () => {
 
     expect(callCoreRpc).toHaveBeenCalledWith(
       expect.objectContaining({
-        method: 'openhuman.memory_doc_ingest',
+        method: 'aura.memory_doc_ingest',
         params: expect.objectContaining({
           namespace: `linkedin:${ACCOUNT_ID}`,
           key: 'conv-abc:2025-05-08', // canonical key — no :preview suffix

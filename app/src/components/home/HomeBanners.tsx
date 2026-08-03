@@ -70,7 +70,7 @@ export function PromotionalCreditsBanner({ promoCredits }: { promoCredits: numbe
             You have {formatUsd(promoCredits)} of promotional credits.
           </p>
           <p className="mt-1 text-sm leading-relaxed text-amber-600">
-            Give OpenHuman a spin, and when you&apos;re ready for more,{' '}
+            Give Aura a spin, and when you&apos;re ready for more,{' '}
             <button
               type="button"
               onClick={() => {
@@ -145,7 +145,7 @@ export function DiscordBanner() {
         <div className="min-w-0 flex-1">
           <div className="text-sm font-semibold">Join Our Discord</div>
           <div className="mt-0.5 text-sm text-[#5E66BC]">
-            Get updates, free merch, credits, report bugs, and be part of the OpenHuman community.
+            Get updates, free merch, credits, report bugs, and be part of the Aura community.
           </div>
         </div>
       </div>

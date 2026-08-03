@@ -199,7 +199,7 @@ export interface LocalAiDiagnostics {
   ok: boolean;
 }
 
-export async function openhumanAgentChat(
+export async function auraAgentChat(
   message: string,
   modelOverride?: string,
   temperature?: number
@@ -208,19 +208,19 @@ export async function openhumanAgentChat(
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<string>>({
-    method: 'openhuman.agent_chat',
+    method: 'aura.agent_chat',
     params: { message, model_override: modelOverride, temperature },
   });
 }
 
-export async function openhumanLocalAiStatus(): Promise<CommandResponse<LocalAiStatus>> {
+export async function auraLocalAiStatus(): Promise<CommandResponse<LocalAiStatus>> {
   try {
     return await callCoreRpc<CommandResponse<LocalAiStatus>>({
-      method: 'openhuman.inference_status',
+      method: 'aura.inference_status',
     });
   } catch (err) {
     const message = tauriErrorMessage(err);
-    if (message.includes('unknown method: openhuman.inference_status')) {
+    if (message.includes('unknown method: aura.inference_status')) {
       throw new Error(
         'Local model runtime is unavailable in this core build. Restart app after updating to the latest build.'
       );
@@ -229,72 +229,72 @@ export async function openhumanLocalAiStatus(): Promise<CommandResponse<LocalAiS
   }
 }
 
-export async function openhumanLocalAiSummarize(
+export async function auraLocalAiSummarize(
   text: string,
   maxTokens?: number
 ): Promise<CommandResponse<string>> {
   return await callCoreRpc<CommandResponse<string>>({
-    method: 'openhuman.inference_summarize',
+    method: 'aura.inference_summarize',
     params: { text, max_tokens: maxTokens },
   });
 }
 
-export async function openhumanLocalAiPrompt(
+export async function auraLocalAiPrompt(
   prompt: string,
   maxTokens?: number,
   noThink?: boolean
 ): Promise<CommandResponse<string>> {
   return await callCoreRpc<CommandResponse<string>>({
-    method: 'openhuman.inference_prompt',
+    method: 'aura.inference_prompt',
     params: { prompt, max_tokens: maxTokens, no_think: noThink },
   });
 }
 
-export async function openhumanLocalAiVisionPrompt(
+export async function auraLocalAiVisionPrompt(
   prompt: string,
   imageRefs: string[],
   maxTokens?: number
 ): Promise<CommandResponse<string>> {
   return await callCoreRpc<CommandResponse<string>>({
-    method: 'openhuman.inference_vision_prompt',
+    method: 'aura.inference_vision_prompt',
     params: { prompt, image_refs: imageRefs, max_tokens: maxTokens },
   });
 }
 
-export async function openhumanLocalAiEmbed(
+export async function auraLocalAiEmbed(
   inputs: string[]
 ): Promise<CommandResponse<LocalAiEmbeddingResult>> {
   return await callCoreRpc<CommandResponse<LocalAiEmbeddingResult>>({
-    method: 'openhuman.inference_embed',
+    method: 'aura.inference_embed',
     params: { inputs },
   });
 }
 
-export async function openhumanLocalAiTranscribe(
+export async function auraLocalAiTranscribe(
   audioPath: string
 ): Promise<CommandResponse<LocalAiSpeechResult>> {
   return await callCoreRpc<CommandResponse<LocalAiSpeechResult>>({
-    method: 'openhuman.local_ai_transcribe',
+    method: 'aura.local_ai_transcribe',
     params: { audio_path: audioPath },
   });
 }
 
-export async function openhumanLocalAiTranscribeBytes(
+export async function auraLocalAiTranscribeBytes(
   audioBytes: number[],
   extension?: string
 ): Promise<CommandResponse<LocalAiSpeechResult>> {
   return await callCoreRpc<CommandResponse<LocalAiSpeechResult>>({
-    method: 'openhuman.local_ai_transcribe_bytes',
+    method: 'aura.local_ai_transcribe_bytes',
     params: { audio_bytes: audioBytes, extension },
   });
 }
 
-export async function openhumanLocalAiTts(
+export async function auraLocalAiTts(
   text: string,
   outputPath?: string
 ): Promise<CommandResponse<LocalAiTtsResult>> {
   return await callCoreRpc<CommandResponse<LocalAiTtsResult>>({
-    method: 'openhuman.local_ai_tts',
+    method: 'aura.local_ai_tts',
     params: { text, output_path: outputPath },
   });
 }
@@ -302,12 +302,12 @@ export async function openhumanLocalAiTts(
 /**
  * Multi-turn chat completion via the configured inference provider.
  */
-export async function openhumanLocalAiChat(
+export async function auraLocalAiChat(
   messages: LocalAiChatMessage[],
   maxTokens?: number
 ): Promise<CommandResponse<string>> {
   return await callCoreRpc<CommandResponse<string>>({
-    method: 'openhuman.inference_chat',
+    method: 'aura.inference_chat',
     params: { messages, max_tokens: maxTokens },
   });
 }
@@ -316,12 +316,12 @@ export async function openhumanLocalAiChat(
  * Ask the configured inference provider whether the assistant should react to
  * a user message with an emoji.
  */
-export async function openhumanLocalAiShouldReact(
+export async function auraLocalAiShouldReact(
   message: string,
   channelType: string
 ): Promise<CommandResponse<ReactionDecision>> {
   return await callCoreRpc<CommandResponse<ReactionDecision>>({
-    method: 'openhuman.inference_should_react',
+    method: 'aura.inference_should_react',
     params: { message, channel_type: channelType },
   });
 }
@@ -330,58 +330,58 @@ export async function openhumanLocalAiShouldReact(
  * Classify the emotion and sentiment of a user message via the configured
  * inference provider.
  */
-export async function openhumanLocalAiAnalyzeSentiment(
+export async function auraLocalAiAnalyzeSentiment(
   message: string
 ): Promise<CommandResponse<SentimentResult>> {
   return await callCoreRpc<CommandResponse<SentimentResult>>({
-    method: 'openhuman.inference_analyze_sentiment',
+    method: 'aura.inference_analyze_sentiment',
     params: { message },
   });
 }
 
-export async function openhumanLocalAiAssetsStatus(): Promise<
+export async function auraLocalAiAssetsStatus(): Promise<
   CommandResponse<LocalAiAssetsStatus>
 > {
   return await callCoreRpc<CommandResponse<LocalAiAssetsStatus>>({
-    method: 'openhuman.local_ai_assets_status',
+    method: 'aura.local_ai_assets_status',
   });
 }
 
-export async function openhumanLocalAiDownloadsProgress(): Promise<
+export async function auraLocalAiDownloadsProgress(): Promise<
   CommandResponse<LocalAiDownloadsProgress>
 > {
   return await callCoreRpc<CommandResponse<LocalAiDownloadsProgress>>({
-    method: 'openhuman.local_ai_downloads_progress',
+    method: 'aura.local_ai_downloads_progress',
   });
 }
 
-export async function openhumanLocalAiDownloadAsset(
+export async function auraLocalAiDownloadAsset(
   capability: 'chat' | 'vision' | 'embedding' | 'stt' | 'tts'
 ): Promise<CommandResponse<LocalAiAssetsStatus>> {
   return await callCoreRpc<CommandResponse<LocalAiAssetsStatus>>({
-    method: 'openhuman.local_ai_download_asset',
+    method: 'aura.local_ai_download_asset',
     params: { capability },
   });
 }
 
-export async function openhumanLocalAiDeviceProfile(): Promise<DeviceProfileResult> {
-  return await callCoreRpc<DeviceProfileResult>({ method: 'openhuman.inference_device_profile' });
+export async function auraLocalAiDeviceProfile(): Promise<DeviceProfileResult> {
+  return await callCoreRpc<DeviceProfileResult>({ method: 'aura.inference_device_profile' });
 }
 
-export async function openhumanLocalAiPresets(): Promise<PresetsResponse> {
-  return await callCoreRpc<PresetsResponse>({ method: 'openhuman.inference_presets' });
+export async function auraLocalAiPresets(): Promise<PresetsResponse> {
+  return await callCoreRpc<PresetsResponse>({ method: 'aura.inference_presets' });
 }
 
-export async function openhumanLocalAiApplyPreset(tier: string): Promise<ApplyPresetResult> {
+export async function auraLocalAiApplyPreset(tier: string): Promise<ApplyPresetResult> {
   return await callCoreRpc<ApplyPresetResult>({
-    method: 'openhuman.inference_apply_preset',
+    method: 'aura.inference_apply_preset',
     params: { tier },
   });
 }
 
-export async function openhumanLocalAiDiagnostics(): Promise<LocalAiDiagnostics> {
+export async function auraLocalAiDiagnostics(): Promise<LocalAiDiagnostics> {
   return await callCoreRpc<LocalAiDiagnostics>({
-    method: 'openhuman.inference_diagnostics',
+    method: 'aura.inference_diagnostics',
     params: {},
   });
 }

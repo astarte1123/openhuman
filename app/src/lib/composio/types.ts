@@ -1,6 +1,6 @@
 /**
- * TypeScript types that mirror the Rust `openhuman::composio::types`
- * response envelopes exposed via the `openhuman.composio_*` JSON-RPC
+ * TypeScript types that mirror the Rust `aura::composio::types`
+ * response envelopes exposed via the `aura.composio_*` JSON-RPC
  * methods. Field names match the wire shape (camelCase where the
  * backend emits camelCase, snake_case where the Rust RPC layer does).
  */

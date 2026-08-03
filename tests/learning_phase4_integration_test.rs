@@ -16,13 +16,13 @@ use std::sync::Arc;
 use std::time::SystemTime;
 use std::time::UNIX_EPOCH;
 
-use openhuman_core::openhuman::learning::cache::{class_prefix, FacetCache};
-use openhuman_core::openhuman::learning::candidate::{
+use aura_core::aura::learning::cache::{class_prefix, FacetCache};
+use aura_core::aura::learning::candidate::{
     self as candidate, CueFamily, EvidenceRef, FacetClass, LearningCandidate,
 };
-use openhuman_core::openhuman::learning::profile_md_renderer::ProfileMdRenderer;
-use openhuman_core::openhuman::learning::stability_detector::StabilityDetector;
-use openhuman_core::openhuman::memory::store::profile::{
+use aura_core::aura::learning::profile_md_renderer::ProfileMdRenderer;
+use aura_core::aura::learning::stability_detector::StabilityDetector;
+use aura_core::aura::memory::store::profile::{
     FacetState, FacetType, ProfileFacet, UserState, PROFILE_INIT_SQL,
 };
 use parking_lot::Mutex;
@@ -226,10 +226,10 @@ fn phase4_end_to_end_pin_forget_profile_md_list() {
     // identity/name=Alice should no longer appear in the visible sections.
     // (The identity block placeholder renders if all identity rows are non-active.)
     let identity_block_start = profile_after_forget
-        .find("<!-- openhuman:identity:start -->")
+        .find("<!-- aura:identity:start -->")
         .unwrap_or(0);
     let identity_block_end = profile_after_forget
-        .find("<!-- openhuman:identity:end -->")
+        .find("<!-- aura:identity:end -->")
         .unwrap_or(profile_after_forget.len());
     let identity_block_content = &profile_after_forget[identity_block_start..identity_block_end];
     assert!(
@@ -253,7 +253,7 @@ fn phase4_end_to_end_pin_forget_profile_md_list() {
 
     // Verify the connected-accounts block is untouched (never written by renderer).
     assert!(
-        !profile_after_forget.contains("<!-- openhuman:connected-accounts:start -->"),
+        !profile_after_forget.contains("<!-- aura:connected-accounts:start -->"),
         "connected-accounts block should not be written by the renderer"
     );
 

@@ -121,7 +121,7 @@ export function startNativeNotificationsService(): void {
 
   // Core-originated notifications (cron completions, webhook failures,
   // sub-agent completions) bridged over socket.io from the Rust event
-  // bus. See src/openhuman/notifications/bus.rs.
+  // bus. See src/aura/notifications/bus.rs.
   coreNotificationListener = (...args: unknown[]) => {
     const p = (args[0] ?? {}) as CoreNotificationPayload;
     log('[socket] core_notification id=%s category=%s', p.id, p.category);
@@ -148,7 +148,7 @@ export function startNativeNotificationsService(): void {
     dispatchAndMaybeBanner('system', {
       id: `socket_disconnect:${Date.now()}`,
       title: 'Connection lost',
-      body: `OpenHuman lost its connection to the core service (${truncate(reason, 80)}).`,
+      body: `Aura lost its connection to the core service (${truncate(reason, 80)}).`,
     });
   };
 

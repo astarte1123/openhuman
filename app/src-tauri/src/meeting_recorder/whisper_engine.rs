@@ -2,7 +2,7 @@
 //!
 //! **Windows only** for this phase — `whisper-rs` is a Windows-only Cargo
 //! dependency here (see `Cargo.toml`), pinned to the same `0.16` version
-//! already resolved transitively via `openhuman_core` so whisper.cpp is
+//! already resolved transitively via `aura_core` so whisper.cpp is
 //! only ever compiled once for this crate graph. Non-Windows builds get
 //! an explicit "not yet implemented" stub — no pretend support.
 //!

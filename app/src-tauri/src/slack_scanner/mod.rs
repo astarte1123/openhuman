@@ -13,7 +13,7 @@
 //!     runs beyond that one fixed serializer, and no DOM scraping.
 //!
 //! Emits `webview:event` ingest events (for any listening React UI) AND
-//! POSTs `openhuman.memory_doc_ingest` directly to the core so memory is
+//! POSTs `aura.memory_doc_ingest` directly to the core so memory is
 //! populated whether or not the main window is open. Messages are grouped
 //! by `channel_id` (one doc per channel; the transcript carries each
 //! message's date inline so chronology stays readable). Per-day grouping
@@ -78,7 +78,7 @@ pub fn spawn_scanner<R: Runtime>(
         sleep(Duration::from_secs(10)).await;
 
         // Account-stable target identifier discovered on the first tick
-        // where the strict `#openhuman-account-<id>` fragment is still
+        // where the strict `#aura-account-<id>` fragment is still
         // present. Once set, subsequent ticks resolve the page target
         // by this id first so the relaxed same-origin fallback can
         // never bind us to a sibling Slack account's page in a
@@ -127,7 +127,7 @@ pub fn spawn_scanner<R: Runtime>(
 /// first strict-fragment match across subsequent ticks. Once set, this
 /// function resolves by id first so multi-account Slack sessions can't
 /// accidentally cross-wire scanner A onto scanner B's page target after
-/// Slack's router strips the `#openhuman-account-<id>` fragment.
+/// Slack's router strips the `#aura-account-<id>` fragment.
 async fn scan_once(
     account_id: &str,
     url_prefix: &str,
@@ -140,7 +140,7 @@ async fn scan_once(
     let targets_v = cdp.call("Target.getTargets", json!({}), None).await?;
     let targets = parse_targets(&targets_v);
     // Slack's client-side router does pushState to `/client/<workspace>/<channel>`
-    // shortly after first load, which strips the `#openhuman-account-<id>` fragment.
+    // shortly after first load, which strips the `#aura-account-<id>` fragment.
     // The fragment is only reliable on the FIRST scan tick (immediately after
     // navigation) — by tick 2 it's gone.
     //
@@ -148,7 +148,7 @@ async fn scan_once(
     //   1. If we previously locked onto a `targetId` via a strict fragment
     //      match, prefer that exact id. This pins the scanner to the same
     //      account-tab even after the fragment is gone.
-    //   2. Strict fragment match (`url_prefix` + `#openhuman-account-<id>`).
+    //   2. Strict fragment match (`url_prefix` + `#aura-account-<id>`).
     //      On hit, persist the `targetId` for future ticks.
     //   3. Relaxed prefix-only match. Per-account `data_directory`
     //      isolation makes this safe in single-account setups, but in a
@@ -243,7 +243,7 @@ fn infer_team_id(dump: &idb::IdbDump) -> Option<String> {
 
 /// Group messages by channel (no per-day split), emit one
 /// `webview:event` per channel, and POST the same payload to
-/// `openhuman.memory_doc_ingest`. One memory doc per channel — the
+/// `aura.memory_doc_ingest`. One memory doc per channel — the
 /// transcript inside can be long, each message line still carries its
 /// date so the full chronology stays readable.
 #[allow(clippy::too_many_arguments)]
@@ -402,7 +402,7 @@ fn chrono_now_millis() -> i64 {
         .unwrap_or(0)
 }
 
-/// Build and POST the `openhuman.memory_doc_ingest` payload for a single
+/// Build and POST the `aura.memory_doc_ingest` payload for a single
 /// (channel, day) group. Mirrors `whatsapp_scanner::post_memory_doc_ingest`.
 async fn post_memory_doc_ingest(account_id: &str, ingest: &Value) -> Result<(), String> {
     let channel_id = ingest
@@ -541,7 +541,7 @@ async fn post_memory_doc_ingest(account_id: &str, ingest: &Value) -> Result<(), 
     let body = json!({
         "jsonrpc": "2.0",
         "id": 1,
-        "method": "openhuman.memory_doc_ingest",
+        "method": "aura.memory_doc_ingest",
         "params": params,
     });
 
@@ -614,7 +614,7 @@ fn parse_targets(v: &Value) -> Vec<CdpTarget> {
 async fn browser_ws_url() -> Result<String, String> {
     let url = format!("http://{CDP_HOST}:{CDP_PORT}/json/version");
     let resp = reqwest::Client::builder()
-        .user_agent("openhuman-cdp/1.0")
+        .user_agent("aura-cdp/1.0")
         .timeout(Duration::from_secs(5))
         .build()
         .map_err(|e| format!("reqwest build: {e}"))?

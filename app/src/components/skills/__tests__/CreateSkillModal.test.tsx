@@ -33,7 +33,7 @@ function builtSkill(overrides: Partial<SkillSummary> = {}): SkillSummary {
     tags: [],
     tools: [],
     prompts: [],
-    location: '/home/u/.openhuman/skills/my-skill/SKILL.md',
+    location: '/home/u/.aura/skills/my-skill/SKILL.md',
     resources: [],
     scope: 'user',
     legacy: false,

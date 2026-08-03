@@ -1,4 +1,4 @@
-// OpenHuman audio bridge for the embedded Google Meet webview.
+// Aura audio bridge for the embedded Google Meet webview.
 //
 // Installed via CDP `Page.addScriptToEvaluateOnNewDocument` from the
 // Tauri shell (`app/src-tauri/src/meet_audio/inject.rs`) so it runs at
@@ -16,10 +16,10 @@
 //    request returns our destination stream (and combined audio+video
 //    requests get the real video track from Chromium's fake-camera Y4M
 //    plus our audio track).
-// 3. Exposes `window.__openhumanFeedPcm(b64)` — the Tauri shell calls
+// 3. Exposes `window.__auraFeedPcm(b64)` — the Tauri shell calls
 //    this on a ~100 ms cadence via CDP `Runtime.evaluate` to push the
 //    next chunk of synthesized PCM16LE bytes from
-//    `openhuman.meet_agent_poll_speech`.
+//    `aura.meet_agent_poll_speech`.
 //
 // JS-injection note: the project's broader rule (CLAUDE.md) is "no new
 // JS in embedded provider webviews". The Meet call window is a special
@@ -31,12 +31,12 @@
 // webviews keep the no-JS rule.
 
 (function () {
-  if (window.__openhumanAudioBridgeInstalled) {
-    console.log("[openhuman-audio-bridge] already installed; skipping");
+  if (window.__auraAudioBridgeInstalled) {
+    console.log("[aura-audio-bridge] already installed; skipping");
     return;
   }
-  window.__openhumanAudioBridgeInstalled = true;
-  console.log("[openhuman-audio-bridge] install begin");
+  window.__auraAudioBridgeInstalled = true;
+  console.log("[aura-audio-bridge] install begin");
 
   var SAMPLE_RATE = 16000;
   var ctx;
@@ -46,7 +46,7 @@
   function ensureContext() {
     if (ctx) {
       console.log(
-        "[openhuman-audio-bridge] reuse AudioContext state=" + ctx.state
+        "[aura-audio-bridge] reuse AudioContext state=" + ctx.state
       );
       return ctx;
     }
@@ -60,7 +60,7 @@
       // back to the default (the bridge will resample implicitly via
       // each AudioBuffer's declared rate).
       console.warn(
-        "[openhuman-audio-bridge] AudioContext sampleRate hint rejected; falling back to default rate err=" +
+        "[aura-audio-bridge] AudioContext sampleRate hint rejected; falling back to default rate err=" +
           e
       );
       ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -68,7 +68,7 @@
     dest = ctx.createMediaStreamDestination();
     nextStartTime = ctx.currentTime;
     console.log(
-      "[openhuman-audio-bridge] AudioContext created requested_rate=" +
+      "[aura-audio-bridge] AudioContext created requested_rate=" +
         requestedRate +
         " actual_rate=" +
         ctx.sampleRate +
@@ -99,7 +99,7 @@
 
   // Public push API. Returns the duration in seconds the chunk added
   // to the queue, mostly for diagnostics; the shell ignores it.
-  window.__openhumanFeedPcm = function (b64) {
+  window.__auraFeedPcm = function (b64) {
     if (!b64) return 0;
     try {
       ensureContext();
@@ -122,27 +122,27 @@
       // High-frequency log gated by a counter so we don't drown the
       // console at 10 Hz; emit ~1 in 50 frames (~5 s cadence at the
       // shell's 100 ms feed rate).
-      window.__openhumanFeedCounter = (window.__openhumanFeedCounter || 0) + 1;
-      if (window.__openhumanFeedCounter % 50 === 1) {
+      window.__auraFeedCounter = (window.__auraFeedCounter || 0) + 1;
+      if (window.__auraFeedCounter % 50 === 1) {
         console.log(
-          "[openhuman-audio-bridge] feed sampled chunk_dur=" +
+          "[aura-audio-bridge] feed sampled chunk_dur=" +
             buffer.duration.toFixed(3) +
             "s queue_ahead=" +
             (nextStartTime - ctx.currentTime).toFixed(3) +
             "s frame=" +
-            window.__openhumanFeedCounter
+            window.__auraFeedCounter
         );
       }
       return buffer.duration;
     } catch (e) {
-      console.warn("[openhuman-audio-bridge] feed failed:", e);
+      console.warn("[aura-audio-bridge] feed failed:", e);
       return 0;
     }
   };
 
   // Public introspection — useful from the shell side via
   // Runtime.evaluate to confirm the bridge is alive.
-  window.__openhumanAudioBridgeInfo = function () {
+  window.__auraAudioBridgeInfo = function () {
     return {
       installed: true,
       sample_rate: SAMPLE_RATE,
@@ -160,7 +160,7 @@
     typeof navigator.mediaDevices.getUserMedia !== "function"
   ) {
     console.warn(
-      "[openhuman-audio-bridge] navigator.mediaDevices.getUserMedia missing; interception disabled"
+      "[aura-audio-bridge] navigator.mediaDevices.getUserMedia missing; interception disabled"
     );
     return;
   }
@@ -183,14 +183,14 @@
   navigator.mediaDevices.getUserMedia = function (constraints) {
     if (!constraints || !constraints.audio) {
       console.log(
-        "[openhuman-audio-bridge] getUserMedia passthrough (no audio)"
+        "[aura-audio-bridge] getUserMedia passthrough (no audio)"
       );
       return origGum(constraints);
     }
 
     if (!constraints.video) {
       console.log(
-        "[openhuman-audio-bridge] getUserMedia intercepted audio-only"
+        "[aura-audio-bridge] getUserMedia intercepted audio-only"
       );
       return Promise.resolve(freshAudioStream());
     }
@@ -198,7 +198,7 @@
     // (fake-camera-backed) getUserMedia and splice in fresh clones of
     // our audio tracks.
     console.log(
-      "[openhuman-audio-bridge] getUserMedia intercepted audio+video; splicing audio onto fake-camera stream"
+      "[aura-audio-bridge] getUserMedia intercepted audio+video; splicing audio onto fake-camera stream"
     );
     return origGum({ video: constraints.video }).then(function (realStream) {
       try {
@@ -219,7 +219,7 @@
   // Best-effort: also patch the legacy `getUserMedia` aliases some
   // older Meet code paths still call into.
   if (typeof navigator.getUserMedia === "function") {
-    console.log("[openhuman-audio-bridge] patching legacy navigator.getUserMedia");
+    console.log("[aura-audio-bridge] patching legacy navigator.getUserMedia");
     var origLegacy = navigator.getUserMedia.bind(navigator);
     navigator.getUserMedia = function (constraints, success, failure) {
       navigator.mediaDevices
@@ -231,5 +231,5 @@
         });
     };
   }
-  console.log("[openhuman-audio-bridge] install complete");
+  console.log("[aura-audio-bridge] install complete");
 })();

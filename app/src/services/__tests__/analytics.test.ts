@@ -77,7 +77,7 @@ vi.mock('../../utils/config', () => ({
     return hoisted.gaMeasurementId;
   },
   SENTRY_DSN: 'https://abc@example.ingest.sentry.io/1',
-  SENTRY_RELEASE: 'openhuman@test+abc',
+  SENTRY_RELEASE: 'aura@test+abc',
   SENTRY_SMOKE_TEST: false,
 }));
 
@@ -237,7 +237,7 @@ describe('initSentry beforeSend manual-staging bypass', () => {
       release: string;
       integrations: Array<{ name?: string }>;
     };
-    expect(opts.release).toBe('openhuman@test+abc');
+    expect(opts.release).toBe('aura@test+abc');
     const names = opts.integrations.map(i => i.name).filter(Boolean);
     expect(names).toContain('HttpContext');
   });

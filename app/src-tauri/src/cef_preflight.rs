@@ -1,7 +1,7 @@
 //! CEF cache-lock preflight check (macOS).
 //!
-//! When another OpenHuman instance is already running, it holds an exclusive
-//! lock on the CEF user-data-dir at `~/Library/Caches/com.openhuman.app/cef`.
+//! When another Aura instance is already running, it holds an exclusive
+//! lock on the CEF user-data-dir at `~/Library/Caches/com.aura.app/cef`.
 //! The vendored `tauri-runtime-cef` crate calls `cef::initialize()` and
 //! asserts the result equals `1`; on lock collision it returns `0` and the
 //! assertion panics with a Rust backtrace and no actionable message
@@ -27,7 +27,7 @@ use nix::unistd::Pid;
 /// the vendored `tauri-runtime-cef` derives the cache directory as
 /// `dirs::cache_dir() / <identifier> / cef`. If `tauri.conf.json` ever changes
 /// the bundle identifier, update this constant too.
-pub const APP_IDENTIFIER: &str = "com.openhuman.app";
+pub const APP_IDENTIFIER: &str = "com.aura.app";
 
 /// Errors returned by the preflight check.
 #[derive(Debug)]
@@ -52,12 +52,12 @@ impl fmt::Display for CefLockError {
                 cache_path,
             } => write!(
                 f,
-                "CEF cache at {} is held by another OpenHuman instance \
+                "CEF cache at {} is held by another Aura instance \
                  (host {}, pid {}).\n\
                  Quit the running instance and try again.\n\
                  Workaround:\n  \
-                 pkill -f \"OpenHuman.app/Contents\"\n  \
-                 pkill -f \"openhuman-core\"",
+                 pkill -f \"Aura.app/Contents\"\n  \
+                 pkill -f \"aura-core\"",
                 cache_path.display(),
                 host,
                 pid,
@@ -74,7 +74,7 @@ impl std::error::Error for CefLockError {}
 
 /// Resolves the macOS default CEF cache directory and runs the preflight.
 pub fn check_default_cache() -> Result<(), CefLockError> {
-    if let Some(configured) = std::env::var_os("OPENHUMAN_CEF_CACHE_PATH") {
+    if let Some(configured) = std::env::var_os("AURA_CEF_CACHE_PATH") {
         let configured = PathBuf::from(configured);
         log::debug!(
             "[cef-preflight] using configured cache_path={}",

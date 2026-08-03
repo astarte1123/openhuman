@@ -55,7 +55,7 @@ vi.mock('../src/utils/cryptoKeys', () => ({
 
 vi.mock('../src/providers/CoreStateProvider', () => ({ useCoreState: () => mockUseCoreState() }));
 vi.mock('../src/utils/tauriCommands/auth', () => ({
-  openhumanEncryptSecret: (...args: unknown[]) => mockEncryptSecret(...args),
+  auraEncryptSecret: (...args: unknown[]) => mockEncryptSecret(...args),
 }));
 
 // LottieAnimation makes network calls; stub it out

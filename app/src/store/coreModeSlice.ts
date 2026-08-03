@@ -22,7 +22,7 @@ export type CoreMode =
       url: string;
       /**
        * Bearer token for the remote core. Cloud cores require auth (see
-       * `OPENHUMAN_CORE_TOKEN` in docs/CLOUD_DEPLOY.md). Optional in the type
+       * `AURA_CORE_TOKEN` in docs/CLOUD_DEPLOY.md). Optional in the type
        * so persisted state from older builds (which stored cloud mode without
        * a token) still hydrates; the BootCheckGate picker requires a value.
        */
@@ -34,9 +34,9 @@ export interface CoreModeState {
 }
 
 /** Synchronous localStorage keys mirrored by `configPersistence.ts`. */
-const RPC_URL_STORAGE_KEY = 'openhuman_core_rpc_url';
-const CORE_TOKEN_STORAGE_KEY = 'openhuman_core_rpc_token';
-const CORE_MODE_STORAGE_KEY = 'openhuman_core_mode';
+const RPC_URL_STORAGE_KEY = 'aura_core_rpc_url';
+const CORE_TOKEN_STORAGE_KEY = 'aura_core_rpc_token';
+const CORE_MODE_STORAGE_KEY = 'aura_core_mode';
 
 /**
  * Derive the initial mode synchronously from `localStorage`.
@@ -48,8 +48,8 @@ const CORE_MODE_STORAGE_KEY = 'openhuman_core_mode';
  * Falling back to plain unset would put the user back on the picker even
  * though they just chose cloud, producing an infinite picker → reload loop.
  *
- * The picker writes `openhuman_core_rpc_url`, `openhuman_core_rpc_token`,
- * and `openhuman_core_mode` synchronously before any async dispatch, so we
+ * The picker writes `aura_core_rpc_url`, `aura_core_rpc_token`,
+ * and `aura_core_mode` synchronously before any async dispatch, so we
  * can recover the exact mode on reload regardless of the persist flush race.
  */
 function deriveInitialMode(): CoreMode {

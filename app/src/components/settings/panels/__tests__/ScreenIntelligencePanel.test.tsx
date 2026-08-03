@@ -9,7 +9,7 @@ import {
 import {
   type ConfigSnapshot,
   isTauri,
-  openhumanUpdateScreenIntelligenceSettings,
+  auraUpdateScreenIntelligenceSettings,
 } from '../../../../utils/tauriCommands';
 import ScreenIntelligencePanel from '../ScreenIntelligencePanel';
 
@@ -22,7 +22,7 @@ vi.mock('../../../../utils/tauriCommands', async importOriginal => {
   return {
     ...actual,
     isTauri: vi.fn(() => true),
-    openhumanUpdateScreenIntelligenceSettings: vi.fn(),
+    auraUpdateScreenIntelligenceSettings: vi.fn(),
   };
 });
 
@@ -69,7 +69,7 @@ const baseState: ScreenIntelligenceState = {
     },
     denylist: ['1Password'],
     is_context_blocked: false,
-    permission_check_process_path: '/tmp/openhuman-core',
+    permission_check_process_path: '/tmp/aura-core',
   },
   lastRestartSummary: null,
   recentVisionSummaries: [],
@@ -119,7 +119,7 @@ describe('ScreenIntelligencePanel', () => {
 
   it('saves screen awareness settings and refreshes core-backed status', async () => {
     const deferred = createDeferred<{ result: ConfigSnapshot; logs: [] }>();
-    vi.mocked(openhumanUpdateScreenIntelligenceSettings).mockReturnValueOnce(deferred.promise);
+    vi.mocked(auraUpdateScreenIntelligenceSettings).mockReturnValueOnce(deferred.promise);
 
     renderPanel();
 
@@ -140,7 +140,7 @@ describe('ScreenIntelligencePanel', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Save Settings' }));
 
     expect(await screen.findByRole('button', { name: 'Saving…' })).toBeInTheDocument();
-    expect(openhumanUpdateScreenIntelligenceSettings).toHaveBeenCalledWith(
+    expect(auraUpdateScreenIntelligenceSettings).toHaveBeenCalledWith(
       expect.objectContaining({ enabled: true, policy_mode: 'all_except_blacklist' })
     );
 

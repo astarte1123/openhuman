@@ -4,7 +4,7 @@ import {
   deriveWalletAccountsFromMnemonic,
   type WalletSetupSource,
 } from '../../utils/cryptoKeys';
-import { openhumanEncryptSecret } from '../../utils/tauriCommands/auth';
+import { auraEncryptSecret } from '../../utils/tauriCommands/auth';
 
 export async function persistLocalWalletFromMnemonic(args: {
   mnemonic: string;
@@ -18,7 +18,7 @@ export async function persistLocalWalletFromMnemonic(args: {
   }
   const normalizedMnemonic = words.join(' ');
   const aesKey = deriveAesKeyFromMnemonic(normalizedMnemonic);
-  const encryptedMnemonic = (await openhumanEncryptSecret(normalizedMnemonic)).result?.trim();
+  const encryptedMnemonic = (await auraEncryptSecret(normalizedMnemonic)).result?.trim();
   if (!encryptedMnemonic) {
     throw new Error('Failed to secure recovery phrase. Please try again.');
   }

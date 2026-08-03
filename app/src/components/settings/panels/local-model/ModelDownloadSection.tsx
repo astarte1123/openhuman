@@ -155,7 +155,7 @@ const ModelDownloadSection = ({
           />
           <div className="flex items-center justify-between">
             <div className="text-xs text-stone-500">
-              Calls `openhuman.inference_summarize` via Rust core
+              Calls `aura.inference_summarize` via Rust core
             </div>
             <button
               onClick={onRunSummaryTest}

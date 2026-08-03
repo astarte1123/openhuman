@@ -42,7 +42,7 @@ vi.mock('../../../utils/links', () => ({ BILLING_DASHBOARD_URL: 'https://billing
 vi.mock('../../../utils/openUrl', () => ({ openUrl: vi.fn().mockResolvedValue(undefined) }));
 
 vi.mock('../../../utils/tauriCommands', () => ({
-  resetOpenHumanDataAndRestartCore: vi.fn().mockResolvedValue(undefined),
+  resetAuraDataAndRestartCore: vi.fn().mockResolvedValue(undefined),
   restartApp: vi.fn().mockResolvedValue(undefined),
   scheduleCefProfilePurge: vi.fn().mockResolvedValue(undefined),
 }));
@@ -184,7 +184,7 @@ describe('SettingsHome', () => {
       const user = userEvent.setup();
       mockClearAllAppData.mockRejectedValueOnce(
         new Error(
-          'Failed to remove C:\\Users\\me\\.openhuman because it is locked by another OpenHuman window or process. Close all OpenHuman windows and try again.'
+          'Failed to remove C:\\Users\\me\\.aura because it is locked by another Aura window or process. Close all Aura windows and try again.'
         )
       );
       renderSettingsHome();
@@ -194,7 +194,7 @@ describe('SettingsHome', () => {
       await user.click(confirmButtons[confirmButtons.length - 1]);
 
       expect(
-        await screen.findByText(/locked by another OpenHuman window or process/)
+        await screen.findByText(/locked by another Aura window or process/)
       ).toBeInTheDocument();
     });
 

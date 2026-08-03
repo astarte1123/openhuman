@@ -20,16 +20,16 @@ use tower::ServiceExt;
 use wiremock::matchers::{header as wm_header, method, path};
 use wiremock::{Mock, MockServer, ResponseTemplate};
 
-use openhuman_core::core::auth::{init_rpc_token, CORE_TOKEN_ENV_VAR};
-use openhuman_core::core::jsonrpc::build_core_http_router;
-use openhuman_core::openhuman::inference::provider::compatible::{
+use aura_core::core::auth::{init_rpc_token, CORE_TOKEN_ENV_VAR};
+use aura_core::core::jsonrpc::build_core_http_router;
+use aura_core::aura::inference::provider::compatible::{
     AuthStyle, OpenAiCompatibleProvider,
 };
-use openhuman_core::openhuman::inference::provider::traits::{ChatMessage, Provider};
+use aura_core::aura::inference::provider::traits::{ChatMessage, Provider};
 
 // ── Environment serialisation lock ───────────────────────────────────────────
 //
-// Tests that mutate OPENHUMAN_WORKSPACE or OPENHUMAN_CORE_TOKEN must acquire
+// Tests that mutate AURA_WORKSPACE or AURA_CORE_TOKEN must acquire
 // this lock first to prevent races when cargo runs tests in parallel threads
 // within the same process.
 
@@ -77,7 +77,7 @@ fn openai_chat_response(content: &str) -> Value {
 
 // ── Helper: build an env-isolated Config pointing at tempdir ─────────────────
 
-/// Sets OPENHUMAN_WORKSPACE to `dir` and returns an `EnvVarGuard` that
+/// Sets AURA_WORKSPACE to `dir` and returns an `EnvVarGuard` that
 /// restores the previous value on drop.  Must be called under `env_lock()`.
 struct EnvGuard {
     key: &'static str,
@@ -318,7 +318,7 @@ async fn openai_compat_streaming_returns_ordered_deltas() {
     );
 
     // stream_chat_with_system is the implemented streaming method on this provider.
-    let options = openhuman_core::openhuman::inference::provider::traits::StreamOptions::new(true);
+    let options = aura_core::aura::inference::provider::traits::StreamOptions::new(true);
     use futures_util::StreamExt;
     let mut stream = provider.stream_chat_with_system(
         Some("You are helpful."),
@@ -416,7 +416,7 @@ async fn http_endpoint_models_with_bearer_returns_model_list() {
     ensure_rpc_auth();
 
     let tmp = tempdir().expect("tempdir");
-    let _workspace_guard = EnvGuard::set("OPENHUMAN_WORKSPACE", tmp.path().to_str().unwrap());
+    let _workspace_guard = EnvGuard::set("AURA_WORKSPACE", tmp.path().to_str().unwrap());
 
     let req = Request::builder()
         .method(Method::GET)
@@ -546,8 +546,8 @@ async fn openai_compat_bearer_auth_sends_authorization_header() {
 
 #[test]
 fn temperature_helper_suppresses_o1_by_default_config() {
-    use openhuman_core::openhuman::config::Config;
-    use openhuman_core::openhuman::inference::provider::temperature::temperature_for_model;
+    use aura_core::aura::config::Config;
+    use aura_core::aura::inference::provider::temperature::temperature_for_model;
 
     let config = Config::default();
 

@@ -22,7 +22,7 @@ function makeRepo(branchName) {
   run('git add .', dir);
   run('git commit -m init', dir);
   run(`git checkout -b ${branchName}`, dir);
-  run('git remote add origin git@github.com:jwalin-shah/openhuman.git', dir);
+  run('git remote add origin git@github.com:jwalin-shah/aura.git', dir);
   return dir;
 }
 

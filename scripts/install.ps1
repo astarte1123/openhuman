@@ -1,18 +1,18 @@
 #!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-  OpenHuman installer for Windows.
+  Aura installer for Windows.
 
 .DESCRIPTION
   Intended for:
-  irm https://raw.githubusercontent.com/tinyhumansai/openhuman/main/scripts/install.ps1 | iex
+  irm https://raw.githubusercontent.com/tinyhumansai/aura/main/scripts/install.ps1 | iex
 
   Also works when saved and run directly:
   .\scripts\install.ps1 -DryRun
 
   MSI installs use the Tauri WiX package (InstallScope perMachine). Per-user
   public properties (MSIINSTALLPERUSER / ALLUSERS=2) conflict with that layout
-  and commonly fail with exit 1603 — see tinyhumansai/openhuman#913.
+  and commonly fail with exit 1603 — see tinyhumansai/aura#913.
 
   When the current session is not elevated, msiexec is started with -Verb RunAs
   so Windows shows UAC once (machine install to Program Files).
@@ -20,7 +20,7 @@
 
 # --- Script-scoped helpers (unit-tested; safe to dot-source this file) ---
 
-function Get-OpenHumanMsiexecInstallArgumentList {
+function Get-AuraMsiexecInstallArgumentList {
   <#
   .SYNOPSIS
     Argument list for Start-Process msiexec.exe (no per-user MSI overrides).
@@ -35,7 +35,7 @@ function Get-OpenHumanMsiexecInstallArgumentList {
   return @('/i', $MsiPath, '/qn', '/norestart')
 }
 
-function Test-OpenHumanWindowsProcessElevated {
+function Test-AuraWindowsProcessElevated {
   <#
   .SYNOPSIS
     True when the current process is running with an administrator token (Windows only).
@@ -48,7 +48,7 @@ function Test-OpenHumanWindowsProcessElevated {
   return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
-function Select-OpenHumanWindowsAssetFromRelease {
+function Select-AuraWindowsAssetFromRelease {
   <#
   .SYNOPSIS
     Pick the Windows x64 MSI from a GitHub release object, else NSIS exe.
@@ -62,12 +62,12 @@ function Select-OpenHumanWindowsAssetFromRelease {
     return $null
   }
 
-  $msi = $assets | Where-Object { $_.name -match 'OpenHuman_.*x64.*\.msi$' } | Select-Object -First 1
+  $msi = $assets | Where-Object { $_.name -match 'Aura_.*x64.*\.msi$' } | Select-Object -First 1
   if ($msi) {
     return $msi
   }
 
-  $exe = $assets | Where-Object { $_.name -match 'OpenHuman_.*x64.*\.exe$' } | Select-Object -First 1
+  $exe = $assets | Where-Object { $_.name -match 'Aura_.*x64.*\.exe$' } | Select-Object -First 1
   if ($exe) {
     return $exe
   }
@@ -77,7 +77,7 @@ function Select-OpenHumanWindowsAssetFromRelease {
 
 # Wrap in a function so `param()` works when piped via `irm | iex`.
 # When piped, PowerShell cannot bind param() at the top-level scope.
-function Install-OpenHuman {
+function Install-Aura {
   param(
     [switch]$Help,
     [switch]$Version,
@@ -88,7 +88,7 @@ function Install-OpenHuman {
   $ErrorActionPreference = "Stop"
 
   $InstallerVersion = "1.1.0"
-  $Repo = "tinyhumansai/openhuman"
+  $Repo = "tinyhumansai/aura"
   $LatestReleaseApiUrl = "https://api.github.com/repos/$Repo/releases/latest"
 
   function Write-Info([string]$Message) { Write-Host "-> $Message" -ForegroundColor Cyan }
@@ -98,13 +98,13 @@ function Install-OpenHuman {
 
   function Show-Usage {
     @"
-OpenHuman Installer (Windows)
+Aura Installer (Windows)
 
 Usage:
   install.ps1 [-Channel stable] [-DryRun] [-Help] [-Version]
 
 Examples:
-  irm https://raw.githubusercontent.com/tinyhumansai/openhuman/main/scripts/install.ps1 | iex
+  irm https://raw.githubusercontent.com/tinyhumansai/aura/main/scripts/install.ps1 | iex
   .\scripts\install.ps1 -DryRun
 "@
   }
@@ -115,7 +115,7 @@ Examples:
   }
 
   if ($Version) {
-    Write-Output "openhuman-installer $InstallerVersion"
+    Write-Output "aura-installer $InstallerVersion"
     return
   }
 
@@ -157,7 +157,7 @@ Examples:
   try {
     $release = Invoke-RestMethod -Uri $LatestReleaseApiUrl -UseBasicParsing
     $releaseTag = ($release.tag_name -replace '^v', '')
-    $selected = Select-OpenHumanWindowsAssetFromRelease -Release $release
+    $selected = Select-AuraWindowsAssetFromRelease -Release $release
     if ($selected) {
       $assetName = $selected.name
       $assetUrl = $selected.browser_download_url
@@ -204,9 +204,9 @@ Examples:
 
   if ($DryRun) {
     if ($assetName -like "*.msi") {
-      $dryMsiArgs = Get-OpenHumanMsiexecInstallArgumentList -MsiPath $tmpFile
+      $dryMsiArgs = Get-AuraMsiexecInstallArgumentList -MsiPath $tmpFile
       Write-Output "DRY RUN: msiexec ArgumentList = $($dryMsiArgs | ConvertTo-Json -Compress)"
-      if (Test-OpenHumanWindowsProcessElevated) {
+      if (Test-AuraWindowsProcessElevated) {
         Write-Output "DRY RUN: (already elevated) Start-Process msiexec -Wait -ArgumentList <above>"
       } else {
         Write-Output "DRY RUN: (non-admin) Start-Process msiexec -Verb RunAs -Wait -ArgumentList <above>"
@@ -217,10 +217,10 @@ Examples:
     return
   }
 
-  Write-Info "Installing OpenHuman"
+  Write-Info "Installing Aura"
   if ($assetName -like "*.msi") {
-    $msiArgs = Get-OpenHumanMsiexecInstallArgumentList -MsiPath $tmpFile
-    $elevated = Test-OpenHumanWindowsProcessElevated
+    $msiArgs = Get-AuraMsiexecInstallArgumentList -MsiPath $tmpFile
+    $elevated = Test-AuraWindowsProcessElevated
     if ($elevated) {
       $proc = Start-Process -FilePath "msiexec.exe" -ArgumentList $msiArgs -Wait -PassThru
     } else {
@@ -229,7 +229,7 @@ Examples:
     }
     if ($proc.ExitCode -ne 0) {
       Write-Err "MSI install failed with exit code $($proc.ExitCode)."
-      Write-WarnMsg "If this persists, capture a log: msiexec /i `"$tmpFile`" /l*v `"$env:TEMP\OpenHuman-msi.log`""
+      Write-WarnMsg "If this persists, capture a log: msiexec /i `"$tmpFile`" /l*v `"$env:TEMP\Aura-msi.log`""
       return
     }
   } elseif ($assetName -like "*.exe") {
@@ -244,24 +244,24 @@ Examples:
   }
 
   $expectedPaths = @(
-    "$env:LOCALAPPDATA\Programs\OpenHuman\OpenHuman.exe",
-    "$env:ProgramFiles\OpenHuman\OpenHuman.exe"
+    "$env:LOCALAPPDATA\Programs\Aura\Aura.exe",
+    "$env:ProgramFiles\Aura\Aura.exe"
   )
   $launchPath = $expectedPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
 
   Write-Output ""
-  Write-Output "OpenHuman is ready."
+  Write-Output "Aura is ready."
   if ($launchPath) {
     Write-Output "Launch: `"$launchPath`""
-    Write-Output "Uninstall: Settings -> Apps -> Installed apps -> OpenHuman"
+    Write-Output "Uninstall: Settings -> Apps -> Installed apps -> Aura"
   } else {
     Write-WarnMsg "Could not locate installed executable automatically."
-    Write-Output "Try launching OpenHuman from Start Menu."
-    Write-Output "Uninstall: Settings -> Apps -> Installed apps -> OpenHuman"
+    Write-Output "Try launching Aura from Start Menu."
+    Write-Output "Uninstall: Settings -> Apps -> Installed apps -> Aura"
   }
 }
 
 # Run when executed as a script; skip when dot-sourced (e.g. unit tests).
 if ($MyInvocation.InvocationName -ne '.') {
-  Install-OpenHuman @args
+  Install-Aura @args
 }

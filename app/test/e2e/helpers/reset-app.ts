@@ -3,7 +3,7 @@
  *
  * We keep ONE Appium session across the whole spec run (see wdio.conf.ts).
  * Instead of restarting the sidecar between specs we call the in-place
- * `openhuman.test_reset` RPC: it wipes the auth marker, clears the
+ * `aura.test_reset` RPC: it wipes the auth marker, clears the
  * `chat_onboarding_completed` flag, removes all cron jobs and saves the
  * config back. The renderer is then reloaded so Redux/localStorage are
  * also flushed, and the spec re-authenticates via the deep-link bypass
@@ -19,7 +19,7 @@
  * mock-backend identity so request logs aren't cross-contaminated.
  */
 import { waitForApp, waitForAppReady } from './app-helpers';
-import { callOpenhumanRpc } from './core-rpc';
+import { callAuraRpc } from './core-rpc';
 import { triggerAuthDeepLinkBypass } from './deep-link-helpers';
 import { waitForWebView, waitForWindowVisible } from './element-helpers';
 import { supportsExecuteScript } from './platform';
@@ -55,14 +55,14 @@ function stepLog(message: string): void {
 export async function resetApp(userId: string, options: ResetAppOptions = {}): Promise<string> {
   const logPrefix = options.logPrefix ?? '[resetApp]';
 
-  stepLog(`Calling openhuman.test_reset for ${userId}`);
+  stepLog(`Calling aura.test_reset for ${userId}`);
   // The sidecar only spawns after the first successful user login, so the
   // very first spec of a run hits an unreachable RPC — that's not an error,
   // a freshly-launched workspace is already in the same "pristine" state
   // the wipe would have produced. Race the RPC call against a short budget
   // and treat the result as a flag: did we actually wipe anything?
   const reset = await Promise.race([
-    callOpenhumanRpc('openhuman.test_reset', {}),
+    callAuraRpc('aura.test_reset', {}),
     new Promise<{ ok: false; error: string }>(resolve =>
       setTimeout(
         () =>
@@ -85,7 +85,7 @@ export async function resetApp(userId: string, options: ResetAppOptions = {}): P
       errText.includes('probe timed out') ||
       errText.includes('ECONNREFUSED');
     if (!unreachable) {
-      throw new Error(`openhuman.test_reset failed: ${errText || JSON.stringify(reset)}`);
+      throw new Error(`aura.test_reset failed: ${errText || JSON.stringify(reset)}`);
     }
     stepLog(`Sidecar not reachable (${errText}) — treating as fresh launch, skipping wipe`);
   }

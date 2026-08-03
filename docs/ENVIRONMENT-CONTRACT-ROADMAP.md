@@ -11,13 +11,13 @@ Not a replacement for `TODO.md` — that stays tactical.
 
 ## Where we already sit on the contract
 
-| Contract layer | Today in openhuman |
+| Contract layer | Today in aura |
 | --- | --- |
 | Durable authored state | `skills/` submodule, `ai/*.md` (SOUL, IDENTITY, AGENTS, USER, BOOTSTRAP, MEMORY, TOOLS), controller registry (`src/core/all.rs`) |
 | Durable adaptive state | TinyHumans memory (`skill-{skill}` namespaces, with `integration_id` carried in record metadata), curated_memory snapshots, retrieval evals |
-| Runtime continuity | `OPENHUMAN_WORKSPACE` override, r2d2 SQLite pools, life_capture ingest, event bus |
+| Runtime continuity | `AURA_WORKSPACE` override, r2d2 SQLite pools, life_capture ingest, event bus |
 | Projected execution state | Controller schemas, JSON-RPC dispatch, capability routing per run |
-| Portability | Workspace-as-unit via `OPENHUMAN_WORKSPACE` |
+| Portability | Workspace-as-unit via `AURA_WORKSPACE` |
 
 The harness (Rust agentic loop in `src-tauri/src/commands/chat.rs`) is swappable.
 Most of the weight is already in environment, not in the loop.
@@ -33,7 +33,7 @@ Today: eval traces exist as fixtures; run-level traces are ephemeral.
 Need:
 - Persist per-turn record: hot context composition (what was pulled from memory /
   OpenClaw / Notion), tool calls fired + results, model routing, outcome.
-- Land in local SQLite under workspace root (`OPENHUMAN_WORKSPACE/traces/`).
+- Land in local SQLite under workspace root (`AURA_WORKSPACE/traces/`).
 - Surface in UI (traces panel) — operator can inspect a run later.
 - Keep it cheap: append-only, no sync by default.
 
@@ -80,7 +80,7 @@ Why last: hardest and needs (1)-(3) to have signal worth projecting from.
 
 - **Not** replacing the Rust harness. The loop is fine; the point is the
   contract around it.
-- **Not** building a generic agent OS. openhuman is a product (AI assistant for
+- **Not** building a generic agent OS. aura is a product (AI assistant for
   communities); the contract serves that.
 - **Not** shipping this before v1. Premature without real usage data — the whole
   point is review over runs that actually happened.
@@ -96,7 +96,7 @@ tomorrow, these must survive unchanged:
 - [x] Memory namespaces + curated snapshots
 - [x] Controller registry + JSON-RPC schemas
 - [x] Event bus + life_capture data
-- [x] Workspace portability (`OPENHUMAN_WORKSPACE`)
+- [x] Workspace portability (`AURA_WORKSPACE`)
 - [ ] Run traces (missing)
 - [ ] Operator feedback records (missing)
 - [ ] Promoted skill provenance (missing)

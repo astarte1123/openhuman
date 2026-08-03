@@ -5,9 +5,9 @@ import { type ChatSendError, chatSendError } from '../../../chat/chatSendError';
 import type { ThreadMessage } from '../../../types/thread';
 import {
   notifyOverlaySttState,
-  openhumanVoiceStatus,
-  openhumanVoiceTranscribeBytes,
-  openhumanVoiceTts,
+  auraVoiceStatus,
+  auraVoiceTranscribeBytes,
+  auraVoiceTts,
 } from '../../../utils/tauriCommands';
 import type { InputMode, ReplyMode } from '../../Conversations';
 
@@ -83,7 +83,7 @@ export const useVoiceInput = ({
     let cancelled = false;
     void (async () => {
       try {
-        const status = await openhumanVoiceStatus();
+        const status = await auraVoiceStatus();
         if (cancelled) return;
         if (!status.stt_available) {
           setVoiceStatus(
@@ -131,7 +131,7 @@ export const useVoiceInput = ({
           ? recentMessages.map(m => `${m.sender}: ${m.content}`).join('\n')
           : undefined;
 
-      const result = await openhumanVoiceTranscribeBytes(audioBytes, extension, context);
+      const result = await auraVoiceTranscribeBytes(audioBytes, extension, context);
       const transcript = result.text.trim();
 
       if (!transcript) {
@@ -248,7 +248,7 @@ export const useVoiceInput = ({
 
     void (async () => {
       try {
-        const ttsResult = await openhumanVoiceTts(latestAgentMessage.content);
+        const ttsResult = await auraVoiceTts(latestAgentMessage.content);
         if (cancelled) return;
 
         const audioSrc = convertFileSrc(ttsResult.output_path);

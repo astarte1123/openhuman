@@ -1,16 +1,16 @@
 use anyhow::Result;
 use async_trait::async_trait;
-use openhuman_core::openhuman::agent::harness::{
+use aura_core::aura::agent::harness::{
     check_interrupt, current_parent, with_parent_context, InterruptFence, ParentExecutionContext,
 };
-use openhuman_core::openhuman::agent::hooks::{
+use aura_core::aura::agent::hooks::{
     fire_hooks, sanitize_tool_output, PostTurnHook, ToolCallRecord, TurnContext,
 };
-use openhuman_core::openhuman::config::AgentConfig;
-use openhuman_core::openhuman::inference::provider::{
+use aura_core::aura::config::AgentConfig;
+use aura_core::aura::inference::provider::{
     ChatMessage, ChatRequest, ChatResponse, Provider,
 };
-use openhuman_core::openhuman::memory::{Memory, MemoryCategory, MemoryEntry};
+use aura_core::aura::memory::{Memory, MemoryCategory, MemoryEntry};
 use parking_lot::Mutex;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
@@ -63,7 +63,7 @@ impl Memory for StubMemory {
         &self,
         _query: &str,
         _limit: usize,
-        _opts: openhuman_core::openhuman::memory::RecallOpts<'_>,
+        _opts: aura_core::aura::memory::RecallOpts<'_>,
     ) -> Result<Vec<MemoryEntry>> {
         Ok(Vec::new())
     }
@@ -87,7 +87,7 @@ impl Memory for StubMemory {
 
     async fn namespace_summaries(
         &self,
-    ) -> Result<Vec<openhuman_core::openhuman::memory::NamespaceSummary>> {
+    ) -> Result<Vec<aura_core::aura::memory::NamespaceSummary>> {
         Ok(Vec::new())
     }
 
@@ -136,7 +136,7 @@ fn stub_parent_context() -> ParentExecutionContext {
         session_id: "test-session".into(),
         channel: "test-channel".into(),
         connected_integrations: vec![],
-        tool_call_format: openhuman_core::openhuman::context::prompt::ToolCallFormat::PFormat,
+        tool_call_format: aura_core::aura::context::prompt::ToolCallFormat::PFormat,
         session_key: "test-session".into(),
         session_parent_prefix: None,
         on_progress: None,

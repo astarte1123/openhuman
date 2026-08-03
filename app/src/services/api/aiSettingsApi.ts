@@ -4,8 +4,8 @@
  * Sits between the panel's React state and the Rust JSON-RPC core. Three
  * orthogonal surfaces in one place:
  *
- *  1. Cloud providers + per-workload routing → `openhuman.inference_update_model_settings`
- *  2. API keys for cloud providers           → `openhuman.auth_*_provider_credentials`
+ *  1. Cloud providers + per-workload routing → `aura.inference_update_model_settings`
+ *  2. API keys for cloud providers           → `aura.auth_*_provider_credentials`
  *                                              (encrypted at rest in
  *                                              `auth-profiles.json`)
  *  3. Local provider (Ollama) status + models → existing `localAi.ts` exports
@@ -27,18 +27,18 @@ import {
   type ClientConfig,
   type CloudProviderCreds,
   type ModelSettingsUpdate,
-  openhumanGetClientConfig,
-  openhumanUpdateLocalAiSettings,
-  openhumanUpdateModelSettings,
+  auraGetClientConfig,
+  auraUpdateLocalAiSettings,
+  auraUpdateModelSettings,
 } from '../../utils/tauriCommands/config';
 import {
   type LocalAiDiagnostics,
   type LocalAiStatus,
   type ModelPresetResult,
-  openhumanLocalAiApplyPreset,
-  openhumanLocalAiDiagnostics,
-  openhumanLocalAiPresets,
-  openhumanLocalAiStatus,
+  auraLocalAiApplyPreset,
+  auraLocalAiDiagnostics,
+  auraLocalAiPresets,
+  auraLocalAiStatus,
   type PresetsResponse,
 } from '../../utils/tauriCommands/localAi';
 
@@ -66,7 +66,7 @@ export const ALL_WORKLOADS: WorkloadId[] = [...CHAT_WORKLOADS, ...BACKGROUND_WOR
 
 /** Provider reference parsed from a stored provider-string. */
 export type ProviderRef =
-  | { kind: 'openhuman' }
+  | { kind: 'aura' }
   | { kind: 'cloud'; providerSlug: string; model: string }
   | { kind: 'local'; model: string };
 
@@ -95,18 +95,18 @@ export interface AISettings {
 
 /**
  * Parse a stored provider string (e.g. `"openai:gpt-4o"`) into a structured
- * ProviderRef. Empty/null/`"cloud"` → openhuman. Mirrors the Rust factory grammar.
+ * ProviderRef. Empty/null/`"cloud"` → aura. Mirrors the Rust factory grammar.
  *
  * New grammar: `"<slug>:<model>"`. Legacy bare sentinels:
- *   - `"openhuman"` → { kind: 'openhuman' }
- *   - `"cloud"` or empty → { kind: 'openhuman' }
+ *   - `"aura"` → { kind: 'aura' }
+ *   - `"cloud"` or empty → { kind: 'aura' }
  *   - `"ollama:<model>"` → { kind: 'local', model }
  *   - `"<slug>:<model>"` → { kind: 'cloud', providerSlug: slug, model }
  */
 export function parseProviderString(s: string | null | undefined): ProviderRef {
   const trimmed = (s ?? '').trim();
-  if (!trimmed || trimmed === 'cloud' || trimmed === 'openhuman') {
-    return { kind: 'openhuman' };
+  if (!trimmed || trimmed === 'cloud' || trimmed === 'aura') {
+    return { kind: 'aura' };
   }
   if (trimmed.startsWith('ollama:')) {
     return { kind: 'local', model: trimmed.slice('ollama:'.length).trim() };
@@ -115,20 +115,20 @@ export function parseProviderString(s: string | null | undefined): ProviderRef {
   if (colonIdx > 0) {
     const slug = trimmed.slice(0, colonIdx).trim();
     const model = trimmed.slice(colonIdx + 1).trim();
-    if (slug === 'openhuman') {
-      return { kind: 'openhuman' };
+    if (slug === 'aura') {
+      return { kind: 'aura' };
     }
     return { kind: 'cloud', providerSlug: slug, model };
   }
-  // Unrecognised bare string → fall back to openhuman.
-  return { kind: 'openhuman' };
+  // Unrecognised bare string → fall back to aura.
+  return { kind: 'aura' };
 }
 
 /** Serialise a `ProviderRef` back to the wire-format string. */
 export function serializeProviderRef(ref: ProviderRef): string {
   switch (ref.kind) {
-    case 'openhuman':
-      return 'openhuman';
+    case 'aura':
+      return 'aura';
     case 'cloud':
       return `${ref.providerSlug}:${ref.model}`;
     case 'local':
@@ -155,7 +155,7 @@ function authKeyForSlug(slug: string): string {
  */
 export async function loadAISettings(): Promise<AISettings> {
   const [configRes, profilesRes] = await Promise.all([
-    openhumanGetClientConfig(),
+    auraGetClientConfig(),
     authListProviderCredentials().catch((): { result: AuthProfileSummary[] } => ({ result: [] })),
   ]);
   const config: ClientConfig = configRes.result;
@@ -251,7 +251,7 @@ export async function saveAISettings(prev: AISettings, next: AISettings): Promis
   if (Object.keys(patch).length === 0) {
     return;
   }
-  await openhumanUpdateModelSettings(patch);
+  await auraUpdateModelSettings(patch);
 }
 
 // ─── API key management (per cloud provider slug) ──────────────────────────
@@ -261,8 +261,8 @@ export async function saveAISettings(prev: AISettings, next: AISettings): Promis
  * using the new `provider:<slug>` format.
  */
 export async function setCloudProviderKey(slug: string, apiKey: string): Promise<void> {
-  if (slug === 'openhuman') {
-    throw new Error('OpenHuman uses the session JWT — keys are not configurable here.');
+  if (slug === 'aura') {
+    throw new Error('Aura uses the session JWT — keys are not configurable here.');
   }
   // Store under both new-style key `provider:<slug>` and legacy bare `<slug>`
   // so old code paths that look up by bare slug continue to work.
@@ -276,7 +276,7 @@ export async function setCloudProviderKey(slug: string, apiKey: string): Promise
 
 /** Clear a stored API key. */
 export async function clearCloudProviderKey(slug: string): Promise<void> {
-  if (slug === 'openhuman') {
+  if (slug === 'aura') {
     return;
   }
   // Clear the new-style key. Legacy bare-slug entries are left as-is
@@ -294,7 +294,7 @@ export async function listProviderModels(providerId: string): Promise<ModelInfo[
   }
   try {
     const res = await callCoreRpc<{ result: { models: ModelInfo[] } }>({
-      method: 'openhuman.inference_list_models',
+      method: 'aura.inference_list_models',
       params: { provider_id: providerId },
     });
     return res?.result?.models ?? [];
@@ -315,9 +315,9 @@ export interface LocalProviderSnapshot {
 
 export async function loadLocalProviderSnapshot(): Promise<LocalProviderSnapshot> {
   const [statusRes, diag, presets] = await Promise.all([
-    openhumanLocalAiStatus().catch((): { result: LocalAiStatus | null } => ({ result: null })),
-    openhumanLocalAiDiagnostics().catch((): LocalAiDiagnostics | null => null),
-    openhumanLocalAiPresets().catch((): PresetsResponse | null => null),
+    auraLocalAiStatus().catch((): { result: LocalAiStatus | null } => ({ result: null })),
+    auraLocalAiDiagnostics().catch((): LocalAiDiagnostics | null => null),
+    auraLocalAiPresets().catch((): PresetsResponse | null => null),
   ]);
   return {
     status: statusRes.result,
@@ -330,18 +330,18 @@ export async function loadLocalProviderSnapshot(): Promise<LocalProviderSnapshot
 /**
  * Toggle the master local-AI runtime (Ollama daemon orchestration). When
  * `false`, every workload routed to `ollama:*` will fail to build at the
- * factory level — the user should leave routes set to "openhuman" while local
+ * factory level — the user should leave routes set to "aura" while local
  * AI is disabled. The new AI panel surfaces this as a single switch.
  *
  * Critically: this flips BOTH `runtime_enabled` AND `opt_in_confirmed`.
  */
 export async function setLocalRuntimeEnabled(enabled: boolean): Promise<void> {
-  await openhumanUpdateLocalAiSettings({ runtime_enabled: enabled, opt_in_confirmed: enabled });
+  await auraUpdateLocalAiSettings({ runtime_enabled: enabled, opt_in_confirmed: enabled });
 }
 
 /** Convenience helpers re-exported so the panel imports from one place. */
 export const localProvider = {
-  applyPreset: (tier: string) => openhumanLocalAiApplyPreset(tier),
+  applyPreset: (tier: string) => auraLocalAiApplyPreset(tier),
   setEnabled: (enabled: boolean) => setLocalRuntimeEnabled(enabled),
 };
 

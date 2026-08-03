@@ -105,11 +105,11 @@ pub(crate) async fn post_provider_surfaces_event(args: &RecipeEventArgs) -> Resu
     let body = json!({
         "jsonrpc": "2.0",
         "id": 1,
-        "method": "openhuman.provider_surfaces_ingest_event",
+        "method": "aura.provider_surfaces_ingest_event",
         "params": params,
     });
 
-    let url = std::env::var("OPENHUMAN_CORE_RPC_URL")
+    let url = std::env::var("AURA_CORE_RPC_URL")
         .unwrap_or_else(|_| "http://127.0.0.1:7788/rpc".to_string());
     let client = reqwest::Client::builder()
         .timeout(Duration::from_secs(10))

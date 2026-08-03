@@ -6,16 +6,16 @@ import {
   type AutocompleteConfig,
   type AutocompleteStatus,
   isTauri,
-  openhumanAutocompleteAccept,
-  openhumanAutocompleteClearHistory,
-  openhumanAutocompleteCurrent,
-  openhumanAutocompleteDebugFocus,
-  openhumanAutocompleteHistory,
-  openhumanAutocompleteSetStyle,
-  openhumanAutocompleteStart,
-  openhumanAutocompleteStatus,
-  openhumanAutocompleteStop,
-  openhumanGetConfig,
+  auraAutocompleteAccept,
+  auraAutocompleteClearHistory,
+  auraAutocompleteCurrent,
+  auraAutocompleteDebugFocus,
+  auraAutocompleteHistory,
+  auraAutocompleteSetStyle,
+  auraAutocompleteStart,
+  auraAutocompleteStatus,
+  auraAutocompleteStop,
+  auraGetConfig,
 } from '../../../utils/tauriCommands';
 import SettingsHeader from '../components/SettingsHeader';
 import { useSettingsNavigation } from '../hooks/useSettingsNavigation';
@@ -153,8 +153,8 @@ const AutocompleteDebugPanel = () => {
     setError(null);
     try {
       const [statusResponse, configResponse] = await Promise.all([
-        openhumanAutocompleteStatus(),
-        openhumanGetConfig(),
+        auraAutocompleteStatus(),
+        auraGetConfig(),
       ]);
       setStatus(statusResponse.result);
       trackStatusChanges(statusResponse.result);
@@ -178,7 +178,7 @@ const AutocompleteDebugPanel = () => {
     if (!isTauri()) return [];
     setIsHistoryLoading(true);
     try {
-      const response = await openhumanAutocompleteHistory({ limit: 20 });
+      const response = await auraAutocompleteHistory({ limit: 20 });
       setHistoryEntries(response.result.entries);
       return response.result.entries;
     } catch {
@@ -206,7 +206,7 @@ const AutocompleteDebugPanel = () => {
       setError(null);
     }
     try {
-      const response = await openhumanAutocompleteStatus();
+      const response = await auraAutocompleteStatus();
       setStatus(response.result);
       trackStatusChanges(response.result);
       if (showSpinner) {
@@ -245,7 +245,7 @@ const AutocompleteDebugPanel = () => {
     try {
       const debounce = Number(debounceMs);
       appendUiLog(`start requested (debounce=${String(debounce)}ms)`);
-      const response = await openhumanAutocompleteStart({
+      const response = await auraAutocompleteStart({
         debounce_ms: Number.isFinite(debounce) ? Math.min(Math.max(debounce, 50), 2000) : 120,
       });
       appendLogs(response.logs);
@@ -272,7 +272,7 @@ const AutocompleteDebugPanel = () => {
     setMessage(null);
     try {
       appendUiLog('stop requested');
-      const response = await openhumanAutocompleteStop({ reason: 'manual_stop_from_settings' });
+      const response = await auraAutocompleteStop({ reason: 'manual_stop_from_settings' });
       appendLogs(response.logs);
       const latestStatus = await refreshStatus();
       setMessage('Autocomplete stopped.');
@@ -300,7 +300,7 @@ const AutocompleteDebugPanel = () => {
           ? `get suggestion requested (override chars=${String(contextOverride.trim().length)})`
           : 'get suggestion requested (focused app context)'
       );
-      const response = await openhumanAutocompleteCurrent({
+      const response = await auraAutocompleteCurrent({
         context: contextOverride.trim() || undefined,
       });
       appendLogs(response.logs);
@@ -347,7 +347,7 @@ const AutocompleteDebugPanel = () => {
     setMessage(null);
     try {
       appendUiLog('accept suggestion requested');
-      const response = await openhumanAutocompleteAccept({
+      const response = await auraAutocompleteAccept({
         suggestion: status?.suggestion?.value ?? undefined,
         skip_apply: true,
       });
@@ -371,7 +371,7 @@ const AutocompleteDebugPanel = () => {
     setError(null);
     try {
       appendUiLog('debug focus requested');
-      const response = await openhumanAutocompleteDebugFocus();
+      const response = await auraAutocompleteDebugFocus();
       appendLogs(response.logs);
       setFocusDebug(JSON.stringify(response.result, null, 2));
       if (response.result) {
@@ -402,7 +402,7 @@ const AutocompleteDebugPanel = () => {
       const debounce = Number(debounceMs);
       const max = Number(maxChars);
       const ttl = Number(overlayTtlMs);
-      const response = await openhumanAutocompleteSetStyle({
+      const response = await auraAutocompleteSetStyle({
         debounce_ms: Number.isFinite(debounce) ? Math.min(Math.max(debounce, 50), 2000) : 120,
         max_chars: Number.isFinite(max) ? Math.min(Math.max(max, 32), 1200) : 384,
         overlay_ttl_ms: Number.isFinite(ttl) ? Math.min(Math.max(ttl, 300), 10000) : 1100,
@@ -437,7 +437,7 @@ const AutocompleteDebugPanel = () => {
     if (!isTauri()) return;
     setIsClearingHistory(true);
     try {
-      await openhumanAutocompleteClearHistory();
+      await auraAutocompleteClearHistory();
       setHistoryEntries([]);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to clear history');

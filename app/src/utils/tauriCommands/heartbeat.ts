@@ -26,36 +26,36 @@ export interface HeartbeatPlannerSummary {
   deliveries_skipped_dedup: number;
 }
 
-export async function openhumanHeartbeatSettingsGet(): Promise<
+export async function auraHeartbeatSettingsGet(): Promise<
   CommandResponse<{ settings: HeartbeatSettings }>
 > {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<{ settings: HeartbeatSettings }>>({
-    method: 'openhuman.heartbeat_settings_get',
+    method: 'aura.heartbeat_settings_get',
   });
 }
 
-export async function openhumanHeartbeatSettingsSet(
+export async function auraHeartbeatSettingsSet(
   patch: HeartbeatSettingsPatch
 ): Promise<CommandResponse<{ settings: HeartbeatSettings }>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<{ settings: HeartbeatSettings }>>({
-    method: 'openhuman.heartbeat_settings_set',
+    method: 'aura.heartbeat_settings_set',
     params: patch,
   });
 }
 
-export async function openhumanHeartbeatTickNow(): Promise<
+export async function auraHeartbeatTickNow(): Promise<
   CommandResponse<{ summary: HeartbeatPlannerSummary }>
 > {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<{ summary: HeartbeatPlannerSummary }>>({
-    method: 'openhuman.heartbeat_tick_now',
+    method: 'aura.heartbeat_tick_now',
   });
 }

@@ -13,10 +13,10 @@ describe('tauriCommands', () => {
   const mockInvoke = invoke as Mock;
   const mockCallCoreRpc = callCoreRpc as Mock;
   let getAuthState: typeof import('../tauriCommands').getAuthState;
-  let resetOpenHumanDataAndRestartCore: typeof import('../tauriCommands').resetOpenHumanDataAndRestartCore;
+  let resetAuraDataAndRestartCore: typeof import('../tauriCommands').resetAuraDataAndRestartCore;
   let storeSession: typeof import('../tauriCommands').storeSession;
-  let openhumanLocalAiStatus: typeof import('../tauriCommands').openhumanLocalAiStatus;
-  let openhumanServiceStatus: typeof import('../tauriCommands').openhumanServiceStatus;
+  let auraLocalAiStatus: typeof import('../tauriCommands').auraLocalAiStatus;
+  let auraServiceStatus: typeof import('../tauriCommands').auraServiceStatus;
   let prevInternals: TauriInternalsHolder['__TAURI_INTERNALS__'];
 
   beforeEach(async () => {
@@ -24,7 +24,7 @@ describe('tauriCommands', () => {
     mockIsTauri.mockReturnValue(true);
     // The local `isTauri()` wrapper in `tauriCommands/common.ts` ALSO checks
     // `window.__TAURI_INTERNALS__.invoke` to detect the CEF bootstrap gap
-    // (see OPENHUMAN-REACT-S). Mocking only the upstream `coreIsTauri`
+    // (see AURA-REACT-S). Mocking only the upstream `coreIsTauri`
     // isn't enough — the wrapper would still return false in tests and
     // every helper would hit its `if (!isTauri()) return;` early-exit.
     // Stub a minimal internals shape so the wrapper resolves to true.
@@ -33,10 +33,10 @@ describe('tauriCommands', () => {
     holder.__TAURI_INTERNALS__ = { invoke: () => undefined };
     const actual = await vi.importActual<typeof import('../tauriCommands')>('../tauriCommands');
     getAuthState = actual.getAuthState;
-    resetOpenHumanDataAndRestartCore = actual.resetOpenHumanDataAndRestartCore;
+    resetAuraDataAndRestartCore = actual.resetAuraDataAndRestartCore;
     storeSession = actual.storeSession;
-    openhumanLocalAiStatus = actual.openhumanLocalAiStatus;
-    openhumanServiceStatus = actual.openhumanServiceStatus;
+    auraLocalAiStatus = actual.auraLocalAiStatus;
+    auraServiceStatus = actual.auraServiceStatus;
   });
 
   afterEach(() => {
@@ -55,7 +55,7 @@ describe('tauriCommands', () => {
 
     const response = await getAuthState();
 
-    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'openhuman.auth_get_state' });
+    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'aura.auth_get_state' });
     expect(response).toEqual({ is_authenticated: true, user: { id: 'u1' } });
   });
 
@@ -63,18 +63,18 @@ describe('tauriCommands', () => {
     await storeSession('jwt-token', { id: 'u1' });
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.auth_store_session',
+      method: 'aura.auth_store_session',
       params: { token: 'jwt-token', user: { id: 'u1' } },
     });
   });
 
-  test('resetOpenHumanDataAndRestartCore invokes the destructive Tauri command', async () => {
-    await resetOpenHumanDataAndRestartCore();
+  test('resetAuraDataAndRestartCore invokes the destructive Tauri command', async () => {
+    await resetAuraDataAndRestartCore();
 
-    // The helper used to call `openhuman.config_reset_local_data` over
+    // The helper used to call `aura.config_reset_local_data` over
     // JSON-RPC followed by `restart_core_process`, but the in-process
     // remove failed on Windows when the running core held open handles
-    // inside the data directory (OPENHUMAN-TAURI-AF). The Tauri shell
+    // inside the data directory (AURA-TAURI-AF). The Tauri shell
     // now owns the full sequence (stop core → remove paths → restart
     // core) behind a single `reset_local_data` command, so no core RPC
     // call should reach `callCoreRpc` from this helper.
@@ -82,7 +82,7 @@ describe('tauriCommands', () => {
     expect(mockInvoke).toHaveBeenCalledWith('reset_local_data');
   });
 
-  test('resetOpenHumanDataAndRestartCore surfaces invoke failures to the caller', async () => {
+  test('resetAuraDataAndRestartCore surfaces invoke failures to the caller', async () => {
     // Callers (e.g. `clearAllAppData`) treat a thrown error as unrecoverable
     // and abort the flow — so the helper must rethrow instead of swallowing
     // a `reset_local_data` failure (e.g. Windows `ERROR_SHARING_VIOLATION`
@@ -91,24 +91,24 @@ describe('tauriCommands', () => {
     mockInvoke.mockRejectedValueOnce(boom);
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    await expect(resetOpenHumanDataAndRestartCore()).rejects.toBe(boom);
+    await expect(resetAuraDataAndRestartCore()).rejects.toBe(boom);
     expect(consoleErrorSpy).toHaveBeenCalled();
 
     consoleErrorSpy.mockRestore();
   });
 
-  test('openhumanLocalAiStatus returns upgrade hint on unknown method', async () => {
-    mockCallCoreRpc.mockRejectedValueOnce(new Error('unknown method: openhuman.inference_status'));
+  test('auraLocalAiStatus returns upgrade hint on unknown method', async () => {
+    mockCallCoreRpc.mockRejectedValueOnce(new Error('unknown method: aura.inference_status'));
 
-    await expect(openhumanLocalAiStatus()).rejects.toThrow(
+    await expect(auraLocalAiStatus()).rejects.toThrow(
       'Local model runtime is unavailable in this core build. Restart app after updating to the latest build.'
     );
   });
 
-  test('openhumanServiceStatus throws when not running in Tauri', async () => {
+  test('auraServiceStatus throws when not running in Tauri', async () => {
     mockIsTauri.mockReturnValue(false);
 
-    await expect(openhumanServiceStatus()).rejects.toThrow('Not running in Tauri');
+    await expect(auraServiceStatus()).rejects.toThrow('Not running in Tauri');
     expect(mockCallCoreRpc).not.toHaveBeenCalled();
   });
 });

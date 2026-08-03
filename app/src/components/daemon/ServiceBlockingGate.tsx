@@ -50,7 +50,7 @@ const ServiceBlockingGate = ({ children }: ServiceBlockingGateProps) => {
       {children}
       <div className="fixed inset-0 z-[10000] bg-stone-950/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div className="w-full max-w-xl rounded-2xl border border-coral-500/30 bg-stone-900 p-6 shadow-2xl">
-          <h2 className="text-xl font-semibold text-white">OpenHuman core is unavailable</h2>
+          <h2 className="text-xl font-semibold text-white">Aura core is unavailable</h2>
           <p className="mt-2 text-sm text-stone-300">
             We could not recover the local core service after multiple attempts. This can happen
             after a critical crash or binary mismatch.

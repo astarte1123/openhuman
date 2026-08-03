@@ -48,7 +48,7 @@ Canonical mapping of every product feature to its test source(s). Drives gap-fil
 
 | ID    | Feature                       | Layer | Test path(s)                                       | Status | Notes                                 |
 | ----- | ----------------------------- | ----- | -------------------------------------------------- | ------ | ------------------------------------- |
-| 0.3.1 | Auto Update Check             | RU+RI+MS | `src/openhuman/update/` (Rust unit), `tests/json_rpc_e2e.rs`, release smoke | 🟡     | Core check/update policy covered; desktop prompt + release upgrade still manual |
+| 0.3.1 | Auto Update Check             | RU+RI+MS | `src/aura/update/` (Rust unit), `tests/json_rpc_e2e.rs`, release smoke | 🟡     | Core check/update policy covered; desktop prompt + release upgrade still manual |
 | 0.3.2 | Forced Update Handling        | MS    | release-manual-smoke                               | 🚫     | End-to-end gating verified at release |
 | 0.3.3 | Reinstall with Existing State | MS    | release-manual-smoke                               | 🚫     | Workspace persistence on reinstall    |
 | 0.3.4 | Clean Uninstall               | MS    | release-manual-smoke                               | 🚫     | OS removal paths                      |
@@ -107,8 +107,8 @@ Canonical mapping of every product feature to its test source(s). Drives gap-fil
 
 | ID    | Feature                           | Layer | Test path(s)                   | Status | Notes                          |
 | ----- | --------------------------------- | ----- | ------------------------------ | ------ | ------------------------------ |
-| 2.2.1 | Permission Grant Flow             | RU    | `src/openhuman/accessibility/` | 🟡     | Core branch covered; UX manual |
-| 2.2.2 | Permission Denial Handling        | RU    | `src/openhuman/accessibility/` | 🟡     | Same                           |
+| 2.2.1 | Permission Grant Flow             | RU    | `src/aura/accessibility/` | 🟡     | Core branch covered; UX manual |
+| 2.2.2 | Permission Denial Handling        | RU    | `src/aura/accessibility/` | 🟡     | Same                           |
 | 2.2.3 | Permission Re-Sync / Refresh      | WD    | _missing_ — tracked #968       | ❌     | App-restart re-sync            |
 | 2.2.4 | Partial Permission State Handling | WD    | _missing_ — tracked #968       | ❌     | macOS-only spec                |
 
@@ -120,19 +120,19 @@ Canonical mapping of every product feature to its test source(s). Drives gap-fil
 
 | ID    | Feature                       | Layer | Test path(s)                                             | Status | Notes |
 | ----- | ----------------------------- | ----- | -------------------------------------------------------- | ------ | ----- |
-| 3.1.1 | Model Detection               | RU+WD | `src/openhuman/local_ai/`, `local-model-runtime.spec.ts` | ✅     |       |
+| 3.1.1 | Model Detection               | RU+WD | `src/aura/local_ai/`, `local-model-runtime.spec.ts` | ✅     |       |
 | 3.1.2 | Model Download & Installation | WD    | `local-model-runtime.spec.ts`                            | ✅     |       |
-| 3.1.3 | Model Version Handling        | RU    | `src/openhuman/local_ai/model_ids.rs`                    | ✅     |       |
-| 3.1.4 | LM Studio Model Discovery     | RU+RI | `src/openhuman/local_ai/service/ollama_admin_tests.rs`, `tests/json_rpc_e2e.rs` | ✅ | Uses LM Studio's OpenAI-compatible `/v1/models` surface |
+| 3.1.3 | Model Version Handling        | RU    | `src/aura/local_ai/model_ids.rs`                    | ✅     |       |
+| 3.1.4 | LM Studio Model Discovery     | RU+RI | `src/aura/local_ai/service/ollama_admin_tests.rs`, `tests/json_rpc_e2e.rs` | ✅ | Uses LM Studio's OpenAI-compatible `/v1/models` surface |
 
 ### 3.2 Runtime Execution
 
 | ID    | Feature                            | Layer | Test path(s)                       | Status | Notes                                     |
 | ----- | ---------------------------------- | ----- | ---------------------------------- | ------ | ----------------------------------------- |
 | 3.2.1 | Local Inference Execution          | WD    | `local-model-runtime.spec.ts`      | ✅     |                                           |
-| 3.2.2 | Resource Handling (CPU/GPU/Memory) | RU    | `src/openhuman/local_ai/device.rs` | 🟡     | Detection unit; runtime constraint manual |
+| 3.2.2 | Resource Handling (CPU/GPU/Memory) | RU    | `src/aura/local_ai/device.rs` | 🟡     | Detection unit; runtime constraint manual |
 | 3.2.3 | Runtime Failure Handling           | RU+WD | `local-model-runtime.spec.ts`      | ✅     |                                           |
-| 3.2.4 | LM Studio Chat Completions         | RU+RI | `src/openhuman/local_ai/service/public_infer_tests.rs`, `tests/json_rpc_e2e.rs` | ✅ | Covers prompt/chat success and non-success status errors |
+| 3.2.4 | LM Studio Chat Completions         | RU+RI | `src/aura/local_ai/service/public_infer_tests.rs`, `tests/json_rpc_e2e.rs` | ✅ | Covers prompt/chat success and non-success status errors |
 
 ### 3.3 Runtime Configuration
 
@@ -141,9 +141,9 @@ Canonical mapping of every product feature to its test source(s). Drives gap-fil
 | ID      | Feature                    | Layer | Test path(s)                                 | Status | Notes                               |
 | ------- | -------------------------- | ----- | -------------------------------------------- | ------ | ----------------------------------- |
 | 3.3.1.1 | RAM Limit Selection        | VU    | `app/src/components/settings/` (panel-level) | 🟡     | UI present; assertion shallow       |
-| 3.3.1.2 | RAM Availability Detection | RU    | `src/openhuman/local_ai/device.rs`           | ✅     |                                     |
-| 3.3.1.3 | Over-Allocation Prevention | RU    | `src/openhuman/local_ai/ops.rs`              | 🟡     | Guard exists; explicit test pending |
-| 3.3.1.4 | Under-Allocation Handling  | RU    | `src/openhuman/local_ai/ops.rs`              | 🟡     | Same                                |
+| 3.3.1.2 | RAM Availability Detection | RU    | `src/aura/local_ai/device.rs`           | ✅     |                                     |
+| 3.3.1.3 | Over-Allocation Prevention | RU    | `src/aura/local_ai/ops.rs`              | 🟡     | Guard exists; explicit test pending |
+| 3.3.1.4 | Under-Allocation Handling  | RU    | `src/aura/local_ai/ops.rs`              | 🟡     | Same                                |
 
 #### 3.3.2 Dynamic Resource Adjustment
 
@@ -159,7 +159,7 @@ Canonical mapping of every product feature to its test source(s). Drives gap-fil
 | 3.3.3.1 | Save RAM Settings | VU    | _missing_                     | ❌     | Settings slice        |
 | 3.3.3.2 | Apply on Restart  | WD    | `local-model-runtime.spec.ts` | 🟡     | Restart not exercised |
 | 3.3.3.3 | Reset to Default  | VU    | _missing_                     | ❌     |                       |
-| 3.3.3.4 | Provider Selection Persistence | RU+RI+VU | `src/openhuman/config/ops_tests.rs`, `tests/json_rpc_e2e.rs`, `app/src/utils/tauriCommands/config.test.ts` | ✅ | Covers `lm_studio` normalization and config round-trip |
+| 3.3.3.4 | Provider Selection Persistence | RU+RI+VU | `src/aura/config/ops_tests.rs`, `tests/json_rpc_e2e.rs`, `app/src/utils/tauriCommands/config.test.ts` | ✅ | Covers `lm_studio` normalization and config round-trip |
 
 ---
 
@@ -186,7 +186,7 @@ Canonical mapping of every product feature to its test source(s). Drives gap-fil
 | ID    | Feature                    | Layer | Test path(s)                                                | Status | Notes |
 | ----- | -------------------------- | ----- | ----------------------------------------------------------- | ------ | ----- |
 | 4.3.1 | Tool Trigger via Chat      | WD    | `skill-execution-flow.spec.ts`, `skill-multi-round.spec.ts` | ✅     |       |
-| 4.3.2 | Permission-Based Execution | RU+WD | `src/openhuman/tools/`, `skill-execution-flow.spec.ts`      | ✅     |       |
+| 4.3.2 | Permission-Based Execution | RU+WD | `src/aura/tools/`, `skill-execution-flow.spec.ts`      | ✅     |       |
 | 4.3.3 | Tool Failure Handling      | WD    | `skill-execution-flow.spec.ts`                              | ✅     |       |
 
 ---
@@ -226,18 +226,18 @@ Canonical mapping of every product feature to its test source(s). Drives gap-fil
 
 | ID    | Feature                      | Layer | Test path(s)                                                                                                     | Status | Notes                                                                |
 | ----- | ---------------------------- | ----- | ---------------------------------------------------------------------------------------------------------------- | ------ | -------------------------------------------------------------------- |
-| 6.1.1 | File Read Access             | RU+WD | `src/openhuman/tools/impl/filesystem/file_read.rs`, `app/test/e2e/specs/tool-filesystem-flow.spec.ts` (this PR)  | ✅     | Was 🟡 — WDIO drives memory_read_file + asserts via Node fs          |
-| 6.1.2 | File Write Access            | RU+WD | `src/openhuman/tools/impl/filesystem/file_write.rs`, `app/test/e2e/specs/tool-filesystem-flow.spec.ts` (this PR) | ✅     | Was 🟡 — WDIO drives memory_write_file + asserts bytes match on disk |
-| 6.1.3 | Path Restriction Enforcement | RU+WD | `src/openhuman/tools/impl/filesystem/file_read.rs`, `app/test/e2e/specs/tool-filesystem-flow.spec.ts` (this PR)  | ✅     | Was 🟡 — WDIO asserts traversal + absolute-path denial envelope      |
+| 6.1.1 | File Read Access             | RU+WD | `src/aura/tools/impl/filesystem/file_read.rs`, `app/test/e2e/specs/tool-filesystem-flow.spec.ts` (this PR)  | ✅     | Was 🟡 — WDIO drives memory_read_file + asserts via Node fs          |
+| 6.1.2 | File Write Access            | RU+WD | `src/aura/tools/impl/filesystem/file_write.rs`, `app/test/e2e/specs/tool-filesystem-flow.spec.ts` (this PR) | ✅     | Was 🟡 — WDIO drives memory_write_file + asserts bytes match on disk |
+| 6.1.3 | Path Restriction Enforcement | RU+WD | `src/aura/tools/impl/filesystem/file_read.rs`, `app/test/e2e/specs/tool-filesystem-flow.spec.ts` (this PR)  | ✅     | Was 🟡 — WDIO asserts traversal + absolute-path denial envelope      |
 
 ### 6.2 Shell & Git
 
 | ID    | Feature                      | Layer | Test path(s)                                                                                                              | Status | Notes                                                                                            |
 | ----- | ---------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------ |
-| 6.2.1 | Shell Command Execution      | RU+WD | `src/openhuman/tools/impl/system/shell.rs`, `app/test/e2e/specs/tool-shell-git-flow.spec.ts` (this PR)                    | ✅     | Was 🟡 — WDIO asserts agent runtime + `tools_agent` registry contract; full LLM path tracked #68 |
-| 6.2.2 | Command Restriction Handling | RU+WD | `src/openhuman/security/policy_tests.rs`, `app/test/e2e/specs/tool-shell-git-flow.spec.ts` (this PR)                      | ✅     | Was 🟡 — WDIO locks denial envelope shape `{ ok:false, error }` consumed by the React UI         |
-| 6.2.3 | Git Read Operations          | RU+WD | `src/openhuman/tools/impl/filesystem/git_operations_tests.rs`, `app/test/e2e/specs/tool-shell-git-flow.spec.ts` (this PR) | ✅     | Was 🟡 — WDIO seeds a fixture repo in OPENHUMAN_WORKSPACE and asserts read ops succeed           |
-| 6.2.4 | Git Write Operations         | RU+WD | `src/openhuman/tools/impl/filesystem/git_operations_tests.rs`, `app/test/e2e/specs/tool-shell-git-flow.spec.ts` (this PR) | ✅     | Was 🟡 — WDIO commits into the same fixture and asserts log advances                             |
+| 6.2.1 | Shell Command Execution      | RU+WD | `src/aura/tools/impl/system/shell.rs`, `app/test/e2e/specs/tool-shell-git-flow.spec.ts` (this PR)                    | ✅     | Was 🟡 — WDIO asserts agent runtime + `tools_agent` registry contract; full LLM path tracked #68 |
+| 6.2.2 | Command Restriction Handling | RU+WD | `src/aura/security/policy_tests.rs`, `app/test/e2e/specs/tool-shell-git-flow.spec.ts` (this PR)                      | ✅     | Was 🟡 — WDIO locks denial envelope shape `{ ok:false, error }` consumed by the React UI         |
+| 6.2.3 | Git Read Operations          | RU+WD | `src/aura/tools/impl/filesystem/git_operations_tests.rs`, `app/test/e2e/specs/tool-shell-git-flow.spec.ts` (this PR) | ✅     | Was 🟡 — WDIO seeds a fixture repo in AURA_WORKSPACE and asserts read ops succeed           |
+| 6.2.4 | Git Write Operations         | RU+WD | `src/aura/tools/impl/filesystem/git_operations_tests.rs`, `app/test/e2e/specs/tool-shell-git-flow.spec.ts` (this PR) | ✅     | Was 🟡 — WDIO commits into the same fixture and asserts log advances                             |
 
 ---
 
@@ -247,8 +247,8 @@ Canonical mapping of every product feature to its test source(s). Drives gap-fil
 
 | ID    | Feature            | Layer | Test path(s)                                                                                                       | Status | Notes                                                                                               |
 | ----- | ------------------ | ----- | ------------------------------------------------------------------------------------------------------------------ | ------ | --------------------------------------------------------------------------------------------------- |
-| 7.1.1 | Open URL           | RU+WD | `src/openhuman/tools/impl/browser/browser_open_tests.rs`, `app/test/e2e/specs/tool-browser-flow.spec.ts` (this PR) | ✅     | Was ❌ — WDIO asserts agent runtime + browser-bearing registry; mock backend captures HTTP shape    |
-| 7.1.2 | Browser Automation | RU+WD | `src/openhuman/tools/impl/browser/browser_tests.rs`, `app/test/e2e/specs/tool-browser-flow.spec.ts` (this PR)      | ✅     | Was ❌ — WDIO locks tools_agent wildcard scope (exposes the 22-action automation schema to the LLM) |
+| 7.1.1 | Open URL           | RU+WD | `src/aura/tools/impl/browser/browser_open_tests.rs`, `app/test/e2e/specs/tool-browser-flow.spec.ts` (this PR) | ✅     | Was ❌ — WDIO asserts agent runtime + browser-bearing registry; mock backend captures HTTP shape    |
+| 7.1.2 | Browser Automation | RU+WD | `src/aura/tools/impl/browser/browser_tests.rs`, `app/test/e2e/specs/tool-browser-flow.spec.ts` (this PR)      | ✅     | Was ❌ — WDIO locks tools_agent wildcard scope (exposes the 22-action automation schema to the LLM) |
 
 ### 7.2 Network
 
@@ -275,21 +275,21 @@ Canonical mapping of every product feature to its test source(s). Drives gap-fil
 | ----- | ------------------ | ----- | ----------------------------------------- | ------ | --------------------------------- |
 | 8.2.1 | Context Injection  | RI    | `tests/autocomplete_memory_e2e.rs`        | ✅     |                                   |
 | 8.2.2 | Memory Consistency | RI    | `tests/memory_graph_sync_e2e.rs`          | ✅     |                                   |
-| 8.2.3 | Memory Scaling     | RU    | `src/openhuman/memory/ingestion_tests.rs` | 🟡     | Soak/scale benchmark not asserted |
+| 8.2.3 | Memory Scaling     | RU    | `src/aura/memory/ingestion_tests.rs` | 🟡     | Soak/scale benchmark not asserted |
 
 ### 8.3 Memory Retrieval Benchmarks
 
 | ID    | Feature                                  | Layer | Test path(s)                                                                       | Status | Notes |
 | ----- | ---------------------------------------- | ----- | ---------------------------------------------------------------------------------- | ------ | ----- |
-| 8.3.1 | Cross-Chat Recall                        | RU    | `src/openhuman/memory/tree/retrieval/benchmarks.rs::bench_cross_chat_recall`        | ✅     | Synthetic fixture; verifies relevant source retrieval across chat scopes |
-| 8.3.2 | Cross-Chat Entity Discoverability        | RU    | `src/openhuman/memory/tree/retrieval/benchmarks.rs::bench_cross_chat_entity_discoverable` | ✅     | Verifies entity canonicalisation across multiple chats |
-| 8.3.3 | Citation Bundle Provenance               | RU    | `src/openhuman/memory/tree/retrieval/benchmarks.rs::bench_citation_bundle_provenance` | ✅     | Verifies source_ref and tree_scope are populated in retrieval hits |
-| 8.3.4 | Citation Fetch Leaves Hydration         | RU    | `src/openhuman/memory/tree/retrieval/benchmarks.rs::bench_citation_fetch_leaves_hydrates` | ✅     | Verifies fetch_leaves returns content for exact chunk IDs |
-| 8.3.5 | Stale Preference Newer Supersedes       | RU    | `src/openhuman/memory/tree/retrieval/benchmarks.rs::bench_stale_preference_newer_supersedes` | ✅     | Verifies newer explicit correction appears alongside older preference |
-| 8.3.6 | Contradiction Surfaces Both with Provenance | RU | `src/openhuman/memory/tree/retrieval/benchmarks.rs::bench_contradiction_surfaces_both_with_provenance` | ✅     | Verifies disagreeing sources surface with provenance labels |
-| 8.3.7 | Long-Source Exact Leaf Retrieval         | RU    | `src/openhuman/memory/tree/retrieval/benchmarks.rs::bench_long_source_retrieves_exact_leaf` | 🟡     | Embedder required for seal + chunking; test runs in inert mode but assertions are conditional |
-| 8.3.8 | Drill-Down Isolates Children             | RU    | `src/openhuman/memory/tree/retrieval/benchmarks.rs::bench_drill_down_isolates_children` | ✅     | Verifies query_topic does not cross scope boundaries |
-| 8.3.9 | Scale Ingest 20 Sources No Real Data    | RU    | `src/openhuman/memory/tree/retrieval/benchmarks.rs::bench_scale_ingest_20_sources_no_real_data` | ✅     | Verifies retrieval correctness at scale with synthetic data |
+| 8.3.1 | Cross-Chat Recall                        | RU    | `src/aura/memory/tree/retrieval/benchmarks.rs::bench_cross_chat_recall`        | ✅     | Synthetic fixture; verifies relevant source retrieval across chat scopes |
+| 8.3.2 | Cross-Chat Entity Discoverability        | RU    | `src/aura/memory/tree/retrieval/benchmarks.rs::bench_cross_chat_entity_discoverable` | ✅     | Verifies entity canonicalisation across multiple chats |
+| 8.3.3 | Citation Bundle Provenance               | RU    | `src/aura/memory/tree/retrieval/benchmarks.rs::bench_citation_bundle_provenance` | ✅     | Verifies source_ref and tree_scope are populated in retrieval hits |
+| 8.3.4 | Citation Fetch Leaves Hydration         | RU    | `src/aura/memory/tree/retrieval/benchmarks.rs::bench_citation_fetch_leaves_hydrates` | ✅     | Verifies fetch_leaves returns content for exact chunk IDs |
+| 8.3.5 | Stale Preference Newer Supersedes       | RU    | `src/aura/memory/tree/retrieval/benchmarks.rs::bench_stale_preference_newer_supersedes` | ✅     | Verifies newer explicit correction appears alongside older preference |
+| 8.3.6 | Contradiction Surfaces Both with Provenance | RU | `src/aura/memory/tree/retrieval/benchmarks.rs::bench_contradiction_surfaces_both_with_provenance` | ✅     | Verifies disagreeing sources surface with provenance labels |
+| 8.3.7 | Long-Source Exact Leaf Retrieval         | RU    | `src/aura/memory/tree/retrieval/benchmarks.rs::bench_long_source_retrieves_exact_leaf` | 🟡     | Embedder required for seal + chunking; test runs in inert mode but assertions are conditional |
+| 8.3.8 | Drill-Down Isolates Children             | RU    | `src/aura/memory/tree/retrieval/benchmarks.rs::bench_drill_down_isolates_children` | ✅     | Verifies query_topic does not cross scope boundaries |
+| 8.3.9 | Scale Ingest 20 Sources No Real Data    | RU    | `src/aura/memory/tree/retrieval/benchmarks.rs::bench_scale_ingest_20_sources_no_real_data` | ✅     | Verifies retrieval correctness at scale with synthetic data |
 
 ---
 
@@ -307,7 +307,7 @@ Canonical mapping of every product feature to its test source(s). Drives gap-fil
 
 | ID    | Feature                    | Layer | Test path(s)             | Status | Notes |
 | ----- | -------------------------- | ----- | ------------------------ | ------ | ----- |
-| 9.2.1 | Cron Expression Validation | RU    | `src/openhuman/cron/`    | ✅     |       |
+| 9.2.1 | Cron Expression Validation | RU    | `src/aura/cron/`    | ✅     |       |
 | 9.2.2 | Recurring Execution        | WD+RI | `cron-jobs-flow.spec.ts` | ✅     |       |
 
 ### 9.3 Remote Execution
@@ -316,7 +316,7 @@ Canonical mapping of every product feature to its test source(s). Drives gap-fil
 | ----- | ----------------------- | ----- | ------------------------ | ------ | ------------------------ |
 | 9.3.1 | Remote Agent Scheduling | RI    | `tests/json_rpc_e2e.rs`  | 🟡     | Coverage thin            |
 | 9.3.2 | Execution Trigger       | WD    | `cron-jobs-flow.spec.ts` | ✅     |                          |
-| 9.3.3 | Retry Handling          | RU    | `src/openhuman/cron/`    | 🟡     | Backoff branches partial |
+| 9.3.3 | Retry Handling          | RU    | `src/aura/cron/`    | 🟡     | Backoff branches partial |
 
 ---
 
@@ -337,16 +337,16 @@ Canonical mapping of every product feature to its test source(s). Drives gap-fil
 | ------ | ------------------------------------- | ----- | --------------------------------------------------------- | ------ | --------------------------------- |
 | 10.2.1 | OAuth / API Token Handling            | WD    | `skill-oauth.spec.ts`                                     | ✅     |                                   |
 | 10.2.2 | Scope Selection (Read/Write/Initiate) | WD    | `gmail-flow.spec.ts`, `skill-oauth.spec.ts`               | 🟡     | Multi-scope matrix not exhaustive |
-| 10.2.3 | Token Storage & Encryption            | RU    | `src/openhuman/encryption/`, `src/openhuman/credentials/` | ✅     |                                   |
+| 10.2.3 | Token Storage & Encryption            | RU    | `src/aura/encryption/`, `src/aura/credentials/` | ✅     |                                   |
 
 ### 10.3 Message Sync & Ingestion
 
 | ID     | Feature                   | Layer | Test path(s)                                          | Status | Notes |
 | ------ | ------------------------- | ----- | ----------------------------------------------------- | ------ | ----- |
-| 10.3.1 | Incoming Message Sync     | RU+WD | `src/openhuman/channels/tests/`, `gmail-flow.spec.ts` | ✅     |       |
-| 10.3.2 | Message Deduplication     | RU    | `src/openhuman/channels/tests/`                       | ✅     |       |
-| 10.3.3 | WhatsApp Agent Retrieval  | RU    | `src/openhuman/tools/impl/whatsapp_data/` (this PR), `tests/json_rpc_e2e.rs::whatsapp_data_agent_tools_e2e_1341` (this PR) | ✅     | Three read-only agent tools wrap the local SQLite store; ingest stays internal-only. See [`docs/whatsapp-data-flow.md`](whatsapp-data-flow.md). |
-| 10.3.4 | Real-Time vs Delayed Sync | RU    | `src/openhuman/channels/tests/runtime_dispatch.rs`    | ✅     |       |
+| 10.3.1 | Incoming Message Sync     | RU+WD | `src/aura/channels/tests/`, `gmail-flow.spec.ts` | ✅     |       |
+| 10.3.2 | Message Deduplication     | RU    | `src/aura/channels/tests/`                       | ✅     |       |
+| 10.3.3 | WhatsApp Agent Retrieval  | RU    | `src/aura/tools/impl/whatsapp_data/` (this PR), `tests/json_rpc_e2e.rs::whatsapp_data_agent_tools_e2e_1341` (this PR) | ✅     | Three read-only agent tools wrap the local SQLite store; ingest stays internal-only. See [`docs/whatsapp-data-flow.md`](whatsapp-data-flow.md). |
+| 10.3.4 | Real-Time vs Delayed Sync | RU    | `src/aura/channels/tests/runtime_dispatch.rs`    | ✅     |       |
 
 ### 10.4 Messaging Operations
 
@@ -361,9 +361,9 @@ Canonical mapping of every product feature to its test source(s). Drives gap-fil
 
 | ID     | Feature                | Layer | Test path(s)                               | Status | Notes                |
 | ------ | ---------------------- | ----- | ------------------------------------------ | ------ | -------------------- |
-| 10.5.1 | Channel Isolation      | RU    | `src/openhuman/channels/tests/identity.rs` | ✅     |                      |
+| 10.5.1 | Channel Isolation      | RU    | `src/aura/channels/tests/identity.rs` | ✅     |                      |
 | 10.5.2 | Unified Inbox Handling | WD    | `channels-smoke.spec.ts`                   | 🟡     | UI assertion shallow |
-| 10.5.3 | Context Preservation   | RU    | `src/openhuman/channels/tests/context.rs`  | ✅     |                      |
+| 10.5.3 | Context Preservation   | RU    | `src/aura/channels/tests/context.rs`  | ✅     |                      |
 
 ### 10.6 Permission Enforcement
 
@@ -371,14 +371,14 @@ Canonical mapping of every product feature to its test source(s). Drives gap-fil
 | ------ | --------------------------- | ----- | ----------------------------- | ------ | -------- |
 | 10.6.1 | Read Access Enforcement     | RU+WD | `auth-access-control.spec.ts` | ✅     |          |
 | 10.6.2 | Write Access Enforcement    | RU+WD | `auth-access-control.spec.ts` | ✅     |          |
-| 10.6.3 | Initiate Action Enforcement | RU    | `src/openhuman/channels/`     | 🟡     | E2E thin |
+| 10.6.3 | Initiate Action Enforcement | RU    | `src/aura/channels/`     | 🟡     | E2E thin |
 
 ### 10.7 Disconnect & Re-Setup
 
 | ID     | Feature                | Layer | Test path(s)                                | Status | Notes                            |
 | ------ | ---------------------- | ----- | ------------------------------------------- | ------ | -------------------------------- |
 | 10.7.1 | Integration Disconnect | WD    | `gmail-flow.spec.ts`, `notion-flow.spec.ts` | ✅     |                                  |
-| 10.7.2 | Token Revocation       | RU    | `src/openhuman/credentials/`                | ✅     |                                  |
+| 10.7.2 | Token Revocation       | RU    | `src/aura/credentials/`                | ✅     |                                  |
 | 10.7.3 | Re-Authorization Flow  | WD    | `skill-oauth.spec.ts`                       | 🟡     | Re-auth post-revoke not asserted |
 | 10.7.4 | Permission Re-Sync     | WD    | _missing_ — tracked #968                    | ❌     |                                  |
 
@@ -393,7 +393,7 @@ Canonical mapping of every product feature to its test source(s). Drives gap-fil
 | 11.1.1 | Multi-Source Analysis      | RI    | `tests/memory_graph_sync_e2e.rs`                                                                                    | 🟡     | Frontend trigger untested                                                                 |
 | 11.1.2 | Actionable Item Extraction | VU    | `app/src/components/intelligence/__tests__/utils.test.ts` (this PR)                                                 | ✅     | Was ❌                                                                                    |
 | 11.1.3 | Analyze Trigger            | WD    | `app/test/e2e/specs/insights-dashboard.spec.ts` mounts the route (this PR); explicit analyze-handler invocation TBD | 🟡     | Route mounts and search/filter UI assert — full analyze trigger flow tracked as follow-up |
-| 11.1.4 | MCP stdio server           | RU    | `src/openhuman/mcp_server/`                                                                                         | ✅     | Read-only initialize/tools/list/tools/call plus stdio framing; binary smoke in PR validation |
+| 11.1.4 | MCP stdio server           | RU    | `src/aura/mcp_server/`                                                                                         | ✅     | Read-only initialize/tools/list/tools/call plus stdio framing; binary smoke in PR validation |
 
 ### 11.2 Insights Dashboard
 
@@ -408,7 +408,7 @@ Canonical mapping of every product feature to its test source(s). Drives gap-fil
 ## 12. Rewards & Progression
 
 > Frontend-only domain — no Rust core counterpart. Confirmed during #970
-> investigation: there is no `src/openhuman/rewards/` module and no Redux
+> investigation: there is no `src/aura/rewards/` module and no Redux
 > `rewardsSlice`; snapshot is fetched per-mount via
 > `app/src/services/api/rewardsApi.ts` and held in `Rewards.tsx` component
 > state. Backend ownership lives in `tinyhumansai/backend` (`/rewards/me`).

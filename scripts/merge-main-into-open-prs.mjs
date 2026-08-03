@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-const DEFAULT_REPO = 'tinyhumansai/openhuman';
+const DEFAULT_REPO = 'tinyhumansai/aura';
 const DEFAULT_BASE_BRANCH = 'main';
 const DEFAULT_OPEN_PR_LIMIT = 200;
 
@@ -179,7 +179,7 @@ function ensureCleanBranch(cloneDir, branchName, remoteName, remoteBranch) {
 }
 
 function setupTempClone(repo, baseBranch) {
-  const cloneDir = fs.mkdtempSync(path.join(os.tmpdir(), 'openhuman-pr-main-sync-'));
+  const cloneDir = fs.mkdtempSync(path.join(os.tmpdir(), 'aura-pr-main-sync-'));
   const repoUrl = `git@github.com:${repo}.git`;
 
   run('git', ['init'], { cwd: cloneDir });

@@ -43,7 +43,7 @@ test("validate.mjs exits 0 on the canonical example spec", () => {
 test("validate.mjs exits 1 on a spec with malformed branch", () => {
   const path = writeTempSpec({
     batch_id: "pilot-test",
-    base_repo: "tinyhumansai/openhuman",
+    base_repo: "tinyhumansai/aura",
     base_branch: "main",
     tracking_issue: 1480,
     agents: [
@@ -52,7 +52,7 @@ test("validate.mjs exits 1 on a spec with malformed branch", () => {
         issue: 100,
         title: "t",
         branch: "feature/foo",
-        owned_paths: ["src/openhuman/foo/"],
+        owned_paths: ["src/aura/foo/"],
       },
     ],
   });
@@ -70,7 +70,7 @@ test("overlap.mjs exits 0 on disjoint example", () => {
 test("overlap.mjs exits 1 when two agents own the same prefix", () => {
   const path = writeTempSpec({
     batch_id: "pilot-test",
-    base_repo: "tinyhumansai/openhuman",
+    base_repo: "tinyhumansai/aura",
     base_branch: "main",
     tracking_issue: 1480,
     agents: [
@@ -79,14 +79,14 @@ test("overlap.mjs exits 1 when two agents own the same prefix", () => {
         issue: 100,
         title: "t",
         branch: "cursor/a01-100-x",
-        owned_paths: ["src/openhuman/foo/"],
+        owned_paths: ["src/aura/foo/"],
       },
       {
         id: "a02",
         issue: 101,
         title: "t",
         branch: "cursor/a02-101-y",
-        owned_paths: ["src/openhuman/foo/inner/"],
+        owned_paths: ["src/aura/foo/inner/"],
       },
     ],
   });
@@ -101,14 +101,14 @@ test("status.mjs renders a markdown table from a fixture (no gh needed)", () => 
     {
       headRefName: "cursor/a01-9001-memory-namespace-logging",
       number: 5001,
-      url: "https://github.com/tinyhumansai/openhuman/pull/5001",
+      url: "https://github.com/tinyhumansai/aura/pull/5001",
       state: "OPEN",
       statusCheckRollup: "SUCCESS",
     },
     {
       headRefName: "cursor/a02-9002-cron-rpc-dedupe",
       number: 5002,
-      url: "https://github.com/tinyhumansai/openhuman/pull/5002",
+      url: "https://github.com/tinyhumansai/aura/pull/5002",
       state: "OPEN",
       statusCheckRollup: "FAILURE",
     },

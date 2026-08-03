@@ -21,7 +21,7 @@ use crate::cdp::CdpConn;
 
 use super::inject;
 
-/// Polling cadence for `__openhumanDrainCaptions`. Captions arrive at
+/// Polling cadence for `__auraDrainCaptions`. Captions arrive at
 /// roughly word-by-word frequency; 500 ms is the sweet spot between
 /// "responsive enough that wake-word detection feels live" and "not
 /// hammering the CDP socket".
@@ -112,7 +112,7 @@ async fn drain_and_forward(
         // listener would silently drop captions forever while the
         // page kept producing them.
         super::rpc_call(
-            "openhuman.meet_agent_push_caption",
+            "aura.meet_agent_push_caption",
             serde_json::json!({
                 "request_id": request_id,
                 "speaker": speaker,

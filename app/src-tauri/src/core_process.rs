@@ -6,7 +6,7 @@
 //!
 //! Stale-listener policy (see issue #1130): if something is already listening
 //! on the configured port when `ensure_running` runs, we probe `GET /` to see
-//! whether it is an OpenHuman core. If it is, we treat it as a stale process
+//! whether it is an Aura core. If it is, we treat it as a stale process
 //! left behind by a previous build/dev session and proactively terminate it
 //! (graceful signal, then a force-kill that *revalidates* the pid is still
 //! the same listener — guards against PID reuse if the original exits inside
@@ -15,8 +15,8 @@
 //! is something else (or unreachable), we refuse to attach and surface the
 //! conflict so it can be diagnosed instead of producing 401s and version
 //! drift downstream.
-//! Set `OPENHUMAN_CORE_REUSE_EXISTING=1` to opt back into the legacy
-//! attach-to-whatever-is-listening behavior (e.g. a manual `openhuman-core
+//! Set `AURA_CORE_REUSE_EXISTING=1` to opt back into the legacy
+//! attach-to-whatever-is-listening behavior (e.g. a manual `aura-core
 //! run` harness for debugging).
 
 use std::sync::Arc;
@@ -33,7 +33,7 @@ use crate::process_kill::{kill_pid_force, kill_pid_term};
 
 /// Generate a 256-bit cryptographically-random bearer token as a hex string.
 ///
-/// Uses the same encoding as `openhuman_core::core::auth::generate_token`
+/// Uses the same encoding as `aura_core::core::auth::generate_token`
 /// (`hex::encode`) so the token format never silently diverges between the
 /// Tauri-side generator and the core-side validator.
 pub fn generate_rpc_token() -> String {
@@ -56,7 +56,7 @@ pub struct CoreProcessHandle {
     restart_lock: Arc<Mutex<()>>,
     port: u16,
     /// Bearer token the embedded server validates on every inbound request.
-    /// Passed to the embedded server through the `OPENHUMAN_CORE_TOKEN`
+    /// Passed to the embedded server through the `AURA_CORE_TOKEN`
     /// process env var (set in `ensure_running` before spawn) and exposed to
     /// the frontend via the `core_rpc_token` Tauri command so every RPC call
     /// can include `Authorization: Bearer`.
@@ -67,7 +67,7 @@ impl CoreProcessHandle {
     pub fn new(port: u16) -> Self {
         // CURRENT_RPC_TOKEN is intentionally NOT set here. It is published by
         // ensure_running() only after the embedded server has been spawned
-        // with OPENHUMAN_CORE_TOKEN in scope. Setting it here would advertise
+        // with AURA_CORE_TOKEN in scope. Setting it here would advertise
         // a token that an existing process listening on the port (the
         // harness-attach fast-path) has never seen, causing 401s on every
         // authenticated call.
@@ -109,7 +109,7 @@ impl CoreProcessHandle {
         // us — return Ok without identifying or taking over. Without this,
         // a second `start_core_process` call (e.g. HMR re-mounting the boot
         // gate) sees its own port as bound, classifies the listener as
-        // "stale OpenHuman", and walks into the SIGTERM/SIGKILL takeover
+        // "stale Aura", and walks into the SIGTERM/SIGKILL takeover
         // path against itself. (#1130 takeover is meant to recover from
         // *external* leftover binaries, not our own in-process spawn.)
         {
@@ -132,7 +132,7 @@ impl CoreProcessHandle {
             // call (from BootCheckGate re-render, React StrictMode mount, or
             // any double-invoke of `start_core_process`) hits the
             // `identify_listener` path, identifies the listener as
-            // OpenHuman, calls `takeover_stale_listener`, and aborts with
+            // Aura, calls `takeover_stale_listener`, and aborts with
             // "stale-listener pid <self> matches the Tauri host pid;
             // refusing to self-terminate". (#1316 introduced the
             // frontend-driven `start_core_process` invoke without
@@ -152,16 +152,16 @@ impl CoreProcessHandle {
 
             if reuse_existing_listener_enabled() {
                 log::warn!(
-                    "[core] OPENHUMAN_CORE_REUSE_EXISTING=1 — attaching to whatever is listening on port {} without identification (legacy behavior)",
+                    "[core] AURA_CORE_REUSE_EXISTING=1 — attaching to whatever is listening on port {} without identification (legacy behavior)",
                     self.port
                 );
                 return Ok(());
             }
 
             match identify_listener(self.port).await {
-                ListenerKind::OpenHuman => {
+                ListenerKind::Aura => {
                     log::warn!(
-                        "[core] found stale OpenHuman listener on port {} — taking over (issue #1130)",
+                        "[core] found stale Aura listener on port {} — taking over (issue #1130)",
                         self.port
                     );
                     self.takeover_stale_listener().await?;
@@ -169,7 +169,7 @@ impl CoreProcessHandle {
                 }
                 ListenerKind::Unknown { reason } => {
                     let msg = format!(
-                        "Core RPC port {} is in use by something that is not an OpenHuman core ({reason}). Refusing to attach (set OPENHUMAN_CORE_REUSE_EXISTING=1 to override) — quit the other process or set OPENHUMAN_CORE_PORT to a different port and relaunch.",
+                        "Core RPC port {} is in use by something that is not an Aura core ({reason}). Refusing to attach (set AURA_CORE_REUSE_EXISTING=1 to override) — quit the other process or set AURA_CORE_PORT to a different port and relaunch.",
                         self.port
                     );
                     if is_expected_port_clash(&reason) {
@@ -187,24 +187,24 @@ impl CoreProcessHandle {
             let mut guard = self.task.lock().await;
             if guard.is_none() {
                 let port = self.port;
-                // Set OPENHUMAN_CORE_TOKEN as a process-global env var before
+                // Set AURA_CORE_TOKEN as a process-global env var before
                 // spawning the embedded server. Same-process tokio task reads
                 // the same env, matching what a child sidecar would have
                 // received via Command::env.
-                std::env::set_var("OPENHUMAN_CORE_TOKEN", self.rpc_token.as_str());
+                std::env::set_var("AURA_CORE_TOKEN", self.rpc_token.as_str());
 
                 // Debug-build only: surface the RPC bearer token at a known
                 // tmpdir path so the e2e test runner (a separate Node process)
                 // can authenticate against the in-process core. Release builds
                 // never write this file. The test harness reads it from
-                // ${tmpdir}/openhuman-e2e-rpc-token.
+                // ${tmpdir}/aura-e2e-rpc-token.
                 //
                 // Token file is owner-read-write only (mode 0600) on Unix so a
                 // shared dev box doesn't leak the bearer to other local users.
                 #[cfg(debug_assertions)]
                 {
                     use std::io::Write as _;
-                    let token_path = std::env::temp_dir().join("openhuman-e2e-rpc-token");
+                    let token_path = std::env::temp_dir().join("aura-e2e-rpc-token");
                     let write_result = (|| -> std::io::Result<()> {
                         let mut options = std::fs::OpenOptions::new();
                         options.create(true).write(true).truncate(true);
@@ -232,7 +232,7 @@ impl CoreProcessHandle {
                 }
                 log::info!("[core] spawning embedded in-process core server on port {port}");
                 let task = tokio::spawn(async move {
-                    if let Err(e) = openhuman_core::core::jsonrpc::run_server_embedded(
+                    if let Err(e) = aura_core::core::jsonrpc::run_server_embedded(
                         None,
                         Some(port),
                         true,
@@ -251,7 +251,7 @@ impl CoreProcessHandle {
                 });
                 *guard = Some(task);
                 // Publish only after the embedded server has been spawned
-                // with OPENHUMAN_CORE_TOKEN in scope.
+                // with AURA_CORE_TOKEN in scope.
                 *CURRENT_RPC_TOKEN.write() = Some(self.rpc_token.to_string());
                 log::debug!("[auth] CURRENT_RPC_TOKEN set after embedded spawn");
             }
@@ -286,7 +286,7 @@ impl CoreProcessHandle {
 
     /// Identify the OS pid currently bound to our port and terminate it,
     /// then wait for the port to free. Used when the listener has been
-    /// fingerprinted as an OpenHuman core (via `GET /`) so killing it is safe.
+    /// fingerprinted as an Aura core (via `GET /`) so killing it is safe.
     async fn takeover_stale_listener(&self) -> Result<(), String> {
         let pid = match find_pid_on_port(self.port) {
             Some(pid) => pid,
@@ -307,11 +307,11 @@ impl CoreProcessHandle {
             ));
         }
         log::warn!(
-            "[core] terminating stale OpenHuman process pid={pid} on port {} (issue #1130)",
+            "[core] terminating stale Aura process pid={pid} on port {} (issue #1130)",
             self.port
         );
         if let Err(e) = kill_pid_term(pid) {
-            return Err(format!("failed to signal stale openhuman pid {pid}: {e}"));
+            return Err(format!("failed to signal stale aura pid {pid}: {e}"));
         }
 
         // Wait for the graceful exit, then revalidate ownership before any
@@ -332,7 +332,7 @@ impl CoreProcessHandle {
                     );
                     if let Err(e) = kill_pid_force(pid) {
                         return Err(format!(
-                            "failed to force-kill stale openhuman pid {pid}: {e}"
+                            "failed to force-kill stale aura pid {pid}: {e}"
                         ));
                     }
                 }
@@ -374,9 +374,9 @@ impl CoreProcessHandle {
     ///
     /// macOS caches permission state per-process; restarting forces a fresh
     /// read. If something else is bound to the port (e.g. a manual
-    /// `openhuman-core run` harness) we surface that instead of looping.
+    /// `aura-core run` harness) we surface that instead of looping.
     ///
-    /// Issue: <https://github.com/tinyhumansai/openhuman/issues/133>
+    /// Issue: <https://github.com/tinyhumansai/aura/issues/133>
     pub async fn restart(&self) -> Result<(), String> {
         log::info!("[core] restarting embedded core server for permission refresh");
 
@@ -389,11 +389,11 @@ impl CoreProcessHandle {
 
         if !had_managed_task && self.is_rpc_port_open().await {
             let msg = format!(
-                "Core RPC port {} is already in use by another process (OpenHuman did not start it). Quit any `openhuman-core run` in a terminal or set OPENHUMAN_CORE_PORT to a different port, then relaunch the app.",
+                "Core RPC port {} is already in use by another process (Aura did not start it). Quit any `aura-core run` in a terminal or set AURA_CORE_PORT to a different port, then relaunch the app.",
                 self.port
             );
             // Precondition check: by the time we hit this branch we already
-            // know the port is held by something OpenHuman did not spawn, so
+            // know the port is held by something Aura did not spawn, so
             // the clash is always benign environment state — no need to gate
             // through `is_expected_port_clash`.
             log::warn!(
@@ -501,17 +501,17 @@ impl CoreProcessHandle {
 }
 
 pub fn default_core_port() -> u16 {
-    std::env::var("OPENHUMAN_CORE_PORT")
+    std::env::var("AURA_CORE_PORT")
         .ok()
         .and_then(|v| v.parse::<u16>().ok())
         .unwrap_or(7788)
 }
 
-/// Whether `OPENHUMAN_CORE_REUSE_EXISTING` is set to a truthy value. Opts
+/// Whether `AURA_CORE_REUSE_EXISTING` is set to a truthy value. Opts
 /// back into the pre-#1130 behavior of attaching to whatever is listening
 /// on the port without identification — useful for manual harnesses.
 pub(crate) fn reuse_existing_listener_enabled() -> bool {
-    std::env::var("OPENHUMAN_CORE_REUSE_EXISTING")
+    std::env::var("AURA_CORE_REUSE_EXISTING")
         .map(|v| matches!(v.trim(), "1" | "true" | "TRUE" | "yes" | "YES"))
         .unwrap_or(false)
 }
@@ -530,11 +530,11 @@ async fn is_port_open(port: u16) -> bool {
 /// What is currently listening on the core RPC port.
 #[derive(Debug)]
 enum ListenerKind {
-    /// `GET /` returned a JSON body with `"name": "openhuman"` — i.e. a
-    /// stale OpenHuman core process from a previous build/session.
-    OpenHuman,
+    /// `GET /` returned a JSON body with `"name": "aura"` — i.e. a
+    /// stale Aura core process from a previous build/session.
+    Aura,
     /// Either the listener didn't speak HTTP, didn't respond, or returned
-    /// a body that doesn't identify as openhuman.
+    /// a body that doesn't identify as aura.
     Unknown { reason: String },
 }
 
@@ -574,20 +574,20 @@ async fn identify_listener(port: u16) -> ListenerKind {
             };
         }
     };
-    if is_openhuman_root_body(&body) {
-        log::info!("[core] listener on port {port} identified as openhuman core");
-        ListenerKind::OpenHuman
+    if is_aura_root_body(&body) {
+        log::info!("[core] listener on port {port} identified as aura core");
+        ListenerKind::Aura
     } else {
         let preview: String = body.chars().take(80).collect();
         ListenerKind::Unknown {
-            reason: format!("probe GET / body did not identify as openhuman ({preview:?})"),
+            reason: format!("probe GET / body did not identify as aura ({preview:?})"),
         }
     }
 }
 
 /// Pure parse of the root-handler JSON. Public-by-test so the fingerprinting
 /// logic stays unit-testable without standing up an HTTP server.
-fn is_openhuman_root_body(body: &str) -> bool {
+fn is_aura_root_body(body: &str) -> bool {
     let value: serde_json::Value = match serde_json::from_str(body) {
         Ok(v) => v,
         Err(_) => return false,
@@ -595,7 +595,7 @@ fn is_openhuman_root_body(body: &str) -> bool {
     value
         .get("name")
         .and_then(|v| v.as_str())
-        .map(|s| s == "openhuman")
+        .map(|s| s == "aura")
         .unwrap_or(false)
 }
 
@@ -607,7 +607,7 @@ fn is_expected_port_clash(reason: &str) -> bool {
         || reason.contains("connection refused")
         || reason.contains("returned status 404")
         || reason.contains("returned status 200")
-        || reason.contains("body did not identify as openhuman")
+        || reason.contains("body did not identify as aura")
         || reason.contains("already in use by another process")
         || reason.contains("os error 10013")
         || reason.contains("wsaeacces")

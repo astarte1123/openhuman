@@ -10,8 +10,8 @@ import { useNavigate } from 'react-router-dom';
 
 import type { VoiceSkillStatus } from '../../features/voice/useVoiceSkillStatus';
 import {
-  openhumanVoiceServerStart,
-  openhumanUpdateVoiceServerSettings,
+  auraVoiceServerStart,
+  auraUpdateVoiceServerSettings,
 } from '../../utils/tauriCommands/voice';
 
 type Step = 'setup' | 'enable' | 'success';
@@ -43,9 +43,9 @@ export default function VoiceSetupModal({ onClose, skillStatus }: Props) {
     setEnableError(null);
     try {
       // Enable auto-start in settings
-      await openhumanUpdateVoiceServerSettings({ auto_start: true });
+      await auraUpdateVoiceServerSettings({ auto_start: true });
       // Start the voice server
-      await openhumanVoiceServerStart();
+      await auraVoiceServerStart();
       setStep('success');
     } catch (error) {
       setEnableError(error instanceof Error ? error.message : 'Failed to start voice server');

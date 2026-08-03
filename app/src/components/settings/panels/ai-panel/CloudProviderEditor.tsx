@@ -34,7 +34,7 @@ const CloudProviderEditor = ({
   const [endpoint, setEndpoint] = useState(initial?.endpoint ?? defaultEndpointFor(defaultSlug));
   const [apiKey, setApiKey] = useState('');
   const [saving, setSaving] = useState(false);
-  const isOpenHuman = slug === 'openhuman';
+  const isAura = slug === 'aura';
   const hasExistingKey = (initial?.maskedKey ?? '').startsWith('••••');
 
   return (
@@ -92,12 +92,12 @@ const CloudProviderEditor = ({
             <input
               value={endpoint}
               onChange={e => setEndpoint(e.target.value)}
-              disabled={isOpenHuman}
+              disabled={isAura}
               className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-3 py-2 font-mono text-xs text-stone-900 placeholder:text-stone-400 disabled:opacity-60 focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-200"
               placeholder="https://api.example.com/v1"
             />
           </div>
-          {!isOpenHuman && (
+          {!isAura && (
             <div>
               <label className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-wide text-stone-500">
                 <span>API key</span>

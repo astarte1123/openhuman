@@ -10,7 +10,7 @@ use std::sync::{Mutex, OnceLock};
 
 use tempfile::tempdir;
 
-use openhuman_core::openhuman::autocomplete::history;
+use aura_core::aura::autocomplete::history;
 
 // ── Env isolation ────────────────────────────────────────────────────
 

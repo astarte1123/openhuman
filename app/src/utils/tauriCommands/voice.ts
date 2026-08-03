@@ -60,45 +60,45 @@ export interface VoiceServerSettings {
   custom_dictionary: string[];
 }
 
-export async function openhumanVoiceStatus(): Promise<VoiceStatus> {
-  return await callCoreRpc<VoiceStatus>({ method: 'openhuman.voice_status', params: {} });
+export async function auraVoiceStatus(): Promise<VoiceStatus> {
+  return await callCoreRpc<VoiceStatus>({ method: 'aura.voice_status', params: {} });
 }
 
-export async function openhumanVoiceServerStatus(): Promise<VoiceServerStatus> {
+export async function auraVoiceServerStatus(): Promise<VoiceServerStatus> {
   return await callCoreRpc<VoiceServerStatus>({
-    method: 'openhuman.voice_server_status',
+    method: 'aura.voice_server_status',
     params: {},
   });
 }
 
-export async function openhumanVoiceServerStart(params?: {
+export async function auraVoiceServerStart(params?: {
   hotkey?: string;
   activation_mode?: 'tap' | 'push';
   skip_cleanup?: boolean;
 }): Promise<VoiceServerStatus> {
   return await callCoreRpc<VoiceServerStatus>({
-    method: 'openhuman.voice_server_start',
+    method: 'aura.voice_server_start',
     params: params ?? {},
   });
 }
 
-export async function openhumanVoiceServerStop(): Promise<VoiceServerStatus> {
+export async function auraVoiceServerStop(): Promise<VoiceServerStatus> {
   return await callCoreRpc<VoiceServerStatus>({
-    method: 'openhuman.voice_server_stop',
+    method: 'aura.voice_server_stop',
     params: {},
   });
 }
 
-export async function openhumanGetVoiceServerSettings(): Promise<
+export async function auraGetVoiceServerSettings(): Promise<
   CommandResponse<VoiceServerSettings>
 > {
   return await callCoreRpc<CommandResponse<VoiceServerSettings>>({
-    method: 'openhuman.config_get_voice_server_settings',
+    method: 'aura.config_get_voice_server_settings',
     params: {},
   });
 }
 
-export async function openhumanUpdateVoiceServerSettings(update: {
+export async function auraUpdateVoiceServerSettings(update: {
   auto_start?: boolean;
   hotkey?: string;
   activation_mode?: 'tap' | 'push';
@@ -108,7 +108,7 @@ export async function openhumanUpdateVoiceServerSettings(update: {
   custom_dictionary?: string[];
 }): Promise<CommandResponse<ConfigSnapshot>> {
   return await callCoreRpc<CommandResponse<ConfigSnapshot>>({
-    method: 'openhuman.config_update_voice_server_settings',
+    method: 'aura.config_update_voice_server_settings',
     params: update,
   });
 }
@@ -129,47 +129,47 @@ export interface VoiceProvidersSnapshot {
 
 /**
  * Persist the STT / TTS provider selection. Maps to the
- * `openhuman.voice_set_providers` RPC, which validates each value against
+ * `aura.voice_set_providers` RPC, which validates each value against
  * the supported provider list and rejects unknown ids server-side.
  */
-export async function openhumanVoiceSetProviders(
+export async function auraVoiceSetProviders(
   update: VoiceProvidersUpdate
 ): Promise<VoiceProvidersSnapshot> {
   return await callCoreRpc<VoiceProvidersSnapshot>({
-    method: 'openhuman.voice_set_providers',
+    method: 'aura.voice_set_providers',
     params: update,
   });
 }
 
-export async function openhumanVoiceTranscribe(
+export async function auraVoiceTranscribe(
   audioPath: string,
   context?: string,
   skipCleanup?: boolean
 ): Promise<VoiceSpeechResult> {
   return await callCoreRpc<VoiceSpeechResult>({
-    method: 'openhuman.voice_transcribe',
+    method: 'aura.voice_transcribe',
     params: { audio_path: audioPath, context, skip_cleanup: skipCleanup },
   });
 }
 
-export async function openhumanVoiceTranscribeBytes(
+export async function auraVoiceTranscribeBytes(
   audioBytes: number[],
   extension?: string,
   context?: string,
   skipCleanup?: boolean
 ): Promise<VoiceSpeechResult> {
   return await callCoreRpc<VoiceSpeechResult>({
-    method: 'openhuman.voice_transcribe_bytes',
+    method: 'aura.voice_transcribe_bytes',
     params: { audio_bytes: audioBytes, extension, context, skip_cleanup: skipCleanup },
   });
 }
 
-export async function openhumanVoiceTts(
+export async function auraVoiceTts(
   text: string,
   outputPath?: string
 ): Promise<VoiceTtsResult> {
   return await callCoreRpc<VoiceTtsResult>({
-    method: 'openhuman.voice_tts',
+    method: 'aura.voice_tts',
     params: { text, output_path: outputPath },
   });
 }
@@ -213,7 +213,7 @@ export const notifyOverlaySttState = (
 ): void => {
   void (async () => {
     try {
-      await callCoreRpc({ method: 'openhuman.overlay_stt_notify', params: { state, text } });
+      await callCoreRpc({ method: 'aura.overlay_stt_notify', params: { state, text } });
     } catch (err: unknown) {
       console.debug('[overlay_stt_notify] fire-and-forget error:', err);
     }

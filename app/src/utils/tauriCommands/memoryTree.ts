@@ -1,9 +1,9 @@
 /**
  * memory_tree subsystem commands.
  *
- * Thin wrappers over the `openhuman.memory_tree_*` JSON-RPC surface that
+ * Thin wrappers over the `aura.memory_tree_*` JSON-RPC surface that
  * powers the Memory tab and the Settings → AI backend chooser. Method
- * shapes mirror the Rust handlers in `src/openhuman/memory/tree/read_rpc.rs`
+ * shapes mirror the Rust handlers in `src/aura/memory/tree/read_rpc.rs`
  * and `schemas.rs`.
  *
  * Responses come back wrapped by `RpcOutcome::single_log` as
@@ -51,7 +51,7 @@ export type EntityKind =
  * A single chunk in the memory tree — one user-visible message-sized unit
  * (an email, a chat turn, a doc page, a transcribed voice clip).
  *
- * Wire shape mirrors Rust's [`ChunkRow`](src/openhuman/memory/tree/read_rpc.rs)
+ * Wire shape mirrors Rust's [`ChunkRow`](src/aura/memory/tree/read_rpc.rs)
  * — body is replaced with a `≤500-char preview` plus a flag indicating
  * whether the row has an embedding.
  */
@@ -152,7 +152,7 @@ export interface LlmResponse {
 }
 
 /**
- * Wire shape for `openhuman.memory_tree_set_llm`.
+ * Wire shape for `aura.memory_tree_set_llm`.
  *
  * `backend` is required and always overwrites `memory_tree.llm_backend`.
  *
@@ -195,12 +195,12 @@ function unwrapResult<T>(resp: T | ResultEnvelope<T>): T {
 
 /**
  * Paginated chunk listing with optional filters. Backed by
- * `openhuman.memory_tree_list_chunks`.
+ * `aura.memory_tree_list_chunks`.
  */
 export async function memoryTreeListChunks(filter: ChunkFilter): Promise<ListChunksResponse> {
   console.debug('[memory-tree-rpc] memoryTreeListChunks: entry filter=%o', filter);
   const resp = await callCoreRpc<ListChunksResponse | ResultEnvelope<ListChunksResponse>>({
-    method: 'openhuman.memory_tree_list_chunks',
+    method: 'aura.memory_tree_list_chunks',
     params: filter,
   });
   const out = unwrapResult(resp);
@@ -226,7 +226,7 @@ export async function memoryTreeListSources(userEmailHint?: string): Promise<Sou
   );
   const params = userEmailHint ? { user_email_hint: userEmailHint } : {};
   const resp = await callCoreRpc<Source[] | ResultEnvelope<Source[]>>({
-    method: 'openhuman.memory_tree_list_sources',
+    method: 'aura.memory_tree_list_sources',
     params,
   });
   const out = unwrapResult(resp);
@@ -243,7 +243,7 @@ export async function memoryTreeListSources(userEmailHint?: string): Promise<Sou
 export async function memoryTreeSearch(query: string, k: number): Promise<Chunk[]> {
   console.debug('[memory-tree-rpc] memoryTreeSearch: entry query_len=%d k=%d', query.length, k);
   const resp = await callCoreRpc<Chunk[] | ResultEnvelope<Chunk[]>>({
-    method: 'openhuman.memory_tree_search',
+    method: 'aura.memory_tree_search',
     params: { query, k },
   });
   const out = unwrapResult(resp);
@@ -260,7 +260,7 @@ export async function memoryTreeSearch(query: string, k: number): Promise<Chunk[
 export async function memoryTreeRecall(query: string, k: number): Promise<RecallResponse> {
   console.debug('[memory-tree-rpc] memoryTreeRecall: entry query_len=%d k=%d', query.length, k);
   const resp = await callCoreRpc<RecallResponse | ResultEnvelope<RecallResponse>>({
-    method: 'openhuman.memory_tree_recall',
+    method: 'aura.memory_tree_recall',
     params: { query, k },
   });
   const out = unwrapResult(resp);
@@ -276,7 +276,7 @@ export async function memoryTreeRecall(query: string, k: number): Promise<Recall
 export async function memoryTreeEntityIndexFor(chunkId: string): Promise<EntityRef[]> {
   console.debug('[memory-tree-rpc] memoryTreeEntityIndexFor: entry chunk_id=%s', chunkId);
   const resp = await callCoreRpc<EntityRef[] | ResultEnvelope<EntityRef[]>>({
-    method: 'openhuman.memory_tree_entity_index_for',
+    method: 'aura.memory_tree_entity_index_for',
     params: { chunk_id: chunkId },
   });
   const out = unwrapResult(resp);
@@ -294,7 +294,7 @@ export async function memoryTreeEntityIndexFor(chunkId: string): Promise<EntityR
 export async function memoryTreeChunksForEntity(entityId: string): Promise<string[]> {
   console.debug('[memory-tree-rpc] memoryTreeChunksForEntity: entry entity_id=%s', entityId);
   const resp = await callCoreRpc<string[] | ResultEnvelope<string[]>>({
-    method: 'openhuman.memory_tree_chunks_for_entity',
+    method: 'aura.memory_tree_chunks_for_entity',
     params: { entity_id: entityId },
   });
   const out = unwrapResult(resp);
@@ -318,7 +318,7 @@ export async function memoryTreeTopEntities(kind?: string, limit = 50): Promise<
   const params: Record<string, unknown> = { limit };
   if (kind) params.kind = kind;
   const resp = await callCoreRpc<EntityRef[] | ResultEnvelope<EntityRef[]>>({
-    method: 'openhuman.memory_tree_top_entities',
+    method: 'aura.memory_tree_top_entities',
     params,
   });
   const out = unwrapResult(resp);
@@ -336,7 +336,7 @@ export async function memoryTreeTopEntities(kind?: string, limit = 50): Promise<
 export async function memoryTreeChunkScore(chunkId: string): Promise<ScoreBreakdown | null> {
   console.debug('[memory-tree-rpc] memoryTreeChunkScore: entry chunk_id=%s', chunkId);
   const resp = await callCoreRpc<ScoreBreakdown | null | ResultEnvelope<ScoreBreakdown | null>>({
-    method: 'openhuman.memory_tree_chunk_score',
+    method: 'aura.memory_tree_chunk_score',
     params: { chunk_id: chunkId },
   });
   const out = unwrapResult(resp);
@@ -353,7 +353,7 @@ export async function memoryTreeChunkScore(chunkId: string): Promise<ScoreBreakd
 export async function memoryTreeDeleteChunk(chunkId: string): Promise<DeleteChunkResponse> {
   console.debug('[memory-tree-rpc] memoryTreeDeleteChunk: entry chunk_id=%s', chunkId);
   const resp = await callCoreRpc<DeleteChunkResponse | ResultEnvelope<DeleteChunkResponse>>({
-    method: 'openhuman.memory_tree_delete_chunk',
+    method: 'aura.memory_tree_delete_chunk',
     params: { chunk_id: chunkId },
   });
   const out = unwrapResult(resp);
@@ -374,7 +374,7 @@ export async function memoryTreeDeleteChunk(chunkId: string): Promise<DeleteChun
 export async function memoryTreeGetLlm(): Promise<LlmResponse> {
   console.debug('[memory-tree-rpc] memoryTreeGetLlm: entry');
   const resp = await callCoreRpc<LlmResponse | ResultEnvelope<LlmResponse>>({
-    method: 'openhuman.memory_tree_get_llm',
+    method: 'aura.memory_tree_get_llm',
   });
   const out = unwrapResult(resp);
   console.debug('[memory-tree-rpc] memoryTreeGetLlm: exit current=%s', out?.current);
@@ -409,7 +409,7 @@ export async function memoryTreeSetLlm(
     params.summariser_model ?? '<none>'
   );
   const resp = await callCoreRpc<LlmResponse | ResultEnvelope<LlmResponse>>({
-    method: 'openhuman.memory_tree_set_llm',
+    method: 'aura.memory_tree_set_llm',
     params,
   });
   const out = unwrapResult(resp);
@@ -494,7 +494,7 @@ export interface WipeAllResponse {
  * **and** clear the `composio-sync-state` KV namespace so the next
  * sync re-fetches every upstream item from scratch (no
  * synced-id-dedup carry-over). Backed by
- * `openhuman.memory_tree_wipe_all`.
+ * `aura.memory_tree_wipe_all`.
  *
  * Callers can rely on `sync_state_cleared` in the response — a
  * positive count means the next sync will be a full re-fetch; `0`
@@ -503,7 +503,7 @@ export interface WipeAllResponse {
 export async function memoryTreeWipeAll(): Promise<WipeAllResponse> {
   console.debug('[memory-tree-rpc] memoryTreeWipeAll: entry');
   const resp = await callCoreRpc<WipeAllResponse | ResultEnvelope<WipeAllResponse>>({
-    method: 'openhuman.memory_tree_wipe_all',
+    method: 'aura.memory_tree_wipe_all',
   });
   const out = unwrapResult(resp);
   console.debug(
@@ -528,7 +528,7 @@ export interface ResetTreeResponse {
  * Wipe summary-tree state but keep chunks, raw archive, and sync
  * state — then re-enqueue every chunk through extraction so the
  * tree rebuilds without a fresh upstream sync. Backed by
- * `openhuman.memory_tree_reset_tree`.
+ * `aura.memory_tree_reset_tree`.
  *
  * Use after changing the summariser backend (e.g. flipping inert
  * → real local LLM) to re-summarise existing data on the new
@@ -537,7 +537,7 @@ export interface ResetTreeResponse {
 export async function memoryTreeResetTree(): Promise<ResetTreeResponse> {
   console.debug('[memory-tree-rpc] memoryTreeResetTree: entry');
   const resp = await callCoreRpc<ResetTreeResponse | ResultEnvelope<ResetTreeResponse>>({
-    method: 'openhuman.memory_tree_reset_tree',
+    method: 'aura.memory_tree_reset_tree',
   });
   const out = unwrapResult(resp);
   console.debug(
@@ -559,7 +559,7 @@ export interface FlushNowResponse {
  * Manually trigger the summary-tree build. Enqueues a `flush_stale` job
  * with `max_age_secs=0` so every L0 buffer force-seals immediately; the
  * seal worker runs each through the configured cloud or local
- * summariser. Backed by `openhuman.memory_tree_flush_now`.
+ * summariser. Backed by `aura.memory_tree_flush_now`.
  *
  * Safe to spam — same UTC-day dedupe key as the scheduled flush, so
  * duplicate clicks return `enqueued=false` rather than queuing twice.
@@ -567,7 +567,7 @@ export interface FlushNowResponse {
 export async function memoryTreeFlushNow(): Promise<FlushNowResponse> {
   console.debug('[memory-tree-rpc] memoryTreeFlushNow: entry');
   const resp = await callCoreRpc<FlushNowResponse | ResultEnvelope<FlushNowResponse>>({
-    method: 'openhuman.memory_tree_flush_now',
+    method: 'aura.memory_tree_flush_now',
   });
   const out = unwrapResult(resp);
   console.debug(
@@ -581,14 +581,14 @@ export async function memoryTreeFlushNow(): Promise<FlushNowResponse> {
 /**
  * Return either the summary tree (parent→child links between sealed
  * summaries) or the document↔contact graph (chunks linked to person
- * entities they mention). Backed by `openhuman.memory_tree_graph_export`.
+ * entities they mention). Backed by `aura.memory_tree_graph_export`.
  */
 export async function memoryTreeGraphExport(
   mode: GraphMode = 'tree'
 ): Promise<GraphExportResponse> {
   console.debug('[memory-tree-rpc] memoryTreeGraphExport: entry mode=%s', mode);
   const resp = await callCoreRpc<GraphExportResponse | ResultEnvelope<GraphExportResponse>>({
-    method: 'openhuman.memory_tree_graph_export',
+    method: 'aura.memory_tree_graph_export',
     params: { mode },
   });
   const out = unwrapResult(resp);

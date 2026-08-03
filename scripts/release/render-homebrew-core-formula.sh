@@ -5,17 +5,17 @@
 #   render-homebrew-core-formula.sh <tag> [output_path]
 #
 # Example:
-#   render-homebrew-core-formula.sh v0.52.27 /tmp/openhuman.rb
+#   render-homebrew-core-formula.sh v0.52.27 /tmp/aura.rb
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-TEMPLATE_PATH="$REPO_ROOT/packages/homebrew-core/openhuman.rb.in"
+TEMPLATE_PATH="$REPO_ROOT/packages/homebrew-core/aura.rb.in"
 
 TAG="${1:?Usage: render-homebrew-core-formula.sh <tag> [output_path]}"
-OUT="${2:-$REPO_ROOT/packages/homebrew-core/openhuman.rb}"
+OUT="${2:-$REPO_ROOT/packages/homebrew-core/aura.rb}"
 VERSION="${TAG#v}"
-SOURCE_URL="https://github.com/tinyhumansai/openhuman/archive/refs/tags/${TAG}.tar.gz"
+SOURCE_URL="https://github.com/tinyhumansai/aura/archive/refs/tags/${TAG}.tar.gz"
 
 TMPDIR="$(mktemp -d)"
 trap 'rm -rf "$TMPDIR"' EXIT

@@ -1,7 +1,7 @@
 From: Sanil Jain <sanil@tinyhumans.ai>
 To: Asha Mehta <asha@tinyhumans.ai>, Ravi Kulkarni <ravi@tinyhumans.ai>
-Cc: OpenHuman Core <core@tinyhumans.ai>
-Subject: Re: Memory integration plan for OpenHuman desktop
+Cc: Aura Core <core@tinyhumans.ai>
+Subject: Re: Memory integration plan for Aura desktop
 Date: Tue, 12 Mar 2026 09:14:00 +0530
 Thread-Id: memory-integration-2026-03
 
@@ -20,7 +20,7 @@ Current work items:
 - Sanil will review response models so they follow the Neocortex API style.
 
 Important project facts:
-- Project name: OpenHuman
+- Project name: Aura
 - Subproject: memory-layer-completion
 - Target milestone: March 22, 2026
 - Preferred embedding model for local experiments: text-embedding-3-small
@@ -46,7 +46,7 @@ Sanil
 
 From: Asha Mehta <asha@tinyhumans.ai>
 To: Sanil Jain <sanil@tinyhumans.ai>, Ravi Kulkarni <ravi@tinyhumans.ai>
-Subject: Re: Memory integration plan for OpenHuman desktop
+Subject: Re: Memory integration plan for Aura desktop
 Date: Tue, 12 Mar 2026 08:41:00 +0530
 
 Agreed.
@@ -56,7 +56,7 @@ For the Neocortex donor path, I reviewed the neocortex_v2 extractor again:
 - It supports sentence-level and chunk-level extraction.
 - It adds recipient and spatial relation heuristics.
 
-I think we should preserve those heuristics when we port the ingestion flow into OpenHuman.
+I think we should preserve those heuristics when we port the ingestion flow into Aura.
 
 Also, please record this:
 - Ravi prefers narrower worker ownership to avoid merge conflicts.
@@ -69,7 +69,7 @@ Asha
 
 From: Ravi Kulkarni <ravi@tinyhumans.ai>
 To: Sanil Jain <sanil@tinyhumans.ai>, Asha Mehta <asha@tinyhumans.ai>
-Subject: Re: Memory integration plan for OpenHuman desktop
+Subject: Re: Memory integration plan for Aura desktop
 Date: Tue, 12 Mar 2026 08:09:00 +0530
 
 One more note before I start:

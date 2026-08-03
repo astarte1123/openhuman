@@ -78,9 +78,9 @@ describe('coreModeSlice — sync-localStorage-derived initial state', () => {
     }
   });
 
-  it('hydrates to local when openhuman_core_mode=local', async () => {
+  it('hydrates to local when aura_core_mode=local', async () => {
     localStorage.clear();
-    localStorage.setItem('openhuman_core_mode', 'local');
+    localStorage.setItem('aura_core_mode', 'local');
     const mod = await freshImport();
     const state = mod.default(undefined, { type: '@@INIT' });
     expect(state.mode).toEqual({ kind: 'local' });
@@ -88,9 +88,9 @@ describe('coreModeSlice — sync-localStorage-derived initial state', () => {
 
   it('hydrates to cloud with url + token when all three keys are present', async () => {
     localStorage.clear();
-    localStorage.setItem('openhuman_core_mode', 'cloud');
-    localStorage.setItem('openhuman_core_rpc_url', 'https://core.example.com/rpc');
-    localStorage.setItem('openhuman_core_rpc_token', 'tok-abc');
+    localStorage.setItem('aura_core_mode', 'cloud');
+    localStorage.setItem('aura_core_rpc_url', 'https://core.example.com/rpc');
+    localStorage.setItem('aura_core_rpc_token', 'tok-abc');
     const mod = await freshImport();
     const state = mod.default(undefined, { type: '@@INIT' });
     expect(state.mode).toEqual({
@@ -102,8 +102,8 @@ describe('coreModeSlice — sync-localStorage-derived initial state', () => {
 
   it('falls back to unset when cloud marker exists but URL or token is missing', async () => {
     localStorage.clear();
-    localStorage.setItem('openhuman_core_mode', 'cloud');
-    localStorage.setItem('openhuman_core_rpc_url', 'https://core.example.com/rpc');
+    localStorage.setItem('aura_core_mode', 'cloud');
+    localStorage.setItem('aura_core_rpc_url', 'https://core.example.com/rpc');
     // Token deliberately missing.
     const mod = await freshImport();
     const state = mod.default(undefined, { type: '@@INIT' });

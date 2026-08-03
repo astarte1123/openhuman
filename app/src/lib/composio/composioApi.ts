@@ -1,9 +1,9 @@
 /**
  * Imperative RPC wrapper for the Composio domain — typed counterpart
- * to `src/openhuman/composio/*` on the Rust side.
+ * to `src/aura/composio/*` on the Rust side.
  *
  * Every function here calls the core sidecar via JSON-RPC. The core
- * in turn proxies to the openhuman backend's
+ * in turn proxies to the aura backend's
  * `/agent-integrations/composio/*` routes, so the frontend never talks
  * to Composio directly and never handles the API key.
  *
@@ -50,18 +50,18 @@ function unwrapCliEnvelope<T>(value: unknown): T {
 // ── Read operations ───────────────────────────────────────────────
 
 export async function listToolkits(): Promise<ComposioToolkitsResponse> {
-  const raw = await callCoreRpc<unknown>({ method: 'openhuman.composio_list_toolkits' });
+  const raw = await callCoreRpc<unknown>({ method: 'aura.composio_list_toolkits' });
   return unwrapCliEnvelope<ComposioToolkitsResponse>(raw);
 }
 
 export async function listConnections(): Promise<ComposioConnectionsResponse> {
-  const raw = await callCoreRpc<unknown>({ method: 'openhuman.composio_list_connections' });
+  const raw = await callCoreRpc<unknown>({ method: 'aura.composio_list_connections' });
   return unwrapCliEnvelope<ComposioConnectionsResponse>(raw);
 }
 
 export async function listTools(toolkits?: string[]): Promise<ComposioToolsResponse> {
   const raw = await callCoreRpc<unknown>({
-    method: 'openhuman.composio_list_tools',
+    method: 'aura.composio_list_tools',
     params: toolkits && toolkits.length > 0 ? { toolkits } : {},
   });
   return unwrapCliEnvelope<ComposioToolsResponse>(raw);
@@ -82,7 +82,7 @@ export async function authorize(
   extraParams?: Record<string, string>
 ): Promise<ComposioAuthorizeResponse> {
   const raw = await callCoreRpc<unknown>({
-    method: 'openhuman.composio_authorize',
+    method: 'aura.composio_authorize',
     params: extraParams ? { toolkit, extra_params: extraParams } : { toolkit },
   });
   return unwrapCliEnvelope<ComposioAuthorizeResponse>(raw);
@@ -94,7 +94,7 @@ export async function authorize(
  */
 export async function deleteConnection(connectionId: string): Promise<ComposioDeleteResponse> {
   const raw = await callCoreRpc<unknown>({
-    method: 'openhuman.composio_delete_connection',
+    method: 'aura.composio_delete_connection',
     params: { connection_id: connectionId },
   });
   return unwrapCliEnvelope<ComposioDeleteResponse>(raw);
@@ -106,14 +106,14 @@ export async function deleteConnection(connectionId: string): Promise<ComposioDe
  * `{ read: true, write: true, admin: false }` when nothing is stored.
  */
 export async function getUserScopes(toolkit: string): Promise<ComposioUserScopePref> {
-  console.debug('[composio][scopes] → openhuman.composio_get_user_scopes toolkit=%s', toolkit);
+  console.debug('[composio][scopes] → aura.composio_get_user_scopes toolkit=%s', toolkit);
   const raw = await callCoreRpc<unknown>({
-    method: 'openhuman.composio_get_user_scopes',
+    method: 'aura.composio_get_user_scopes',
     params: { toolkit },
   });
   const pref = unwrapCliEnvelope<ComposioUserScopePref>(raw);
   console.debug(
-    '[composio][scopes] ← openhuman.composio_get_user_scopes toolkit=%s pref=%o',
+    '[composio][scopes] ← aura.composio_get_user_scopes toolkit=%s pref=%o',
     toolkit,
     pref
   );
@@ -130,17 +130,17 @@ export async function setUserScopes(
   pref: ComposioUserScopePref
 ): Promise<ComposioUserScopePref> {
   console.debug(
-    '[composio][scopes] → openhuman.composio_set_user_scopes toolkit=%s pref=%o',
+    '[composio][scopes] → aura.composio_set_user_scopes toolkit=%s pref=%o',
     toolkit,
     pref
   );
   const raw = await callCoreRpc<unknown>({
-    method: 'openhuman.composio_set_user_scopes',
+    method: 'aura.composio_set_user_scopes',
     params: { toolkit, ...pref },
   });
   const persisted = unwrapCliEnvelope<ComposioUserScopePref>(raw);
   console.debug(
-    '[composio][scopes] ← openhuman.composio_set_user_scopes toolkit=%s persisted=%o',
+    '[composio][scopes] ← aura.composio_set_user_scopes toolkit=%s persisted=%o',
     toolkit,
     persisted
   );
@@ -157,7 +157,7 @@ export async function execute(
   args?: Record<string, unknown>
 ): Promise<ComposioExecuteResponse> {
   const raw = await callCoreRpc<unknown>({
-    method: 'openhuman.composio_execute',
+    method: 'aura.composio_execute',
     params: { tool, arguments: args ?? {} },
   });
   return unwrapCliEnvelope<ComposioExecuteResponse>(raw);
@@ -168,7 +168,7 @@ export async function execute(
  * toolkit's native provider implementation (Gmail, Slack, Notion, …).
  * Persists the fetched items into the memory layer — chunks land in
  * `mem_tree_chunks` and the source-tree pipeline picks them up on the
- * next flush. Wraps `openhuman.composio_sync`.
+ * next flush. Wraps `aura.composio_sync`.
  *
  * `reason` defaults to `"manual"` server-side when omitted.
  */
@@ -177,12 +177,12 @@ export async function syncConnection(
   reason: 'manual' | 'periodic' | 'connection_created' = 'manual'
 ): Promise<unknown> {
   console.debug(
-    '[composio][sync] → openhuman.composio_sync conn=%s reason=%s',
+    '[composio][sync] → aura.composio_sync conn=%s reason=%s',
     connectionId,
     reason
   );
   const raw = await callCoreRpc<unknown>({
-    method: 'openhuman.composio_sync',
+    method: 'aura.composio_sync',
     params: { connection_id: connectionId, reason },
   });
   const outcome = unwrapCliEnvelope<unknown>(raw);
@@ -194,7 +194,7 @@ export async function syncConnection(
       ? { keys: Object.keys(outcome as Record<string, unknown>).slice(0, 10) }
       : { type: typeof outcome };
   console.debug(
-    '[composio][sync] ← openhuman.composio_sync conn=%s outcome_shape=%o',
+    '[composio][sync] ← aura.composio_sync conn=%s outcome_shape=%o',
     connectionId,
     outcomeShape
   );
@@ -216,7 +216,7 @@ export async function listAvailableTriggers(
   const params: Record<string, unknown> = { toolkit };
   if (connectionId) params.connection_id = connectionId;
   const raw = await callCoreRpc<unknown>({
-    method: 'openhuman.composio_list_available_triggers',
+    method: 'aura.composio_list_available_triggers',
     params,
   });
   return unwrapCliEnvelope<ComposioAvailableTriggersResponse>(raw);
@@ -228,7 +228,7 @@ export async function listAvailableTriggers(
 export async function listTriggers(toolkit?: string): Promise<ComposioActiveTriggersResponse> {
   const params: Record<string, unknown> = {};
   if (toolkit) params.toolkit = toolkit;
-  const raw = await callCoreRpc<unknown>({ method: 'openhuman.composio_list_triggers', params });
+  const raw = await callCoreRpc<unknown>({ method: 'aura.composio_list_triggers', params });
   return unwrapCliEnvelope<ComposioActiveTriggersResponse>(raw);
 }
 
@@ -242,7 +242,7 @@ export async function enableTrigger(
 ): Promise<ComposioEnableTriggerResponse> {
   const params: Record<string, unknown> = { connection_id: connectionId, slug };
   if (triggerConfig !== undefined) params.trigger_config = triggerConfig;
-  const raw = await callCoreRpc<unknown>({ method: 'openhuman.composio_enable_trigger', params });
+  const raw = await callCoreRpc<unknown>({ method: 'aura.composio_enable_trigger', params });
   return unwrapCliEnvelope<ComposioEnableTriggerResponse>(raw);
 }
 
@@ -251,7 +251,7 @@ export async function enableTrigger(
  */
 export async function disableTrigger(triggerId: string): Promise<ComposioDisableTriggerResponse> {
   const raw = await callCoreRpc<unknown>({
-    method: 'openhuman.composio_disable_trigger',
+    method: 'aura.composio_disable_trigger',
     params: { trigger_id: triggerId },
   });
   return unwrapCliEnvelope<ComposioDisableTriggerResponse>(raw);

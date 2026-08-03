@@ -274,8 +274,8 @@ describe('CoreStateProvider — identity-change cache clearing', () => {
   it('setMeetAutoOrchestratorHandoff(true) calls update RPC + flips snapshot optimistically (#1299)', async () => {
     fetchSnapshot.mockResolvedValue(makeSnapshot({ userId: 'u1', sessionToken: 'tok1' }));
     listTeams.mockResolvedValue([]);
-    vi.mocked(tauriCommands.openhumanUpdateMeetSettings).mockReset();
-    vi.mocked(tauriCommands.openhumanUpdateMeetSettings).mockResolvedValue({
+    vi.mocked(tauriCommands.auraUpdateMeetSettings).mockReset();
+    vi.mocked(tauriCommands.auraUpdateMeetSettings).mockResolvedValue({
       result: { config: {}, workspace_dir: '/tmp', config_path: '/tmp/cfg.toml' },
       logs: [],
     } as never);
@@ -298,7 +298,7 @@ describe('CoreStateProvider — identity-change cache clearing', () => {
       await ctx!.setMeetAutoOrchestratorHandoff(true);
     });
 
-    expect(vi.mocked(tauriCommands.openhumanUpdateMeetSettings)).toHaveBeenCalledWith({
+    expect(vi.mocked(tauriCommands.auraUpdateMeetSettings)).toHaveBeenCalledWith({
       auto_orchestrator_handoff: true,
     });
   });
@@ -321,7 +321,7 @@ describe('CoreStateProvider — identity-change cache clearing', () => {
     await act(async () => {
       window.dispatchEvent(
         new CustomEvent('core-rpc-auth-expired', {
-          detail: { method: 'openhuman.team_get_usage', source: 'rpc' },
+          detail: { method: 'aura.team_get_usage', source: 'rpc' },
         })
       );
     });
@@ -332,12 +332,12 @@ describe('CoreStateProvider — identity-change cache clearing', () => {
     await act(async () => {
       window.dispatchEvent(
         new CustomEvent('core-rpc-auth-expired', {
-          detail: { method: 'openhuman.threads_list', source: 'rpc' },
+          detail: { method: 'aura.threads_list', source: 'rpc' },
         })
       );
       window.dispatchEvent(
         new CustomEvent('core-rpc-auth-expired', {
-          detail: { method: 'openhuman.billing_get_current_plan', source: 'rpc' },
+          detail: { method: 'aura.billing_get_current_plan', source: 'rpc' },
         })
       );
     });
@@ -348,8 +348,8 @@ describe('CoreStateProvider — identity-change cache clearing', () => {
   it('setMeetAutoOrchestratorHandoff swallows refresh errors after the RPC succeeds (#1299)', async () => {
     fetchSnapshot.mockResolvedValueOnce(makeSnapshot({ userId: 'u1', sessionToken: 'tok1' }));
     listTeams.mockResolvedValue([]);
-    vi.mocked(tauriCommands.openhumanUpdateMeetSettings).mockReset();
-    vi.mocked(tauriCommands.openhumanUpdateMeetSettings).mockResolvedValue({
+    vi.mocked(tauriCommands.auraUpdateMeetSettings).mockReset();
+    vi.mocked(tauriCommands.auraUpdateMeetSettings).mockResolvedValue({
       result: { config: {}, workspace_dir: '/tmp', config_path: '/tmp/cfg.toml' },
       logs: [],
     } as never);
@@ -372,7 +372,7 @@ describe('CoreStateProvider — identity-change cache clearing', () => {
       await expect(ctx!.setMeetAutoOrchestratorHandoff(false)).resolves.toBeUndefined();
     });
 
-    expect(vi.mocked(tauriCommands.openhumanUpdateMeetSettings)).toHaveBeenCalledWith({
+    expect(vi.mocked(tauriCommands.auraUpdateMeetSettings)).toHaveBeenCalledWith({
       auto_orchestrator_handoff: false,
     });
   });

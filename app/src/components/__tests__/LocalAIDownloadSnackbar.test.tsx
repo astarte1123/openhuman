@@ -7,8 +7,8 @@ import LocalAIDownloadSnackbar from '../LocalAIDownloadSnackbar';
 // Default: isTauri returns false, so snackbar should not render
 vi.mock('../../utils/tauriCommands', () => ({
   isTauri: vi.fn(() => false),
-  openhumanLocalAiStatus: vi.fn().mockResolvedValue({ result: null }),
-  openhumanLocalAiDownloadsProgress: vi.fn().mockResolvedValue({ result: null }),
+  auraLocalAiStatus: vi.fn().mockResolvedValue({ result: null }),
+  auraLocalAiDownloadsProgress: vi.fn().mockResolvedValue({ result: null }),
 }));
 
 describe('LocalAIDownloadSnackbar', () => {
@@ -22,11 +22,11 @@ describe('LocalAIDownloadSnackbar', () => {
   it('does not render when no download is active', async () => {
     const tauriCommands = await import('../../utils/tauriCommands');
     vi.mocked(tauriCommands.isTauri).mockReturnValue(true);
-    vi.mocked(tauriCommands.openhumanLocalAiStatus).mockResolvedValue({
+    vi.mocked(tauriCommands.auraLocalAiStatus).mockResolvedValue({
       result: { state: 'ready' } as never,
       logs: [],
     });
-    vi.mocked(tauriCommands.openhumanLocalAiDownloadsProgress).mockResolvedValue({
+    vi.mocked(tauriCommands.auraLocalAiDownloadsProgress).mockResolvedValue({
       result: { state: 'idle', progress: null } as never,
       logs: [],
     });
@@ -45,7 +45,7 @@ describe('LocalAIDownloadSnackbar', () => {
   it('renders immediately when status reports bootstrap activity before downloads progress catches up', async () => {
     const tauriCommands = await import('../../utils/tauriCommands');
     vi.mocked(tauriCommands.isTauri).mockReturnValue(true);
-    vi.mocked(tauriCommands.openhumanLocalAiStatus).mockResolvedValue({
+    vi.mocked(tauriCommands.auraLocalAiStatus).mockResolvedValue({
       result: {
         state: 'loading',
         download_progress: 0.42,
@@ -55,7 +55,7 @@ describe('LocalAIDownloadSnackbar', () => {
       } as never,
       logs: [],
     });
-    vi.mocked(tauriCommands.openhumanLocalAiDownloadsProgress).mockResolvedValue({
+    vi.mocked(tauriCommands.auraLocalAiDownloadsProgress).mockResolvedValue({
       result: { state: 'idle', progress: null } as never,
       logs: [],
     });

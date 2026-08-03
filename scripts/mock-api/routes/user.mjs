@@ -128,7 +128,7 @@ function buildRewardsSnapshot(mockBehavior) {
     {
       id: "STREAK_7",
       title: "7-Day Streak",
-      description: "Use OpenHuman on seven consecutive active days.",
+      description: "Use Aura on seven consecutive active days.",
       actionLabel: "Keep your streak alive for 7 days",
       unlocked: false,
       progressLabel: "0 / 7 days",
@@ -139,7 +139,7 @@ function buildRewardsSnapshot(mockBehavior) {
     {
       id: "DISCORD_MEMBER",
       title: "Discord Member",
-      description: "Join the OpenHuman Discord server.",
+      description: "Join the Aura Discord server.",
       actionLabel: "Connect Discord and join the server",
       unlocked: false,
       progressLabel: "Not joined",
@@ -163,13 +163,13 @@ function buildRewardsSnapshot(mockBehavior) {
   const defaultDiscord = {
     linked: false,
     discordId: null,
-    inviteUrl: "https://discord.gg/openhuman",
+    inviteUrl: "https://discord.gg/aura",
     membershipStatus: "not_linked",
   };
   const memberDiscord = {
     linked: true,
     discordId: "discord-mock-123",
-    inviteUrl: "https://discord.gg/openhuman",
+    inviteUrl: "https://discord.gg/aura",
     membershipStatus: "member",
   };
   const zeroMetrics = {

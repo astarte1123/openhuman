@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useT } from '../../../lib/i18n/I18nContext';
 import {
-  openhumanGetComposioTriggerSettings,
-  openhumanUpdateComposioTriggerSettings,
+  auraGetComposioTriggerSettings,
+  auraUpdateComposioTriggerSettings,
 } from '../../../utils/tauriCommands';
 import SettingsHeader from '../components/SettingsHeader';
 import { useSettingsNavigation } from '../hooks/useSettingsNavigation';
@@ -21,7 +21,7 @@ const ComposioTriagePanel = () => {
 
   useEffect(() => {
     let isMounted = true;
-    openhumanGetComposioTriggerSettings()
+    auraGetComposioTriggerSettings()
       .then(res => {
         if (!isMounted) return;
         const settings = res.result;
@@ -52,7 +52,7 @@ const ComposioTriagePanel = () => {
         .split(',')
         .map(e => e.trim().toLowerCase())
         .filter(Boolean);
-      await openhumanUpdateComposioTriggerSettings({
+      await auraUpdateComposioTriggerSettings({
         triage_disabled: triageDisabled,
         triage_disabled_toolkits: toolkitList,
       });
@@ -101,7 +101,7 @@ const ComposioTriagePanel = () => {
       <div className="p-4 space-y-5">
         <p className="text-sm text-stone-500">
           {t('composio.triageDesc')}{' '}
-          <span className="font-mono">OPENHUMAN_TRIGGER_TRIAGE_DISABLED</span>{' '}
+          <span className="font-mono">AURA_TRIGGER_TRIAGE_DISABLED</span>{' '}
           {t('composio.envVarOverrides')}
         </p>
 

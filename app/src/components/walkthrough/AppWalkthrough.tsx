@@ -7,8 +7,8 @@ import WalkthroughTooltip from './WalkthroughTooltip';
 
 // ── localStorage keys ──────────────────────────────────────────────────────
 
-const WALKTHROUGH_KEY = 'openhuman:walkthrough_completed';
-const WALKTHROUGH_PENDING_KEY = 'openhuman:walkthrough_pending';
+const WALKTHROUGH_KEY = 'aura:walkthrough_completed';
+const WALKTHROUGH_PENDING_KEY = 'aura:walkthrough_pending';
 
 /**
  * Returns `true` when the walkthrough should be shown. This is true when:

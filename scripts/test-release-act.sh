@@ -130,7 +130,7 @@ def dotenv_escape:
 (.vars // {}) | to_entries[] | "\(.key)=\"\(.value | dotenv_escape)\""
 ' "$SECRETS_JSON" > "$VARS_FILE"
 
-# Use real owner/repo from git so context.repo and tauri-action match your fork (not local/openhuman).
+# Use real owner/repo from git so context.repo and tauri-action match your fork (not local/aura).
 REPO_FULL="${GITHUB_REPOSITORY:-}"
 if [[ -z "$REPO_FULL" ]]; then
   REPO_FULL="$(git remote get-url origin 2>/dev/null | sed -E 's#^git@github\.com:([^/]+)/([^/.]+)(\.git)?$#\1/\2#; s#^https://github\.com/([^/]+)/([^/.]+)(\.git)?$#\1/\2#')"

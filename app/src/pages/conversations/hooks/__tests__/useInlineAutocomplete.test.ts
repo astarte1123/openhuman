@@ -1,12 +1,12 @@
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { isTauri, openhumanAutocompleteCurrent } from '../../../../utils/tauriCommands';
+import { isTauri, auraAutocompleteCurrent } from '../../../../utils/tauriCommands';
 import { useInlineAutocomplete } from '../useInlineAutocomplete';
 
 vi.mock('../../../../utils/tauriCommands', () => ({
   isTauri: vi.fn(() => true),
-  openhumanAutocompleteCurrent: vi.fn(),
+  auraAutocompleteCurrent: vi.fn(),
 }));
 
 const DEBOUNCE_MS = 320;
@@ -33,7 +33,7 @@ describe('useInlineAutocomplete', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.mocked(isTauri).mockReturnValue(true);
-    vi.mocked(openhumanAutocompleteCurrent).mockReset();
+    vi.mocked(auraAutocompleteCurrent).mockReset();
   });
 
   afterEach(() => {
@@ -48,7 +48,7 @@ describe('useInlineAutocomplete', () => {
       vi.advanceTimersByTime(DEBOUNCE_MS);
     });
 
-    expect(openhumanAutocompleteCurrent).not.toHaveBeenCalled();
+    expect(auraAutocompleteCurrent).not.toHaveBeenCalled();
   });
 
   it('does not fetch when rustChat is false', async () => {
@@ -58,7 +58,7 @@ describe('useInlineAutocomplete', () => {
       vi.advanceTimersByTime(DEBOUNCE_MS);
     });
 
-    expect(openhumanAutocompleteCurrent).not.toHaveBeenCalled();
+    expect(auraAutocompleteCurrent).not.toHaveBeenCalled();
   });
 
   it('does not fetch outside text input mode', async () => {
@@ -68,7 +68,7 @@ describe('useInlineAutocomplete', () => {
       vi.advanceTimersByTime(DEBOUNCE_MS);
     });
 
-    expect(openhumanAutocompleteCurrent).not.toHaveBeenCalled();
+    expect(auraAutocompleteCurrent).not.toHaveBeenCalled();
   });
 
   it('does not fetch while a thread turn is active', async () => {
@@ -78,25 +78,25 @@ describe('useInlineAutocomplete', () => {
       vi.advanceTimersByTime(DEBOUNCE_MS);
     });
 
-    expect(openhumanAutocompleteCurrent).not.toHaveBeenCalled();
+    expect(auraAutocompleteCurrent).not.toHaveBeenCalled();
   });
 
   it('does not fetch below the minimum context length and clears any suggestion', async () => {
-    vi.mocked(openhumanAutocompleteCurrent).mockResolvedValue({
+    vi.mocked(auraAutocompleteCurrent).mockResolvedValue({
       result: { suggestion: { value: 'stale' } },
     } as any);
     const { result, rerender } = renderAutocomplete({ inputValue: 'he' });
     await act(async () => {
       vi.advanceTimersByTime(DEBOUNCE_MS);
     });
-    expect(openhumanAutocompleteCurrent).not.toHaveBeenCalled();
+    expect(auraAutocompleteCurrent).not.toHaveBeenCalled();
 
     rerender({ inputValue: 'h' });
     expect(result.current.inlineSuggestionValue).toBe('');
   });
 
   it('debounces rapid keystrokes into a single fetch after settling', async () => {
-    vi.mocked(openhumanAutocompleteCurrent).mockResolvedValue({
+    vi.mocked(auraAutocompleteCurrent).mockResolvedValue({
       result: { suggestion: { value: 'suggestion' } },
     } as any);
     const { rerender } = renderAutocomplete({ inputValue: 'hel' });
@@ -111,18 +111,18 @@ describe('useInlineAutocomplete', () => {
     });
     rerender({ inputValue: 'hello there' });
 
-    expect(openhumanAutocompleteCurrent).not.toHaveBeenCalled();
+    expect(auraAutocompleteCurrent).not.toHaveBeenCalled();
 
     await act(async () => {
       vi.advanceTimersByTime(DEBOUNCE_MS);
     });
 
-    expect(openhumanAutocompleteCurrent).toHaveBeenCalledTimes(1);
-    expect(openhumanAutocompleteCurrent).toHaveBeenCalledWith({ context: 'hello there' });
+    expect(auraAutocompleteCurrent).toHaveBeenCalledTimes(1);
+    expect(auraAutocompleteCurrent).toHaveBeenCalledWith({ context: 'hello there' });
   });
 
   it('sets the suggestion from a successful response', async () => {
-    vi.mocked(openhumanAutocompleteCurrent).mockResolvedValue({
+    vi.mocked(auraAutocompleteCurrent).mockResolvedValue({
       result: { suggestion: { value: ' world' } },
     } as any);
     const { result } = renderAutocomplete({ inputValue: 'hello' });
@@ -136,7 +136,7 @@ describe('useInlineAutocomplete', () => {
   });
 
   it('clears the suggestion when the fetch rejects', async () => {
-    vi.mocked(openhumanAutocompleteCurrent).mockRejectedValue(new Error('boom'));
+    vi.mocked(auraAutocompleteCurrent).mockRejectedValue(new Error('boom'));
     const { result } = renderAutocomplete({ inputValue: 'hello' });
 
     await act(async () => {
@@ -149,7 +149,7 @@ describe('useInlineAutocomplete', () => {
 
   it('ignores a stale response that resolves after a newer request has superseded it', async () => {
     let resolveFirst!: (value: unknown) => void;
-    vi.mocked(openhumanAutocompleteCurrent)
+    vi.mocked(auraAutocompleteCurrent)
       .mockImplementationOnce(
         () =>
           new Promise(resolve => {
@@ -162,7 +162,7 @@ describe('useInlineAutocomplete', () => {
     await act(async () => {
       vi.advanceTimersByTime(DEBOUNCE_MS);
     });
-    expect(openhumanAutocompleteCurrent).toHaveBeenCalledTimes(1);
+    expect(auraAutocompleteCurrent).toHaveBeenCalledTimes(1);
 
     // Second keystroke fires a second debounced request before the first resolves.
     rerender({ inputValue: 'hello!' });
@@ -170,7 +170,7 @@ describe('useInlineAutocomplete', () => {
       vi.advanceTimersByTime(DEBOUNCE_MS);
       await Promise.resolve();
     });
-    expect(openhumanAutocompleteCurrent).toHaveBeenCalledTimes(2);
+    expect(auraAutocompleteCurrent).toHaveBeenCalledTimes(2);
     expect(result.current.inlineSuggestionValue).toBe('second');
 
     // The stale first request now resolves — must not clobber the second's result.

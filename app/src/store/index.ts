@@ -154,7 +154,7 @@ export const persistor = persistStore(store);
 // holds no secrets that aren't already in the renderer's memory; this only
 // surfaces the existing handle under a stable, namespaced key.
 if (typeof window !== 'undefined') {
-  (window as unknown as { __OPENHUMAN_STORE__?: typeof store }).__OPENHUMAN_STORE__ = store;
+  (window as unknown as { __AURA_STORE__?: typeof store }).__AURA_STORE__ = store;
 }
 
 export type RootState = ReturnType<typeof store.getState>;

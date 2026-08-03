@@ -28,7 +28,7 @@ export function isImeCompositionKeyEvent(event: ImeKeyboardEventLike): boolean {
  * Normalise the value thrown out of `dispatch(loadThreads()).unwrap()` into a
  * displayable string. `createAsyncThunk` re-throws Redux's `SerializedError`
  * (a plain object, not an `Error` instance) when the thunk rejects — which is
- * why the original Sentry report (OPENHUMAN-REACT-X) showed up as
+ * why the original Sentry report (AURA-REACT-X) showed up as
  * "Non-Error promise rejection captured with value: …" rather than a stack.
  * Exported so the mount-effect's `.catch` stays a one-liner and the message
  * shape can be unit-tested without mounting the full page.

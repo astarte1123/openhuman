@@ -21,7 +21,7 @@ Ravi
 
 From: alerts@github.com
 To: sanil@vezures.xyz
-Subject: [tinyhumansai/openhuman] CI passed on main
+Subject: [tinyhumansai/aura] CI passed on main
 Date: 2026-04-01 10:15:00
 
 All checks passed on commit abc1234 — build, typecheck, lint.

@@ -5,7 +5,7 @@
  * Verifies:
  *   - Phase A — Simple/Cloud path: fresh login → Welcome → Runtime choice
  *     (Cloud) → /home. `onboarding_completed = true` lands in
- *     `${OPENHUMAN_WORKSPACE}/config.toml` immediately.
+ *     `${AURA_WORKSPACE}/config.toml` immediately.
  *
  *   - Phase B — Advanced/Custom path (Default on every wizard step):
  *     reset onboarding flag → Welcome → Runtime choice (Custom) →
@@ -25,7 +25,7 @@
  */
 import { waitForAppReady, waitForAuthBootstrap } from '../helpers/app-helpers';
 import { readBool, readConfigToml, readSectionString, topLevelValue } from '../helpers/config-toml';
-import { callOpenhumanRpc } from '../helpers/core-rpc';
+import { callAuraRpc } from '../helpers/core-rpc';
 import { triggerAuthDeepLinkBypass } from '../helpers/deep-link-helpers';
 import { waitForWebView, waitForWindowVisible } from '../helpers/element-helpers';
 import { resetApp } from '../helpers/reset-app';
@@ -99,8 +99,8 @@ async function waitForHash(prefix: string, timeout = 15_000): Promise<boolean> {
 
 async function resetOnboardingFlagAndReload(): Promise<void> {
   stepLog('Resetting onboarding_completed=false via RPC');
-  const res = await callOpenhumanRpc<{ completed: boolean }>(
-    'openhuman.config_set_onboarding_completed',
+  const res = await callAuraRpc<{ completed: boolean }>(
+    'aura.config_set_onboarding_completed',
     { value: false }
   );
   if (!res.ok) {

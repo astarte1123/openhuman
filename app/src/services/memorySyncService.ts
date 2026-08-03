@@ -1,7 +1,7 @@
 /**
  * Memory-sync RPC client (#1136 — simplified rewrite).
  *
- * Wraps `openhuman.memory_sync_status_list` so screens don't have to know
+ * Wraps `aura.memory_sync_status_list` so screens don't have to know
  * the wire shape. The Rust handler counts chunks in `mem_tree_chunks`
  * GROUPED BY `source_kind` on every call and derives a freshness label
  * from the most recent chunk's timestamp — no settings, no phases, no
@@ -51,7 +51,7 @@ export async function memorySyncStatusList(): Promise<MemorySyncStatus[]> {
   log('memory_sync_status_list: calling core RPC');
   let resp: StatusListResponse;
   try {
-    resp = await callCoreRpc<StatusListResponse>({ method: 'openhuman.memory_sync_status_list' });
+    resp = await callCoreRpc<StatusListResponse>({ method: 'aura.memory_sync_status_list' });
   } catch (err) {
     errLog('memory_sync_status_list: RPC failed: %O', err);
     throw err;

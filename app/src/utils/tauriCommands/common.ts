@@ -13,7 +13,7 @@ const log = debug('tauri:ipc-guard');
  * (and the `postMessage` bridge it dispatches through) is injected *after*
  * `on_after_created` fires. An `invoke()` landing in that gap throws
  * `TypeError: Cannot read properties of undefined (reading 'postMessage')`
- * deep inside Tauri's `sendIpcMessage` — see OPENHUMAN-REACT-S / #1472.
+ * deep inside Tauri's `sendIpcMessage` — see AURA-REACT-S / #1472.
  *
  * Callers that gate on `isTauri()` BEFORE invoking should therefore use this
  * function; it returns `false` during the bootstrap gap so the call site

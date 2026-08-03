@@ -1,8 +1,8 @@
 //! Tauri shell side of file-based logging.
 //!
-//! Resolves the OpenHuman data directory the same way the core does
-//! (`~/.openhuman` or `OPENHUMAN_WORKSPACE` override) and hands it to
-//! [`openhuman_core::core::logging::init_for_embedded`], which installs a
+//! Resolves the Aura data directory the same way the core does
+//! (`~/.aura` or `AURA_WORKSPACE` override) and hands it to
+//! [`aura_core::core::logging::init_for_embedded`], which installs a
 //! daily-rotated file appender so packaged GUI builds — where stderr is
 //! invisible — still produce a log users can share for support.
 //!
@@ -11,17 +11,17 @@
 
 use std::path::PathBuf;
 
-use openhuman_core::core::logging::{self, log_directory};
+use aura_core::core::logging::{self, log_directory};
 
 /// Initialize logging for the Tauri shell + embedded core. Idempotent and
 /// safe to call from any startup position; the underlying `Once` guard means
 /// the first caller's data dir wins.
 ///
-/// Verbosity defaults to `info` (or `debug` when `OPENHUMAN_VERBOSE=1`); the
+/// Verbosity defaults to `info` (or `debug` when `AURA_VERBOSE=1`); the
 /// `RUST_LOG` env var continues to override both.
 pub fn init() {
     let data_dir = resolve_data_dir();
-    let verbose = std::env::var("OPENHUMAN_VERBOSE")
+    let verbose = std::env::var("AURA_VERBOSE")
         .map(|v| v == "1" || v.eq_ignore_ascii_case("true"))
         .unwrap_or(false);
     logging::init_for_embedded(&data_dir, verbose);
@@ -31,21 +31,21 @@ pub fn init() {
 /// own resolution so log files sit next to `active_user.toml`, the per-user
 /// `users/` tree, and the CEF caches a support engineer would also need.
 ///
-/// If `default_root_openhuman_dir` fails (very unusual — it requires
-/// `dirs::home_dir` to return `None`), falls back to `<temp>/openhuman`
-/// rather than a relative `.openhuman` whose final location depends on the
+/// If `default_root_aura_dir` fails (very unusual — it requires
+/// `dirs::home_dir` to return `None`), falls back to `<temp>/aura`
+/// rather than a relative `.aura` whose final location depends on the
 /// shell's CWD at launch time.
 pub(crate) fn resolve_data_dir() -> PathBuf {
-    if let Ok(workspace) = std::env::var("OPENHUMAN_WORKSPACE") {
+    if let Ok(workspace) = std::env::var("AURA_WORKSPACE") {
         if !workspace.is_empty() {
             return PathBuf::from(workspace);
         }
     }
-    openhuman_core::openhuman::config::default_root_openhuman_dir().unwrap_or_else(|err| {
+    aura_core::aura::config::default_root_aura_dir().unwrap_or_else(|err| {
         eprintln!(
-            "[file_logging] default_root_openhuman_dir failed ({err}); falling back to temp dir"
+            "[file_logging] default_root_aura_dir failed ({err}); falling back to temp dir"
         );
-        std::env::temp_dir().join("openhuman")
+        std::env::temp_dir().join("aura")
     })
 }
 
@@ -61,29 +61,29 @@ mod tests {
     #[test]
     fn resolve_data_dir_honors_workspace_override() {
         let _guard = ENV_LOCK.lock().unwrap();
-        let prior = std::env::var("OPENHUMAN_WORKSPACE").ok();
-        std::env::set_var("OPENHUMAN_WORKSPACE", "/tmp/openhuman-test-override");
+        let prior = std::env::var("AURA_WORKSPACE").ok();
+        std::env::set_var("AURA_WORKSPACE", "/tmp/aura-test-override");
         let dir = resolve_data_dir();
-        assert_eq!(dir, PathBuf::from("/tmp/openhuman-test-override"));
+        assert_eq!(dir, PathBuf::from("/tmp/aura-test-override"));
         match prior {
-            Some(v) => std::env::set_var("OPENHUMAN_WORKSPACE", v),
-            None => std::env::remove_var("OPENHUMAN_WORKSPACE"),
+            Some(v) => std::env::set_var("AURA_WORKSPACE", v),
+            None => std::env::remove_var("AURA_WORKSPACE"),
         }
     }
 
     #[test]
     fn resolve_data_dir_ignores_empty_workspace() {
         let _guard = ENV_LOCK.lock().unwrap();
-        let prior = std::env::var("OPENHUMAN_WORKSPACE").ok();
-        std::env::set_var("OPENHUMAN_WORKSPACE", "");
+        let prior = std::env::var("AURA_WORKSPACE").ok();
+        std::env::set_var("AURA_WORKSPACE", "");
         // Empty string must NOT short-circuit — fall through to the
-        // default resolver so the user's real `~/.openhuman` is used.
+        // default resolver so the user's real `~/.aura` is used.
         let dir = resolve_data_dir();
         assert_ne!(dir, PathBuf::from(""));
         assert!(dir.is_absolute(), "expected absolute fallback, got {dir:?}");
         match prior {
-            Some(v) => std::env::set_var("OPENHUMAN_WORKSPACE", v),
-            None => std::env::remove_var("OPENHUMAN_WORKSPACE"),
+            Some(v) => std::env::set_var("AURA_WORKSPACE", v),
+            None => std::env::remove_var("AURA_WORKSPACE"),
         }
     }
 
@@ -103,7 +103,7 @@ mod tests {
         // If logging hasn't been initialized, the command must surface a
         // typed error so the UI can show it instead of silently launching
         // an `open` against an empty path.
-        if openhuman_core::core::logging::log_directory().is_none() {
+        if aura_core::core::logging::log_directory().is_none() {
             let err = reveal_logs_folder().expect_err("must error pre-init");
             assert!(err.contains("not initialized"), "unexpected error: {err}");
         }

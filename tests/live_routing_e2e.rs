@@ -6,9 +6,9 @@
 //! - real network I/O and side effects
 //!
 //! Run manually:
-//! OPENHUMAN_LIVE_API_URL="https://<your-backend>" \
-//! OPENHUMAN_LIVE_TOKEN="<jwt>" \
-//! OPENHUMAN_LIVE_USER_ID="<user-id>" \
+//! AURA_LIVE_API_URL="https://<your-backend>" \
+//! AURA_LIVE_TOKEN="<jwt>" \
+//! AURA_LIVE_USER_ID="<user-id>" \
 //! cargo test --test live_routing_e2e -- --ignored --nocapture
 
 use std::path::Path;
@@ -20,8 +20,8 @@ use serde_json::{json, Value};
 use tempfile::tempdir;
 use tokio::time::timeout;
 
-use openhuman_core::core::auth::{init_rpc_token, CORE_TOKEN_ENV_VAR};
-use openhuman_core::core::jsonrpc::build_core_http_router;
+use aura_core::core::auth::{init_rpc_token, CORE_TOKEN_ENV_VAR};
+use aura_core::core::jsonrpc::build_core_http_router;
 
 static LIVE_E2E_ENV_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
 static LIVE_RPC_AUTH_INIT: OnceLock<()> = OnceLock::new();
@@ -66,7 +66,7 @@ fn required_env(name: &str) -> String {
     std::env::var(name).unwrap_or_else(|_| panic!("missing required env var: {name}"))
 }
 
-fn write_live_config(openhuman_dir: &Path, api_origin: &str) {
+fn write_live_config(aura_dir: &Path, api_origin: &str) {
     let cfg = format!(
         r#"api_url = "{api_origin}"
 default_model = "reasoning-v1"
@@ -79,19 +79,19 @@ encrypt = false
     );
 
     fn write_config_file(config_dir: &Path, cfg: &str) {
-        std::fs::create_dir_all(config_dir).expect("mkdir openhuman");
+        std::fs::create_dir_all(config_dir).expect("mkdir aura");
         let path = config_dir.join("config.toml");
         std::fs::write(&path, cfg).expect("write config");
     }
 
-    write_config_file(openhuman_dir, &cfg);
+    write_config_file(aura_dir, &cfg);
     // Match runtime config resolution order used during pre-login auth flows.
-    // If we seed ~/.openhuman, also seed ~/.openhuman/users/local.
-    if openhuman_dir
+    // If we seed ~/.aura, also seed ~/.aura/users/local.
+    if aura_dir
         .file_name()
-        .is_some_and(|name| name == std::ffi::OsStr::new(".openhuman"))
+        .is_some_and(|name| name == std::ffi::OsStr::new(".aura"))
     {
-        write_config_file(&openhuman_dir.join("users").join("local"), &cfg);
+        write_config_file(&aura_dir.join("users").join("local"), &cfg);
     }
 }
 
@@ -191,7 +191,7 @@ fn ensure_test_rpc_auth() {
         // multi-threaded contexts; the OnceLock guard limits the mutation to a
         // single call at init time, before any concurrent env reads occur.
         unsafe { std::env::set_var(CORE_TOKEN_ENV_VAR, TEST_RPC_TOKEN) };
-        let token_dir = std::env::temp_dir().join("openhuman-live-routing-e2e-auth");
+        let token_dir = std::env::temp_dir().join("aura-live-routing-e2e-auth");
         init_rpc_token(&token_dir).expect("init rpc auth token for live_routing_e2e");
     });
 }
@@ -201,17 +201,17 @@ fn ensure_test_rpc_auth() {
 async fn live_channel_web_chat_routing_cases_trigger_real_backend() {
     let _env_lock = live_e2e_env_lock();
 
-    let api_url = required_env("OPENHUMAN_LIVE_API_URL");
-    let token = required_env("OPENHUMAN_LIVE_TOKEN");
-    let user_id = required_env("OPENHUMAN_LIVE_USER_ID");
+    let api_url = required_env("AURA_LIVE_API_URL");
+    let token = required_env("AURA_LIVE_TOKEN");
+    let user_id = required_env("AURA_LIVE_USER_ID");
 
     let tmp = tempdir().expect("tempdir");
     let home = tmp.path();
-    let openhuman_home = home.join(".openhuman");
+    let aura_home = home.join(".aura");
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
 
-    write_live_config(&openhuman_home, &api_url);
-    write_live_config(&openhuman_home.join("users").join(&user_id), &api_url);
+    write_live_config(&aura_home, &api_url);
+    write_live_config(&aura_home.join("users").join(&user_id), &api_url);
 
     let (rpc_addr, rpc_join) = serve_rpc().await;
     let rpc_base = format!("http://{}", rpc_addr);
@@ -220,7 +220,7 @@ async fn live_channel_web_chat_routing_cases_trigger_real_backend() {
     let store = post_json_rpc(
         &rpc_base,
         1,
-        "openhuman.auth_store_session",
+        "aura.auth_store_session",
         json!({
             "token": token,
             "user_id": user_id
@@ -247,7 +247,7 @@ async fn live_channel_web_chat_routing_cases_trigger_real_backend() {
         let web_chat = post_json_rpc(
             &rpc_base,
             10 + idx as i64,
-            "openhuman.channel_web_chat",
+            "aura.channel_web_chat",
             json!({
                 "client_id": client_id,
                 "thread_id": thread_id,

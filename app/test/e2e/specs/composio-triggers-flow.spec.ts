@@ -1,7 +1,7 @@
 /**
  * End-to-end: client-side Composio trigger toggles (PR for backend #671).
  *
- * Drives the new `openhuman.composio_*` trigger RPC methods through the
+ * Drives the new `aura.composio_*` trigger RPC methods through the
  * running core sidecar against the shared mock backend, then opens the
  * Composio connection modal and asserts the Triggers section renders
  * the expected toggle for an ACTIVE Gmail connection.
@@ -16,7 +16,7 @@
  * regression-free skip on locked-down hosts.
  */
 import { waitForApp, waitForAppReady } from '../helpers/app-helpers';
-import { callOpenhumanRpc } from '../helpers/core-rpc';
+import { callAuraRpc } from '../helpers/core-rpc';
 import { triggerAuthDeepLinkBypass } from '../helpers/deep-link-helpers';
 import {
   clickNativeButton,
@@ -67,7 +67,7 @@ describe('Composio trigger toggles (UI + core RPC)', () => {
   });
 
   it('list_available_triggers returns the seeded Gmail catalog', async () => {
-    const out = await callOpenhumanRpc('openhuman.composio_list_available_triggers', {
+    const out = await callAuraRpc('aura.composio_list_available_triggers', {
       toolkit: 'gmail',
       connection_id: 'c1',
     });
@@ -80,14 +80,14 @@ describe('Composio trigger toggles (UI + core RPC)', () => {
   });
 
   it('list_triggers starts empty for the seeded user', async () => {
-    const out = await callOpenhumanRpc('openhuman.composio_list_triggers', {});
+    const out = await callAuraRpc('aura.composio_list_triggers', {});
     expect(out.ok).toBe(true);
     const result = out.value?.result ?? out.value;
     expect(result.triggers ?? []).toHaveLength(0);
   });
 
   it('enable_trigger creates a trigger that subsequent list calls observe', async () => {
-    const enable = await callOpenhumanRpc('openhuman.composio_enable_trigger', {
+    const enable = await callAuraRpc('aura.composio_enable_trigger', {
       connection_id: 'c1',
       slug: 'GMAIL_NEW_GMAIL_MESSAGE',
     });
@@ -98,26 +98,26 @@ describe('Composio trigger toggles (UI + core RPC)', () => {
     expect(typeof created.triggerId).toBe('string');
     expect(created.triggerId.length).toBeGreaterThan(0);
 
-    const list = await callOpenhumanRpc('openhuman.composio_list_triggers', { toolkit: 'gmail' });
+    const list = await callAuraRpc('aura.composio_list_triggers', { toolkit: 'gmail' });
     const result = list.value?.result ?? list.value;
     expect(result.triggers).toHaveLength(1);
     expect(result.triggers[0].slug).toBe('GMAIL_NEW_GMAIL_MESSAGE');
   });
 
   it('disable_trigger removes the active trigger', async () => {
-    const list = await callOpenhumanRpc('openhuman.composio_list_triggers', {});
+    const list = await callAuraRpc('aura.composio_list_triggers', {});
     const beforeResult = list.value?.result ?? list.value;
     const triggerId = beforeResult.triggers[0]?.id;
     expect(typeof triggerId).toBe('string');
 
-    const disable = await callOpenhumanRpc('openhuman.composio_disable_trigger', {
+    const disable = await callAuraRpc('aura.composio_disable_trigger', {
       trigger_id: triggerId,
     });
     expect(disable.ok).toBe(true);
     const out = disable.value?.result ?? disable.value;
     expect(out.deleted).toBe(true);
 
-    const after = await callOpenhumanRpc('openhuman.composio_list_triggers', {});
+    const after = await callAuraRpc('aura.composio_list_triggers', {});
     const afterResult = after.value?.result ?? after.value;
     expect(afterResult.triggers ?? []).toHaveLength(0);
   });

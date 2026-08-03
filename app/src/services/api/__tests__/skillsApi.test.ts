@@ -22,7 +22,7 @@ describe('skillsApi.createSkill', () => {
         tags: ['alpha'],
         tools: ['mcp/fs'],
         prompts: [],
-        location: '/home/u/.openhuman/skills/my-skill/SKILL.md',
+        location: '/home/u/.aura/skills/my-skill/SKILL.md',
         resources: [],
         scope: 'user',
         legacy: false,
@@ -39,7 +39,7 @@ describe('skillsApi.createSkill', () => {
     });
 
     expect(callCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.skills_create',
+      method: 'aura.skills_create',
       params: {
         name: 'My Skill',
         description: 'does stuff',
@@ -126,7 +126,7 @@ describe('skillsApi.installSkillFromUrl', () => {
     });
 
     expect(callCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.skills_install_from_url',
+      method: 'aura.skills_install_from_url',
       params: { url: 'https://example.com/my-skill.tgz', timeout_secs: 120 },
     });
     expect(result.newSkills).toEqual(['my-skill']);

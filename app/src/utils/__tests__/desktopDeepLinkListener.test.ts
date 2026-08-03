@@ -55,7 +55,7 @@ describe('desktopDeepLinkListener', () => {
     });
 
     vi.mocked(getCurrent).mockResolvedValue([
-      'openhuman://oauth/error?provider=twitter&error=invalid_request&callback_url=https%3A%2F%2Fexample.test%2Fcb%3Ftoken%3Dsecret',
+      'aura://oauth/error?provider=twitter&error=invalid_request&callback_url=https%3A%2F%2Fexample.test%2Fcb%3Ftoken%3Dsecret',
     ]);
 
     await setupDesktopDeepLinkListener();
@@ -66,7 +66,7 @@ describe('desktopDeepLinkListener', () => {
     expect(getDeepLinkAuthState()).toEqual({
       isProcessing: false,
       errorMessage:
-        'Twitter/X sign-in failed before OpenHuman received authorization. Check the Twitter Developer Portal app settings: OAuth 2.0 must be enabled, callback URL must match the backend redirect URL exactly, and the client ID, client secret, and requested scopes must match the OpenHuman backend configuration.',
+        'Twitter/X sign-in failed before Aura received authorization. Check the Twitter Developer Portal app settings: OAuth 2.0 must be enabled, callback URL must match the backend redirect URL exactly, and the client ID, client secret, and requested scopes must match the Aura backend configuration.',
       requiresAppDataReset: false,
     });
     expect(oauthErrorEvents).toHaveLength(1);
@@ -74,7 +74,7 @@ describe('desktopDeepLinkListener', () => {
       provider: 'twitter',
       errorCode: 'invalid_request',
       message:
-        'Twitter/X sign-in failed before OpenHuman received authorization. Check the Twitter Developer Portal app settings: OAuth 2.0 must be enabled, callback URL must match the backend redirect URL exactly, and the client ID, client secret, and requested scopes must match the OpenHuman backend configuration.',
+        'Twitter/X sign-in failed before Aura received authorization. Check the Twitter Developer Portal app settings: OAuth 2.0 must be enabled, callback URL must match the backend redirect URL exactly, and the client ID, client secret, and requested scopes must match the Aura backend configuration.',
     });
     expect(console.warn).toHaveBeenCalledWith(
       '[DeepLink][oauth:error] OAuth provider returned an error',
@@ -92,7 +92,7 @@ describe('desktopDeepLinkListener', () => {
       new Error('Decryption failed — wrong key or tampered data')
     );
 
-    vi.mocked(getCurrent).mockResolvedValue(['openhuman://auth?token=abc&key=auth']);
+    vi.mocked(getCurrent).mockResolvedValue(['aura://auth?token=abc&key=auth']);
 
     await setupDesktopDeepLinkListener();
 
@@ -107,7 +107,7 @@ describe('desktopDeepLinkListener', () => {
   it('keeps requiresAppDataReset false for non-decryption auth failures', async () => {
     vi.mocked(storeSession).mockRejectedValueOnce(new Error('network down'));
 
-    vi.mocked(getCurrent).mockResolvedValue(['openhuman://auth?token=abc&key=auth']);
+    vi.mocked(getCurrent).mockResolvedValue(['aura://auth?token=abc&key=auth']);
 
     await setupDesktopDeepLinkListener();
     await waitForAuthSettled();
@@ -124,7 +124,7 @@ describe('desktopDeepLinkListener', () => {
     });
 
     vi.mocked(getCurrent).mockResolvedValue([
-      'openhuman://oauth/error?provider=twit%20ter&error=bad%20request',
+      'aura://oauth/error?provider=twit%20ter&error=bad%20request',
     ]);
 
     await setupDesktopDeepLinkListener();
@@ -133,7 +133,7 @@ describe('desktopDeepLinkListener', () => {
       provider: 'twit_ter',
       errorCode: 'bad_request',
       message:
-        'OAuth sign-in failed before OpenHuman received authorization. Check the provider app settings and try again.',
+        'OAuth sign-in failed before Aura received authorization. Check the provider app settings and try again.',
     });
   });
 });

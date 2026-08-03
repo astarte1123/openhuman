@@ -1,12 +1,12 @@
 [package]
-name = "openhuman"
+name = "aura"
 version = "0.53.49"
 edition = "2021"
-description = "OpenHuman core business logic and RPC server"
+description = "Aura core business logic and RPC server"
 autobins = false
 
 [[bin]]
-name = "openhuman-core"
+name = "aura-core"
 path = "src/main.rs"
 
 [[bin]]
@@ -18,7 +18,7 @@ name = "gmail-backfill-3d"
 path = "src/bin/gmail_backfill_3d.rs"
 
 [lib]
-name = "openhuman_core"
+name = "aura_core"
 crate-type = ["rlib"]
 
 [dependencies]
@@ -129,7 +129,7 @@ rdev = "0.5"
 fs2 = "0.4"
 # Cross-platform battery probe for the scheduler gate. Maintained fork of
 # the abandoned `battery` crate; same `use battery::*;` API surface. Used
-# only by `openhuman::scheduler_gate::signals` to decide when to throttle
+# only by `aura::scheduler_gate::signals` to decide when to throttle
 # background LLM work on laptops.
 starship-battery = "0.10"
 ethers-core = { version = "2.0.14", default-features = false }
@@ -137,7 +137,7 @@ ethers-signers = { version = "2.0.14", default-features = false }
 
 # Meeting transcript export (PDF + DOCX). Both are pure-Rust with no native
 # C toolchain requirement — deliberately chosen over CDP/webview-based PDF
-# generation (see `openhuman::meetings::export` doc comment) and over any
+# generation (see `aura::meetings::export` doc comment) and over any
 # crate needing system libraries, given repeated disk/build pain from
 # native deps (whisper-rs-sys, onnxruntime) earlier in this project's history.
 # `default-features = false` on printpdf drops the `html`/`text_layout*`
@@ -152,7 +152,7 @@ docx-rs = "0.4"
 # NOT Microsoft's onnxruntime) — chosen specifically to avoid the
 # ORT_LIB_LOCATION/MSVC-CRT native-dep pain documented above for
 # whisper-rs-sys, and because this codebase has no working
-# vision-LLM/multimodal path (see `openhuman::meetings::ocr` doc comment).
+# vision-LLM/multimodal path (see `aura::meetings::ocr` doc comment).
 ocrs = "0.12"
 rten = "0.24"
 
@@ -193,7 +193,7 @@ sentry = { version = "0.47.0", default-features = false, features = ["test"] }
 # Mock HTTP server for provider E2E tests (inference_provider_e2e).
 wiremock = "0.6"
 # Renders a synthetic test image with known text for
-# `openhuman::meetings::ocr`'s unit tests (`draw_text_mut`). `default-features
+# `aura::meetings::ocr`'s unit tests (`draw_text_mut`). `default-features
 # = false` drops imageproc's `rayon` feature, which this single-image test
 # usage doesn't need.
 imageproc = { version = "0.25", default-features = false }
@@ -209,7 +209,7 @@ fantoccini = ["browser-native"]
 landlock = ["sandbox-landlock"]
 rag-pdf = ["dep:pdf-extract"]
 whatsapp-web = ["dep:whatsapp-rust", "dep:whatsapp-rust-tokio-transport", "dep:whatsapp-rust-ureq-http-client", "dep:wacore", "serde-big-array"]
-# Exposes the destructive `openhuman.test_reset` RPC. Off by default; the E2E
+# Exposes the destructive `aura.test_reset` RPC. Off by default; the E2E
 # build (app/scripts/e2e-build.sh) flips it on. Shipped binaries never have
 # this feature so the wipe RPC isn't even registered, let alone reachable.
 e2e-test-support = []
@@ -217,7 +217,7 @@ e2e-test-support = []
 # Fix whisper-rs-sys CRT mismatch on Windows MSVC (LNK2038).
 # Upstream cmake build defaults to /MD but Rust uses /MT.
 # This fork adds config.static_crt(true) to the build script.
-# See: https://github.com/tinyhumansai/openhuman/issues/273
+# See: https://github.com/tinyhumansai/aura/issues/273
 [patch.crates-io]
 whisper-rs-sys = { git = "https://github.com/tinyhumansai/whisper-rs-sys.git", branch = "main" }
 

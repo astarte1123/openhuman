@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 
 import { useT } from '../../../lib/i18n/I18nContext';
-import { openhumanAgentChat } from '../../../utils/tauriCommands';
+import { auraAgentChat } from '../../../utils/tauriCommands';
 import SettingsHeader from '../components/SettingsHeader';
 import { useSettingsNavigation } from '../hooks/useSettingsNavigation';
 
 type ChatMessage = { role: 'user' | 'agent'; text: string };
 
-const STORAGE_KEY = 'openhuman.settings.agentChat.history';
+const STORAGE_KEY = 'aura.settings.agentChat.history';
 
 const AgentChatPanel = () => {
   const { t } = useT();
@@ -59,7 +59,7 @@ const AgentChatPanel = () => {
     setInput('');
     setMessages(prev => [...prev, { role: 'user', text }]);
     try {
-      const response = await openhumanAgentChat(
+      const response = await auraAgentChat(
         text,
         modelOverride.trim() ? modelOverride : undefined,
         Number.isFinite(Number(temperature)) ? Number(temperature) : undefined

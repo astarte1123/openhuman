@@ -606,7 +606,7 @@ describe('ChatRuntimeProvider — dedupe, proactive resolution, mid-turn invaria
         't-err-sanitized',
         expect.objectContaining({
           content: expect.stringContaining(
-            '<openhuman-link path="community/discord">Report on Discord</openhuman-link>'
+            '<aura-link path="community/discord">Report on Discord</aura-link>'
           ),
         })
       );
@@ -887,7 +887,7 @@ describe('ChatRuntimeProvider — dedupe, proactive resolution, mid-turn invaria
   // directly.  'cancelled' produces no bubble at all.
   describe('inference error classifier — full type set', () => {
     const USER_FACING_FALLBACK =
-      'Something went wrong. Please try again.\nThis error has been reported. You can also report it on Discord.\n<openhuman-link path="community/discord">Report on Discord</openhuman-link>';
+      'Something went wrong. Please try again.\nThis error has been reported. You can also report it on Discord.\n<aura-link path="community/discord">Report on Discord</aura-link>';
 
     it.each([
       ['rate_limited', 'You have been rate limited. Please try again later.'],

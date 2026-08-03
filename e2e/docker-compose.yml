@@ -3,7 +3,7 @@
 #
 # This mirrors the `e2e-linux` job in `.github/workflows/e2e.yml` so any
 # fix that turns the local run green is what CI will run too:
-#   - same image: ghcr.io/tinyhumansai/openhuman_ci:latest
+#   - same image: ghcr.io/tinyhumansai/aura_ci:latest
 #   - same Xvfb + dbus bootstrap (via e2e/docker-entrypoint.sh)
 #   - same runner: app/scripts/e2e-run-session.sh (Appium chromium driver
 #     attached to CEF on :19222), NOT the retired tauri-driver path.
@@ -11,7 +11,7 @@
 # Usage:
 #   # Build the E2E app once (slow — produces the CEF bundle):
 #   docker compose -f e2e/docker-compose.yml run --rm e2e \
-#     bash -lc "pnpm install --frozen-lockfile && pnpm --filter openhuman-app test:e2e:build"
+#     bash -lc "pnpm install --frozen-lockfile && pnpm --filter aura-app test:e2e:build"
 #
 #   # Then run a spec (smoke / mega-flow / etc):
 #   docker compose -f e2e/docker-compose.yml run --rm e2e \
@@ -30,7 +30,7 @@
 #
 services:
   e2e:
-    image: ${OPENHUMAN_CI_IMAGE:-ghcr.io/tinyhumansai/openhuman_ci:latest}
+    image: ${AURA_CI_IMAGE:-ghcr.io/tinyhumansai/aura_ci:latest}
     # Use the bind-mounted local bootstrap (Xvfb + dbus + Appium + pnpm).
     # The image's baked-in /docker-entrypoint.sh is the CI version; the
     # local wrapper additionally lazy-installs Appium and JS deps so a
@@ -84,7 +84,7 @@ services:
   # Rust inference provider E2E tests (wiremock-based, no live LLM needed).
   # Run: docker compose -f e2e/docker-compose.yml run --rm inference-e2e
   inference-e2e:
-    image: ${OPENHUMAN_CI_IMAGE:-ghcr.io/tinyhumansai/openhuman_ci:latest}
+    image: ${AURA_CI_IMAGE:-ghcr.io/tinyhumansai/aura_ci:latest}
     working_dir: /workspace
     volumes:
       - ../:/workspace

@@ -10,7 +10,7 @@ import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 
 import { useScreenIntelligenceState } from '../../features/screen-intelligence/useScreenIntelligenceState';
-import { openhumanUpdateScreenIntelligenceSettings } from '../../utils/tauriCommands';
+import { auraUpdateScreenIntelligenceSettings } from '../../utils/tauriCommands';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -132,7 +132,7 @@ export default function ScreenIntelligenceSetupModal({ onClose, initialStep }: P
     setIsEnabling(true);
     setEnableError(null);
     try {
-      await openhumanUpdateScreenIntelligenceSettings({ enabled: true });
+      await auraUpdateScreenIntelligenceSettings({ enabled: true });
       await refreshStatus();
       setStep('success');
     } catch (error) {

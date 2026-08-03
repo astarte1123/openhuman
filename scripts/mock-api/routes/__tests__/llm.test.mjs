@@ -182,7 +182,7 @@ test("streams reasoning deltas for reasoning-family models", async () => {
   const ctx = makeCtx({
     url: "/chat/completions",
     parsedBody: {
-      model: "openhuman-reasoning-mock",
+      model: "aura-reasoning-mock",
       stream: true,
       messages: [{ role: "user", content: "compare these rollout options" }],
     },
@@ -199,7 +199,7 @@ test("streams reasoning deltas for reasoning-family models", async () => {
 test("returns tool calls for agentic models and resolves follow-up turns", () => {
   const first = makeCtx({
     parsedBody: {
-      model: "openhuman-agentic-mock",
+      model: "aura-agentic-mock",
       mockThreadId: "agent-thread-1",
       messages: [
         { role: "user", content: "search the release notes and report back" },
@@ -218,7 +218,7 @@ test("returns tool calls for agentic models and resolves follow-up turns", () =>
 
   const second = makeCtx({
     parsedBody: {
-      model: "openhuman-agentic-mock",
+      model: "aura-agentic-mock",
       mockThreadId: "agent-thread-1",
       messages: [
         { role: "user", content: "search the release notes and report back" },
@@ -272,7 +272,7 @@ test("updates coding responses across turns with thread memory", () => {
 test("shortens summarization responses across turns", () => {
   const first = makeCtx({
     parsedBody: {
-      model: "openhuman-summary-mock",
+      model: "aura-summary-mock",
       mockThreadId: "summary-thread-1",
       messages: [
         {
@@ -289,7 +289,7 @@ test("shortens summarization responses across turns", () => {
 
   const second = makeCtx({
     parsedBody: {
-      model: "openhuman-summary-mock",
+      model: "aura-summary-mock",
       mockThreadId: "summary-thread-1",
       messages: [{ role: "user", content: "shorter" }],
     },
@@ -315,16 +315,16 @@ test("lists multiple mock model families from the integrations catalog", () => {
   assert.equal(ctx.res.statusCode, 200);
   const body = JSON.parse(ctx.res.body);
   const ids = body.data.map((item) => item.id);
-  assert.ok(ids.includes("openhuman-reasoning-mock"));
-  assert.ok(ids.includes("openhuman-agentic-mock"));
+  assert.ok(ids.includes("aura-reasoning-mock"));
+  assert.ok(ids.includes("aura-agentic-mock"));
   assert.ok(ids.includes("gpt-5-codex-mock"));
-  assert.ok(ids.includes("openhuman-summary-mock"));
+  assert.ok(ids.includes("aura-summary-mock"));
 });
 
 test("records thread state for multi-turn mock LLM sessions", () => {
   const ctx = makeCtx({
     parsedBody: {
-      model: "openhuman-summary-mock",
+      model: "aura-summary-mock",
       mockThreadId: "thread-state-1",
       messages: [
         { role: "user", content: "summarize the latest provider status" },

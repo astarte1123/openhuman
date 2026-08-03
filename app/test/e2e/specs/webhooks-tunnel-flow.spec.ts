@@ -3,9 +3,9 @@
  *
  * The webhook tunnel UI (Settings → Developer Options → Webhooks, plus the `/webhooks`
  * ComposeIO trigger history page) is a shipped, user-visible feature backed by the
- * `openhuman.webhooks_*` controller family registered in `src/openhuman/webhooks/schemas.rs`.
+ * `aura.webhooks_*` controller family registered in `src/aura/webhooks/schemas.rs`.
  * Prior to this spec there was no E2E coverage for the webhook path — only Rust-side unit
- * tests in `src/openhuman/webhooks/tests.rs` and the mock-backend tunnel CRUD endpoints
+ * tests in `src/aura/webhooks/tests.rs` and the mock-backend tunnel CRUD endpoints
  * added in `scripts/mock-api-core.mjs` (`/webhooks/core*`).
  *
  * This spec validates the **authenticated** round-trip where the desktop shell's JSON-RPC
@@ -19,12 +19,12 @@
  *
  * Out of scope (tracked elsewhere):
  *  - `register_echo` / `list_registrations` / `clear_logs` — currently stub ops in
- *    `src/openhuman/webhooks/ops.rs` (no backend round-trip), covered by Rust unit tests.
+ *    `src/aura/webhooks/ops.rs` (no backend round-trip), covered by Rust unit tests.
  *  - ComposeIO history archive content — covered by `useComposeioTriggerHistory` hook
  *    unit tests and the core's ComposeIO handlers.
  */
 import { waitForApp } from '../helpers/app-helpers';
-import { callOpenhumanRpc } from '../helpers/core-rpc';
+import { callAuraRpc } from '../helpers/core-rpc';
 import { dumpAccessibilityTree, textExists } from '../helpers/element-helpers';
 import { resetApp } from '../helpers/reset-app';
 import { navigateViaHash, waitForRequest } from '../helpers/shared-flows';
@@ -82,7 +82,7 @@ describe('Webhook tunnel CRUD (UI + core RPC + mock backend)', () => {
 
   it('reached the logged-in shell after onboarding', async () => {
     const atHome =
-      (await textExists('Message OpenHuman')) ||
+      (await textExists('Message Aura')) ||
       (await textExists('Good morning')) ||
       (await textExists('Upgrade to Premium'));
     expect(atHome).toBe(true);
@@ -93,7 +93,7 @@ describe('Webhook tunnel CRUD (UI + core RPC + mock backend)', () => {
     // exercising tunnel RPCs (webhooks ops require a stored session token).
     await browser.waitUntil(
       async () => {
-        const probe = await callOpenhumanRpc('openhuman.webhooks_list_tunnels', {});
+        const probe = await callAuraRpc('aura.webhooks_list_tunnels', {});
         return probe.ok;
       },
       {
@@ -106,7 +106,7 @@ describe('Webhook tunnel CRUD (UI + core RPC + mock backend)', () => {
     // --- create ---------------------------------------------------------------
     clearRequestLog();
     const tunnelName = `e2e-tunnel-${Date.now()}`;
-    const created = await callOpenhumanRpc('openhuman.webhooks_create_tunnel', {
+    const created = await callAuraRpc('aura.webhooks_create_tunnel', {
       name: tunnelName,
       description: 'Created by webhooks-tunnel-flow E2E spec.',
     });
@@ -131,7 +131,7 @@ describe('Webhook tunnel CRUD (UI + core RPC + mock backend)', () => {
 
     // --- list -----------------------------------------------------------------
     clearRequestLog();
-    const listed = await callOpenhumanRpc('openhuman.webhooks_list_tunnels', {});
+    const listed = await callAuraRpc('aura.webhooks_list_tunnels', {});
     if (!listed.ok) {
       stepLog('webhooks_list_tunnels failed', listed);
     }
@@ -147,7 +147,7 @@ describe('Webhook tunnel CRUD (UI + core RPC + mock backend)', () => {
 
     // --- delete ---------------------------------------------------------------
     clearRequestLog();
-    const deleted = await callOpenhumanRpc('openhuman.webhooks_delete_tunnel', { id: tunnelId });
+    const deleted = await callAuraRpc('aura.webhooks_delete_tunnel', { id: tunnelId });
     if (!deleted.ok) {
       stepLog('webhooks_delete_tunnel failed', deleted);
     }
@@ -166,7 +166,7 @@ describe('Webhook tunnel CRUD (UI + core RPC + mock backend)', () => {
 
     // --- post-delete list confirms removal ------------------------------------
     clearRequestLog();
-    const relisted = await callOpenhumanRpc('openhuman.webhooks_list_tunnels', {});
+    const relisted = await callAuraRpc('aura.webhooks_list_tunnels', {});
     expect(relisted.ok).toBe(true);
     const relistedValue = unwrapRpcValue<Array<{ id?: string }>>(relisted.result);
     const stillPresent = (Array.isArray(relistedValue) ? relistedValue : []).some(

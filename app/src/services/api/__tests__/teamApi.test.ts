@@ -21,7 +21,7 @@ describe('teamApi', () => {
       const result = await teamApi.getTeams();
 
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.team_list_teams',
+        method: 'aura.team_list_teams',
         params: undefined,
       });
       expect(result).toEqual(teams);
@@ -43,7 +43,7 @@ describe('teamApi', () => {
       const result = await teamApi.getTeam('t1');
 
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.team_get_team',
+        method: 'aura.team_get_team',
         params: { teamId: 't1' },
       });
       expect(result).toEqual(team);
@@ -58,7 +58,7 @@ describe('teamApi', () => {
       const result = await teamApi.createTeam('New Team');
 
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.team_create_team',
+        method: 'aura.team_create_team',
         params: { name: 'New Team' },
       });
       expect(result).toEqual(team);
@@ -73,7 +73,7 @@ describe('teamApi', () => {
       const result = await teamApi.updateTeam('t1', { name: 'Updated' });
 
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.team_update_team',
+        method: 'aura.team_update_team',
         params: { teamId: 't1', name: 'Updated' },
       });
       expect(result).toEqual(team);
@@ -87,7 +87,7 @@ describe('teamApi', () => {
       await teamApi.deleteTeam('t1');
 
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.team_delete_team',
+        method: 'aura.team_delete_team',
         params: { teamId: 't1' },
       });
     });
@@ -100,7 +100,7 @@ describe('teamApi', () => {
       await teamApi.switchTeam('t1');
 
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.team_switch_team',
+        method: 'aura.team_switch_team',
         params: { teamId: 't1' },
       });
     });
@@ -121,7 +121,7 @@ describe('teamApi', () => {
       const result = await teamApi.getMembers('t1');
 
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.team_list_members',
+        method: 'aura.team_list_members',
         params: { teamId: 't1' },
       });
       expect(result).toEqual(members);
@@ -135,7 +135,7 @@ describe('teamApi', () => {
       await teamApi.removeMember('t1', 'u2');
 
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.team_remove_member',
+        method: 'aura.team_remove_member',
         params: { teamId: 't1', userId: 'u2' },
       });
     });
@@ -148,7 +148,7 @@ describe('teamApi', () => {
       await teamApi.changeMemberRole('t1', 'u2', 'BILLING_MANAGER');
 
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.team_change_member_role',
+        method: 'aura.team_change_member_role',
         params: { teamId: 't1', userId: 'u2', role: 'BILLING_MANAGER' },
       });
     });
@@ -161,7 +161,7 @@ describe('teamApi', () => {
       await teamApi.leaveTeam('t1');
 
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.team_leave_team',
+        method: 'aura.team_leave_team',
         params: { teamId: 't1' },
       });
     });
@@ -175,7 +175,7 @@ describe('teamApi', () => {
       const result = await teamApi.createInvite('t1');
 
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.team_create_invite',
+        method: 'aura.team_create_invite',
         params: { teamId: 't1' },
       });
       expect(result).toEqual(invite);
@@ -188,7 +188,7 @@ describe('teamApi', () => {
       await teamApi.createInvite('t1', { maxUses: 5, expiresInDays: 7 });
 
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.team_create_invite',
+        method: 'aura.team_create_invite',
         params: { teamId: 't1', maxUses: 5, expiresInDays: 7 },
       });
     });
@@ -202,7 +202,7 @@ describe('teamApi', () => {
       const result = await teamApi.getInvites('t1');
 
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.team_list_invites',
+        method: 'aura.team_list_invites',
         params: { teamId: 't1' },
       });
       expect(result).toEqual(invites);
@@ -216,7 +216,7 @@ describe('teamApi', () => {
       await teamApi.revokeInvite('t1', 'inv1');
 
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.team_revoke_invite',
+        method: 'aura.team_revoke_invite',
         params: { teamId: 't1', inviteId: 'inv1' },
       });
     });
@@ -230,7 +230,7 @@ describe('teamApi', () => {
       const result = await teamApi.joinTeam('ABC123');
 
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.team_join_team',
+        method: 'aura.team_join_team',
         params: { code: 'ABC123' },
       });
       expect(result).toEqual(team);

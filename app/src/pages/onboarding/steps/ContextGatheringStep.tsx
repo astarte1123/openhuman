@@ -50,7 +50,7 @@ const STAGES: Stage[] = [
 type StageStatus = 'pending' | 'active' | 'done' | 'skipped' | 'error';
 
 // LinkedIn `comm/in/<slug>` (notification-email form) and `in/<slug>`
-// (canonical) — same regex as `src/openhuman/learning/linkedin_enrichment.rs`.
+// (canonical) — same regex as `src/aura/learning/linkedin_enrichment.rs`.
 const LINKEDIN_RE =
   /https?:\/\/(?:www\.|[a-z]{2,3}\.)?linkedin\.com\/(?:comm\/)?in\/([a-zA-Z0-9_-]+)/;
 
@@ -117,7 +117,7 @@ interface ComposioExecuteResult {
 async function findLinkedInUrlViaComposio(): Promise<string | null> {
   console.debug('[onboarding:context] composio GMAIL_FETCH_EMAILS');
   const raw = await callCoreRpc<unknown>({
-    method: 'openhuman.tools_composio_execute',
+    method: 'aura.tools_composio_execute',
     params: {
       action: 'GMAIL_FETCH_EMAILS',
       params: { query: 'from:linkedin.com', max_results: 10 },
@@ -139,7 +139,7 @@ async function findLinkedInUrlViaComposio(): Promise<string | null> {
 
 async function saveProfile(markdown: string): Promise<void> {
   await callCoreRpc<unknown>({
-    method: 'openhuman.learning_save_profile',
+    method: 'aura.learning_save_profile',
     params: { markdown, summarize: true },
   });
 }

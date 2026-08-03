@@ -50,7 +50,7 @@ interface AppStateSnapshotResult {
 
 export const fetchCoreAppSnapshot = async (): Promise<AppStateSnapshotResult> => {
   const response = await callCoreRpc<{ result: AppStateSnapshotResult }>({
-    method: 'openhuman.app_state_snapshot',
+    method: 'aura.app_state_snapshot',
   });
   // Normalise the optional #1299 field at the API boundary so older core
   // builds without `meetAutoOrchestratorHandoff` still surface the
@@ -62,19 +62,19 @@ export const fetchCoreAppSnapshot = async (): Promise<AppStateSnapshotResult> =>
 };
 
 export const updateCoreLocalState = async (params: UpdateCoreLocalStateParams): Promise<void> => {
-  await callCoreRpc({ method: 'openhuman.app_state_update_local_state', params });
+  await callCoreRpc({ method: 'aura.app_state_update_local_state', params });
 };
 
 export const listTeams = async (): Promise<TeamWithRole[]> => {
   const response = await callCoreRpc<{ result: TeamWithRole[] }>({
-    method: 'openhuman.team_list_teams',
+    method: 'aura.team_list_teams',
   });
   return response.result;
 };
 
 export const getTeamMembers = async (teamId: string): Promise<TeamMember[]> => {
   const response = await callCoreRpc<{ result: TeamMember[] }>({
-    method: 'openhuman.team_list_members',
+    method: 'aura.team_list_members',
     params: { teamId },
   });
   return response.result;
@@ -82,7 +82,7 @@ export const getTeamMembers = async (teamId: string): Promise<TeamMember[]> => {
 
 export const getTeamInvites = async (teamId: string): Promise<TeamInvite[]> => {
   const response = await callCoreRpc<{ result: TeamInvite[] }>({
-    method: 'openhuman.team_list_invites',
+    method: 'aura.team_list_invites',
     params: { teamId },
   });
   return response.result;

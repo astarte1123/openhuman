@@ -10,14 +10,14 @@
 #   APT_SIGNING_KEY_ID   — GPG key ID for signing (must be imported)
 #
 # Optional environment:
-#   UPLOAD_REPO          — GitHub repo slug (default: tinyhumansai/openhuman)
+#   UPLOAD_REPO          — GitHub repo slug (default: tinyhumansai/aura)
 #   DRY_RUN              — set to "true" to skip git push
 set -euo pipefail
 
 TAG="${1:?Usage: build-apt-packages.sh <tag> [--deploy-gh-pages <gh_pages_dir>]}"
 shift
 VERSION="${TAG#v}"
-UPLOAD_REPO="${UPLOAD_REPO:-tinyhumansai/openhuman}"
+UPLOAD_REPO="${UPLOAD_REPO:-tinyhumansai/aura}"
 
 DEPLOY_GH_PAGES=""
 while [[ $# -gt 0 ]]; do
@@ -38,7 +38,7 @@ echo "[apt] Downloading Linux CLI tarballs for $TAG ..."
 mkdir -p "$TMPDIR/tarballs" "$TMPDIR/bins"
 
 for target in x86_64-unknown-linux-gnu aarch64-unknown-linux-gnu; do
-  TARBALL="openhuman-core-${VERSION}-${target}.tar.gz"
+  TARBALL="aura-core-${VERSION}-${target}.tar.gz"
   gh release download "$TAG" \
     --pattern "$TARBALL" \
     --repo "$UPLOAD_REPO" \
@@ -47,29 +47,29 @@ for target in x86_64-unknown-linux-gnu aarch64-unknown-linux-gnu; do
 done
 
 # ── Extract binaries ─────────────────────────────────────────────────────────
-tar -xzf "$TMPDIR/tarballs/openhuman-core-${VERSION}-x86_64-unknown-linux-gnu.tar.gz" \
+tar -xzf "$TMPDIR/tarballs/aura-core-${VERSION}-x86_64-unknown-linux-gnu.tar.gz" \
   -C "$TMPDIR/bins"
-mv "$TMPDIR/bins/openhuman-core" "$TMPDIR/bins/openhuman-core-amd64"
+mv "$TMPDIR/bins/aura-core" "$TMPDIR/bins/aura-core-amd64"
 
-tar -xzf "$TMPDIR/tarballs/openhuman-core-${VERSION}-aarch64-unknown-linux-gnu.tar.gz" \
+tar -xzf "$TMPDIR/tarballs/aura-core-${VERSION}-aarch64-unknown-linux-gnu.tar.gz" \
   -C "$TMPDIR/bins"
-mv "$TMPDIR/bins/openhuman-core" "$TMPDIR/bins/openhuman-core-arm64"
+mv "$TMPDIR/bins/aura-core" "$TMPDIR/bins/aura-core-arm64"
 
-chmod +x "$TMPDIR/bins/openhuman-core-amd64" "$TMPDIR/bins/openhuman-core-arm64"
+chmod +x "$TMPDIR/bins/aura-core-amd64" "$TMPDIR/bins/aura-core-arm64"
 
 # ── Build .deb packages ─────────────────────────────────────────────────────
 echo "[apt] Building .deb packages ..."
-bash "$REPO_ROOT/packages/deb/build.sh" "$TMPDIR/bins/openhuman-core-amd64" "${VERSION}" amd64
-bash "$REPO_ROOT/packages/deb/build.sh" "$TMPDIR/bins/openhuman-core-arm64" "${VERSION}" arm64
+bash "$REPO_ROOT/packages/deb/build.sh" "$TMPDIR/bins/aura-core-amd64" "${VERSION}" amd64
+bash "$REPO_ROOT/packages/deb/build.sh" "$TMPDIR/bins/aura-core-arm64" "${VERSION}" arm64
 
-ls -lh openhuman_*.deb
+ls -lh aura_*.deb
 
 # ── Build apt repository ────────────────────────────────────────────────────
 APT_REPO_DIR="$TMPDIR/apt-repo"
 echo "[apt] Building apt repository ..."
 bash "$REPO_ROOT/scripts/build-apt-repo.sh" "$APT_REPO_DIR" \
-  "openhuman_${VERSION}_amd64.deb" \
-  "openhuman_${VERSION}_arm64.deb"
+  "aura_${VERSION}_amd64.deb" \
+  "aura_${VERSION}_arm64.deb"
 
 # ── Deploy to gh-pages ───────────────────────────────────────────────────────
 if [[ -n "$DEPLOY_GH_PAGES" ]]; then

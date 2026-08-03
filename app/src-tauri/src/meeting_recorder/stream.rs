@@ -4,7 +4,7 @@
 //!
 //! cpal's WASAPI backend is not `Send`-safe: the `Device`/`Stream` objects
 //! must be created, used, and dropped on the same OS thread. This mirrors
-//! the existing pattern in `openhuman::voice::audio_capture::record_on_thread`
+//! the existing pattern in `aura::voice::audio_capture::record_on_thread`
 //! (root crate) — a dedicated `std::thread` builds the stream, plays it,
 //! then blocks in a poll loop until a shared stop flag fires, at which
 //! point the stream is dropped on that same thread.

@@ -1,6 +1,6 @@
 # Codex PR Checklist
 
-Use this checklist for Codex web sessions, Linear-launched implementation agents, and any other remote agent that opens OpenHuman PRs.
+Use this checklist for Codex web sessions, Linear-launched implementation agents, and any other remote agent that opens Aura PRs.
 
 ## Required Preflight
 
@@ -25,7 +25,7 @@ test -f Cargo.toml
 test -f app/package.json
 ```
 
-Expected repository path in Codex web is `/workspace/openhuman`. If the checkout is missing or the command shows another project, stop immediately and report the environment binding problem. Do not edit files in the wrong repository.
+Expected repository path in Codex web is `/workspace/aura`. If the checkout is missing or the command shows another project, stop immediately and report the environment binding problem. Do not edit files in the wrong repository.
 
 ## Launch Trigger Rule
 
@@ -34,10 +34,10 @@ Use exactly one Codex trigger per Linear issue.
 Preferred launch pattern:
 
 ```md
-@Codex use the Codex environment for jwalin-shah/openhuman.
+@Codex use the Codex environment for jwalin-shah/aura.
 
 Work issue <ISSUE-KEY>.
-Expected path: /workspace/openhuman.
+Expected path: /workspace/aura.
 Start from latest origin/main.
 Create branch codex/<ISSUE-KEY>-<short-title>.
 Follow docs/agent-workflows/codex-pr-checklist.md exactly.
@@ -54,7 +54,7 @@ If using `delegate: Codex` as the only trigger for an integration that requires 
 - Use one branch and one PR per Linear issue.
 - Name branches `codex/<ISSUE-KEY>-<short-title>`.
 - Do not open duplicate PRs for the same issue. If a retry is needed, update the existing PR branch or close the stale duplicate and state which PR is canonical.
-- PRs should target `jwalin-shah/openhuman:main` unless upstream permissions allow `tinyhumansai/openhuman:main`.
+- PRs should target `jwalin-shah/aura:main` unless upstream permissions allow `tinyhumansai/aura:main`.
 
 ## Duplicate PR Cleanup
 
@@ -63,7 +63,7 @@ Canonical PR rule: keep the PR whose head branch is the active issue branch and 
 Lightweight comparison and close recipe:
 
 ```bash
-BASE_REPO=tinyhumansai/openhuman # or jwalin-shah/openhuman for fork-targeted PRs
+BASE_REPO=tinyhumansai/aura # or jwalin-shah/aura for fork-targeted PRs
 BASE_REMOTE=upstream             # remote matching BASE_REPO
 KEEP=123                         # canonical PR number
 CLOSE=124                        # duplicate PR number
@@ -100,7 +100,7 @@ Run the smallest checks that prove the changed surface, plus the relevant merge 
 
 ```bash
 # Always run for app or docs-visible app changes
-pnpm --filter openhuman-app format:check
+pnpm --filter aura-app format:check
 pnpm typecheck
 
 # Focused app tests for changed TS/React behavior
@@ -140,7 +140,7 @@ PR_BODY="$(cat /tmp/pr-body.md)" pnpm pr:checklist
 For an existing GitHub PR:
 
 ```bash
-gh pr view <number> --repo tinyhumansai/openhuman --json body --jq .body | pnpm pr:checklist -
+gh pr view <number> --repo tinyhumansai/aura --json body --jq .body | pnpm pr:checklist -
 ```
 
 Every checklist line must be checked. If an item does not apply, check it and include a short `N/A` reason on the same line. Do not leave `N/A` items unchecked.

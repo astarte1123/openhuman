@@ -771,7 +771,7 @@ fn gmeet_room_popup_navigates_parent() {
     // "Start an instant meeting" / "New meeting" calls
     // window.open(meet.google.com/<roomid>) to launch a room.
     // Without intervention this would route to system Chrome and
-    // leak the meeting out of OpenHuman.
+    // leak the meeting out of Aura.
     assert_eq!(
         popup_should_navigate_parent("google-meet", &url("https://meet.google.com/abc-defg-hij"),)
             .map(|u| u.to_string()),
@@ -853,7 +853,7 @@ fn redact_navigation_url_strips_query_and_fragment() {
 
 #[tokio::test]
 async fn purge_data_dir_with_retry_noop_when_missing() {
-    let dir = std::env::temp_dir().join(format!("openhuman-purge-noop-{}", std::process::id()));
+    let dir = std::env::temp_dir().join(format!("aura-purge-noop-{}", std::process::id()));
     // Sanity: dir must NOT exist
     let _ = std::fs::remove_dir_all(&dir);
     assert!(!dir.exists());
@@ -869,7 +869,7 @@ async fn purge_data_dir_with_retry_noop_when_missing() {
 #[tokio::test]
 async fn purge_data_dir_with_retry_removes_existing_dir() {
     let dir = std::env::temp_dir().join(format!(
-        "openhuman-purge-existing-{}-{}",
+        "aura-purge-existing-{}-{}",
         std::process::id(),
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)

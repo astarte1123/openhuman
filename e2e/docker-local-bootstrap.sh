@@ -2,7 +2,7 @@
 #
 # Local-only bootstrap for the Linux E2E Docker container.
 #
-# The CI image (`ghcr.io/tinyhumansai/openhuman_ci:latest`) intentionally
+# The CI image (`ghcr.io/tinyhumansai/aura_ci:latest`) intentionally
 # does NOT bake in Appium or pnpm deps so the image stays small. CI
 # installs them per-job. This wrapper performs the same install steps the
 # CI workflow runs (`.github/workflows/e2e.yml` → `e2e-linux`), but only
@@ -62,7 +62,7 @@ fi
 # 4. Ensure stub env files exist (CI does this too).
 #
 # Local developers often symlink `.env` to a secrets directory outside the
-# repo (e.g. `../secrets/openhuman/.env`). Inside this container only
+# repo (e.g. `../secrets/aura/.env`). Inside this container only
 # `/workspace` is bind-mounted, so that symlink target doesn't exist —
 # `[ -f .env ]` returns false on a broken symlink, and `touch .env` then
 # fails with "No such file or directory" because touch resolves through
@@ -76,9 +76,9 @@ ensure_stub_env() {
     return
   fi
   # Broken symlink → leave it alone, write a sibling stub the build can
-  # source via OPENHUMAN_DOTENV_FILE / VITE handles env loading itself.
+  # source via AURA_DOTENV_FILE / VITE handles env loading itself.
   local stub
-  stub="${HOME}/openhuman-e2e-$(echo "$target" | tr '/' '_').env"
+  stub="${HOME}/aura-e2e-$(echo "$target" | tr '/' '_').env"
   : > "$stub"
   echo "[e2e-bootstrap] $target is a broken symlink; using stub $stub"
 }

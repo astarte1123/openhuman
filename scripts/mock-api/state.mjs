@@ -79,7 +79,7 @@ export function hashString(input) {
 }
 
 export function behaviorSeed() {
-  return String(mockBehavior.seed || "openhuman-mock");
+  return String(mockBehavior.seed || "aura-mock");
 }
 
 export function fuzzyNumber(label, min, max) {

@@ -29,7 +29,7 @@ export async function getAuthState(): Promise<{ is_authenticated: boolean; user:
   }
 
   const response = await callCoreRpc<{ result: { isAuthenticated: boolean; user: object | null } }>(
-    { method: 'openhuman.auth_get_state' }
+    { method: 'aura.auth_get_state' }
   );
 
   return { is_authenticated: response.result.isAuthenticated, user: response.result.user };
@@ -44,7 +44,7 @@ export async function getSessionToken(): Promise<string | null> {
   }
 
   const response = await callCoreRpc<{ result: { token: string | null } }>({
-    method: 'openhuman.auth_get_session_token',
+    method: 'aura.auth_get_session_token',
   });
   return response.result.token;
 }
@@ -57,7 +57,7 @@ export async function logout(): Promise<void> {
     return;
   }
 
-  await callCoreRpc({ method: 'openhuman.auth_clear_session' });
+  await callCoreRpc({ method: 'aura.auth_clear_session' });
 }
 
 /**
@@ -68,25 +68,25 @@ export async function storeSession(token: string, user: object): Promise<void> {
     return;
   }
 
-  await callCoreRpc({ method: 'openhuman.auth_store_session', params: { token, user } });
+  await callCoreRpc({ method: 'aura.auth_store_session', params: { token, user } });
 }
 
-export async function openhumanEncryptSecret(plaintext: string): Promise<CommandResponse<string>> {
+export async function auraEncryptSecret(plaintext: string): Promise<CommandResponse<string>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<string>>({
-    method: 'openhuman.encrypt_secret',
+    method: 'aura.encrypt_secret',
     params: { plaintext },
   });
 }
 
-export async function openhumanDecryptSecret(ciphertext: string): Promise<CommandResponse<string>> {
+export async function auraDecryptSecret(ciphertext: string): Promise<CommandResponse<string>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<string>>({
-    method: 'openhuman.decrypt_secret',
+    method: 'aura.decrypt_secret',
     params: { ciphertext },
   });
 }
@@ -125,7 +125,7 @@ export async function authStoreProviderCredentials(args: {
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<AuthProfileSummary>>({
-    method: 'openhuman.auth_store_provider_credentials',
+    method: 'aura.auth_store_provider_credentials',
     params: args,
   });
 }
@@ -140,7 +140,7 @@ export async function authRemoveProviderCredentials(args: {
   }
   return await callCoreRpc<
     CommandResponse<{ removed: boolean; provider: string; profile: string }>
-  >({ method: 'openhuman.auth_remove_provider_credentials', params: args });
+  >({ method: 'aura.auth_remove_provider_credentials', params: args });
 }
 
 /** List stored provider credential profiles, optionally filtered by provider. */
@@ -151,7 +151,7 @@ export async function authListProviderCredentials(
     throw new Error('Not running in Tauri');
   }
   return await callCoreRpc<CommandResponse<AuthProfileSummary[]>>({
-    method: 'openhuman.auth_list_provider_credentials',
+    method: 'aura.auth_list_provider_credentials',
     params: provider ? { provider } : {},
   });
 }

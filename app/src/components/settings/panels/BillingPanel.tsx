@@ -7,7 +7,7 @@ import { openUrl } from '../../../utils/openUrl';
 import PageBackButton from '../components/PageBackButton';
 import { useSettingsNavigation } from '../hooks/useSettingsNavigation';
 
-const log = createDebug('openhuman:billing-panel');
+const log = createDebug('aura:billing-panel');
 
 const BillingPanel = () => {
   const { t } = useT();

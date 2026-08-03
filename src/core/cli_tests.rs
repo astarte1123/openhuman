@@ -66,26 +66,26 @@ fn load_dotenv_for_cli_reads_cwd_dotenv_without_overwriting_existing_env() {
     let env_path = tmp.path().join(".env");
     std::fs::write(
         &env_path,
-        "BACKEND_URL=https://staging-api.example.test\nOPENHUMAN_APP_ENV=staging\n",
+        "BACKEND_URL=https://staging-api.example.test\nAURA_APP_ENV=staging\n",
     )
     .expect("write .env");
 
     let original_dir = std::env::current_dir().expect("current dir");
     let prior_backend = std::env::var("BACKEND_URL").ok();
-    let prior_app_env = std::env::var("OPENHUMAN_APP_ENV").ok();
-    let prior_dotenv_path = std::env::var("OPENHUMAN_DOTENV_PATH").ok();
+    let prior_app_env = std::env::var("AURA_APP_ENV").ok();
+    let prior_dotenv_path = std::env::var("AURA_DOTENV_PATH").ok();
 
     unsafe {
         std::env::remove_var("BACKEND_URL");
-        std::env::set_var("OPENHUMAN_APP_ENV", "production");
-        std::env::remove_var("OPENHUMAN_DOTENV_PATH");
+        std::env::set_var("AURA_APP_ENV", "production");
+        std::env::remove_var("AURA_DOTENV_PATH");
     }
     std::env::set_current_dir(tmp.path()).expect("set current dir");
 
     let result = load_dotenv_for_cli();
 
     let loaded_backend = std::env::var("BACKEND_URL").ok();
-    let loaded_app_env = std::env::var("OPENHUMAN_APP_ENV").ok();
+    let loaded_app_env = std::env::var("AURA_APP_ENV").ok();
 
     std::env::set_current_dir(&original_dir).expect("restore current dir");
     unsafe {
@@ -94,12 +94,12 @@ fn load_dotenv_for_cli_reads_cwd_dotenv_without_overwriting_existing_env() {
             None => std::env::remove_var("BACKEND_URL"),
         }
         match prior_app_env {
-            Some(value) => std::env::set_var("OPENHUMAN_APP_ENV", value),
-            None => std::env::remove_var("OPENHUMAN_APP_ENV"),
+            Some(value) => std::env::set_var("AURA_APP_ENV", value),
+            None => std::env::remove_var("AURA_APP_ENV"),
         }
         match prior_dotenv_path {
-            Some(value) => std::env::set_var("OPENHUMAN_DOTENV_PATH", value),
-            None => std::env::remove_var("OPENHUMAN_DOTENV_PATH"),
+            Some(value) => std::env::set_var("AURA_DOTENV_PATH", value),
+            None => std::env::remove_var("AURA_DOTENV_PATH"),
         }
     }
 

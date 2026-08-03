@@ -7,10 +7,10 @@
 //! once and dropped, the load signal would never reach the frontend.
 //!
 //! Pairs with the placeholder URL the webview is created with — the opener
-//! finds the target by its unique `openhuman:{account_id}` marker in the
+//! finds the target by its unique `aura:{account_id}` marker in the
 //! initial URL, injects the notification-permission shim before the page's
 //! own JS runs, then navigates the target to the real provider URL with a
-//! `#openhuman-account-{id}` fragment appended so other scanners
+//! `#aura-account-{id}` fragment appended so other scanners
 //! (discord/telegram/slack/whatsapp) can disambiguate multi-account setups
 //! without title-marker injection.
 
@@ -72,13 +72,13 @@ const HARD_CEILING: Duration = Duration::from_secs(60);
 /// Returns the unique marker substring that the account's initial
 /// placeholder URL contains so `Target.getTargets` can identify it.
 pub fn placeholder_marker(account_id: &str) -> String {
-    format!("openhuman-acct-{account_id}")
+    format!("aura-acct-{account_id}")
 }
 
 /// Fragment appended to the real provider URL so scanners can match this
 /// account uniquely even when several accounts share an origin.
 pub fn target_url_fragment(account_id: &str) -> String {
-    format!("#openhuman-account-{account_id}")
+    format!("#aura-account-{account_id}")
 }
 
 /// Build the placeholder URL used as the webview's initial location.
@@ -457,21 +457,21 @@ async fn run_session_cycle<R: Runtime>(
                     try {\
                         var NativeNotification = window.Notification;\
                         if (typeof NativeNotification === 'function') {\
-                            var OpenHumanNotification = function(title, options){\
+                            var AuraNotification = function(title, options){\
                                 try { return new NativeNotification(title, options); }\
                                 catch (_) { return {}; }\
                             };\
-                            OpenHumanNotification.prototype = NativeNotification.prototype;\
+                            AuraNotification.prototype = NativeNotification.prototype;\
                             try {\
-                                Object.defineProperty(OpenHumanNotification, 'permission', {\
+                                Object.defineProperty(AuraNotification, 'permission', {\
                                     get: function(){ return 'granted'; },\
                                     configurable: true\
                                 });\
                             } catch (_) {}\
-                            OpenHumanNotification.requestPermission = function(){\
+                            AuraNotification.requestPermission = function(){\
                                 return Promise.resolve('granted');\
                             };\
-                            window.Notification = OpenHumanNotification;\
+                            window.Notification = AuraNotification;\
                         }\
                     } catch (_) {}\
                     try {\
@@ -693,7 +693,7 @@ mod tests {
     fn placeholder_url_uses_about_blank_fragment_marker() {
         assert_eq!(
             placeholder_url("acct-42"),
-            "about:blank#openhuman-acct-acct-42"
+            "about:blank#aura-acct-acct-42"
         );
     }
 
@@ -791,24 +791,24 @@ mod tests {
     #[test]
     fn target_match_accepts_placeholder_and_real_provider_fragments_only_for_same_account() {
         assert!(target_matches_account_url(
-            "about:blank#openhuman-acct-acct-42",
+            "about:blank#aura-acct-acct-42",
             "acct-42"
         ));
         assert!(target_matches_account_url(
-            "https://discord.com/channels/@me#openhuman-account-acct-42",
+            "https://discord.com/channels/@me#aura-account-acct-42",
             "acct-42"
         ));
 
         assert!(!target_matches_account_url(
-            "about:blank#openhuman-acct-acct-420",
+            "about:blank#aura-acct-acct-420",
             "acct-42"
         ));
         assert!(!target_matches_account_url(
-            "https://example.com/openhuman-acct-acct-42",
+            "https://example.com/aura-acct-acct-42",
             "acct-42"
         ));
         assert!(!target_matches_account_url(
-            "https://discord.com/channels/@me#openhuman-account-acct-420",
+            "https://discord.com/channels/@me#aura-account-acct-420",
             "acct-42"
         ));
     }

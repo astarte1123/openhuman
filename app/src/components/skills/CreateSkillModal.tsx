@@ -3,7 +3,7 @@
  * ----------------
  *
  * Centered white modal that scaffolds a new SKILL.md skill via the
- * `openhuman.skills_create` JSON-RPC method. Matches the settings-modal
+ * `aura.skills_create` JSON-RPC method. Matches the settings-modal
  * design rules (clean white, 520px desktop, 16px radius, backdrop + blur,
  * Escape/click-out to close, focus capture) — see
  * `.claude/rules/15-settings-modal-system.md`.
@@ -298,8 +298,8 @@ export default function CreateSkillModal({ onClose, onCreated }: Props) {
               </div>
               <p className="mt-1 text-[11px] text-stone-500">
                 {scope === 'user'
-                  ? 'Written to ~/.openhuman/skills/<slug>/SKILL.md — available across all workspaces.'
-                  : 'Written to <workspace>/.openhuman/skills/<slug>/SKILL.md — requires workspace trust.'}
+                  ? 'Written to ~/.aura/skills/<slug>/SKILL.md — available across all workspaces.'
+                  : 'Written to <workspace>/.aura/skills/<slug>/SKILL.md — requires workspace trust.'}
               </p>
             </fieldset>
 

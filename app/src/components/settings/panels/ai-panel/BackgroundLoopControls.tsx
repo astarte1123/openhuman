@@ -11,9 +11,9 @@ import {
   type HeartbeatPlannerSummary,
   type HeartbeatSettings,
   type HeartbeatSettingsPatch,
-  openhumanHeartbeatSettingsGet,
-  openhumanHeartbeatSettingsSet,
-  openhumanHeartbeatTickNow,
+  auraHeartbeatSettingsGet,
+  auraHeartbeatSettingsSet,
+  auraHeartbeatTickNow,
 } from '../../../../utils/tauriCommands/heartbeat';
 import { FormulaRow, LoopToggle, MetricTile } from './PanelControls';
 import {
@@ -69,7 +69,7 @@ const BackgroundLoopControls = ({
     setError('');
     const [heartbeatResult, usageResult, transactionsResult, connectionsResult] =
       await Promise.allSettled([
-        openhumanHeartbeatSettingsGet(),
+        auraHeartbeatSettingsGet(),
         creditsApi.getTeamUsage(),
         creditsApi.getTransactions(200, 0),
         listComposioConnections(),
@@ -118,7 +118,7 @@ const BackgroundLoopControls = ({
       }
       commitSettings({ ...previous, ...patch });
       try {
-        const response = await openhumanHeartbeatSettingsSet(patch);
+        const response = await auraHeartbeatSettingsSet(patch);
         // Stale response — a newer patch superseded us; drop this result.
         if (patchRequestIdRef.current !== requestId) return;
         commitSettings(response.result.settings);
@@ -139,7 +139,7 @@ const BackgroundLoopControls = ({
     setRunningTick(true);
     setError('');
     try {
-      const response = await openhumanHeartbeatTickNow();
+      const response = await auraHeartbeatTickNow();
       setPlannerSummary(response.result.summary);
       await refresh();
     } catch (err) {

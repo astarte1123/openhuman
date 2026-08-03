@@ -87,7 +87,7 @@ describe('deriveAesKeyFromMnemonic', () => {
   });
 
   it('returns a fixed known value for the all-abandon mnemonic', () => {
-    // Pinned output for salt='openhuman-aes-key-v1', PBKDF2-SHA256, c=100000, dkLen=32.
+    // Pinned output for salt='aura-aes-key-v1', PBKDF2-SHA256, c=100000, dkLen=32.
     // If this assertion fails, the KDF parameters or salt have changed — update intentionally.
     const key = deriveAesKeyFromMnemonic(KNOWN_MNEMONIC);
     expect(key).toBe('dce707ee483afb0a70cb2e076295f9f914e0c62cc097895eabda1c0c1f2f0cb1');

@@ -29,13 +29,13 @@ afterEach(() => {
 describe('TelegramConfig', () => {
   it('renders auth mode labels', () => {
     renderWithProviders(<TelegramConfig definition={telegramDef} />);
-    expect(screen.getByText('Login with OpenHuman')).toBeInTheDocument();
+    expect(screen.getByText('Login with Aura')).toBeInTheDocument();
   });
 
   it('renders both auth modes', () => {
     renderWithProviders(<TelegramConfig definition={telegramDef} />);
     expect(screen.getAllByText(/Bot Token/i).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText('Login with OpenHuman')).toBeInTheDocument();
+    expect(screen.getByText('Login with Aura')).toBeInTheDocument();
   });
 
   it('shows credential fields for bot_token mode', () => {
@@ -67,8 +67,8 @@ describe('TelegramConfig', () => {
     });
     vi.mocked(channelConnectionsApi.telegramLoginStart).mockResolvedValue({
       linkToken: 'link-token-abc',
-      telegramUrl: 'https://t.me/openhuman_bot?start=link-token-abc',
-      botUsername: 'openhuman_bot',
+      telegramUrl: 'https://t.me/aura_bot?start=link-token-abc',
+      botUsername: 'aura_bot',
     });
     vi.mocked(channelConnectionsApi.telegramLoginCheck).mockResolvedValue({
       linked: true,
@@ -84,7 +84,7 @@ describe('TelegramConfig', () => {
       expect(channelConnectionsApi.telegramLoginStart).toHaveBeenCalledTimes(1);
     });
     await waitFor(() => {
-      expect(openUrl).toHaveBeenCalledWith('https://t.me/openhuman_bot?start=link-token-abc');
+      expect(openUrl).toHaveBeenCalledWith('https://t.me/aura_bot?start=link-token-abc');
     });
     await waitFor(() => {
       expect(channelConnectionsApi.telegramLoginCheck).toHaveBeenCalledWith('link-token-abc');

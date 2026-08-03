@@ -43,7 +43,7 @@ const ConnectionIndicator = ({
         return {
           color: 'bg-sage-500',
           textColor: 'text-sage-500',
-          text: 'Connected to OpenHuman AI 🚀',
+          text: 'Connected to Aura AI 🚀',
           pulse: true,
         };
       case 'internet-offline':
@@ -86,7 +86,7 @@ const legacyMap: Record<'connected' | 'disconnected' | 'connecting', StatusConfi
   connected: {
     color: 'bg-sage-500',
     textColor: 'text-sage-500',
-    text: 'Connected to OpenHuman AI 🚀',
+    text: 'Connected to Aura AI 🚀',
     pulse: true,
   },
   disconnected: {

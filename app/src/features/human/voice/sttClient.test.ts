@@ -9,7 +9,7 @@ describe('transcribeCloud', () => {
   beforeEach(() => {
     (callCoreRpc as ReturnType<typeof vi.fn>).mockReset();
   });
-  it('routes through openhuman.voice_cloud_transcribe with base64 + mime', async () => {
+  it('routes through aura.voice_cloud_transcribe with base64 + mime', async () => {
     const mock = callCoreRpc as ReturnType<typeof vi.fn>;
     mock.mockResolvedValueOnce({ text: 'hello there' });
     const blob = new Blob([new Uint8Array([1, 2, 3, 4, 5])], { type: 'audio/webm;codecs=opus' });
@@ -22,7 +22,7 @@ describe('transcribeCloud', () => {
       method: string;
       params: { audio_base64: string; mime_type: string; file_name: string };
     };
-    expect(call.method).toBe('openhuman.voice_cloud_transcribe');
+    expect(call.method).toBe('aura.voice_cloud_transcribe');
     // `audio/webm;codecs=opus` should collapse to the bare type the backend
     // allow-list accepts.
     expect(call.params.mime_type).toBe('audio/webm');
@@ -98,9 +98,9 @@ describe('transcribeCloud', () => {
   // message so users know to restart the desktop app.
   it('rewrites "unknown method" errors to an actionable restart hint', async () => {
     const mock = callCoreRpc as ReturnType<typeof vi.fn>;
-    mock.mockRejectedValueOnce(new Error('unknown method: openhuman.voice_cloud_transcribe'));
+    mock.mockRejectedValueOnce(new Error('unknown method: aura.voice_cloud_transcribe'));
     const blob = new Blob([new Uint8Array([1])], { type: 'audio/webm' });
-    await expect(transcribeCloud(blob)).rejects.toThrow(/Restart the OpenHuman desktop app/i);
+    await expect(transcribeCloud(blob)).rejects.toThrow(/Restart the Aura desktop app/i);
   });
 
   it('passes through non-unknown-method errors verbatim', async () => {
@@ -116,7 +116,7 @@ describe('transcribeWithFactory', () => {
     (callCoreRpc as ReturnType<typeof vi.fn>).mockReset();
   });
 
-  it('routes through openhuman.voice_stt_dispatch and returns text', async () => {
+  it('routes through aura.voice_stt_dispatch and returns text', async () => {
     const mock = callCoreRpc as ReturnType<typeof vi.fn>;
     mock.mockResolvedValueOnce({ text: 'hello via factory', provider: 'cloud' });
     const blob = new Blob([new Uint8Array([1, 2, 3])], { type: 'audio/webm' });
@@ -124,7 +124,7 @@ describe('transcribeWithFactory', () => {
     const text = await transcribeWithFactory(blob);
     expect(text).toBe('hello via factory');
     const call = mock.mock.calls[0][0] as { method: string; params: Record<string, unknown> };
-    expect(call.method).toBe('openhuman.voice_stt_dispatch');
+    expect(call.method).toBe('aura.voice_stt_dispatch');
     expect(call.params.mime_type).toBe('audio/webm');
     expect(call.params.file_name).toBe('audio.webm');
     // No provider override unless caller pins one.
@@ -150,9 +150,9 @@ describe('transcribeWithFactory', () => {
 
   it('rewrites stale-sidecar "unknown method" errors', async () => {
     const mock = callCoreRpc as ReturnType<typeof vi.fn>;
-    mock.mockRejectedValueOnce(new Error('unknown method: openhuman.voice_stt_dispatch'));
+    mock.mockRejectedValueOnce(new Error('unknown method: aura.voice_stt_dispatch'));
     const blob = new Blob([new Uint8Array([1])], { type: 'audio/webm' });
-    await expect(transcribeWithFactory(blob)).rejects.toThrow(/Restart the OpenHuman desktop app/i);
+    await expect(transcribeWithFactory(blob)).rejects.toThrow(/Restart the Aura desktop app/i);
   });
 
   it('passes through non-unknown-method errors verbatim', async () => {

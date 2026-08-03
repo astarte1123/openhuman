@@ -110,7 +110,7 @@ const MascotPanel = () => {
   return (
     <div>
       <SettingsHeader
-        title="OpenHuman"
+        title="Aura"
         showBackButton={true}
         onBack={navigateBack}
         breadcrumbs={breadcrumbs}
@@ -124,13 +124,13 @@ const MascotPanel = () => {
           <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
             {available.length === 0 ? (
               <p className="p-4 text-sm text-stone-500">
-                No OpenHuman color variants are available in this build.
+                No Aura color variants are available in this build.
               </p>
             ) : (
               <div
                 className="grid grid-cols-5 gap-3 p-4"
                 role="radiogroup"
-                aria-label="OpenHuman color">
+                aria-label="Aura color">
                 {available.map(opt => {
                   const palette = getMascotPalette(opt.id);
                   const selected = opt.id === activeColor;
@@ -160,7 +160,7 @@ const MascotPanel = () => {
             )}
           </div>
           <p className="text-xs text-stone-500 leading-relaxed px-1 mt-2">
-            The selected color is applied everywhere OpenHuman appears and is remembered across
+            The selected color is applied everywhere Aura appears and is remembered across
             restarts.
           </p>
         </div>
@@ -172,15 +172,15 @@ const MascotPanel = () => {
           <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
             {backendListError && (
               <p className="p-4 text-sm text-coral-700">
-                OpenHuman library unavailable: {backendListError}
+                Aura library unavailable: {backendListError}
               </p>
             )}
             {!backendListError && backendList === null && (
-              <p className="p-4 text-sm text-stone-500">Loading OpenHuman library…</p>
+              <p className="p-4 text-sm text-stone-500">Loading Aura library…</p>
             )}
             {backendList && backendList.length === 0 && !backendListError && (
               <p className="p-4 text-sm text-stone-500">
-                No OpenHuman characters are available yet. Local color variants above are still
+                No Aura characters are available yet. Local color variants above are still
                 active.
               </p>
             )}
@@ -194,7 +194,7 @@ const MascotPanel = () => {
                     className={`flex w-full items-center justify-between px-4 py-3 text-left text-sm hover:bg-stone-50 ${
                       selectedMascotId == null ? 'bg-stone-50 font-medium' : ''
                     }`}>
-                    <span>Local OpenHuman (default)</span>
+                    <span>Local Aura (default)</span>
                     {selectedMascotId == null && (
                       <span className="text-[10px] uppercase text-primary-600">Active</span>
                     )}

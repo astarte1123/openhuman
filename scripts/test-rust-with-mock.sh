@@ -13,7 +13,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 MOCK_API_PORT="${MOCK_API_PORT:-18505}"
 MOCK_API_URL="http://127.0.0.1:${MOCK_API_PORT}"
-MOCK_LOG="${MOCK_LOG:-/tmp/openhuman-mock-api.log}"
+MOCK_LOG="${MOCK_LOG:-/tmp/aura-mock-api.log}"
 MOCK_PID=""
 
 cleanup() {

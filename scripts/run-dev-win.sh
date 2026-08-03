@@ -513,10 +513,10 @@ export PATH="$PATH_PREFIX:$PATH"
 "$PNPM_EXE" core:stage
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Stage the CEF runtime next to the dev OpenHuman.exe.
+# Stage the CEF runtime next to the dev Aura.exe.
 #
 # `cargo tauri build` (release) copies CEF into the bundle automatically, but
-# `cargo tauri dev` doesn't — the dev .exe lands at <target>/debug/OpenHuman.exe
+# `cargo tauri dev` doesn't — the dev .exe lands at <target>/debug/Aura.exe
 # alone, and Windows can't find libcef.dll. The .exe panics during boot with
 # `cef::library_loader::LibraryLoader::new` errors (or just refuses to launch
 # with "libcef.dll not found"). Without this step every fresh contributor
@@ -527,11 +527,11 @@ export PATH="$PATH_PREFIX:$PATH"
 # destination, so subsequent dev runs are essentially free.
 # ─────────────────────────────────────────────────────────────────────────────
 if [[ -n "${CEF_RUNTIME_PATH:-}" && -f "$CEF_RUNTIME_PATH/libcef.dll" ]]; then
-  # The dev OpenHuman.exe is produced by the *Tauri shell* crate
+  # The dev Aura.exe is produced by the *Tauri shell* crate
   # (app/src-tauri/Cargo.toml), not the root core crate. When
   # CARGO_TARGET_DIR is set both workspaces share it; when unset, the
   # Tauri shell builds into app/src-tauri/target while the root crate
-  # builds into target/. Stage CEF next to where OpenHuman.exe will
+  # builds into target/. Stage CEF next to where Aura.exe will
   # actually live so Windows' DLL search order finds libcef.dll
   # regardless of how the exe is launched (terminal, OAuth deep-link,
   # double-click, etc).
@@ -558,26 +558,26 @@ fi
 # CEF runtime is correctly bundled. APPLE_SIGNING_IDENTITY is macOS-only
 # and is intentionally omitted here.
 #
-# OPENHUMAN_DEV_PORT lets parallel worktree dev sessions avoid the
+# AURA_DEV_PORT lets parallel worktree dev sessions avoid the
 # hardcoded 1420 collision. Vite reads the same env var directly; the
 # tauri-cli inline override patches tauri.conf.json's `devUrl` so the
 # shell connects to the right Vite instance.
-# Validate OPENHUMAN_DEV_PORT before interpolating into JSON — a stray
+# Validate AURA_DEV_PORT before interpolating into JSON — a stray
 # space, alphabetic char, or out-of-range value would produce an invalid
 # devUrl and tauri would refuse to start (or worse, drift from Vite's
 # own numeric fallback). Trim whitespace, require pure digits in
 # [1, 65535], fall back to 1420 with a warning otherwise.
-raw_dev_port="${OPENHUMAN_DEV_PORT:-1420}"
+raw_dev_port="${AURA_DEV_PORT:-1420}"
 raw_dev_port="${raw_dev_port//[[:space:]]/}"
 if [[ "$raw_dev_port" =~ ^[0-9]+$ ]] && (( raw_dev_port >= 1 && raw_dev_port <= 65535 )); then
   DEV_PORT="$raw_dev_port"
 else
-  echo "[run-dev-win] WARNING: invalid OPENHUMAN_DEV_PORT='$raw_dev_port'; falling back to 1420" >&2
+  echo "[run-dev-win] WARNING: invalid AURA_DEV_PORT='$raw_dev_port'; falling back to 1420" >&2
   DEV_PORT=1420
 fi
 
 if (( DEV_PORT != 1420 )); then
-  echo "[run-dev-win] OPENHUMAN_DEV_PORT=$DEV_PORT — overriding tauri devUrl"
+  echo "[run-dev-win] AURA_DEV_PORT=$DEV_PORT — overriding tauri devUrl"
   "$PNPM_EXE" tauri dev -c "{\"build\":{\"devUrl\":\"http://localhost:$DEV_PORT\"}}"
 else
   "$PNPM_EXE" tauri dev

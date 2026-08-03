@@ -4,7 +4,7 @@
 //!   * Read-only scan of `bugle_db` (the IndexedDB database used by
 //!     `messages.google.com/web`) via CDP on the embedded CEF webview.
 //!   * One ingest call per `(thread_id, day)` group — same
-//!     `openhuman.memory_doc_ingest` shape the iMessage and WhatsApp
+//!     `aura.memory_doc_ingest` shape the iMessage and WhatsApp
 //!     scanners already use.
 //!   * No DOM automation. No send path. Send is deferred to a separate
 //!     PR that will use OS Accessibility APIs (macOS AX / Windows UIA) —

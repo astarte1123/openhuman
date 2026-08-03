@@ -13,7 +13,7 @@
 //!     serializer, and no DOM scraping.
 //!
 //! Emits `webview:event` ingest events (for any listening React UI) AND
-//! POSTs `openhuman.memory_doc_ingest` directly to the core so memory is
+//! POSTs `aura.memory_doc_ingest` directly to the core so memory is
 //! populated whether or not the main window is open. Messages are grouped
 //! by peer so each peer's transcript upserts a single doc.
 //!
@@ -166,7 +166,7 @@ async fn scan_once(
 }
 
 /// Group messages by peer, emit one `webview:event` per peer, and POST
-/// the same payload to `openhuman.memory_doc_ingest`. One memory doc per
+/// the same payload to `aura.memory_doc_ingest`. One memory doc per
 /// peer — the transcript inside can be long, each message line still
 /// carries its own date + time so the full chronology stays readable.
 fn emit_and_persist<R: Runtime>(app: &AppHandle<R>, account_id: &str, harvest: &extract::Harvest) {
@@ -282,7 +282,7 @@ fn chrono_now_millis() -> i64 {
         .unwrap_or(0)
 }
 
-/// Build and POST the `openhuman.memory_doc_ingest` payload for a single
+/// Build and POST the `aura.memory_doc_ingest` payload for a single
 /// peer transcript. Mirrors `slack_scanner::post_memory_doc_ingest`.
 async fn post_memory_doc_ingest(account_id: &str, ingest: &Value) -> Result<(), String> {
     let peer_id = ingest
@@ -405,7 +405,7 @@ async fn post_memory_doc_ingest(account_id: &str, ingest: &Value) -> Result<(), 
     let body = json!({
         "jsonrpc": "2.0",
         "id": 1,
-        "method": "openhuman.memory_doc_ingest",
+        "method": "aura.memory_doc_ingest",
         "params": params,
     });
 
@@ -479,7 +479,7 @@ fn parse_targets(v: &Value) -> Vec<CdpTarget> {
 async fn browser_ws_url() -> Result<String, String> {
     let url = format!("http://{CDP_HOST}:{CDP_PORT}/json/version");
     let resp = reqwest::Client::builder()
-        .user_agent("openhuman-cdp/1.0")
+        .user_agent("aura-cdp/1.0")
         .timeout(Duration::from_secs(5))
         .build()
         .map_err(|e| format!("reqwest build: {e}"))?

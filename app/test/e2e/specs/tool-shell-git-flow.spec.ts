@@ -4,7 +4,7 @@ import { promises as fs } from 'node:fs';
 
 // @ts-nocheck
 import { waitForApp } from '../helpers/app-helpers';
-import { callOpenhumanRpc } from '../helpers/core-rpc';
+import { callAuraRpc } from '../helpers/core-rpc';
 import { resetApp } from '../helpers/reset-app';
 import { startMockServer, stopMockServer } from '../mock-server';
 
@@ -17,20 +17,20 @@ const USER_ID = 'e2e-tool-shell-git';
  *
  * The agent-facing `shell` and `git_operations` tools are intentionally NOT
  * exposed as JSON-RPC controllers — they are private to the agent's tool-call
- * loop (see `src/openhuman/tools/orchestrator_tools.rs`). Driving them via the
+ * loop (see `src/aura/tools/orchestrator_tools.rs`). Driving them via the
  * full chat path requires a live LLM that returns structured `tool_calls`,
  * which we cannot do under the "Mock backend mandatory; no real network"
  * constraint of #967. So this spec mirrors the established pattern from
  * `skill-execution-flow.spec.ts` for that envelope: assert the deterministic
  * RPC and registry contract end-to-end, and skip the LLM-driven assertion
  * with an explicit reason. The execution path itself is covered by the Rust
- * unit suite under `src/openhuman/tools/impl/system/shell.rs` and
- * `src/openhuman/tools/impl/filesystem/git_operations.rs`.
+ * unit suite under `src/aura/tools/impl/system/shell.rs` and
+ * `src/aura/tools/impl/filesystem/git_operations.rs`.
  *
  * What this spec proves end-to-end:
  *  - 6.2.1 — the agent runtime is up and the `tools_agent` definition that
  *    inherits the shell tool is wired into the live registry served over
- *    JSON-RPC (`openhuman.agent_list_definitions`).
+ *    JSON-RPC (`aura.agent_list_definitions`).
  *  - 6.2.2 — the same agent definition surfaces the wildcard tool scope so
  *    the security policy's command-allowlist check (validated in Rust unit
  *    tests) is reachable through the live registry path. We additionally
@@ -39,14 +39,14 @@ const USER_ID = 'e2e-tool-shell-git';
  *    invalid argument) — this confirms the RPC denial envelope shape callers
  *    must assert against is consistent across tool families.
  *  - 6.2.3 — the workspace root resolved by the sidecar is the same temp
- *    `OPENHUMAN_WORKSPACE` the spec scaffolds a fixture git repo into, which
+ *    `AURA_WORKSPACE` the spec scaffolds a fixture git repo into, which
  *    is the structural prerequisite for every git read operation. We assert
  *    via Node `fs` + `git status` (running locally, not via the agent) that
  *    the fixture is well-formed.
  *  - 6.2.4 — same fixture supports a Node-side commit, proving that a write
  *    op is structurally feasible against the resolved workspace. The full
  *    sidecar-driven write path is exercised by
- *    `src/openhuman/tools/impl/filesystem/git_operations_tests.rs`.
+ *    `src/aura/tools/impl/filesystem/git_operations_tests.rs`.
  *
  * Future: when the harness gains a deterministic mock-LLM that emits
  * structured tool_calls (tracked alongside #68 in skill-execution-flow), the
@@ -64,7 +64,7 @@ function stepLog(message: string, context?: unknown): void {
 
 const FIXTURE_REPO_REL = 'fixtures/967-git-fixture';
 const FIXTURE_FILE = 'README.md';
-const FIXTURE_COMMIT_AUTHOR = 'OpenHuman E2E Bot <e2e-967@openhuman.local>';
+const FIXTURE_COMMIT_AUTHOR = 'Aura E2E Bot <e2e-967@aura.local>';
 
 interface ServerStatus {
   running?: boolean;
@@ -82,10 +82,10 @@ interface ListDefinitionsResult {
 }
 
 function workspaceDir(): string {
-  const ws = process.env.OPENHUMAN_WORKSPACE;
+  const ws = process.env.AURA_WORKSPACE;
   if (!ws) {
     throw new Error(
-      'OPENHUMAN_WORKSPACE not set; this spec must be launched via app/scripts/e2e-run-spec.sh'
+      'AURA_WORKSPACE not set; this spec must be launched via app/scripts/e2e-run-spec.sh'
     );
   }
   return ws;
@@ -121,8 +121,8 @@ async function makeFixtureRepo(absRepoDir: string): Promise<void> {
   if (init.code !== 0) {
     throw new Error(`git init failed in fixture: ${init.stderr || init.stdout}`);
   }
-  await runLocal('git', ['config', 'user.email', 'e2e-967@openhuman.local'], absRepoDir);
-  await runLocal('git', ['config', 'user.name', 'OpenHuman E2E Bot'], absRepoDir);
+  await runLocal('git', ['config', 'user.email', 'e2e-967@aura.local'], absRepoDir);
+  await runLocal('git', ['config', 'user.name', 'Aura E2E Bot'], absRepoDir);
   // Skip GPG signing in the fixture — the user's key is not provisioned in CI.
   await runLocal('git', ['config', 'commit.gpgsign', 'false'], absRepoDir);
   await fs.writeFile(
@@ -155,7 +155,7 @@ describe('System tools — Shell + Git (registry, denial envelope, fixture repo)
 
     // Seed a deterministic git repo inside the workspace so the read/write
     // assertions below have something to point at. The fixture is rebuilt
-    // every run because OPENHUMAN_WORKSPACE is recreated by e2e-run-spec.sh.
+    // every run because AURA_WORKSPACE is recreated by e2e-run-spec.sh.
     const repoDir = path.join(workspaceDir(), FIXTURE_REPO_REL);
     await makeFixtureRepo(repoDir);
     stepLog(`seeded git fixture at ${repoDir}`);
@@ -169,11 +169,11 @@ describe('System tools — Shell + Git (registry, denial envelope, fixture repo)
     // Probe the agent runtime — this is the same RPC the React UI's service
     // page hits, so failure here means the entire system-tool surface is
     // unreachable. core.ping is independent of agent-runtime bootstrap.
-    const ping = await callOpenhumanRpc('core.ping', {});
+    const ping = await callAuraRpc('core.ping', {});
     stepLog('core.ping response', ping);
     expect(ping.ok).toBe(true);
 
-    const status = await callOpenhumanRpc<ServerStatus>('openhuman.agent_server_status', {});
+    const status = await callAuraRpc<ServerStatus>('aura.agent_server_status', {});
     stepLog('agent_server_status response', status);
     expect(status.ok).toBe(true);
     expect(status.result?.running).toBe(true);
@@ -182,8 +182,8 @@ describe('System tools — Shell + Git (registry, denial envelope, fixture repo)
     // (shell, file_read, file_write, git_operations, browser_open, browser).
     // Asserting it is registered proves the registry path that resolves
     // shell/git tools is live behind JSON-RPC.
-    const list = await callOpenhumanRpc<ListDefinitionsResult>(
-      'openhuman.agent_list_definitions',
+    const list = await callAuraRpc<ListDefinitionsResult>(
+      'aura.agent_list_definitions',
       {}
     );
     stepLog('agent_list_definitions response (count only)', {
@@ -200,13 +200,13 @@ describe('System tools — Shell + Git (registry, denial envelope, fixture repo)
 
   it('6.2.2 RPC denial envelope is structurally consistent (precondition for restricted-command surfacing)', async () => {
     // The shell tool's `validate_command_execution` allowlist is exercised
-    // exhaustively in `src/openhuman/security/policy_tests.rs`. Here we lock
+    // exhaustively in `src/aura/security/policy_tests.rs`. Here we lock
     // the **denial envelope shape** the React UI relies on: invalid sidecar
     // arguments must round-trip as `{ ok: false, error: <message> }` and never
     // as `{ ok: true }` with a hidden error string. This is the contract every
     // restricted-command response (and every `Tool::error(...)` result) must
     // satisfy for the UI to render the deny path.
-    const bogus = await callOpenhumanRpc('openhuman.memory_write_file', {
+    const bogus = await callAuraRpc('aura.memory_write_file', {
       // omit `relative_path` to force the validator to short-circuit
       content: 'no path provided',
     });
@@ -215,7 +215,7 @@ describe('System tools — Shell + Git (registry, denial envelope, fixture repo)
     expect(typeof bogus.error === 'string' && bogus.error.length > 0).toBe(true);
 
     // Negative path traversal — also a denial — must surface the same shape.
-    const traversal = await callOpenhumanRpc('openhuman.memory_write_file', {
+    const traversal = await callAuraRpc('aura.memory_write_file', {
       relative_path: '../shell-restriction-967.txt',
       content: 'should not be written',
     });
@@ -224,7 +224,7 @@ describe('System tools — Shell + Git (registry, denial envelope, fixture repo)
     expect(typeof traversal.error === 'string' && traversal.error.length > 0).toBe(true);
   });
 
-  it('6.2.3 fixture git repo inside OPENHUMAN_WORKSPACE supports read ops (status / log)', async () => {
+  it('6.2.3 fixture git repo inside AURA_WORKSPACE supports read ops (status / log)', async () => {
     // The git_operations tool resolves repo paths via
     // `workspace_dir.join(...)` — see GitOperationsTool::run_git_command.
     // Asserting the fixture is a healthy git repo proves the structural
@@ -287,7 +287,7 @@ describe('System tools — Shell + Git (registry, denial envelope, fixture repo)
     // Tracked alongside skill-execution-flow's `it.skip` for the same reason:
     // requires a deterministic mock-LLM that emits structured tool_calls.
     // The execution path itself is covered by Rust unit tests under
-    // `src/openhuman/tools/impl/system/shell.rs::tests::shell_executes_allowed_command`
+    // `src/aura/tools/impl/system/shell.rs::tests::shell_executes_allowed_command`
     // and `shell_blocks_disallowed_command`.
   });
 });

@@ -15,9 +15,9 @@ import { meetingRecorderStop } from '../../utils/tauriCommands/meetingRecorder';
 import {
   type Meeting,
   type MeetingScreenshot,
-  openhumanMeetingsDelete,
-  openhumanMeetingsGet,
-  openhumanMeetingsUpdateTitle,
+  auraMeetingsDelete,
+  auraMeetingsGet,
+  auraMeetingsUpdateTitle,
   type TranscriptChunk,
 } from '../../utils/tauriCommands/meetings';
 
@@ -57,7 +57,7 @@ const MeetingDetail = () => {
     setLoading(true);
     setCoreError(null);
     try {
-      const response = await openhumanMeetingsGet(meetingId);
+      const response = await auraMeetingsGet(meetingId);
       setMeeting(response.result.meeting);
       setChunks(response.result.chunks);
       setScreenshots(response.result.screenshots);
@@ -92,7 +92,7 @@ const MeetingDetail = () => {
     if (!nextTitle || nextTitle === meeting.title) return;
     setSavingTitle(true);
     try {
-      const response = await openhumanMeetingsUpdateTitle(meetingId, nextTitle);
+      const response = await auraMeetingsUpdateTitle(meetingId, nextTitle);
       setMeeting(response.result);
       log('commitTitle: success meeting_id=%s', meetingId);
     } catch (err) {
@@ -132,7 +132,7 @@ const MeetingDetail = () => {
       onConfirm: () => {
         void (async () => {
           try {
-            await openhumanMeetingsDelete(meetingId);
+            await auraMeetingsDelete(meetingId);
             log('handleDelete: success meeting_id=%s', meetingId);
             navigate('/meetings');
           } catch (err) {

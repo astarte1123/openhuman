@@ -13,7 +13,7 @@ vi.mock('../../../utils/openUrl', () => ({
 }));
 
 vi.mock('../../../utils/config', () => ({
-  LATEST_APP_DOWNLOAD_URL: 'https://github.com/tinyhumansai/openhuman/releases/latest',
+  LATEST_APP_DOWNLOAD_URL: 'https://github.com/tinyhumansai/aura/releases/latest',
 }));
 
 vi.mock('../../../providers/CoreStateProvider', () => ({ useCoreState: () => mockUseCoreState() }));
@@ -40,7 +40,7 @@ describe('ServiceBlockingGate', () => {
     );
 
     await waitFor(() => expect(screen.getByText('App Content')).toBeInTheDocument());
-    expect(screen.queryByText('OpenHuman core is unavailable')).not.toBeInTheDocument();
+    expect(screen.queryByText('Aura core is unavailable')).not.toBeInTheDocument();
   });
 
   it('shows recovery prompt when daemon retries are exhausted', async () => {
@@ -53,7 +53,7 @@ describe('ServiceBlockingGate', () => {
       </ServiceBlockingGate>
     );
 
-    expect(screen.getByText('OpenHuman core is unavailable')).toBeInTheDocument();
+    expect(screen.getByText('Aura core is unavailable')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Download Latest Version' })).toBeInTheDocument();
   });
 
@@ -71,7 +71,7 @@ describe('ServiceBlockingGate', () => {
 
     await waitFor(() => {
       expect(mockOpenUrl).toHaveBeenCalledWith(
-        'https://github.com/tinyhumansai/openhuman/releases/latest'
+        'https://github.com/tinyhumansai/aura/releases/latest'
       );
     });
   });

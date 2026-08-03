@@ -7,8 +7,8 @@
  * - Tray setup on linux+cef (skipped without panicking)
  * - Grep-friendly logging patterns for diagnostics
  *
- * This spec validates that the Linux .deb package can find openhuman-core
- * in system paths like /usr/bin/openhuman-core when installed via .deb.
+ * This spec validates that the Linux .deb package can find aura-core
+ * in system paths like /usr/bin/aura-core when installed via .deb.
  *
  * Coverage:
  * - core_process::default_core_bin() resolution paths
@@ -17,7 +17,7 @@
  * - Sidecar JSON-RPC connectivity
  */
 import { waitForApp, waitForAppReady } from '../helpers/app-helpers';
-import { callOpenhumanRpc } from '../helpers/core-rpc';
+import { callAuraRpc } from '../helpers/core-rpc';
 import { dumpAccessibilityTree, textExists } from '../helpers/element-helpers';
 import { supportsExecuteScript } from '../helpers/platform';
 import { startMockServer, stopMockServer } from '../mock-server';
@@ -107,7 +107,7 @@ describe('Linux CEF deb package runtime (UI → Tauri → sidecar)', () => {
     });
 
     it('core RPC endpoint responds to ping (sidecar is reachable)', async () => {
-      const result = await callOpenhumanRpc('core.ping', {});
+      const result = await callAuraRpc('core.ping', {});
 
       stepLog('core.ping result', {
         ok: result.ok,
@@ -120,7 +120,7 @@ describe('Linux CEF deb package runtime (UI → Tauri → sidecar)', () => {
     });
 
     it('core version is accessible via JSON-RPC', async () => {
-      const result = await callOpenhumanRpc('core.version', {});
+      const result = await callAuraRpc('core.version', {});
 
       stepLog('core.version result', {
         ok: result.ok,
@@ -150,7 +150,7 @@ describe('Linux CEF deb package runtime (UI → Tauri → sidecar)', () => {
 
       for (const method of methods) {
         try {
-          const result = await callOpenhumanRpc(method, {});
+          const result = await callAuraRpc(method, {});
           results[method] = result.ok;
           stepLog(`Health check ${method}`, { ok: result.ok });
         } catch {
@@ -173,7 +173,7 @@ describe('Linux CEF deb package runtime (UI → Tauri → sidecar)', () => {
       // that the binary path resolution worked. The fact that core.ping
       // responds means the sidecar is running.
 
-      const result = await callOpenhumanRpc('core.ping', {});
+      const result = await callAuraRpc('core.ping', {});
 
       stepLog('Verifying sidecar is running', { ok: result.ok, httpStatus: result.httpStatus });
 
@@ -193,7 +193,7 @@ describe('Linux CEF deb package runtime (UI → Tauri → sidecar)', () => {
       // The app started successfully in before() - if setup_tray() had panicked
       // on linux+cef, we wouldn't be here. Verify app is healthy.
 
-      const hasChrome = await textExists('OpenHuman');
+      const hasChrome = await textExists('Aura');
       stepLog('App chrome check', { hasChrome });
 
       // App should have started without crashing
@@ -241,7 +241,7 @@ describe('Linux CEF deb package runtime (UI → Tauri → sidecar)', () => {
       stepLog('Full chain test: core_rpc_url', { rpcUrl });
 
       // Now verify that URL is actually reachable
-      const pingResult = await callOpenhumanRpc('core.ping', {});
+      const pingResult = await callAuraRpc('core.ping', {});
       expect(pingResult.ok).toBe(true);
     });
 
@@ -273,14 +273,14 @@ describe('Linux CEF deb package runtime (UI → Tauri → sidecar)', () => {
     it('core process logs contain expected diagnostic patterns', async () => {
       // This test documents the expected log patterns from PR #3:
       // - "[core] default_core_bin: using packaged linux core binary"
-      // - "[core] default_core_bin: using OPENHUMAN_CORE_BIN override"
+      // - "[core] default_core_bin: using AURA_CORE_BIN override"
       // - "[tray] skipping tray setup on linux+cef"
       // - "[core] core process ready"
 
       // We can't directly read logs in E2E, but we verify the sidecar
       // started successfully which means the logging paths executed
 
-      const result = await callOpenhumanRpc('core.ping', {});
+      const result = await callAuraRpc('core.ping', {});
       expect(result.ok).toBe(true);
 
       stepLog('Diagnostic patterns verified via successful startup', { pingOk: result.ok });
@@ -292,8 +292,8 @@ describe('Linux CEF deb package runtime (UI → Tauri → sidecar)', () => {
   // ==========================================================================
 
   describe('packaged linux binary path resolution', () => {
-    it('sidecar is running with non-default port when OPENHUMAN_CORE_PORT is set', async () => {
-      // When OPENHUMAN_CORE_PORT is set, the sidecar should use that port
+    it('sidecar is running with non-default port when AURA_CORE_PORT is set', async () => {
+      // When AURA_CORE_PORT is set, the sidecar should use that port
       // This verifies env var propagation to the sidecar
 
       const result = await invokeTauriCommand<string>('core_rpc_url');
@@ -311,7 +311,7 @@ describe('Linux CEF deb package runtime (UI → Tauri → sidecar)', () => {
       const results: boolean[] = [];
 
       for (let i = 0; i < 3; i++) {
-        const result = await callOpenhumanRpc('core.ping', {});
+        const result = await callAuraRpc('core.ping', {});
         results.push(result.ok);
         await browser.pause(100);
       }

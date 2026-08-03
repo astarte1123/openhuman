@@ -7,7 +7,7 @@
  * blob has to be partitioned per user so user A's data survives B's session
  * (and rehydrates when A returns) without leaking into B.
  *
- * The active user id is sourced from the standalone `OPENHUMAN_ACTIVE_USER_ID`
+ * The active user id is sourced from the standalone `AURA_ACTIVE_USER_ID`
  * key, written by `setActiveUserId(...)`. The key is read once at module load
  * so redux-persist's first-paint rehydrate sees the right namespace; later
  * changes call the setter, which updates the in-memory ref and persists the id
@@ -19,7 +19,7 @@
  * blob into a signed-out shell.
  */
 
-const ACTIVE_USER_KEY = 'OPENHUMAN_ACTIVE_USER_ID';
+const ACTIVE_USER_KEY = 'AURA_ACTIVE_USER_ID';
 
 function safeGetActiveUserIdSync(): string | null {
   try {
@@ -53,7 +53,7 @@ let activeUserId: string | null = safeGetActiveUserIdSync();
 })();
 
 // Gate redux-persist's rehydrate on the boot prime from main.tsx
-// (which reads the authoritative id from `~/.openhuman/active_user.toml`
+// (which reads the authoritative id from `~/.aura/active_user.toml`
 // via the Rust core). The localStorage value used at module load is
 // bound to the per-user CEF profile dir and goes stale across
 // restart-driven user flips, so storage reads must wait for the
@@ -70,11 +70,11 @@ let primed = false;
  * Called once by `main.tsx` after `getActiveUserIdFromCore()` returns.
  * Pass `null` for "core couldn't tell us who's active" — most commonly:
  *
- *   1. fresh device with no local `~/.openhuman/active_user.toml`
+ *   1. fresh device with no local `~/.aura/active_user.toml`
  *   2. cloud-mode boot where the local Rust core isn't running at all
  *   3. transient `getActiveUserIdFromCore` failure (`.catch(() => prime(null))`)
  *
- * In any of those cases we **fall back** to whatever `OPENHUMAN_ACTIVE_USER_ID`
+ * In any of those cases we **fall back** to whatever `AURA_ACTIVE_USER_ID`
  * already has in plain `localStorage` from a prior `setActiveUserId` write
  * rather than wiping it. Without this fallback, `handleIdentityFlip`'s
  * `setActiveUserId(X) → restartApp` cycle is reset on every reload (because
@@ -113,7 +113,7 @@ export function getActiveUserId(): string | null {
  * Update the active user id for redux-persist storage scoping. Pass `null`
  * for sign-out so subsequent persisted writes are dropped on the floor.
  *
- * Persisted to `localStorage[OPENHUMAN_ACTIVE_USER_ID]` so the next cold
+ * Persisted to `localStorage[AURA_ACTIVE_USER_ID]` so the next cold
  * launch can seed `activeUserId` synchronously before redux-persist
  * rehydrates.
  */

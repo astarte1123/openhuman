@@ -1,6 +1,6 @@
-# Contributing to OpenHuman
+# Contributing to Aura
 
-Thank you for your interest in contributing to OpenHuman. This guide is the fast path for getting a fresh checkout running locally, validating changes, and opening a pull request without having to piece together setup notes from multiple files.
+Thank you for your interest in contributing to Aura. This guide is the fast path for getting a fresh checkout running locally, validating changes, and opening a pull request without having to piece together setup notes from multiple files.
 
 > **New to open source or coding?** Start with [`CONTRIBUTING-BEGINNERS.md`](CONTRIBUTING-BEGINNERS.md) — it walks you through every step from installing tools to opening your first PR.
 
@@ -25,7 +25,7 @@ This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDU
 
 - Read the [README](README.md) for product context.
 - Use [`gitbooks/developing/architecture.md`](gitbooks/developing/architecture.md) for the current system architecture.
-- Check [open issues](https://github.com/tinyhumansai/openhuman/issues) and discussions before starting work.
+- Check [open issues](https://github.com/tinyhumansai/aura/issues) and discussions before starting work.
 - For security issues, follow [SECURITY.md](SECURITY.md) and do not file public issues.
 
 ## Development Setup
@@ -100,12 +100,12 @@ clang -v
 #### Platform notes
 
 - **Web-only development** needs Node, pnpm, and the Rust toolchain present in the repo. You can usually ignore desktop-only system packages.
-- **Desktop development** needs the vendored Tauri/CEF setup. The preferred entrypoint is `pnpm --filter openhuman-app dev:app`, which ensures the vendored Tauri CLI is installed and configures `CEF_PATH`.
-- **Linux desktop builds** require extra system packages beyond Node/Rust. Follow the distro-specific Tauri dependency list before running desktop commands, then use the OpenHuman scripts below. For deeper platform troubleshooting, see [`gitbooks/developing/getting-set-up.md`](gitbooks/developing/getting-set-up.md).
-- **Windows 10 WSL + classic X11 forwarding** is unsupported for the desktop app. The Tauri/CEF stack can hang, render blank windows, or crash before useful app logs are available. Use native Windows development, or Windows 11 WSLg if you need a Linux GUI workflow. OpenHuman logs a startup warning when it detects WSL with `DISPLAY` set but no `WAYLAND_DISPLAY`/WSLg markers.
+- **Desktop development** needs the vendored Tauri/CEF setup. The preferred entrypoint is `pnpm --filter aura-app dev:app`, which ensures the vendored Tauri CLI is installed and configures `CEF_PATH`.
+- **Linux desktop builds** require extra system packages beyond Node/Rust. Follow the distro-specific Tauri dependency list before running desktop commands, then use the Aura scripts below. For deeper platform troubleshooting, see [`gitbooks/developing/getting-set-up.md`](gitbooks/developing/getting-set-up.md).
+- **Windows 10 WSL + classic X11 forwarding** is unsupported for the desktop app. The Tauri/CEF stack can hang, render blank windows, or crash before useful app logs are available. Use native Windows development, or Windows 11 WSLg if you need a Linux GUI workflow. Aura logs a startup warning when it detects WSL with `DISPLAY` set but no `WAYLAND_DISPLAY`/WSLg markers.
 - **Windows desktop builds** additionally require Visual Studio C++ Build Tools (MSVC v143), LLVM/Clang, and CMake. See [Windows-specific setup](#windows-specific-setup) for the full list and install order.
-- **macOS desktop builds** require a one-time codesigning cert. After cloning, run `bash scripts/setup-dev-codesign.sh` once to create the local "OpenHuman Dev Signer" self-signed certificate that Tauri uses when bundling dev builds. Without it, `pnpm --filter openhuman-app dev:app` fails at the bundle/sign step with `OpenHuman Dev Signer: no identity found`.
-- **Skills development** happens in the separate [`tinyhumansai/openhuman-skills`](https://github.com/tinyhumansai/openhuman-skills) repository. This repo consumes built skill bundles from GitHub or a local override path; it does not vendor the skills source as a submodule.
+- **macOS desktop builds** require a one-time codesigning cert. After cloning, run `bash scripts/setup-dev-codesign.sh` once to create the local "Aura Dev Signer" self-signed certificate that Tauri uses when bundling dev builds. Without it, `pnpm --filter aura-app dev:app` fails at the bundle/sign step with `Aura Dev Signer: no identity found`.
+- **Skills development** happens in the separate [`tinyhumansai/aura-skills`](https://github.com/tinyhumansai/aura-skills) repository. This repo consumes built skill bundles from GitHub or a local override path; it does not vendor the skills source as a submodule.
 
 Example macOS bootstrap with Homebrew:
 
@@ -122,9 +122,9 @@ rustup target add x86_64-apple-darwin
 Fork the upstream repository on GitHub first if you plan to submit changes, then clone your fork:
 
 ```bash
-git clone git@github.com:YOUR_USERNAME/openhuman.git
-cd openhuman
-git remote add upstream git@github.com:tinyhumansai/openhuman.git
+git clone git@github.com:YOUR_USERNAME/aura.git
+cd aura
+git remote add upstream git@github.com:tinyhumansai/aura.git
 git submodule update --init --recursive
 pnpm install
 ```
@@ -138,7 +138,7 @@ Those vendored trees are part of the current desktop toolchain. If they are miss
 
 ### 3. Configure for development
 
-OpenHuman uses two environment templates:
+Aura uses two environment templates:
 
 - Root [`.env.example`](.env.example): Rust core, Tauri shell, shared runtime settings.
 - [`app/.env.example`](app/.env.example): frontend `VITE_*` variables for the web app.
@@ -153,8 +153,8 @@ cp app/.env.example app/.env.local
 Minimal configuration guidance:
 
 - **Web UI / frontend work**: the defaults in `app/.env.local` are usually enough for local startup. Set `VITE_BACKEND_URL` only if you need a non-production backend in web mode.
-- **Desktop work**: leave `OPENHUMAN_CORE_TOKEN` blank for local child-mode development unless you are intentionally wiring an external core. The shell manages the embedded core token flow.
-- **Core RPC / standalone core work**: `OPENHUMAN_CORE_PORT=7788` and `OPENHUMAN_CORE_RPC_URL=http://127.0.0.1:7788/rpc` are already documented in the root template and are the normal local defaults.
+- **Desktop work**: leave `AURA_CORE_TOKEN` blank for local child-mode development unless you are intentionally wiring an external core. The shell manages the embedded core token flow.
+- **Core RPC / standalone core work**: `AURA_CORE_PORT=7788` and `AURA_CORE_RPC_URL=http://127.0.0.1:7788/rpc` are already documented in the root template and are the normal local defaults.
 - **Skills development**: use `SKILLS_REGISTRY_URL` or `SKILLS_LOCAL_DIR` from the root template when pointing the app at a local built skills checkout.
 
 Never commit `.env`, `app/.env.local`, tokens, or other secrets.
@@ -171,20 +171,20 @@ pnpm install
 pnpm dev
 
 # Preferred desktop development path (sets up vendored Tauri CLI + CEF env)
-pnpm --filter openhuman-app dev:app
+pnpm --filter aura-app dev:app
 
 # Lower-level Tauri command entrypoint
 pnpm tauri dev
 
 # Standalone Rust core
-cargo run --manifest-path Cargo.toml --bin openhuman-core
+cargo run --manifest-path Cargo.toml --bin aura-core
 ```
 
 Which mode to choose:
 
 - `pnpm dev`: frontend-only iteration in the browser.
-- `pnpm --filter openhuman-app dev:app`: full desktop app flow with Tauri + CEF.
-- `cargo run --bin openhuman-core`: core/RPC work when you want the Rust server without the desktop shell.
+- `pnpm --filter aura-app dev:app`: full desktop app flow with Tauri + CEF.
+- `cargo run --bin aura-core`: core/RPC work when you want the Rust server without the desktop shell.
 
 ### 5. Verify your setup
 
@@ -223,8 +223,8 @@ Merge-gate context:
 
 Useful local paths during development:
 
-- `~/.openhuman/`: default workspace for the Rust core and local app data.
-- `~/.openhuman-staging/`: staging workspace when `OPENHUMAN_APP_ENV=staging`.
+- `~/.aura/`: default workspace for the Rust core and local app data.
+- `~/.aura-staging/`: staging workspace when `AURA_APP_ENV=staging`.
 - `app/.env.local`: browser-facing `VITE_*` overrides.
 - `.env`: Rust core, Tauri shell, and shared runtime overrides.
 
@@ -237,12 +237,12 @@ Most contributor-visible configuration and state flows are documented in:
 ## Project Layout
 
 ```text
-openhuman/
+aura/
 ├── app/                    # React app, Tauri shell, Vitest tests
 │   ├── src/
 │   ├── src-tauri/
 │   └── test/
-├── src/                    # Rust core crate and openhuman-core binary
+├── src/                    # Rust core crate and aura-core binary
 ├── docs/                   # Internal and workflow docs
 ├── gitbooks/developing/    # Contributor-facing architecture and setup guides
 ├── scripts/                # Dev, test, debug, and automation scripts
@@ -258,7 +258,7 @@ Short version:
 
 ## Git Workflow
 
-- Fork [tinyhumansai/openhuman](https://github.com/tinyhumansai/openhuman) and push branches to your fork.
+- Fork [tinyhumansai/aura](https://github.com/tinyhumansai/aura) and push branches to your fork.
 - Pull requests target the upstream `main` branch.
 - Do not push directly to upstream unless you are explicitly authorized to do so.
 
@@ -295,7 +295,7 @@ git checkout -b docs/your-change
 ## Submitting Changes
 
 1. Push your branch to your fork.
-2. Open a pull request against `tinyhumansai/openhuman:main`.
+2. Open a pull request against `tinyhumansai/aura:main`.
 3. Fill in [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md) completely.
 4. Link the issue using a closing keyword such as `Closes #1441`.
 5. Call out any blocked validation commands with the exact command and error.
@@ -317,4 +317,4 @@ label to manually start the same Discord and merch invite flow.
 - Keep logs grep-friendly and avoid logging secrets, tokens, or full PII.
 - Follow ESLint, Prettier, and Rust formatting output as authoritative.
 
-Thank you for contributing to OpenHuman.
+Thank you for contributing to Aura.

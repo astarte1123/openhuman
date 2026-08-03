@@ -33,7 +33,7 @@ beforeEach(() => {
 });
 
 describe('memoryTreeListChunks', () => {
-  test('dispatches openhuman.memory_tree_list_chunks with the filter as params', async () => {
+  test('dispatches aura.memory_tree_list_chunks with the filter as params', async () => {
     mockCallCoreRpc.mockResolvedValueOnce({
       result: { chunks: [], total: 0 },
       logs: ['memory_tree::read: list_chunks n=0 total=0'],
@@ -42,7 +42,7 @@ describe('memoryTreeListChunks', () => {
     const out = await memoryTreeListChunks({ limit: 50 });
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_tree_list_chunks',
+      method: 'aura.memory_tree_list_chunks',
       params: { limit: 50 },
     });
     expect(out).toEqual({ chunks: [], total: 0 });
@@ -63,7 +63,7 @@ describe('memoryTreeListSources', () => {
     await memoryTreeListSources();
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_tree_list_sources',
+      method: 'aura.memory_tree_list_sources',
       params: {},
     });
   });
@@ -74,7 +74,7 @@ describe('memoryTreeListSources', () => {
     await memoryTreeListSources('alice@example.com');
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_tree_list_sources',
+      method: 'aura.memory_tree_list_sources',
       params: { user_email_hint: 'alice@example.com' },
     });
   });
@@ -102,7 +102,7 @@ describe('memoryTreeSearch', () => {
     await memoryTreeSearch('phoenix', 25);
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_tree_search',
+      method: 'aura.memory_tree_search',
       params: { query: 'phoenix', k: 25 },
     });
   });
@@ -118,7 +118,7 @@ describe('memoryTreeRecall', () => {
     const out = await memoryTreeRecall('design sync', 10);
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_tree_recall',
+      method: 'aura.memory_tree_recall',
       params: { query: 'design sync', k: 10 },
     });
     expect(out.chunks).toHaveLength(1);
@@ -133,7 +133,7 @@ describe('memoryTreeEntityIndexFor', () => {
     await memoryTreeEntityIndexFor('chunk-abc');
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_tree_entity_index_for',
+      method: 'aura.memory_tree_entity_index_for',
       params: { chunk_id: 'chunk-abc' },
     });
   });
@@ -146,7 +146,7 @@ describe('memoryTreeTopEntities', () => {
     await memoryTreeTopEntities();
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_tree_top_entities',
+      method: 'aura.memory_tree_top_entities',
       params: { limit: 50 },
     });
   });
@@ -157,7 +157,7 @@ describe('memoryTreeTopEntities', () => {
     await memoryTreeTopEntities('person', 12);
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_tree_top_entities',
+      method: 'aura.memory_tree_top_entities',
       params: { limit: 12, kind: 'person' },
     });
   });
@@ -198,7 +198,7 @@ describe('memoryTreeDeleteChunk', () => {
     const out = await memoryTreeDeleteChunk('chunk-xyz');
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_tree_delete_chunk',
+      method: 'aura.memory_tree_delete_chunk',
       params: { chunk_id: 'chunk-xyz' },
     });
     expect(out).toEqual({ deleted: true, score_rows_removed: 1, entity_index_rows_removed: 3 });
@@ -211,7 +211,7 @@ describe('memoryTreeGetLlm / memoryTreeSetLlm', () => {
 
     const out = await memoryTreeGetLlm();
 
-    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'openhuman.memory_tree_get_llm' });
+    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'aura.memory_tree_get_llm' });
     expect(out.current).toBe('cloud');
   });
 
@@ -221,7 +221,7 @@ describe('memoryTreeGetLlm / memoryTreeSetLlm', () => {
     const out = await memoryTreeSetLlm('local');
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_tree_set_llm',
+      method: 'aura.memory_tree_set_llm',
       params: { backend: 'local' },
     });
     expect(out.current).toBe('local');
@@ -241,7 +241,7 @@ describe('memoryTreeGetLlm / memoryTreeSetLlm', () => {
     });
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_tree_set_llm',
+      method: 'aura.memory_tree_set_llm',
       params: {
         backend: 'local',
         extract_model: 'qwen2.5:0.5b',
@@ -257,7 +257,7 @@ describe('memoryTreeGetLlm / memoryTreeSetLlm', () => {
     await memoryTreeSetLlm({ backend: 'cloud', cloud_model: 'summarizer-v2' });
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_tree_set_llm',
+      method: 'aura.memory_tree_set_llm',
       params: { backend: 'cloud', cloud_model: 'summarizer-v2' },
     });
   });
@@ -272,7 +272,7 @@ describe('memoryTreeFlushNow', () => {
 
     const out = await memoryTreeFlushNow();
 
-    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'openhuman.memory_tree_flush_now' });
+    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'aura.memory_tree_flush_now' });
     expect(out).toEqual({ enqueued: true, stale_buffers: 4 });
   });
 
@@ -296,7 +296,7 @@ describe('memoryTreeWipeAll', () => {
 
     const out = await memoryTreeWipeAll();
 
-    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'openhuman.memory_tree_wipe_all' });
+    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'aura.memory_tree_wipe_all' });
     expect(out.rows_deleted).toBe(12);
     expect(out.dirs_removed).toEqual(['raw', 'wiki']);
     expect(out.sync_state_cleared).toBe(1);
@@ -312,7 +312,7 @@ describe('memoryTreeResetTree', () => {
 
     const out = await memoryTreeResetTree();
 
-    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'openhuman.memory_tree_reset_tree' });
+    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'aura.memory_tree_reset_tree' });
     expect(out).toEqual({ tree_rows_deleted: 8, chunks_requeued: 5, jobs_enqueued: 5 });
   });
 });
@@ -327,7 +327,7 @@ describe('memoryTreeGraphExport', () => {
     const out = await memoryTreeGraphExport();
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_tree_graph_export',
+      method: 'aura.memory_tree_graph_export',
       params: { mode: 'tree' },
     });
     expect(out.nodes).toEqual([]);
@@ -348,7 +348,7 @@ describe('memoryTreeGraphExport', () => {
     const out = await memoryTreeGraphExport('contacts');
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_tree_graph_export',
+      method: 'aura.memory_tree_graph_export',
       params: { mode: 'contacts' },
     });
     expect(out.nodes).toHaveLength(1);

@@ -197,7 +197,7 @@ PY
   cp "$TMP/audit.json" "$out"
 }
 
-run_cargo_audit "Cargo.lock" "openhuman core" "$TMP/audit-core.json"
+run_cargo_audit "Cargo.lock" "aura core" "$TMP/audit-core.json"
 run_cargo_audit "app/src-tauri/Cargo.lock" "Tauri shell" "$TMP/audit-shell.json"
 echo "" >> "$MD"
 CARGO_AUDIT_CORE_JSON="$(cat "$TMP/audit-core.json" 2>/dev/null || echo 'null')"

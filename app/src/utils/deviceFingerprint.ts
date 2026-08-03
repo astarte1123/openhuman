@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'openhuman_device_fingerprint_v1';
+const STORAGE_KEY = 'aura_device_fingerprint_v1';
 
 /**
  * Stable anonymous id for referral abuse signals (optional body/header on backend).

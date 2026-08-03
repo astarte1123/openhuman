@@ -64,14 +64,14 @@ describe('transforms — youworker field round-trip', () => {
     const panel: AISettings = {
       cloudProviders: [youworkerProvider],
       routing: {
-        reasoning: { kind: 'openhuman' },
-        agentic: { kind: 'openhuman' },
-        coding: { kind: 'openhuman' },
-        memory: { kind: 'openhuman' },
-        embeddings: { kind: 'openhuman' },
-        heartbeat: { kind: 'openhuman' },
-        learning: { kind: 'openhuman' },
-        subconscious: { kind: 'openhuman' },
+        reasoning: { kind: 'aura' },
+        agentic: { kind: 'aura' },
+        coding: { kind: 'aura' },
+        memory: { kind: 'aura' },
+        embeddings: { kind: 'aura' },
+        heartbeat: { kind: 'aura' },
+        learning: { kind: 'aura' },
+        subconscious: { kind: 'aura' },
       },
     };
 
@@ -100,14 +100,14 @@ describe('transforms — youworker field round-trip', () => {
         },
       ],
       routing: {
-        reasoning: { kind: 'openhuman' },
-        agentic: { kind: 'openhuman' },
-        coding: { kind: 'openhuman' },
-        memory: { kind: 'openhuman' },
-        embeddings: { kind: 'openhuman' },
-        heartbeat: { kind: 'openhuman' },
-        learning: { kind: 'openhuman' },
-        subconscious: { kind: 'openhuman' },
+        reasoning: { kind: 'aura' },
+        agentic: { kind: 'aura' },
+        coding: { kind: 'aura' },
+        memory: { kind: 'aura' },
+        embeddings: { kind: 'aura' },
+        heartbeat: { kind: 'aura' },
+        learning: { kind: 'aura' },
+        subconscious: { kind: 'aura' },
       },
     };
 

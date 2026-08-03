@@ -251,7 +251,7 @@ const Home = () => {
               <div>
                 <div className="text-sm font-medium text-stone-900">Earn rewards</div>
                 <div className="text-xs text-stone-500">
-                  Unlock credits by using OpenHuman and completing milestones.
+                  Unlock credits by using Aura and completing milestones.
                 </div>
               </div>
               <svg

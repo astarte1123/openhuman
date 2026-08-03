@@ -15,17 +15,17 @@ import {
   type LocalAiSpeechResult,
   type LocalAiStatus,
   type LocalAiTtsResult,
-  openhumanLocalAiAssetsStatus,
-  openhumanLocalAiDiagnostics,
-  openhumanLocalAiDownloadAsset,
-  openhumanLocalAiDownloadsProgress,
-  openhumanLocalAiEmbed,
-  openhumanLocalAiPrompt,
-  openhumanLocalAiStatus,
-  openhumanLocalAiSummarize,
-  openhumanLocalAiTranscribe,
-  openhumanLocalAiTts,
-  openhumanLocalAiVisionPrompt,
+  auraLocalAiAssetsStatus,
+  auraLocalAiDiagnostics,
+  auraLocalAiDownloadAsset,
+  auraLocalAiDownloadsProgress,
+  auraLocalAiEmbed,
+  auraLocalAiPrompt,
+  auraLocalAiStatus,
+  auraLocalAiSummarize,
+  auraLocalAiTranscribe,
+  auraLocalAiTts,
+  auraLocalAiVisionPrompt,
 } from '../../../utils/tauriCommands';
 import SettingsHeader from '../components/SettingsHeader';
 import { useSettingsNavigation } from '../hooks/useSettingsNavigation';
@@ -125,9 +125,9 @@ const LocalModelDebugPanel = () => {
   const loadStatus = async () => {
     try {
       const [statusResponse, assetsResponse, downloadsResponse] = await Promise.all([
-        openhumanLocalAiStatus(),
-        openhumanLocalAiAssetsStatus(),
-        openhumanLocalAiDownloadsProgress(),
+        auraLocalAiStatus(),
+        auraLocalAiAssetsStatus(),
+        auraLocalAiDownloadsProgress(),
       ]);
       setStatus(statusResponse.result);
       setAssets(assetsResponse.result);
@@ -157,7 +157,7 @@ const LocalModelDebugPanel = () => {
     setSummaryOutput('');
     setStatusError('');
     try {
-      const result = await openhumanLocalAiSummarize(summaryInput.trim(), 220);
+      const result = await auraLocalAiSummarize(summaryInput.trim(), 220);
       setSummaryOutput(result.result);
       await loadStatus();
     } catch (err) {
@@ -173,7 +173,7 @@ const LocalModelDebugPanel = () => {
     setPromptOutput('');
     setPromptError('');
     try {
-      const result = await openhumanLocalAiPrompt(promptInput.trim(), 180, promptNoThink);
+      const result = await auraLocalAiPrompt(promptInput.trim(), 180, promptNoThink);
       setPromptOutput(result.result);
       await loadStatus();
     } catch (err) {
@@ -193,7 +193,7 @@ const LocalModelDebugPanel = () => {
         .split('\n')
         .map(v => v.trim())
         .filter(Boolean);
-      const result = await openhumanLocalAiVisionPrompt(visionPromptInput.trim(), imageRefs, 220);
+      const result = await auraLocalAiVisionPrompt(visionPromptInput.trim(), imageRefs, 220);
       setVisionOutput(result.result);
       await loadStatus();
     } catch (err) {
@@ -213,7 +213,7 @@ const LocalModelDebugPanel = () => {
         .split('\n')
         .map(v => v.trim())
         .filter(Boolean);
-      const result = await openhumanLocalAiEmbed(inputs);
+      const result = await auraLocalAiEmbed(inputs);
       setEmbeddingOutput(result.result);
       await loadStatus();
     } catch (err) {
@@ -229,7 +229,7 @@ const LocalModelDebugPanel = () => {
     setTranscribeOutput(null);
     setStatusError('');
     try {
-      const result = await openhumanLocalAiTranscribe(audioPathInput.trim());
+      const result = await auraLocalAiTranscribe(audioPathInput.trim());
       setTranscribeOutput(result.result);
       await loadStatus();
     } catch (err) {
@@ -245,7 +245,7 @@ const LocalModelDebugPanel = () => {
     setTtsOutput(null);
     setStatusError('');
     try {
-      const result = await openhumanLocalAiTts(
+      const result = await auraLocalAiTts(
         ttsInput.trim(),
         ttsOutputPath.trim() ? ttsOutputPath.trim() : undefined
       );
@@ -265,7 +265,7 @@ const LocalModelDebugPanel = () => {
     setAssetDownloadBusy(prev => ({ ...prev, [capability]: true }));
     setStatusError('');
     try {
-      const result = await openhumanLocalAiDownloadAsset(capability);
+      const result = await auraLocalAiDownloadAsset(capability);
       setAssets(result.result);
       await loadStatus();
     } catch (err) {
@@ -279,7 +279,7 @@ const LocalModelDebugPanel = () => {
     setIsDiagnosticsLoading(true);
     setDiagnosticsError('');
     try {
-      const result = await openhumanLocalAiDiagnostics();
+      const result = await auraLocalAiDiagnostics();
       setDiagnostics(result);
     } catch (err) {
       setDiagnosticsError(err instanceof Error ? err.message : 'Diagnostics failed');

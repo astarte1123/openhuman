@@ -50,7 +50,7 @@ type RecordingState = 'idle' | 'recording' | 'transcribing';
 /**
  * Tap-to-toggle mic composer for the mascot page. Captures audio via the
  * browser's `MediaRecorder`, hands the resulting Blob to the factory-
- * dispatched STT RPC (`openhuman.voice_stt_dispatch`), then forwards the
+ * dispatched STT RPC (`aura.voice_stt_dispatch`), then forwards the
  * transcript through `onSubmit` so it joins the agent's normal send pipeline.
  *
  * The provider (cloud vs local Whisper) is resolved server-side from

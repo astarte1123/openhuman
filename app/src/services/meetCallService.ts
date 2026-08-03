@@ -1,7 +1,7 @@
 // Frontend service for the "Join a Google Meet call" feature.
 //
 // Two-phase request:
-//  1. Call the core RPC `openhuman.meet_join_call` to validate inputs and
+//  1. Call the core RPC `aura.meet_join_call` to validate inputs and
 //     mint a stable `request_id`. The core also logs the request — useful
 //     for an eventual call audit trail.
 //  2. Invoke the Tauri command `meet_call_open_window` to actually open
@@ -42,7 +42,7 @@ export async function joinMeetCall(input: MeetJoinCallInput): Promise<MeetJoinCa
   }
 
   const rpcResult = await callCoreRpc<CoreJoinResponse>({
-    method: 'openhuman.meet_join_call',
+    method: 'aura.meet_join_call',
     params: { meet_url: meetUrl, display_name: displayName },
   });
 
@@ -114,7 +114,7 @@ export interface MascotJoinMeetingResult {
  * without leaking the underlying paid-plan rule.
  */
 export const SERVER_OVERLOADED_MESSAGE =
-  'OpenHuman is under heavy load right now. Please try again in a few minutes.';
+  'Aura is under heavy load right now. Please try again in a few minutes.';
 
 export interface MascotJoinMeetingError {
   /** User-safe error text. Falls back to a generic message. */

@@ -18,7 +18,7 @@ import WelcomePage from './pages/WelcomePage';
  *     ├── cloud  → /home
  *     └── custom → /custom/inference → voice → oauth → search → memory → /home
  *
- * Each custom step asks Default (let OpenHuman manage it) vs Configure
+ * Each custom step asks Default (let Aura manage it) vs Configure
  * (let me pick). Default is a one-click pick; Configure renders inline
  * controls (or a deep-link callout to Settings, for domains not yet
  * embedded). Gmail/Composio (`/onboarding/skills`) and Composio-driven

@@ -1,11 +1,11 @@
 import { persistor } from '../store';
 import {
-  resetOpenHumanDataAndRestartCore,
+  resetAuraDataAndRestartCore,
   restartApp,
   scheduleCefProfilePurge,
 } from './tauriCommands';
 
-const ACTIVE_USER_KEY = 'OPENHUMAN_ACTIVE_USER_ID';
+const ACTIVE_USER_KEY = 'AURA_ACTIVE_USER_ID';
 
 /**
  * Selectively purge localStorage keys belonging to a single user.
@@ -13,7 +13,7 @@ const ACTIVE_USER_KEY = 'OPENHUMAN_ACTIVE_USER_ID';
  * Removes:
  *  - `${userId}:persist:*`  — per-user Redux-persist blobs
  *  - `${userId}:*`          — any other user-scoped keys
- *  - `OPENHUMAN_ACTIVE_USER_ID` — the boot-time user seed (only when a userId
+ *  - `AURA_ACTIVE_USER_ID` — the boot-time user seed (only when a userId
  *                                  is supplied so we don't wipe it on pre-login
  *                                  recovery where userId is null)
  *
@@ -68,7 +68,7 @@ export interface ClearAllAppDataOptions {
  *
  *  1. Queue the CEF profile directory for deletion on next launch.
  *  2. Best-effort `clearSession` to drop the core's auth state.
- *  3. Reset the openhuman workspace dir + restart the core sidecar.
+ *  3. Reset the aura workspace dir + restart the core sidecar.
  *  4. Purge redux-persist + window storage.
  *  5. Restart the desktop shell so CEF reboots into the fresh profile.
  *
@@ -101,9 +101,9 @@ export const clearAllAppData = async ({
   }
 
   // 3. Delete workspace folder + restart core. The core RPC removes both the
-  //    active openhuman_dir and the default `~/.openhuman`, then we restart
+  //    active aura_dir and the default `~/.aura`, then we restart
   //    the sidecar so it boots from a clean slate.
-  await resetOpenHumanDataAndRestartCore();
+  await resetAuraDataAndRestartCore();
 
   // 4. Purge redux-persist + browser storage. `persistor.purge()` wipes the
   //    persisted backend; `clearUserScopedStorage` removes only the active

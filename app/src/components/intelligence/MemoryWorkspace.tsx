@@ -53,7 +53,7 @@ interface MemoryWorkspaceProps {
  * adding chunks to the memory tree.
  *
  * Source of truth: providers under
- * `src/openhuman/composio/providers/<toolkit>/` that call
+ * `src/aura/composio/providers/<toolkit>/` that call
  * `ingest_page_into_memory_tree`. Today that's gmail. Add a slug here
  * when a new provider lands a memory-tree ingest path.
  */

@@ -16,13 +16,13 @@
 # (`Agent::from_config_for_agent` → `Agent::build_system_prompt`), so the
 # Composio surface reflects the signed-in user's actual integrations.
 # If you need the toolkit list populated, sign in via the desktop app or
-# point `OPENHUMAN_WORKSPACE` at a workspace that already holds the
+# point `AURA_WORKSPACE` at a workspace that already holds the
 # connection state.
 #
 # The dumper runs against the currently-logged-in user's workspace
-# (`$OPENHUMAN_WORKSPACE`, falling back to `~/.openhuman/workspace`) so
+# (`$AURA_WORKSPACE`, falling back to `~/.aura/workspace`) so
 # onboarding-generated files like `PROFILE.md` appear in the dump. Export
-# `OPENHUMAN_WORKSPACE=<path>` before running if you want to target a
+# `AURA_WORKSPACE=<path>` before running if you want to target a
 # different workspace.
 #
 # Usage:
@@ -43,7 +43,7 @@ set -euo pipefail
 # ── Locate repo root + binary ─────────────────────────────────────────────
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-BIN="${REPO_ROOT}/target/debug/openhuman-core"
+BIN="${REPO_ROOT}/target/debug/aura-core"
 
 # Load the repo .env so staging/prod backend URLs, API keys, and the
 # Composio toggle reach the dumped prompts. `Config::load_or_init`
@@ -69,8 +69,8 @@ export RUST_LOG=error
 # check let a stale debug binary survive across agent-registry changes
 # (e.g. new entries in `agents::BUILTINS`), which made this script
 # silently skip newly added agents like `welcome`.
-echo "[debug-agent-prompts] building openhuman-core (no-op if up-to-date) …" >&2
-( cd "${REPO_ROOT}" && cargo build --manifest-path Cargo.toml --bin openhuman-core >&2 )
+echo "[debug-agent-prompts] building aura-core (no-op if up-to-date) …" >&2
+( cd "${REPO_ROOT}" && cargo build --manifest-path Cargo.toml --bin aura-core >&2 )
 
 # ── Parse flags ───────────────────────────────────────────────────────────
 OUT_DIR=""
@@ -170,39 +170,39 @@ rm -rf "${OUT_DIR}"
 mkdir -p "${OUT_DIR}"
 
 # Workspace resolution is owned by `Config::load_or_init` inside the
-# binary: it reads `~/.openhuman/active_user.toml`, falls back to the
+# binary: it reads `~/.aura/active_user.toml`, falls back to the
 # persisted workspace marker, then to the pre-login user directory. We
 # only pass `--workspace` when the caller has explicitly exported one
-# (an empty `OPENHUMAN_WORKSPACE=` in `.env` counts as unset — the
+# (an empty `AURA_WORKSPACE=` in `.env` counts as unset — the
 # binary's resolver is what we want in that case).
 #
 # Previously this script duplicated the resolution in shell and guessed
 # wrong when the user's active install used a multi-user layout under
-# `~/.openhuman/users/<user_id>/workspace` without a top-level
+# `~/.aura/users/<user_id>/workspace` without a top-level
 # `active_user.toml`, causing the dumper to bail with "workspace not
 # found". Delegating to the binary removes that divergence and makes
-# `.env` (including `OPENHUMAN_APP_ENV=staging`) take effect
+# `.env` (including `AURA_APP_ENV=staging`) take effect
 # automatically.
 WORKSPACE_OVERRIDE=""
-if [[ -n "${OPENHUMAN_WORKSPACE:-}" ]]; then
-  WORKSPACE_OVERRIDE="${OPENHUMAN_WORKSPACE}"
+if [[ -n "${AURA_WORKSPACE:-}" ]]; then
+  WORKSPACE_OVERRIDE="${AURA_WORKSPACE}"
 fi
 
 echo "[debug-agent-prompts] output dir : ${OUT_DIR}" >&2
 if [[ -n "${WORKSPACE_OVERRIDE}" ]]; then
-  echo "[debug-agent-prompts] workspace  : ${WORKSPACE_OVERRIDE} (OPENHUMAN_WORKSPACE override)" >&2
+  echo "[debug-agent-prompts] workspace  : ${WORKSPACE_OVERRIDE} (AURA_WORKSPACE override)" >&2
 else
   echo "[debug-agent-prompts] workspace  : <resolved by Config::load_or_init>" >&2
 fi
-if [[ -n "${OPENHUMAN_APP_ENV:-}" ]]; then
-  echo "[debug-agent-prompts] app env    : ${OPENHUMAN_APP_ENV}" >&2
+if [[ -n "${AURA_APP_ENV:-}" ]]; then
+  echo "[debug-agent-prompts] app env    : ${AURA_APP_ENV}" >&2
 fi
-if [[ -n "${OPENHUMAN_BASE_URL:-}" ]]; then
-  echo "[debug-agent-prompts] base url   : ${OPENHUMAN_BASE_URL}" >&2
+if [[ -n "${AURA_BASE_URL:-}" ]]; then
+  echo "[debug-agent-prompts] base url   : ${AURA_BASE_URL}" >&2
 fi
 echo >&2
 
-# ── Delegate to `openhuman-core agent dump-all` ──────────────────────────
+# ── Delegate to `aura-core agent dump-all` ──────────────────────────
 # All the per-agent iteration + `integrations_agent`-per-toolkit
 # expansion now lives in Rust (`debug_dump::dump_all_agent_prompts`).
 # The shell script just supplies the output directory and passes

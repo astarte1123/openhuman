@@ -229,7 +229,7 @@ const TelegramConfig = ({ definition }: TelegramConfigProps) => {
             );
             try {
               const oauthResponse = await callCoreRpc<{ result: { oauthUrl?: string } }>({
-                method: 'openhuman.auth.oauth_connect',
+                method: 'aura.auth.oauth_connect',
                 params: { provider: 'telegram', skillId: 'telegram' },
               });
               if (oauthResponse.result?.oauthUrl) {

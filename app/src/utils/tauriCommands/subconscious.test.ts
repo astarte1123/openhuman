@@ -46,7 +46,7 @@ describe('tauriCommands/subconscious', () => {
       mockCallCoreRpc.mockResolvedValue({ result: [], logs: [] });
       await listReflections();
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.subconscious_reflections_list',
+        method: 'aura.subconscious_reflections_list',
         params: { limit: 50 },
       });
     });
@@ -55,7 +55,7 @@ describe('tauriCommands/subconscious', () => {
       mockCallCoreRpc.mockResolvedValue({ result: [], logs: [] });
       await listReflections(20, 1700000000);
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.subconscious_reflections_list',
+        method: 'aura.subconscious_reflections_list',
         params: { limit: 20, since_ts: 1700000000 },
       });
     });
@@ -68,14 +68,14 @@ describe('tauriCommands/subconscious', () => {
       expect(mockCallCoreRpc).not.toHaveBeenCalled();
     });
 
-    test('dispatches openhuman.subconscious_reflections_act with reflection_id', async () => {
+    test('dispatches aura.subconscious_reflections_act with reflection_id', async () => {
       mockCallCoreRpc.mockResolvedValue({
         result: { reflection_id: 'r-1', thread_id: 'thr-9' },
         logs: [],
       });
       const resp = await actOnReflection('r-1');
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.subconscious_reflections_act',
+        method: 'aura.subconscious_reflections_act',
         params: { reflection_id: 'r-1' },
       });
       expect(resp.result.thread_id).toBe('thr-9');
@@ -89,11 +89,11 @@ describe('tauriCommands/subconscious', () => {
       expect(mockCallCoreRpc).not.toHaveBeenCalled();
     });
 
-    test('dispatches openhuman.subconscious_reflections_dismiss with reflection_id', async () => {
+    test('dispatches aura.subconscious_reflections_dismiss with reflection_id', async () => {
       mockCallCoreRpc.mockResolvedValue({ result: { dismissed: 'r-1' }, logs: [] });
       await dismissReflection('r-1');
       expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'openhuman.subconscious_reflections_dismiss',
+        method: 'aura.subconscious_reflections_dismiss',
         params: { reflection_id: 'r-1' },
       });
     });

@@ -1,13 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { callCoreRpc } from '../../../services/coreRpcClient';
-import { openhumanGetClientConfig } from '../config';
+import { auraGetClientConfig } from '../config';
 
 vi.mock('../../../services/coreRpcClient', () => ({ callCoreRpc: vi.fn() }));
 
 vi.mock('../common', () => ({ isTauri: vi.fn(() => true), CommandResponse: undefined }));
 
-describe('openhumanGetClientConfig', () => {
+describe('auraGetClientConfig', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -19,10 +19,10 @@ describe('openhumanGetClientConfig', () => {
   it('throws when not running inside the Tauri shell', async () => {
     const { isTauri } = await import('../common');
     vi.mocked(isTauri).mockReturnValueOnce(false);
-    await expect(openhumanGetClientConfig()).rejects.toThrow(/Not running in Tauri/i);
+    await expect(auraGetClientConfig()).rejects.toThrow(/Not running in Tauri/i);
   });
 
-  it('dispatches openhuman.inference_get_client_config and returns the response', async () => {
+  it('dispatches aura.inference_get_client_config and returns the response', async () => {
     const expected = {
       result: {
         api_url: 'https://api.openai.com/v1/chat/completions',
@@ -34,9 +34,9 @@ describe('openhumanGetClientConfig', () => {
     };
     vi.mocked(callCoreRpc).mockResolvedValueOnce(expected);
 
-    const got = await openhumanGetClientConfig();
+    const got = await auraGetClientConfig();
 
-    expect(callCoreRpc).toHaveBeenCalledWith({ method: 'openhuman.inference_get_client_config' });
+    expect(callCoreRpc).toHaveBeenCalledWith({ method: 'aura.inference_get_client_config' });
     expect(got).toEqual(expected);
   });
 });

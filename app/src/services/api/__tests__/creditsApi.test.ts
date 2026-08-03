@@ -246,7 +246,7 @@ describe('creditsApi coupon helpers', () => {
       pending: true,
     });
 
-    expect(mockCallCoreCommand).toHaveBeenCalledWith('openhuman.billing_redeem_coupon', {
+    expect(mockCallCoreCommand).toHaveBeenCalledWith('aura.billing_redeem_coupon', {
       code: 'APRL-2026',
     });
   });
@@ -263,7 +263,7 @@ describe('creditsApi coupon helpers', () => {
       pending: false,
     });
 
-    expect(mockCallCoreCommand).toHaveBeenCalledWith('openhuman.billing_redeem_coupon', {
+    expect(mockCallCoreCommand).toHaveBeenCalledWith('aura.billing_redeem_coupon', {
       code: 'APRL-2026',
     });
   });
@@ -292,7 +292,7 @@ describe('creditsApi coupon helpers', () => {
       },
     ]);
 
-    expect(mockCallCoreCommand).toHaveBeenCalledWith('openhuman.billing_get_coupons');
+    expect(mockCallCoreCommand).toHaveBeenCalledWith('aura.billing_get_coupons');
   });
 });
 
@@ -400,6 +400,6 @@ describe('normalizeTeamUsage', () => {
     expect(result.remainingUsd).toBe(8);
     expect(result.cycleBudgetUsd).toBe(25);
     expect(result.cycleLimit5hr).toBe(0);
-    expect(mockCallCoreCommand).toHaveBeenCalledWith('openhuman.team_get_usage');
+    expect(mockCallCoreCommand).toHaveBeenCalledWith('aura.team_get_usage');
   });
 });

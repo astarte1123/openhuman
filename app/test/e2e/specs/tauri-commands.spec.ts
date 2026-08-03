@@ -10,9 +10,9 @@
  *      core. If either of these breaks every RPC the app makes is dead in
  *      the water.
  *
- *   2. **Core RPC over the relay**. We hit `openhuman.about_app_list` — a
+ *   2. **Core RPC over the relay**. We hit `aura.about_app_list` — a
  *      cheap read-only method that returns the capability catalogue —
- *      through the same `callOpenhumanRpc` helper every product spec uses.
+ *      through the same `callAuraRpc` helper every product spec uses.
  *      That round-trips renderer → Tauri IPC → relay → core → response.
  *
  * The Tauri commands are invoked via `window.__TAURI__.core.invoke` inside
@@ -23,7 +23,7 @@
  * exception.
  */
 import { waitForApp } from '../helpers/app-helpers';
-import { callOpenhumanRpc } from '../helpers/core-rpc';
+import { callAuraRpc } from '../helpers/core-rpc';
 import { hasAppChrome } from '../helpers/element-helpers';
 import { resetApp } from '../helpers/reset-app';
 
@@ -95,8 +95,8 @@ describe('Tauri commands', () => {
     expect(token).toMatch(/^[A-Za-z0-9]+$/);
   });
 
-  it('round-trips an RPC through the relay (openhuman.about_app_list)', async () => {
-    const res = await callOpenhumanRpc<{ capabilities: unknown[] }>('openhuman.about_app_list', {});
+  it('round-trips an RPC through the relay (aura.about_app_list)', async () => {
+    const res = await callAuraRpc<{ capabilities: unknown[] }>('aura.about_app_list', {});
     expect(res.ok).toBe(true);
     if (!res.ok) return;
     expect(Array.isArray(res.result.capabilities)).toBe(true);

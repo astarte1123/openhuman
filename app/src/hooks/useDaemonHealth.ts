@@ -16,10 +16,10 @@ import {
 import { daemonHealthService } from '../services/daemonHealthService';
 import {
   type CommandResponse,
-  openhumanAgentServerStatus,
-  openhumanServiceStart,
-  openhumanServiceStatus,
-  openhumanServiceStop,
+  auraAgentServerStatus,
+  auraServiceStart,
+  auraServiceStatus,
+  auraServiceStop,
   type ServiceStatus,
 } from '../utils/tauriCommands';
 
@@ -29,7 +29,7 @@ export const useDaemonHealth = (userId?: string) => {
 
   const probeAgentStatus = useCallback(async (): Promise<boolean> => {
     try {
-      const result = await openhumanAgentServerStatus();
+      const result = await auraAgentServerStatus();
       const running = !!result?.result?.running;
       setDaemonStatus(uid, running ? 'running' : 'disconnected');
       return running;
@@ -59,7 +59,7 @@ export const useDaemonHealth = (userId?: string) => {
   const startDaemon = useCallback(async (): Promise<CommandResponse<ServiceStatus> | null> => {
     try {
       setDaemonStatus(uid, 'starting');
-      const result = await openhumanServiceStart();
+      const result = await auraServiceStart();
       const running = await waitForAgentStatus(true);
       if (running) {
         if (result?.result) {
@@ -80,7 +80,7 @@ export const useDaemonHealth = (userId?: string) => {
   const stopDaemon = useCallback(async (): Promise<CommandResponse<ServiceStatus> | null> => {
     try {
       setDaemonStatus(uid, 'stopping');
-      const result = await openhumanServiceStop();
+      const result = await auraServiceStop();
       await waitForAgentStatus(false, 7000);
       return result;
     } catch (error) {
@@ -95,14 +95,14 @@ export const useDaemonHealth = (userId?: string) => {
       setDaemonStatus(uid, 'starting');
 
       // Stop first
-      await openhumanServiceStop();
+      await auraServiceStop();
       await waitForAgentStatus(false, 7000);
 
       // Wait a moment for clean shutdown
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       // Start again
-      await openhumanServiceStart();
+      await auraServiceStart();
       const success = await waitForAgentStatus(true, 12000);
 
       if (success) {
@@ -126,7 +126,7 @@ export const useDaemonHealth = (userId?: string) => {
       try {
         const running = await probeAgentStatus();
         if (running) {
-          return await openhumanServiceStatus();
+          return await auraServiceStatus();
         }
         return null;
       } catch (error) {

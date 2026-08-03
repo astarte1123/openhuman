@@ -39,7 +39,7 @@ describe('memorySyncChannel', () => {
     const result = await memorySyncChannel('ch-1');
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_sync_channel',
+      method: 'aura.memory_sync_channel',
       params: { channel_id: 'ch-1' },
     });
     expect(result).toEqual(mockResp);
@@ -57,7 +57,7 @@ describe('memorySyncAll', () => {
 
     const result = await memorySyncAll();
 
-    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'openhuman.memory_sync_all' });
+    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'aura.memory_sync_all' });
     expect(result).toEqual({ requested: true });
   });
 });
@@ -75,7 +75,7 @@ describe('memoryLearnAll', () => {
     const result = await memoryLearnAll();
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_learn_all',
+      method: 'aura.memory_learn_all',
       params: {},
     });
     expect(result.namespaces_processed).toBe(0);
@@ -91,7 +91,7 @@ describe('memoryLearnAll', () => {
     const result = await memoryLearnAll(['research']);
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_learn_all',
+      method: 'aura.memory_learn_all',
       params: { namespaces: ['research'] },
     });
     expect(result.namespaces_processed).toBe(1);
@@ -128,7 +128,7 @@ describe('aiListMemoryFiles', () => {
     const files = await aiListMemoryFiles();
 
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_list_files',
+      method: 'aura.memory_list_files',
       params: { relative_dir: '' },
     });
     expect(files).toEqual(['a.md', 'b.md']);
@@ -138,7 +138,7 @@ describe('aiListMemoryFiles', () => {
     mockCallCoreRpc.mockResolvedValueOnce({ files: ['nested.md'] });
     const files = await aiListMemoryFiles('subdir');
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.memory_list_files',
+      method: 'aura.memory_list_files',
       params: { relative_dir: 'subdir' },
     });
     expect(files).toEqual(['nested.md']);
@@ -169,7 +169,7 @@ describe('whatsappListChats', () => {
     mockCallCoreRpc.mockResolvedValueOnce([]);
     await whatsappListChats({ limit: 10 });
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.whatsapp_data_list_chats',
+      method: 'aura.whatsapp_data_list_chats',
       params: { limit: 10 },
     });
   });
@@ -178,7 +178,7 @@ describe('whatsappListChats', () => {
     mockCallCoreRpc.mockResolvedValueOnce([]);
     await whatsappListChats();
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.whatsapp_data_list_chats',
+      method: 'aura.whatsapp_data_list_chats',
       params: {},
     });
   });
@@ -215,7 +215,7 @@ describe('whatsappListMessages', () => {
     mockCallCoreRpc.mockResolvedValueOnce([]);
     await whatsappListMessages({ chat_id: 'c1', limit: 50 });
     expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'openhuman.whatsapp_data_list_messages',
+      method: 'aura.whatsapp_data_list_messages',
       params: { chat_id: 'c1', limit: 50 },
     });
   });

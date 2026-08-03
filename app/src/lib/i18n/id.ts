@@ -175,7 +175,7 @@ const id: TranslationMap = {
   'clearData.failedPersist': 'Gagal membersihkan status aplikasi tersimpan. Silakan coba lagi.',
 
   // Welcome page
-  'welcome.title': 'Selamat datang di OpenHuman',
+  'welcome.title': 'Selamat datang di Aura',
   'welcome.subtitle': 'Asisten AI Anda untuk komunitas',
   'welcome.connectPrompt': 'Konfigurasikan RPC URL (Lanjutan)',
   'welcome.urlPlaceholder': 'http://localhost:8089',
@@ -195,7 +195,7 @@ const id: TranslationMap = {
   'home.statusBackendOnly':
     'Menghubungkan ulang ke backend... agen Anda akan segera tersedia lagi.',
   'home.statusCoreUnreachable':
-    'Core sidecar lokal tidak merespons. Proses latar OpenHuman mungkin crash atau gagal dimulai.',
+    'Core sidecar lokal tidak merespons. Proses latar Aura mungkin crash atau gagal dimulai.',
   'home.statusInternetOffline':
     'Perangkat Anda sedang offline. Periksa jaringan atau mulai ulang aplikasi untuk menyambung lagi.',
   'home.restartCore': 'Mulai Ulang Core',
@@ -352,7 +352,7 @@ const id: TranslationMap = {
   'rewards.share': 'Bagikan',
 
   // Onboarding
-  'onboarding.welcome': 'Hai. Saya OpenHuman.',
+  'onboarding.welcome': 'Hai. Saya Aura.',
   'onboarding.welcomeDesc':
     'Asisten AI super cerdas yang berjalan di komputer Anda. Privat, sederhana, dan sangat kuat.',
   'onboarding.context': 'Pengumpulan Konteks',
@@ -364,7 +364,7 @@ const id: TranslationMap = {
   'onboarding.referral': 'Referral',
   'onboarding.referralDesc': 'Gunakan kode referral jika Anda memilikinya.',
   'onboarding.finish': 'Selesaikan Pengaturan',
-  'onboarding.finishDesc': 'Semua siap! Mulai gunakan OpenHuman.',
+  'onboarding.finishDesc': 'Semua siap! Mulai gunakan Aura.',
   'onboarding.skip': 'Lewati',
   'onboarding.getStarted': 'Mulai',
   'onboarding.enableLocalAI': 'Aktifkan AI Lokal',
@@ -472,11 +472,11 @@ const id: TranslationMap = {
   'privacy.anonymizedAnalytics': 'Analitik Anonim',
   'privacy.shareAnonymizedData': 'Bagikan Data Penggunaan Anonim',
   'privacy.shareAnonymizedDataDesc':
-    'Bantu meningkatkan OpenHuman dengan membagikan laporan crash dan analitik penggunaan anonim. Semua data sepenuhnya anonim; tidak ada data pribadi, pesan, kunci dompet, atau informasi sesi yang dikumpulkan.',
+    'Bantu meningkatkan Aura dengan membagikan laporan crash dan analitik penggunaan anonim. Semua data sepenuhnya anonim; tidak ada data pribadi, pesan, kunci dompet, atau informasi sesi yang dikumpulkan.',
   'privacy.meetingFollowUps': 'Tindak lanjut rapat',
   'privacy.autoHandoffMeet': 'Serahkan transkrip Google Meet otomatis ke orchestrator',
   'privacy.autoHandoffMeetDesc':
-    'Saat panggilan Google Meet berakhir, orchestrator OpenHuman dapat membaca transkrip dan mengambil tindakan seperti menyusun pesan, menjadwalkan tindak lanjut, atau memposting ringkasan ke workspace Slack yang terhubung. Nonaktif secara default.',
+    'Saat panggilan Google Meet berakhir, orchestrator Aura dapat membaca transkrip dan mengambil tindakan seperti menyusun pesan, menjadwalkan tindak lanjut, atau memposting ringkasan ke workspace Slack yang terhubung. Nonaktif secara default.',
   'privacy.analyticsDisclaimer':
     'Semua analitik dan laporan bug sepenuhnya anonim. Saat aktif, kami hanya mengumpulkan informasi crash, jenis perangkat, dan lokasi file error. Kami tidak pernah mengakses pesan, data sesi, kunci dompet, API key, atau informasi pribadi Anda. Pengaturan ini bisa diubah kapan saja.',
   'privacy.dataKind.messages': 'Pesan',
@@ -523,7 +523,7 @@ const id: TranslationMap = {
 
   // Settings: Tools
   'settings.tools.chooseCapabilities':
-    'Pilih kemampuan yang dapat digunakan OpenHuman atas nama Anda.',
+    'Pilih kemampuan yang dapat digunakan Aura atas nama Anda.',
   'settings.tools.saveChanges': 'Simpan Perubahan',
   'settings.tools.preferencesSaved': 'Preferensi tersimpan',
   'settings.tools.saveFailed': 'Gagal menyimpan preferensi. Coba lagi.',

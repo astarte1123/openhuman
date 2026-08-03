@@ -1,8 +1,8 @@
 //! E2E: Linux CEF deb package runtime - core binary resolution
 //!
 //! Tests the core binary resolution paths introduced in PR #3:
-//! - OPENHUMAN_CORE_BIN env override
-//! - Packaged Linux paths (/usr/bin/openhuman-core, /usr/lib/OpenHuman/openhuman-core)
+//! - AURA_CORE_BIN env override
+//! - Packaged Linux paths (/usr/bin/aura-core, /usr/lib/Aura/aura-core)
 //! - Staged sidecar detection in dev builds
 //! - Fallback to self-subcommand
 //!
@@ -61,26 +61,26 @@ fn create_fake_core_binary(dir: &std::path::Path, name: &str) -> PathBuf {
     path
 }
 
-/// Test that OPENHUMAN_CORE_BIN override takes precedence when file exists.
+/// Test that AURA_CORE_BIN override takes precedence when file exists.
 #[test]
 fn core_bin_env_override_takes_precedence_when_exists() {
-    let temp_dir = std::env::temp_dir().join("openhuman-core-test-override");
+    let temp_dir = std::env::temp_dir().join("aura-core-test-override");
     let _ = fs::remove_dir_all(&temp_dir);
     fs::create_dir_all(&temp_dir).expect("create temp dir");
 
     // Create a fake core binary
-    let fake_core = create_fake_core_binary(&temp_dir, "openhuman-core");
+    let fake_core = create_fake_core_binary(&temp_dir, "aura-core");
     let fake_core_str = fake_core.to_str().unwrap();
 
     // Set the env override
-    let _guard = EnvGuard::set("OPENHUMAN_CORE_BIN", fake_core_str);
+    let _guard = EnvGuard::set("AURA_CORE_BIN", fake_core_str);
 
     // Import and call the function from the tauri crate
     // We can't directly import from src-tauri, but we verify the behavior
     // by checking that the env var is set and file exists
     assert!(fake_core.exists(), "Fake core binary should exist");
     assert_eq!(
-        std::env::var("OPENHUMAN_CORE_BIN").ok().as_deref(),
+        std::env::var("AURA_CORE_BIN").ok().as_deref(),
         Some(fake_core_str)
     );
 
@@ -88,20 +88,20 @@ fn core_bin_env_override_takes_precedence_when_exists() {
     let _ = fs::remove_dir_all(&temp_dir);
 }
 
-/// Test that OPENHUMAN_CORE_BIN override gracefully handles non-existent files.
+/// Test that AURA_CORE_BIN override gracefully handles non-existent files.
 #[test]
 fn core_bin_env_override_graceful_when_nonexistent() {
     // Set env override to a non-existent path
-    let _guard = EnvGuard::set("OPENHUMAN_CORE_BIN", "/nonexistent/path/openhuman-core");
+    let _guard = EnvGuard::set("AURA_CORE_BIN", "/nonexistent/path/aura-core");
 
     // Verify the env var is set
     assert_eq!(
-        std::env::var("OPENHUMAN_CORE_BIN").ok().as_deref(),
-        Some("/nonexistent/path/openhuman-core")
+        std::env::var("AURA_CORE_BIN").ok().as_deref(),
+        Some("/nonexistent/path/aura-core")
     );
 
     // Verify the file doesn't exist
-    assert!(!std::path::Path::new("/nonexistent/path/openhuman-core").exists());
+    assert!(!std::path::Path::new("/nonexistent/path/aura-core").exists());
 }
 
 /// Test packaged Linux paths are probed in correct order.
@@ -109,8 +109,8 @@ fn core_bin_env_override_graceful_when_nonexistent() {
 fn core_bin_packaged_linux_paths_order() {
     // Document the expected search order for packaged Linux binaries
     let expected_paths = [
-        "/usr/bin/openhuman-core",
-        "/usr/lib/OpenHuman/openhuman-core",
+        "/usr/bin/aura-core",
+        "/usr/lib/Aura/aura-core",
     ];
 
     // Verify these are valid absolute paths
@@ -118,8 +118,8 @@ fn core_bin_packaged_linux_paths_order() {
         let p = std::path::Path::new(path);
         assert!(p.is_absolute(), "Path should be absolute: {}", path);
         assert!(
-            path.contains("openhuman-core"),
-            "Path should contain 'openhuman-core': {}",
+            path.contains("aura-core"),
+            "Path should contain 'aura-core': {}",
             path
         );
     }
@@ -136,8 +136,8 @@ fn core_bin_packaged_linux_paths_order() {
 fn core_port_env_configuration() {
     // Test default port
     {
-        let _guard = EnvGuard::unset("OPENHUMAN_CORE_PORT");
-        let port = std::env::var("OPENHUMAN_CORE_PORT")
+        let _guard = EnvGuard::unset("AURA_CORE_PORT");
+        let port = std::env::var("AURA_CORE_PORT")
             .ok()
             .and_then(|v| v.parse::<u16>().ok())
             .unwrap_or(7788);
@@ -146,8 +146,8 @@ fn core_port_env_configuration() {
 
     // Test custom port
     {
-        let _guard = EnvGuard::set("OPENHUMAN_CORE_PORT", "9999");
-        let port = std::env::var("OPENHUMAN_CORE_PORT")
+        let _guard = EnvGuard::set("AURA_CORE_PORT", "9999");
+        let port = std::env::var("AURA_CORE_PORT")
             .ok()
             .and_then(|v| v.parse::<u16>().ok())
             .unwrap_or(7788);
@@ -179,12 +179,12 @@ fn core_rpc_url_format() {
     }
 }
 
-/// Test OPENHUMAN_CORE_RPC_URL environment variable handling.
+/// Test AURA_CORE_RPC_URL environment variable handling.
 #[test]
 fn core_rpc_url_env_override() {
     // Test with env var set
-    let _guard = EnvGuard::set("OPENHUMAN_CORE_RPC_URL", "http://localhost:8888/rpc");
-    let url = std::env::var("OPENHUMAN_CORE_RPC_URL").unwrap();
+    let _guard = EnvGuard::set("AURA_CORE_RPC_URL", "http://localhost:8888/rpc");
+    let url = std::env::var("AURA_CORE_RPC_URL").unwrap();
     assert_eq!(url, "http://localhost:8888/rpc");
 
     // Verify format
@@ -199,15 +199,15 @@ fn core_bin_symlink_resolution() {
     {
         use std::os::unix::fs::symlink;
 
-        let temp_dir = std::env::temp_dir().join("openhuman-core-test-symlink");
+        let temp_dir = std::env::temp_dir().join("aura-core-test-symlink");
         let _ = fs::remove_dir_all(&temp_dir);
         fs::create_dir_all(&temp_dir).expect("create temp dir");
 
         // Create real file
-        let real_file = create_fake_core_binary(&temp_dir, "real-openhuman-core");
+        let real_file = create_fake_core_binary(&temp_dir, "real-aura-core");
 
         // Create symlink
-        let symlink_path = temp_dir.join("symlink-openhuman-core");
+        let symlink_path = temp_dir.join("symlink-aura-core");
         symlink(&real_file, &symlink_path).expect("create symlink");
 
         // Both paths should resolve to the same canonical path

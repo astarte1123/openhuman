@@ -251,7 +251,7 @@ class SocketService {
     this.socket.on('channel:connection-updated', handleChannelConnectionUpdated);
     this.socket.on('channel_connection_updated', handleChannelConnectionUpdated);
 
-    // Core-side session expiry (401 from the OpenHuman backend or jsonrpc).
+    // Core-side session expiry (401 from the Aura backend or jsonrpc).
     // The server has already published SessionExpired on its event bus,
     // the credentials subscriber has cleared the JWT, and the scheduler
     // gate is flipped to signed-out. All the UI needs to do is mirror
@@ -264,7 +264,7 @@ class SocketService {
           : undefined) ?? 'unknown';
       socketLog('Session expired notification received', { source });
       if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('openhuman:session-expired', { detail: { source } }));
+        window.dispatchEvent(new CustomEvent('aura:session-expired', { detail: { source } }));
       }
     };
     this.socket.on('auth:session_expired', handleSessionExpired);

@@ -12,7 +12,7 @@ const { mockPurge, mockReset, mockRestart, mockPurgeCef } = vi.hoisted(() => ({
 vi.mock('../../store', () => ({ persistor: { purge: mockPurge } }));
 
 vi.mock('../tauriCommands', () => ({
-  resetOpenHumanDataAndRestartCore: mockReset,
+  resetAuraDataAndRestartCore: mockReset,
   restartApp: mockRestart,
   scheduleCefProfilePurge: mockPurgeCef,
 }));
@@ -31,7 +31,7 @@ describe('clearAllAppData', () => {
     const clearSession = vi.fn().mockResolvedValue(undefined);
 
     // Seed active-user key + user-1-scoped data + another user's data
-    window.localStorage.setItem('OPENHUMAN_ACTIVE_USER_ID', 'user-1');
+    window.localStorage.setItem('AURA_ACTIVE_USER_ID', 'user-1');
     window.localStorage.setItem('user-1:persist:accounts', 'a');
     window.localStorage.setItem('user-1:persist:coreMode', 'b');
     window.localStorage.setItem('user-2:persist:accounts', 'other');
@@ -44,7 +44,7 @@ describe('clearAllAppData', () => {
     expect(mockReset).toHaveBeenCalledTimes(1);
     expect(mockPurge).toHaveBeenCalledTimes(1);
     // user-1's own keys are gone
-    expect(window.localStorage.getItem('OPENHUMAN_ACTIVE_USER_ID')).toBeNull();
+    expect(window.localStorage.getItem('AURA_ACTIVE_USER_ID')).toBeNull();
     expect(window.localStorage.getItem('user-1:persist:accounts')).toBeNull();
     expect(window.localStorage.getItem('user-1:persist:coreMode')).toBeNull();
     // user-2's keys are untouched (#983: other accounts must not lose data)
@@ -88,7 +88,7 @@ describe('clearAllAppData', () => {
     expect(mockRestart).toHaveBeenCalledTimes(1);
   });
 
-  it('throws when resetOpenHumanDataAndRestartCore fails (unrecoverable)', async () => {
+  it('throws when resetAuraDataAndRestartCore fails (unrecoverable)', async () => {
     mockReset.mockRejectedValueOnce(new Error('core reset boom'));
 
     await expect(clearAllAppData()).rejects.toThrow('core reset boom');

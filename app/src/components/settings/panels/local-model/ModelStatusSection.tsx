@@ -67,7 +67,7 @@ const ModelStatusSection = ({
   onRunDiagnostics,
   onRepairAction,
 }: ModelStatusSectionProps) => {
-  // OpenHuman no longer installs or launches Ollama itself. When the runtime
+  // Aura no longer installs or launches Ollama itself. When the runtime
   // is unavailable, surface manual guidance instead of management controls.
   const showInstallOllamaCta = downloads?.ollama_available === false;
 
@@ -105,7 +105,7 @@ const ModelStatusSection = ({
           <div className="flex-1 space-y-1">
             <div className="text-sm font-semibold text-amber-900">Ollama runtime unavailable</div>
             <div className="text-xs text-amber-800">
-              OpenHuman now treats Ollama as an external inference runtime. Start your own Ollama
+              Aura now treats Ollama as an external inference runtime. Start your own Ollama
               server, pull the models you want, and point workload routing at it.
             </div>
           </div>
@@ -223,7 +223,7 @@ const ModelStatusSection = ({
                 </pre>
               )}
               <p className="text-xs text-stone-500">
-                OpenHuman only connects to an already-running Ollama-compatible endpoint. See{' '}
+                Aura only connects to an already-running Ollama-compatible endpoint. See{' '}
                 <a
                   href="https://ollama.com"
                   target="_blank"
@@ -387,7 +387,7 @@ const ModelStatusSection = ({
               )}
 
               <div className="text-xs text-stone-500">
-                Manage the Ollama process and model pulls outside OpenHuman, then rerun diagnostics.
+                Manage the Ollama process and model pulls outside Aura, then rerun diagnostics.
               </div>
             </>
           )}

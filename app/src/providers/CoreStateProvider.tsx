@@ -31,8 +31,8 @@ import { resetUserScopedState } from '../store/resetActions';
 import { loadThreads, resetThreadCachesPreservingSelection } from '../store/threadSlice';
 import { getActiveUserId, setActiveUserId } from '../store/userScopedStorage';
 import {
-  openhumanUpdateAnalyticsSettings,
-  openhumanUpdateMeetSettings,
+  auraUpdateAnalyticsSettings,
+  auraUpdateMeetSettings,
   restartApp,
   setOnboardingCompleted,
   storeSession,
@@ -120,14 +120,14 @@ function snapshotIdentity(snapshot: CoreAppSnapshot): string | null {
  *
  * Steps:
  * 1. Re-point `userScopedStorage` to the new user's namespace so the
- *    `OPENHUMAN_ACTIVE_USER_ID` localStorage seed is correct on relaunch.
+ *    `AURA_ACTIVE_USER_ID` localStorage seed is correct on relaunch.
  * 2. Dispatch `resetUserScopedState` to wipe the live store immediately —
  *    cosmetic during the brief frame between this call and `restartApp()`,
  *    so the prior user's slices don't render against the new auth.
  * 3. Disconnect the Socket.IO connection so the reconnect after relaunch
  *    carries the new user's auth token.
  * 4. `restartApp()` — the new process module-init reads
- *    `OPENHUMAN_ACTIVE_USER_ID=nextUserId`, hydrates from that namespace,
+ *    `AURA_ACTIVE_USER_ID=nextUserId`, hydrates from that namespace,
  *    and singleton services / Rust webview accounts come up clean.
  *
  * We deliberately do NOT call `persistor.purge()`. Each user's persisted
@@ -217,7 +217,7 @@ export default function CoreStateProvider({ children }: { children: ReactNode })
     const previousAuthed = beforeCommit.auth.isAuthenticated;
     const nextAuthed = nextSnapshot.auth.isAuthenticated;
     // Source of truth for "what userId's data is currently in memory" is the
-    // `OPENHUMAN_ACTIVE_USER_ID` localStorage seed read by `userScopedStorage`
+    // `AURA_ACTIVE_USER_ID` localStorage seed read by `userScopedStorage`
     // at module init — that's whose namespace redux-persist hydrated, and
     // it's also what the Rust `prepare_process_cache_path` reads from
     // `active_user.toml` on each cold launch to pick a CEF cache dir. If the
@@ -294,7 +294,7 @@ export default function CoreStateProvider({ children }: { children: ReactNode })
         log('handleIdentityFlip failed: %O', sanitizeError(err));
       });
     } else if (isLogout) {
-      // Sign-out: keep `OPENHUMAN_ACTIVE_USER_ID` pointing at the last user
+      // Sign-out: keep `AURA_ACTIVE_USER_ID` pointing at the last user
       // so the next login can detect via seed comparison whether it's a
       // same-user re-login (no restart) or a different-user re-login
       // (restart). Slice data also stays in memory since signed-out UI
@@ -479,7 +479,7 @@ export default function CoreStateProvider({ children }: { children: ReactNode })
 
   const setAnalyticsEnabled = useCallback(
     async (enabled: boolean) => {
-      await openhumanUpdateAnalyticsSettings({ enabled });
+      await auraUpdateAnalyticsSettings({ enabled });
       // Optimistic local commit for instant UI feedback, then re-pull the
       // authoritative snapshot so the frontend cache matches the core.
       commitState(previous => ({
@@ -496,7 +496,7 @@ export default function CoreStateProvider({ children }: { children: ReactNode })
 
   const setMeetAutoOrchestratorHandoff = useCallback(
     async (enabled: boolean) => {
-      await openhumanUpdateMeetSettings({ auto_orchestrator_handoff: enabled });
+      await auraUpdateMeetSettings({ auto_orchestrator_handoff: enabled });
       // Optimistic commit so the toggle flips instantly; full snapshot
       // refresh follows so the cached value matches what core just wrote.
       commitState(previous => ({
@@ -571,7 +571,7 @@ export default function CoreStateProvider({ children }: { children: ReactNode })
       snapshot: toSignedOutSnapshot(previous.snapshot),
     }));
     memoryTokenRef.current = null;
-    // Keep `OPENHUMAN_ACTIVE_USER_ID` pointing at the last user. The next
+    // Keep `AURA_ACTIVE_USER_ID` pointing at the last user. The next
     // refresh's `getActiveUserId()` seed comparison decides whether the
     // upcoming login is a same-user re-login (no restart) or a different-
     // user re-login (restart). We do NOT dispatch `resetUserScopedState`
@@ -592,9 +592,9 @@ export default function CoreStateProvider({ children }: { children: ReactNode })
   //    threads poll, …). Multiple parallel chains can fire it in the
   //    same frame after a token expires; the 10s debounce coalesces
   //    them so `clearSession` only runs once.
-  // 2. `openhuman:session-expired` — emitted by `socketService` when
+  // 2. `aura:session-expired` — emitted by `socketService` when
   //    the core pushes `auth:session_expired` over Socket.IO (the
-  //    OpenHuman backend provider's `api_error` published
+  //    Aura backend provider's `api_error` published
   //    `DomainEvent::SessionExpired`, or `jsonrpc::invoke_method`
   //    detected a 401 on a server-side method call). Without this, the
   //    UI keeps showing a logged-in shell until the next refresh()
@@ -636,10 +636,10 @@ export default function CoreStateProvider({ children }: { children: ReactNode })
     };
 
     window.addEventListener('core-rpc-auth-expired', onRpcExpired as EventListener);
-    window.addEventListener('openhuman:session-expired', onSocketExpired as EventListener);
+    window.addEventListener('aura:session-expired', onSocketExpired as EventListener);
     return () => {
       window.removeEventListener('core-rpc-auth-expired', onRpcExpired as EventListener);
-      window.removeEventListener('openhuman:session-expired', onSocketExpired as EventListener);
+      window.removeEventListener('aura:session-expired', onSocketExpired as EventListener);
     };
   }, [clearSession]);
 

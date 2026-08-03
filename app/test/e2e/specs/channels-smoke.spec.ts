@@ -1,7 +1,7 @@
 // @ts-nocheck
 /**
  * Channels page smoke — Telegram + Discord panels render "not connected"
- * affordances (first slice of tinyhumansai/openhuman#290).
+ * affordances (first slice of tinyhumansai/aura#290).
  *
  * Deferred to follow-up PRs:
  *   - Telegram / Discord OAuth happy path

@@ -14,7 +14,7 @@ import { addIntegrationNotification } from '../store/notificationSlice';
 import { fetchRespondQueue } from '../store/providerSurfaceSlice';
 import type { AccountProvider, IngestedMessage } from '../types/accounts';
 import { isTauri } from '../utils/tauriCommands/common';
-import { openhumanGetMeetSettings } from '../utils/tauriCommands/config';
+import { auraGetMeetSettings } from '../utils/tauriCommands/config';
 import { trackEvent } from './analytics';
 import { threadApi } from './api/threadApi';
 import { chatSend } from './chatService';
@@ -511,7 +511,7 @@ async function persistIngestToMemory(
 
   try {
     await callCoreRpc({
-      method: 'openhuman.memory_doc_ingest',
+      method: 'aura.memory_doc_ingest',
       params: {
         namespace,
         key,
@@ -563,7 +563,7 @@ async function persistWhatsappChatDay(accountId: string, ingest: IngestPayload):
 
   try {
     await callCoreRpc({
-      method: 'openhuman.memory_doc_ingest',
+      method: 'aura.memory_doc_ingest',
       params: {
         namespace,
         key,
@@ -632,7 +632,7 @@ async function persistLinkedInConversation(
 
   try {
     await callCoreRpc({
-      method: 'openhuman.memory_doc_ingest',
+      method: 'aura.memory_doc_ingest',
       params: {
         namespace,
         key,
@@ -791,7 +791,7 @@ async function flushMeetingSession(
 
   try {
     await callCoreRpc({
-      method: 'openhuman.memory_doc_ingest',
+      method: 'aura.memory_doc_ingest',
       params: {
         namespace,
         key,
@@ -874,7 +874,7 @@ async function maybeHandoffToOrchestrator(
 ): Promise<void> {
   let optedIn = false;
   try {
-    const settings = await openhumanGetMeetSettings();
+    const settings = await auraGetMeetSettings();
     optedIn = settings?.result?.auto_orchestrator_handoff === true;
   } catch (err) {
     // Fail-closed: if we can't read the setting, do not hand off.

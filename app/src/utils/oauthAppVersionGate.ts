@@ -14,7 +14,7 @@ function block(minimum: string, current: string): OAuthAppVersionGateResult {
 
 /**
  * When `VITE_MINIMUM_SUPPORTED_APP_VERSION` is set (CI/production), block OAuth
- * `openhuman://oauth/success` handling if the running desktop build is older.
+ * `aura://oauth/success` handling if the running desktop build is older.
  * Prevents completing Gmail (and other) OAuth on deprecated app binaries.
  *
  * When a minimum is configured, fails **closed** if the app version cannot be

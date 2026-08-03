@@ -38,7 +38,7 @@ describe('tunnelsApi.createTunnel', () => {
     const { tunnelsApi } = await import('./tunnelsApi');
     const result = await tunnelsApi.createTunnel({ name: 'My Tunnel', description: 'desc' });
 
-    expect(mockCallCoreCommand).toHaveBeenCalledWith('openhuman.webhooks_create_tunnel', {
+    expect(mockCallCoreCommand).toHaveBeenCalledWith('aura.webhooks_create_tunnel', {
       name: 'My Tunnel',
       description: 'desc',
     });
@@ -52,7 +52,7 @@ describe('tunnelsApi.createTunnel', () => {
     const { tunnelsApi } = await import('./tunnelsApi');
     await tunnelsApi.createTunnel({ name: 'No Desc' });
 
-    expect(mockCallCoreCommand).toHaveBeenCalledWith('openhuman.webhooks_create_tunnel', {
+    expect(mockCallCoreCommand).toHaveBeenCalledWith('aura.webhooks_create_tunnel', {
       name: 'No Desc',
     });
   });
@@ -77,7 +77,7 @@ describe('tunnelsApi.getTunnels', () => {
     const { tunnelsApi } = await import('./tunnelsApi');
     const result = await tunnelsApi.getTunnels();
 
-    expect(mockCallCoreCommand).toHaveBeenCalledWith('openhuman.webhooks_list_tunnels');
+    expect(mockCallCoreCommand).toHaveBeenCalledWith('aura.webhooks_list_tunnels');
     expect(result).toHaveLength(2);
   });
 
@@ -102,7 +102,7 @@ describe('tunnelsApi.getBandwidthUsage', () => {
     const { tunnelsApi } = await import('./tunnelsApi');
     const result = await tunnelsApi.getBandwidthUsage();
 
-    expect(mockCallCoreCommand).toHaveBeenCalledWith('openhuman.webhooks_get_bandwidth');
+    expect(mockCallCoreCommand).toHaveBeenCalledWith('aura.webhooks_get_bandwidth');
     expect(result.remainingBudgetUsd).toBe(4.5);
   });
 });
@@ -118,7 +118,7 @@ describe('tunnelsApi.getTunnel', () => {
     const { tunnelsApi } = await import('./tunnelsApi');
     const result = await tunnelsApi.getTunnel('t-99');
 
-    expect(mockCallCoreCommand).toHaveBeenCalledWith('openhuman.webhooks_get_tunnel', {
+    expect(mockCallCoreCommand).toHaveBeenCalledWith('aura.webhooks_get_tunnel', {
       id: 't-99',
     });
     expect(result.id).toBe('t-99');
@@ -144,7 +144,7 @@ describe('tunnelsApi.updateTunnel', () => {
     const { tunnelsApi } = await import('./tunnelsApi');
     const result = await tunnelsApi.updateTunnel('t-1', { name: 'Renamed' });
 
-    expect(mockCallCoreCommand).toHaveBeenCalledWith('openhuman.webhooks_update_tunnel', {
+    expect(mockCallCoreCommand).toHaveBeenCalledWith('aura.webhooks_update_tunnel', {
       id: 't-1',
       name: 'Renamed',
     });
@@ -158,7 +158,7 @@ describe('tunnelsApi.updateTunnel', () => {
     const { tunnelsApi } = await import('./tunnelsApi');
     const result = await tunnelsApi.updateTunnel('t-2', { isActive: false });
 
-    expect(mockCallCoreCommand).toHaveBeenCalledWith('openhuman.webhooks_update_tunnel', {
+    expect(mockCallCoreCommand).toHaveBeenCalledWith('aura.webhooks_update_tunnel', {
       id: 't-2',
       isActive: false,
     });
@@ -184,7 +184,7 @@ describe('tunnelsApi.deleteTunnel', () => {
     const { tunnelsApi } = await import('./tunnelsApi');
     await tunnelsApi.deleteTunnel('t-1');
 
-    expect(mockCallCoreCommand).toHaveBeenCalledWith('openhuman.webhooks_delete_tunnel', {
+    expect(mockCallCoreCommand).toHaveBeenCalledWith('aura.webhooks_delete_tunnel', {
       id: 't-1',
     });
   });

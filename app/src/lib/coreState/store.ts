@@ -39,7 +39,7 @@ export interface CoreAppSnapshot {
   /**
    * Whether the chat-based welcome-agent flow has finished. Mirrors
    * `Config::chat_onboarding_completed` in the Rust core (see
-   * `src/openhuman/config/schema/types.rs`). Flipped to `true` by the
+   * `src/aura/config/schema/types.rs`). Flipped to `true` by the
    * welcome agent calling `complete_onboarding(action: "complete")`.
    * Drives the UI "welcome lockdown" — see {@link isWelcomeLocked}.
    */
@@ -50,7 +50,7 @@ export interface CoreAppSnapshot {
    * orchestrator agent for proactive follow-up actions (drafting Slack
    * messages, scheduling, etc.). Mirrors
    * `Config::meet.auto_orchestrator_handoff` in the Rust core (see
-   * `src/openhuman/config/schema/meet.rs`). Defaults to `false` —
+   * `src/aura/config/schema/meet.rs`). Defaults to `false` —
    * privacy-conservative gate added in #1299. The webview meet flow
    * reads this before invoking `handoffToOrchestrator`.
    */

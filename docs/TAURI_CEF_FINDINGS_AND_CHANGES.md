@@ -7,7 +7,7 @@ This note summarizes:
 - what was found in `tauri-cef`
 - what was missing for webview notification permission and delivery
 - what was changed in `tauri-cef`
-- what was changed in `openhuman-cursor`
+- what was changed in `aura-cursor`
 - how the setup was debugged and verified
 
 Relevant codebases:
@@ -55,7 +55,7 @@ In practice, Slack kept behaving as if notifications still needed to be enabled 
 
 ### 5. Additional root cause found during live debugging
 
-Later live DevTools inspection revealed a second, more concrete failure mode in `openhuman-cursor`:
+Later live DevTools inspection revealed a second, more concrete failure mode in `aura-cursor`:
 
 - `tauri-plugin-notification` injects its own JavaScript init script into every Tauri webview
 - that init script overwrote `window.Notification`
@@ -104,7 +104,7 @@ The runtime app path now installs the render process handler needed for the noti
 
 ### 4. Added notification handler cleanup on browser close
 
-In the vendored `tauri-cef` inside `openhuman-cursor`, an additional lifecycle cleanup was added:
+In the vendored `tauri-cef` inside `aura-cursor`, an additional lifecycle cleanup was added:
 
 - `app/src-tauri/vendor/tauri-cef/crates/tauri-runtime-cef/src/cef_impl.rs`
 
@@ -124,11 +124,11 @@ The standalone `tauri-cef` repo was updated and pushed with:
 - commit: `c8ece7c78`
 - message: `Fix CEF notification permission shims`
 
-The `openhuman-cursor` vendored submodule was then updated to the corresponding submodule commit:
+The `aura-cursor` vendored submodule was then updated to the corresponding submodule commit:
 
 - `c8ece7c784b8cdff16dc552f6892a0c9982ef1ba`
 
-## Changes Made In `openhuman-cursor`
+## Changes Made In `aura-cursor`
 
 ### 1. Enabled shell-side webview notifications by default
 
@@ -154,7 +154,7 @@ File:
 
 Environment flag added:
 
-- `OPENHUMAN_DISABLE_SLACK_SCANNER=1`
+- `AURA_DISABLE_SLACK_SCANNER=1`
 
 When set for Slack accounts, the app now:
 
@@ -164,8 +164,8 @@ When set for Slack accounts, the app now:
 
 Expected logs:
 
-- `[webview-accounts] skipping CDP session via OPENHUMAN_DISABLE_SLACK_SCANNER ...`
-- `[webview-accounts] slack scanner disabled via OPENHUMAN_DISABLE_SLACK_SCANNER ...`
+- `[webview-accounts] skipping CDP session via AURA_DISABLE_SLACK_SCANNER ...`
+- `[webview-accounts] slack scanner disabled via AURA_DISABLE_SLACK_SCANNER ...`
 
 This was added only to make manual DevTools inspection possible without the app attaching to the same Slack target.
 
@@ -223,7 +223,7 @@ Observed targets included:
 
 - Slack page target
 - Slack service worker target
-- OpenHuman page target
+- Aura page target
 
 This confirmed:
 
@@ -243,14 +243,14 @@ The debugging bypass confirmed this by producing logs that both internal attachm
 
 ## Final DevTools Findings
 
-After the Slack-specific CDP paths were disabled, DevTools could still disconnect even for the `OpenHuman` page target. That showed the remaining issue was not Slack-specific.
+After the Slack-specific CDP paths were disabled, DevTools could still disconnect even for the `Aura` page target. That showed the remaining issue was not Slack-specific.
 
 Live verification showed:
 
 - the active backend was on `127.0.0.1:9222`
 - `localhost` was inconsistent during checks
 - Brave already had multiple established connections to `127.0.0.1:9222`
-- the running `OpenHuman` app was listening on that port
+- the running `Aura` app was listening on that port
 
 Most likely explanation:
 
@@ -307,21 +307,21 @@ Helper-side logs added:
 
 Helper-side debug markers added:
 
-- `window.__OPENHUMAN_CEF_NOTIFICATION_SHIM`
-- `window.__OPENHUMAN_CEF_NOTIFICATION_ORIGIN`
-- `Notification.__openhuman_cef`
+- `window.__AURA_CEF_NOTIFICATION_SHIM`
+- `window.__AURA_CEF_NOTIFICATION_ORIGIN`
+- `Notification.__aura_cef`
 
 Manual helper entry points added:
 
-- `window.__openhumanFireNotification(title, options)`
-- `window.__OPENHUMAN_CEF_NOTIFICATION_CONSTRUCTOR`
+- `window.__auraFireNotification(title, options)`
+- `window.__AURA_CEF_NOTIFICATION_CONSTRUCTOR`
 
 ### 3. Helper shim installation was verified in the real Slack page
 
 After rebuilding the helper bundle, live DevTools checks showed:
 
-- `window.__OPENHUMAN_CEF_NOTIFICATION_SHIM === true`
-- `window.__OPENHUMAN_CEF_NOTIFICATION_ORIGIN` pointing at the Slack page URL
+- `window.__AURA_CEF_NOTIFICATION_SHIM === true`
+- `window.__AURA_CEF_NOTIFICATION_ORIGIN` pointing at the Slack page URL
 
 This proved that the CEF helper render shim was actually installing in the Slack page context.
 
@@ -330,7 +330,7 @@ This proved that the CEF helper render shim was actually installing in the Slack
 The following manual trigger was verified to reach the app:
 
 ```js
-window.__openhumanFireNotification("Slack CEF test", {
+window.__auraFireNotification("Slack CEF test", {
   body: "Manual helper path"
 })
 ```
@@ -345,7 +345,7 @@ This proved that:
 
 - renderer helper -> browser IPC works
 - runtime dispatch works
-- `openhuman-cursor` receives the notification payload
+- `aura-cursor` receives the notification payload
 - OS notification delivery can work
 
 ### 5. Tokio runtime panic found and fixed in app notification delivery
@@ -434,7 +434,7 @@ This means Slack-style checks should now see notification permission as granted 
 
 ### App-side notification behavior
 
-`openhuman-cursor` was updated so:
+`aura-cursor` was updated so:
 
 - shell-side notifications are enabled by default
 - the vendored `tauri-cef` includes the runtime permission fix
@@ -458,7 +458,7 @@ Verified working:
 - notification permission appears granted in the Slack webview
 - helper shim installs in the live Slack page
 - manual helper notification trigger reaches CEF browser IPC
-- runtime dispatch reaches `openhuman-cursor`
+- runtime dispatch reaches `aura-cursor`
 - native OS notification display works for the manual helper-triggered path
 
 Still not working automatically:
@@ -475,7 +475,7 @@ Still not working automatically:
 - `(external tauri-cef repo)/crates/tauri-runtime-cef/src/lib.rs`
 - `(external tauri-cef repo)/CEF_NOTIFICATION_PERMISSION_CHANGES.md`
 
-### In `openhuman-cursor`
+### In `aura-cursor`
 
 - `app/src-tauri/src/notification_settings/mod.rs`
 - `app/src-tauri/src/webview_accounts/mod.rs`

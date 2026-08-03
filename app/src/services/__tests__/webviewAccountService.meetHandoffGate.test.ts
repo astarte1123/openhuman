@@ -31,7 +31,7 @@ vi.mock('../chatService', () => ({ chatSend: (...args: unknown[]) => chatSendMoc
 
 const getMeetSettingsMock = vi.fn();
 vi.mock('../../utils/tauriCommands/config', () => ({
-  openhumanGetMeetSettings: () => getMeetSettingsMock(),
+  auraGetMeetSettings: () => getMeetSettingsMock(),
 }));
 
 interface MockMeetingSession {

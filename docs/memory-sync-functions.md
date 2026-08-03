@@ -1,8 +1,8 @@
 # Memory Module — Consumer Reference
 
-How to use the memory layer from services outside `src/openhuman/memory/`.
+How to use the memory layer from services outside `src/aura/memory/`.
 
-**Rule**: Always use `MemoryClient` (`src/openhuman/memory/store/client.rs`). Never call `UnifiedMemory` directly — it's internal to the memory module.
+**Rule**: Always use `MemoryClient` (`src/aura/memory/store/client.rs`). Never call `UnifiedMemory` directly — it's internal to the memory module.
 
 ---
 
@@ -237,7 +237,7 @@ tokio::spawn(async move {
 
 ## MemoryClient API Reference
 
-**File**: `src/openhuman/memory/store/client.rs`
+**File**: `src/aura/memory/store/client.rs`
 
 ### Documents
 
@@ -292,30 +292,30 @@ For callers going through JSON-RPC (frontend or external). Each maps 1:1 to a `M
 
 | RPC Method | Type | MemoryClient equivalent |
 |------------|------|------------------------|
-| `openhuman.memory_init` | INIT | — (initializes subsystem) |
-| `openhuman.memory_doc_put` | WRITE | `put_doc()` |
-| `openhuman.memory_doc_ingest` | WRITE | `ingest_doc()` |
-| `openhuman.memory_doc_list` | READ | `list_documents()` |
-| `openhuman.memory_doc_delete` | DELETE | `delete_document()` |
-| `openhuman.memory_namespace_list` | READ | `list_namespaces()` |
-| `openhuman.memory_list_namespaces` | READ | `list_namespaces()` (structured envelope) |
-| `openhuman.memory_list_documents` | READ | `list_documents()` (structured envelope) |
-| `openhuman.memory_delete_document` | DELETE | `delete_document()` (structured envelope) |
-| `openhuman.memory_clear_namespace` | DELETE | `clear_namespace()` |
-| `openhuman.memory_context_query` | READ | `query_namespace()` |
-| `openhuman.memory_context_recall` | READ | `recall_namespace()` |
-| `openhuman.memory_query_namespace` | READ | `query_namespace_context_data()` |
-| `openhuman.memory_recall_context` | READ | `recall_namespace_context_data()` |
-| `openhuman.memory_recall_memories` | READ | `recall_namespace_memories()` |
-| `openhuman.memory_kv_set` | WRITE | `kv_set()` |
-| `openhuman.memory_kv_get` | READ | `kv_get()` |
-| `openhuman.memory_kv_delete` | DELETE | `kv_delete()` |
-| `openhuman.memory_kv_list_namespace` | READ | `kv_list_namespace()` |
-| `openhuman.memory_graph_upsert` | WRITE | `graph_upsert()` |
-| `openhuman.memory_graph_query` | READ | `graph_query()` |
-| `openhuman.ai_list_memory_files` | READ | — (file I/O, not MemoryClient) |
-| `openhuman.ai_read_memory_file` | READ | — (file I/O) |
-| `openhuman.ai_write_memory_file` | WRITE | — (file I/O) |
+| `aura.memory_init` | INIT | — (initializes subsystem) |
+| `aura.memory_doc_put` | WRITE | `put_doc()` |
+| `aura.memory_doc_ingest` | WRITE | `ingest_doc()` |
+| `aura.memory_doc_list` | READ | `list_documents()` |
+| `aura.memory_doc_delete` | DELETE | `delete_document()` |
+| `aura.memory_namespace_list` | READ | `list_namespaces()` |
+| `aura.memory_list_namespaces` | READ | `list_namespaces()` (structured envelope) |
+| `aura.memory_list_documents` | READ | `list_documents()` (structured envelope) |
+| `aura.memory_delete_document` | DELETE | `delete_document()` (structured envelope) |
+| `aura.memory_clear_namespace` | DELETE | `clear_namespace()` |
+| `aura.memory_context_query` | READ | `query_namespace()` |
+| `aura.memory_context_recall` | READ | `recall_namespace()` |
+| `aura.memory_query_namespace` | READ | `query_namespace_context_data()` |
+| `aura.memory_recall_context` | READ | `recall_namespace_context_data()` |
+| `aura.memory_recall_memories` | READ | `recall_namespace_memories()` |
+| `aura.memory_kv_set` | WRITE | `kv_set()` |
+| `aura.memory_kv_get` | READ | `kv_get()` |
+| `aura.memory_kv_delete` | DELETE | `kv_delete()` |
+| `aura.memory_kv_list_namespace` | READ | `kv_list_namespace()` |
+| `aura.memory_graph_upsert` | WRITE | `graph_upsert()` |
+| `aura.memory_graph_query` | READ | `graph_query()` |
+| `aura.ai_list_memory_files` | READ | — (file I/O, not MemoryClient) |
+| `aura.ai_read_memory_file` | READ | — (file I/O) |
+| `aura.ai_write_memory_file` | WRITE | — (file I/O) |
 
 ---
 
@@ -327,18 +327,18 @@ Each calls the corresponding RPC method above via `core_rpc_relay`.
 
 | Function | Line | RPC Method |
 |----------|------|------------|
-| `syncMemoryClientToken(token)` | 82 | `openhuman.memory_init` |
-| `memoryListDocuments(namespace?)` | 102 | `openhuman.memory_list_documents` |
-| `memoryListNamespaces()` | 117 | `openhuman.memory_list_namespaces` |
-| `memoryDeleteDocument(id, ns)` | 132 | `openhuman.memory_delete_document` |
-| `memoryClearNamespace(ns)` | 145 | `openhuman.memory_clear_namespace` |
-| `memoryQueryNamespace(ns, query, max?)` | 158 | `openhuman.memory_query_namespace` |
-| `memoryRecallNamespace(ns, max?)` | 173 | `openhuman.memory_recall_context` |
-| `memoryGraphQuery(ns?, subj?, pred?)` | 187 | `openhuman.memory_graph_query` |
-| `memoryDocIngest(params)` | 210 | `openhuman.memory_doc_ingest` |
-| `aiListMemoryFiles(dir?)` | 229 | `openhuman.ai_list_memory_files` |
-| `aiReadMemoryFile(path)` | 246 | `openhuman.ai_read_memory_file` |
-| `aiWriteMemoryFile(path, content)` | 261 | `openhuman.ai_write_memory_file` |
+| `syncMemoryClientToken(token)` | 82 | `aura.memory_init` |
+| `memoryListDocuments(namespace?)` | 102 | `aura.memory_list_documents` |
+| `memoryListNamespaces()` | 117 | `aura.memory_list_namespaces` |
+| `memoryDeleteDocument(id, ns)` | 132 | `aura.memory_delete_document` |
+| `memoryClearNamespace(ns)` | 145 | `aura.memory_clear_namespace` |
+| `memoryQueryNamespace(ns, query, max?)` | 158 | `aura.memory_query_namespace` |
+| `memoryRecallNamespace(ns, max?)` | 173 | `aura.memory_recall_context` |
+| `memoryGraphQuery(ns?, subj?, pred?)` | 187 | `aura.memory_graph_query` |
+| `memoryDocIngest(params)` | 210 | `aura.memory_doc_ingest` |
+| `aiListMemoryFiles(dir?)` | 229 | `aura.ai_list_memory_files` |
+| `aiReadMemoryFile(path)` | 246 | `aura.ai_read_memory_file` |
+| `aiWriteMemoryFile(path, content)` | 261 | `aura.ai_write_memory_file` |
 
 ---
 
@@ -354,4 +354,4 @@ Each calls the corresponding RPC method above via `core_rpc_relay`.
 | `GraphRelationRecord` | Knowledge graph triple (subject, predicate, object, evidence, namespace) |
 | `RetrievalScoreBreakdown` | Score components: graph, vector, keyword, episodic, freshness |
 
-All types defined in `src/openhuman/memory/store/types.rs`.
+All types defined in `src/aura/memory/store/types.rs`.

@@ -51,7 +51,7 @@ function basePayload(overrides: Partial<Record<string, unknown>> = {}): Record<s
     discord: {
       linked: false,
       discordId: null,
-      inviteUrl: 'https://discord.gg/openhuman',
+      inviteUrl: 'https://discord.gg/aura',
       membershipStatus: 'not_linked',
     },
     summary: {
@@ -137,7 +137,7 @@ describe('rewards state — integration-based unlock (12.1.2)', () => {
         discord: {
           linked: true,
           discordId: 'discord-123',
-          inviteUrl: 'https://discord.gg/openhuman',
+          inviteUrl: 'https://discord.gg/aura',
           membershipStatus: 'member',
         },
         summary: {
@@ -172,7 +172,7 @@ describe('rewards state — integration-based unlock (12.1.2)', () => {
         discord: {
           linked: false,
           discordId: null,
-          inviteUrl: 'https://discord.gg/openhuman',
+          inviteUrl: 'https://discord.gg/aura',
           membershipStatus: 'not_linked',
         },
         achievements: [
@@ -338,7 +338,7 @@ describe('rewards state — persistence semantics across restart (12.2.3)', () =
       discord: {
         linked: true,
         discordId: 'discord-123',
-        inviteUrl: 'https://discord.gg/openhuman',
+        inviteUrl: 'https://discord.gg/aura',
         membershipStatus: 'member',
       },
       summary: {

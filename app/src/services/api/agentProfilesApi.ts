@@ -19,14 +19,14 @@ function unwrapEnvelope<T>(response: Envelope<T> | T): T {
 export const agentProfilesApi = {
   list: async (): Promise<AgentProfilesResponse> => {
     const response = await callCoreRpc<Envelope<AgentProfilesResponse>>({
-      method: 'openhuman.agent_profiles_list',
+      method: 'aura.agent_profiles_list',
     });
     return unwrapEnvelope(response);
   },
 
   select: async (profileId: string): Promise<AgentProfilesResponse> => {
     const response = await callCoreRpc<Envelope<AgentProfilesResponse>>({
-      method: 'openhuman.agent_profile_select',
+      method: 'aura.agent_profile_select',
       params: { profile_id: profileId },
     });
     return unwrapEnvelope(response);
@@ -34,7 +34,7 @@ export const agentProfilesApi = {
 
   upsert: async (profile: AgentProfile): Promise<AgentProfilesResponse> => {
     const response = await callCoreRpc<Envelope<AgentProfilesResponse>>({
-      method: 'openhuman.agent_profile_upsert',
+      method: 'aura.agent_profile_upsert',
       params: { profile },
     });
     return unwrapEnvelope(response);
@@ -42,7 +42,7 @@ export const agentProfilesApi = {
 
   delete: async (profileId: string): Promise<AgentProfilesResponse> => {
     const response = await callCoreRpc<Envelope<AgentProfilesResponse>>({
-      method: 'openhuman.agent_profile_delete',
+      method: 'aura.agent_profile_delete',
       params: { profile_id: profileId },
     });
     return unwrapEnvelope(response);

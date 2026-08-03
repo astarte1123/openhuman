@@ -2,7 +2,7 @@
 //!
 //! Validates the full doc_put → recall_memories → clear_namespace lifecycle
 //! against a real local memory client backed by the workspace store under a
-//! per-test temp `OPENHUMAN_WORKSPACE`.
+//! per-test temp `AURA_WORKSPACE`.
 //!
 //! Counterpart to `app/test/e2e/specs/memory-roundtrip.spec.ts` which exercises
 //! the same flow over JSON-RPC. This Rust test verifies the Rust contract in
@@ -15,11 +15,11 @@ use std::sync::{Mutex, OnceLock};
 
 use tempfile::tempdir;
 
-use openhuman_core::openhuman::memory::ops::{
+use aura_core::aura::memory::ops::{
     clear_namespace, doc_put, memory_recall_context, memory_recall_memories, ClearNamespaceParams,
     PutDocParams,
 };
-use openhuman_core::openhuman::memory::rpc_models::{RecallContextRequest, RecallMemoriesRequest};
+use aura_core::aura::memory::rpc_models::{RecallContextRequest, RecallMemoriesRequest};
 
 // ── Env isolation ────────────────────────────────────────────────────
 
@@ -50,7 +50,7 @@ impl Drop for EnvVarGuard {
     }
 }
 
-/// Serialises tests: `HOME` + `OPENHUMAN_WORKSPACE` are process-global.
+/// Serialises tests: `HOME` + `AURA_WORKSPACE` are process-global.
 static ENV_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
 
 fn env_lock() -> std::sync::MutexGuard<'static, ()> {
@@ -63,7 +63,7 @@ fn env_lock() -> std::sync::MutexGuard<'static, ()> {
 const NS: &str = "memory-roundtrip-e2e-773";
 const KEY: &str = "roundtrip-canary-key";
 const TITLE: &str = "Memory roundtrip canary";
-const CONTENT: &str = "OpenHuman memory roundtrip canary fact #773";
+const CONTENT: &str = "Aura memory roundtrip canary fact #773";
 
 fn put_params() -> PutDocParams {
     PutDocParams {
@@ -111,7 +111,7 @@ async fn doc_put_then_recall_memories_returns_canary() {
     let _home = EnvVarGuard::set_to_path("HOME", tmp.path());
     let workspace_path = tmp.path().join("workspace");
     std::fs::create_dir_all(&workspace_path).expect("create workspace dir");
-    let _ws = EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", &workspace_path);
+    let _ws = EnvVarGuard::set_to_path("AURA_WORKSPACE", &workspace_path);
 
     // Store the canary document.
     let put_outcome = doc_put(put_params()).await.expect("doc_put rpc");
@@ -141,7 +141,7 @@ async fn doc_put_then_recall_context_renders_llm_context_message() {
     let _home = EnvVarGuard::set_to_path("HOME", tmp.path());
     let workspace_path = tmp.path().join("workspace");
     std::fs::create_dir_all(&workspace_path).expect("create workspace dir");
-    let _ws = EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", &workspace_path);
+    let _ws = EnvVarGuard::set_to_path("AURA_WORKSPACE", &workspace_path);
 
     doc_put(put_params()).await.expect("doc_put rpc");
 
@@ -171,7 +171,7 @@ async fn clear_namespace_removes_canary_from_recall() {
     let _home = EnvVarGuard::set_to_path("HOME", tmp.path());
     let workspace_path = tmp.path().join("workspace");
     std::fs::create_dir_all(&workspace_path).expect("create workspace dir");
-    let _ws = EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", &workspace_path);
+    let _ws = EnvVarGuard::set_to_path("AURA_WORKSPACE", &workspace_path);
 
     // Seed the namespace.
     doc_put(put_params()).await.expect("seed doc_put");

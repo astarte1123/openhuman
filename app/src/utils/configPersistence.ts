@@ -8,12 +8,12 @@ import { CORE_RPC_URL } from './config';
 import { isTauri } from './tauriCommands';
 
 // Storage key for RPC URL preference
-const RPC_URL_STORAGE_KEY = 'openhuman_core_rpc_url';
+const RPC_URL_STORAGE_KEY = 'aura_core_rpc_url';
 
 // Storage key for cloud-mode bearer token. Pre-login and per-device, parallel
 // to the URL key. Held in plain localStorage because the cloud picker runs
 // before any user session exists.
-const CORE_TOKEN_STORAGE_KEY = 'openhuman_core_rpc_token';
+const CORE_TOKEN_STORAGE_KEY = 'aura_core_rpc_token';
 
 // Storage key for the user-chosen core mode ('local' | 'cloud'). Mirrors the
 // redux-persist `coreMode` blob synchronously so reloads (notably the dev-mode
@@ -21,7 +21,7 @@ const CORE_TOKEN_STORAGE_KEY = 'openhuman_core_rpc_token';
 // the chosen mode before redux-persist's async flush completes — without this
 // the BootCheckGate flips back to the picker after every reload, producing an
 // infinite picker → flip → reload loop in cloud mode.
-const CORE_MODE_STORAGE_KEY = 'openhuman_core_mode';
+const CORE_MODE_STORAGE_KEY = 'aura_core_mode';
 
 // Default RPC URL — canonical value from config.ts so they can never drift
 const DEFAULT_RPC_URL = CORE_RPC_URL;

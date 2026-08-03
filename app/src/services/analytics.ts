@@ -136,7 +136,7 @@ export function initSentry(): void {
         device: event.contexts?.device,
       };
 
-      // Tag with surface so events filter cleanly inside `openhuman-react`.
+      // Tag with surface so events filter cleanly inside `aura-react`.
       event.tags = { ...(event.tags ?? {}), surface: 'react' };
 
       // Strip PII; keep a stable anonymous user id only.

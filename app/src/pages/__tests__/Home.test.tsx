@@ -56,7 +56,7 @@ describe('resolveHomeUserName', () => {
   });
 
   it('falls back to username when no name fields are present', () => {
-    expect(resolveHomeUserName({ username: 'openhuman' })).toBe('@openhuman');
+    expect(resolveHomeUserName({ username: 'aura' })).toBe('@aura');
   });
 
   it('falls back to the email local-part when no explicit name exists', () => {

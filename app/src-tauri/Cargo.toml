@@ -1,10 +1,10 @@
 [package]
-name = "OpenHuman"
+name = "Aura"
 version = "0.53.49"
-description = "OpenHuman - AI-powered Super Assistant"
-authors = ["OpenHuman"]
+description = "Aura - AI-powered Super Assistant"
+authors = ["Aura"]
 edition = "2021"
-default-run = "OpenHuman"
+default-run = "Aura"
 autobins = false
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -13,11 +13,11 @@ autobins = false
 # The `_lib` suffix may seem redundant but it is necessary
 # to make the lib name unique and wouldn't conflict with the bin name.
 # This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
-name = "openhuman"
+name = "aura"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [[bin]]
-name = "OpenHuman"
+name = "Aura"
 path = "src/main.rs"
 
 [build-dependencies]
@@ -48,7 +48,7 @@ tauri-plugin-notification = { path = "vendor/tauri-plugin-notification" }
 tauri-plugin-opener = "2"
 # Prevents a second launch from racing into CEF init and hitting the
 # `cef::initialize(...) != 1` cache-lock panic seen in production
-# (Sentry OPENHUMAN-TAURI-A). The plugin acquires a per-identifier
+# (Sentry AURA-TAURI-A). The plugin acquires a per-identifier
 # lock before any tauri::Builder work happens, so the secondary
 # process exits cleanly after handing its argv to the primary.
 tauri-plugin-single-instance = "2"
@@ -93,7 +93,7 @@ env_logger = "0.11"
 
 # Sentry for the Tauri shell (desktop host) process — separate Sentry project
 # from the React frontend and the Rust core sidecar. DSN is baked at compile
-# time via `option_env!("OPENHUMAN_TAURI_SENTRY_DSN")` in `lib.rs::run()` and
+# time via `option_env!("AURA_TAURI_SENTRY_DSN")` in `lib.rs::run()` and
 # can be overridden at runtime via the same env var. Feature set mirrors the
 # core sidecar (`Cargo.toml` at repo root) minus `tracing` since the shell
 # uses `log` + `env_logger`.
@@ -104,7 +104,7 @@ anyhow = "1.0"
 parking_lot = "0.12"
 chrono = "0.4"
 async-trait = "0.1"
-# Mascot fake-camera pipeline (meet_call): rasterizes the OpenHuman
+# Mascot fake-camera pipeline (meet_call): rasterizes the Aura
 # mascot SVG to a PNG once, converts it to a YUV420 Y4M frame, and
 # points CEF's `--use-file-for-fake-video-capture` flag at the cached
 # file so Meet sees the mascot as the agent's webcam. Pure Rust, no
@@ -122,11 +122,11 @@ cef = { version = "=146.4.1", default-features = false }
 
 # Core domain logic, embedded in-process so the core's HTTP/JSON-RPC server
 # runs as a tokio task inside the Tauri host. Avoids the orphan-sidecar class
-# of bugs (PR #1061: Cmd+Q leaving `openhuman-core` and CEF helpers behind)
+# of bugs (PR #1061: Cmd+Q leaving `aura-core` and CEF helpers behind)
 # by tying the core's lifetime to the GUI process. The existing port-7788
 # probe in `core_process::ensure_running` still attaches to a running
-# `openhuman-core run` harness when one is already listening.
-openhuman_core = { path = "../..", package = "openhuman", default-features = false }
+# `aura-core run` harness when one is already listening.
+aura_core = { path = "../..", package = "aura", default-features = false }
 
 # meeting_recorder: local audio capture + mixing + VAD + transcription
 # pipeline (Meetily-inspired, Phase 2+3 of the meetings integration).
@@ -196,7 +196,7 @@ windows-sys = { version = "0.59", features = [
     "Win32_UI_WindowsAndMessaging",
     # CreateMutexW / CloseHandle — used by the pre-CEF single-instance guard
     # (see run() in lib.rs) that detects a second launch before CefRuntime::init
-    # fires (Sentry OPENHUMAN-TAURI-A).
+    # fires (Sentry AURA-TAURI-A).
     # Win32_Security is required because CreateMutexW's SECURITY_ATTRIBUTES
     # parameter is gated behind it in windows-sys 0.59.
     "Win32_System_Threading",
@@ -204,7 +204,7 @@ windows-sys = { version = "0.59", features = [
 ] }
 # meeting_recorder transcription engine (CPU-only, no vulkan/cuda/metal —
 # see the module doc comment for scope). Deliberately pinned to the SAME
-# version already resolved transitively via `openhuman_core` (root
+# version already resolved transitively via `aura_core` (root
 # Cargo.toml depends on `whisper-rs = "0.16"`) rather than the newer
 # `0.13.2`/`raw-api` combination used upstream by Meetily: app/src-tauri
 # and the root crate are separate crate graphs with separate Cargo.locks
@@ -224,10 +224,10 @@ default = []
 # every `pnpm dev:app` will silently load the production bundle. DO NOT REMOVE!!
 custom-protocol = ["tauri/custom-protocol"]
 sandbox-bubblewrap = []
-# Forwarded to the core crate to expose `openhuman.test_reset`. Off by
+# Forwarded to the core crate to expose `aura.test_reset`. Off by
 # default; the E2E build flips it on via `cargo tauri build --features
 # e2e-test-support`. See app/scripts/e2e-build.sh.
-e2e-test-support = ["openhuman_core/e2e-test-support"]
+e2e-test-support = ["aura_core/e2e-test-support"]
 
 [patch.crates-io]
 # `cargo tauri build` resolves dependencies from this manifest, so the
@@ -240,8 +240,8 @@ whisper-rs-sys = { git = "https://github.com/tinyhumansai/whisper-rs-sys.git", b
 # OUTPUT device to record system audio) is not supported by stock cpal —
 # this fork adds it. Because `[patch.crates-io]` applies to the whole crate
 # graph resolved from THIS manifest, this also affects the `cpal = "0.15"`
-# dependency pulled in transitively via `openhuman_core` (used there only
-# for plain microphone capture in `openhuman::voice::audio_capture`) — the
+# dependency pulled in transitively via `aura_core` (used there only
+# for plain microphone capture in `aura::voice::audio_capture`) — the
 # fork is API-compatible with upstream 0.15.x for normal (non-loopback)
 # input capture, so this should be a no-op for that call site, but flag it
 # if mic dictation ever regresses after this patch lands.

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ws-reset: hard-reset the workspace to upstream/main and refresh submodules.
 #
-# Fetches the `upstream` remote (tinyhumansai/openhuman), checks out `main`,
+# Fetches the `upstream` remote (tinyhumansai/aura), checks out `main`,
 # hard-resets it to `upstream/main`, and recursively updates submodules.
 #
 # Bails out if the working tree has uncommitted changes (use --force to override).

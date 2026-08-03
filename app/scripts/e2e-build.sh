@@ -17,12 +17,12 @@ cd "$APP_DIR"
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
 export VITE_BACKEND_URL="http://127.0.0.1:${E2E_MOCK_PORT:-18473}"
-export VITE_OPENHUMAN_E2E_DEFAULT_CORE_MODE="local"
-export VITE_OPENHUMAN_E2E_RESTART_APP_AS_RELOAD="true"
+export VITE_AURA_E2E_DEFAULT_CORE_MODE="local"
+export VITE_AURA_E2E_RESTART_APP_AS_RELOAD="true"
 
 echo "Building E2E app with VITE_BACKEND_URL=$VITE_BACKEND_URL"
-echo "Building E2E app with VITE_OPENHUMAN_E2E_DEFAULT_CORE_MODE=$VITE_OPENHUMAN_E2E_DEFAULT_CORE_MODE"
-echo "Building E2E app with VITE_OPENHUMAN_E2E_RESTART_APP_AS_RELOAD=$VITE_OPENHUMAN_E2E_RESTART_APP_AS_RELOAD"
+echo "Building E2E app with VITE_AURA_E2E_DEFAULT_CORE_MODE=$VITE_AURA_E2E_DEFAULT_CORE_MODE"
+echo "Building E2E app with VITE_AURA_E2E_RESTART_APP_AS_RELOAD=$VITE_AURA_E2E_RESTART_APP_AS_RELOAD"
 
 if [ -n "${E2E_FORCE_CARGO_CLEAN:-}" ]; then
   echo "Forcing cargo clean (E2E_FORCE_CARGO_CLEAN is set)."
@@ -36,14 +36,14 @@ if [ -f "$REPO_ROOT/.env" ]; then
   source "$REPO_ROOT/scripts/load-dotenv.sh"
 else
   # `-f` returns false on a dangling symlink (the Docker bootstrap case
-  # where .env -> ../secrets/openhuman/.env but secrets/ isn't mounted),
+  # where .env -> ../secrets/aura/.env but secrets/ isn't mounted),
   # so this branch covers both "no .env" and "broken-symlink .env".
   echo "No usable .env at $REPO_ROOT/.env — skipping load-dotenv (optional for CI)."
 fi
 
 export VITE_BACKEND_URL="http://127.0.0.1:${E2E_MOCK_PORT:-18473}"
-export VITE_OPENHUMAN_E2E_DEFAULT_CORE_MODE="local"
-export VITE_OPENHUMAN_E2E_RESTART_APP_AS_RELOAD="true"
+export VITE_AURA_E2E_DEFAULT_CORE_MODE="local"
+export VITE_AURA_E2E_RESTART_APP_AS_RELOAD="true"
 
 # Core is compiled in-process into the Tauri shell as of PR #1061; the old
 # scripts/stage-core-sidecar.mjs staging step is no longer needed.
@@ -76,18 +76,18 @@ case "$OS" in
   Linux)
     # Linux: build debug binary only.
     echo "Building for Linux (debug binary, no bundle)..."
-    cargo tauri build -c "$TAURI_CONFIG_OVERRIDE" --debug --no-bundle --features e2e-test-support -- --bin OpenHuman
+    cargo tauri build -c "$TAURI_CONFIG_OVERRIDE" --debug --no-bundle --features e2e-test-support -- --bin Aura
     ;;
   Darwin)
     # macOS: build .app bundle (wdio.conf points at
-    # src-tauri/target/debug/bundle/macos/OpenHuman.app).
+    # src-tauri/target/debug/bundle/macos/Aura.app).
     echo "Building for macOS (.app bundle)..."
-    cargo tauri build -c "$TAURI_CONFIG_OVERRIDE" --bundles app --debug --features e2e-test-support -- --bin OpenHuman
+    cargo tauri build -c "$TAURI_CONFIG_OVERRIDE" --bundles app --debug --features e2e-test-support -- --bin Aura
     ;;
   MINGW*|MSYS*|CYGWIN*|Windows_NT)
-    # Windows: bare .exe at src-tauri/target/debug/OpenHuman.exe.
+    # Windows: bare .exe at src-tauri/target/debug/Aura.exe.
     echo "Building for Windows (.exe, no bundle)..."
-    cargo tauri build -c "$TAURI_CONFIG_OVERRIDE" --debug --no-bundle --features e2e-test-support -- --bin OpenHuman
+    cargo tauri build -c "$TAURI_CONFIG_OVERRIDE" --debug --no-bundle --features e2e-test-support -- --bin Aura
     ;;
   *)
     echo "ERROR: unsupported OS for e2e build: $OS" >&2

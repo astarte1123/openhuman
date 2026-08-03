@@ -19,8 +19,8 @@
 #   scripts/memory-tree-progress.sh --once            # one snapshot, then exit
 #
 # Env:
-#   OPENHUMAN_WORKSPACE  — workspace dir (default: derive from active_user.toml)
-#   CORE_BIN             — path to openhuman-core (default: target/debug/openhuman-core)
+#   AURA_WORKSPACE  — workspace dir (default: derive from active_user.toml)
+#   CORE_BIN             — path to aura-core (default: target/debug/aura-core)
 #   CORE_LOG             — core log to scrape for round-trip times (default: /tmp/oh-core.log)
 #
 set -euo pipefail
@@ -32,7 +32,7 @@ cd "$REPO_ROOT"
 INTERVAL=5
 DO_FLUSH=0
 ONCE=0
-CORE_BIN="${CORE_BIN:-target/debug/openhuman-core}"
+CORE_BIN="${CORE_BIN:-target/debug/aura-core}"
 CORE_LOG="${CORE_LOG:-/tmp/oh-core.log}"
 
 while [ $# -gt 0 ]; do
@@ -53,23 +53,23 @@ done
 
 # ── Resolve workspace + DB path ─────────────────────────────────────────────
 
-if [ -z "${OPENHUMAN_WORKSPACE:-}" ]; then
-    DEFAULT_DIR="$HOME/.openhuman-staging"
-    [ -d "$DEFAULT_DIR" ] || DEFAULT_DIR="$HOME/.openhuman"
+if [ -z "${AURA_WORKSPACE:-}" ]; then
+    DEFAULT_DIR="$HOME/.aura-staging"
+    [ -d "$DEFAULT_DIR" ] || DEFAULT_DIR="$HOME/.aura"
     ACTIVE_USER_FILE="$DEFAULT_DIR/active_user.toml"
     if [ -f "$ACTIVE_USER_FILE" ]; then
         USER_ID=$(awk -F'"' '/user_id/ {print $2; exit}' "$ACTIVE_USER_FILE")
-        OPENHUMAN_WORKSPACE="$DEFAULT_DIR/users/$USER_ID/workspace"
+        AURA_WORKSPACE="$DEFAULT_DIR/users/$USER_ID/workspace"
     fi
 fi
-DB="${OPENHUMAN_WORKSPACE:-}/memory_tree/chunks.db"
+DB="${AURA_WORKSPACE:-}/memory_tree/chunks.db"
 if [ ! -f "$DB" ]; then
     echo "memory_tree DB not found at: $DB" >&2
-    echo "Set OPENHUMAN_WORKSPACE to override." >&2
+    echo "Set AURA_WORKSPACE to override." >&2
     exit 1
 fi
 
-echo "workspace: $OPENHUMAN_WORKSPACE"
+echo "workspace: $AURA_WORKSPACE"
 echo "db:        $DB"
 echo "log:       $CORE_LOG"
 echo
@@ -78,14 +78,14 @@ echo
 
 if [ "$DO_FLUSH" = 1 ]; then
     if [ ! -x "$CORE_BIN" ]; then
-        echo "core binary not found: $CORE_BIN — build with 'cargo build --bin openhuman-core'" >&2
+        echo "core binary not found: $CORE_BIN — build with 'cargo build --bin aura-core'" >&2
         exit 1
     fi
     echo "→ triggering memory_tree.flush_now"
     # Capture the full output so we can echo it on failure (the call's
     # exit code is what we gate on; the grep below is just for the
     # success-path summary).
-    flush_out="$("$CORE_BIN" call --method openhuman.memory_tree_flush_now --params '{}' 2>&1)" || {
+    flush_out="$("$CORE_BIN" call --method aura.memory_tree_flush_now --params '{}' 2>&1)" || {
         echo "$flush_out" >&2
         echo "flush_now failed; aborting monitor start." >&2
         exit 1

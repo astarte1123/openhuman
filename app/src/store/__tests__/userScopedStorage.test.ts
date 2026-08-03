@@ -11,7 +11,7 @@
  */
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
-const ACTIVE_USER_KEY = 'OPENHUMAN_ACTIVE_USER_ID';
+const ACTIVE_USER_KEY = 'AURA_ACTIVE_USER_ID';
 
 async function importModule() {
   vi.resetModules();
@@ -39,7 +39,7 @@ describe('userScopedStorage', () => {
     localStorage.setItem(ACTIVE_USER_KEY, 'prior-user');
     const mod = await importModule();
 
-    // Cloud-mode boot can't read `~/.openhuman/active_user.toml` (no local
+    // Cloud-mode boot can't read `~/.aura/active_user.toml` (no local
     // core), so `getActiveUserIdFromCore()` resolves to null. The fix:
     // prime(null) must NOT wipe the seed, otherwise the next snapshot's
     // identity-flip detection re-triggers the loop.

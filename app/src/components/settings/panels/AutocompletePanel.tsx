@@ -5,11 +5,11 @@ import {
   type AutocompleteConfig,
   type AutocompleteStatus,
   isTauri,
-  openhumanAutocompleteSetStyle,
-  openhumanAutocompleteStart,
-  openhumanAutocompleteStatus,
-  openhumanAutocompleteStop,
-  openhumanGetConfig,
+  auraAutocompleteSetStyle,
+  auraAutocompleteStart,
+  auraAutocompleteStatus,
+  auraAutocompleteStop,
+  auraGetConfig,
 } from '../../../utils/tauriCommands';
 import SettingsHeader from '../components/SettingsHeader';
 import { useSettingsNavigation } from '../hooks/useSettingsNavigation';
@@ -80,8 +80,8 @@ const AutocompletePanel = () => {
     setError(null);
     try {
       const [statusResponse, configResponse] = await Promise.all([
-        openhumanAutocompleteStatus(),
-        openhumanGetConfig(),
+        auraAutocompleteStatus(),
+        auraGetConfig(),
       ]);
       setStatus(statusResponse.result);
       const config = parseAutocompleteConfig(
@@ -105,7 +105,7 @@ const AutocompletePanel = () => {
   const refreshStatus = async () => {
     if (!isTauri()) return;
     try {
-      const response = await openhumanAutocompleteStatus();
+      const response = await auraAutocompleteStatus();
       setStatus(response.result);
     } catch {
       // Non-critical
@@ -127,7 +127,7 @@ const AutocompletePanel = () => {
     setMessage(null);
     try {
       const prev = fullConfigRef.current;
-      const response = await openhumanAutocompleteSetStyle({
+      const response = await auraAutocompleteSetStyle({
         enabled,
         debounce_ms: prev.debounce_ms,
         max_chars: prev.max_chars,
@@ -161,7 +161,7 @@ const AutocompletePanel = () => {
     setError(null);
     setMessage(null);
     try {
-      const response = await openhumanAutocompleteStart({
+      const response = await auraAutocompleteStart({
         debounce_ms: fullConfigRef.current.debounce_ms,
       });
       await refreshStatus();
@@ -180,7 +180,7 @@ const AutocompletePanel = () => {
     setError(null);
     setMessage(null);
     try {
-      await openhumanAutocompleteStop({ reason: 'manual_stop_from_settings' });
+      await auraAutocompleteStop({ reason: 'manual_stop_from_settings' });
       await refreshStatus();
       setMessage(t('autocomplete.stopped'));
     } catch (err) {

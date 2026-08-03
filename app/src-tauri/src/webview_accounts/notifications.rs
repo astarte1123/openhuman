@@ -54,14 +54,14 @@ impl From<&NotificationBypassPrefs> for NotificationBypassPrefsPayload {
 }
 
 /// Title prefix applied to every OS toast fired from an embedded webview.
-/// Matches `openhuman_core::webview_notifications::OPENHUMAN_TITLE_PREFIX`
+/// Matches `aura_core::webview_notifications::AURA_TITLE_PREFIX`
 /// — kept inline here so the shell crate doesn't take a build-time dep on
 /// the core library. Disambiguates from natively-installed apps (Slack,
 /// Discord, Telegram desktop) firing the same message twice.
-const OPENHUMAN_TITLE_PREFIX: &str = "OpenHuman: ";
+const AURA_TITLE_PREFIX: &str = "Aura: ";
 
 pub(crate) fn slack_scanner_enabled() -> bool {
-    std::env::var("OPENHUMAN_DISABLE_SLACK_SCANNER")
+    std::env::var("AURA_DISABLE_SLACK_SCANNER")
         .map(|v| {
             let v = v.trim().to_ascii_lowercase();
             !(v == "1" || v == "true" || v == "yes" || v == "on")
@@ -97,13 +97,13 @@ pub(crate) fn enqueue_linux_notification(job: Box<dyn FnOnce() + Send>) {
     let tx = LINUX_NOTIFY_TX.get_or_init(|| {
         let (tx, rx) = sync_channel::<Box<dyn FnOnce() + Send>>(LINUX_NOTIFY_QUEUE_CAP);
         std::thread::Builder::new()
-            .name("openhuman-linux-notify".to_string())
+            .name("aura-linux-notify".to_string())
             .spawn(move || {
                 while let Ok(j) = rx.recv() {
                     j();
                 }
             })
-            .expect("spawn openhuman-linux-notify");
+            .expect("spawn aura-linux-notify");
         tx
     });
     if let Err(e) = tx.try_send(job) {
@@ -173,9 +173,9 @@ pub(crate) fn forward_native_notification<R: Runtime>(
     let provider_label = provider_display_name(provider);
     let raw_title = payload.title.as_str().trim();
     let notify_title = if raw_title.is_empty() {
-        format!("{OPENHUMAN_TITLE_PREFIX}{provider_label}")
+        format!("{AURA_TITLE_PREFIX}{provider_label}")
     } else {
-        format!("{OPENHUMAN_TITLE_PREFIX}{provider_label} — {raw_title}")
+        format!("{AURA_TITLE_PREFIX}{provider_label} — {raw_title}")
     };
     let body = payload.body.as_deref().unwrap_or("");
     log::info!(

@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { useT } from '../../lib/i18n/I18nContext';
 import { BubbleMarkdown } from '../../pages/conversations/components/AgentMessageBubble';
-import { openhumanMeetingsSummarize } from '../../utils/tauriCommands/meetings';
+import { auraMeetingsSummarize } from '../../utils/tauriCommands/meetings';
 
 interface Props {
   meetingId: string;
@@ -25,7 +25,7 @@ export default function MeetingSummaryPanel({
     setLoading(true);
     setError(null);
     try {
-      await openhumanMeetingsSummarize(meetingId);
+      await auraMeetingsSummarize(meetingId);
       onSummarized();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));

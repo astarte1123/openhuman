@@ -3,7 +3,7 @@
 # supported platform on both the GitHub release assets and the Tauri
 # updater manifest (`latest.json`).
 #
-# Regression guard for tinyhumansai/openhuman#785: when a release ships
+# Regression guard for tinyhumansai/aura#785: when a release ships
 # without a Linux asset, `install.sh` on Linux falls through every
 # resolver and prints a confusing failure. This script catches the drift
 # at the source so maintainers notice before users do.
@@ -22,8 +22,8 @@
 #   2 — bad arguments or invalid JSON.
 #
 # Example (local):
-#   gh api repos/tinyhumansai/openhuman/releases/latest > /tmp/release.json
-#   curl -fsSL https://github.com/tinyhumansai/openhuman/releases/latest/download/latest.json > /tmp/latest.json
+#   gh api repos/tinyhumansai/aura/releases/latest > /tmp/release.json
+#   curl -fsSL https://github.com/tinyhumansai/aura/releases/latest/download/latest.json > /tmp/latest.json
 #   scripts/validate-release-assets.sh /tmp/release.json /tmp/latest.json
 
 set -euo pipefail

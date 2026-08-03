@@ -12,7 +12,7 @@
 # Prerequisites:
 #   - Active session token (login via the app first)
 #   - Telegram account linked (completed managed DM flow)
-#   - Core binary built: cargo build --bin openhuman-core
+#   - Core binary built: cargo build --bin aura-core
 # ──────────────────────────────────────────────────────────────────────
 set -euo pipefail
 
@@ -24,16 +24,16 @@ if [[ -f "$ROOT_DIR/scripts/load-dotenv.sh" ]]; then
   source "$ROOT_DIR/scripts/load-dotenv.sh" 2>/dev/null || true
 fi
 
-CORE_BIN="${OPENHUMAN_CORE_BIN:-}"
+CORE_BIN="${AURA_CORE_BIN:-}"
 if [[ -z "$CORE_BIN" ]]; then
-  CORE_BIN="$ROOT_DIR/target/debug/openhuman-core"
+  CORE_BIN="$ROOT_DIR/target/debug/aura-core"
   if [[ ! -x "$CORE_BIN" ]]; then
-    echo "Building openhuman-core..."
-    cargo build --manifest-path "$ROOT_DIR/Cargo.toml" --bin openhuman-core 2>&1 | tail -2
+    echo "Building aura-core..."
+    cargo build --manifest-path "$ROOT_DIR/Cargo.toml" --bin aura-core 2>&1 | tail -2
   fi
 fi
 
-MESSAGE="${1:-Hello from OpenHuman! 🚀 This is a test message sent via the channel messaging API.}"
+MESSAGE="${1:-Hello from Aura! 🚀 This is a test message sent via the channel messaging API.}"
 
 divider() { echo "────────────────────────────────────────────────"; }
 
@@ -75,7 +75,7 @@ if [[ -z "$TELEGRAM_ID" ]]; then
   echo ""
   echo "   ⚠️  No telegramId found on your profile."
   echo "   Complete the Telegram managed DM linking flow first."
-  echo "   (Skills page → Telegram → Login with OpenHuman → click Start in Telegram)"
+  echo "   (Skills page → Telegram → Login with Aura → click Start in Telegram)"
   exit 1
 fi
 
@@ -106,7 +106,7 @@ echo "4️⃣  Sending message with inline button..."
 
 BUTTON_MSG=$("$CORE_BIN" channels send_message \
   --channel telegram \
-  --message '{"text": "Here is a link for you:", "buttons": [{"label": "OpenHuman GitHub", "url": "https://github.com/tinyhumansai/openhuman"}]}' 2>&1 || true)
+  --message '{"text": "Here is a link for you:", "buttons": [{"label": "Aura GitHub", "url": "https://github.com/tinyhumansai/aura"}]}' 2>&1 || true)
 
 echo "$BUTTON_MSG" | grep -A20 '{' | head -15
 
@@ -133,9 +133,9 @@ echo ""
 echo "✅ Channel messaging E2E test complete."
 echo ""
 echo "Available RPC methods:"
-echo "  openhuman.channels_send_message    — Send rich message (text, photo, stickers, buttons)"
-echo "  openhuman.channels_send_reaction   — React to a message with emoji"
-echo "  openhuman.channels_create_thread   — Create a conversation thread"
-echo "  openhuman.channels_update_thread   — Close or reopen a thread"
-echo "  openhuman.channels_list_threads    — List threads for a channel"
+echo "  aura.channels_send_message    — Send rich message (text, photo, stickers, buttons)"
+echo "  aura.channels_send_reaction   — React to a message with emoji"
+echo "  aura.channels_create_thread   — Create a conversation thread"
+echo "  aura.channels_update_thread   — Close or reopen a thread"
+echo "  aura.channels_list_threads    — List threads for a channel"
 echo ""

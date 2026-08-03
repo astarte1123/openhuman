@@ -41,9 +41,9 @@ cat > "$EVENT_JSON" <<EOF
   "before": "0000000000000000000000000000000000000000",
   "after": "$CURRENT_REF",
   "repository": {
-    "full_name": "vezuresdotxyz/openhuman-frontend-runner",
+    "full_name": "vezuresdotxyz/aura-frontend-runner",
     "default_branch": "main",
-    "name": "openhuman-frontend-runner",
+    "name": "aura-frontend-runner",
     "owner": { "login": "vezuresdotxyz" }
   },
   "head_commit": {

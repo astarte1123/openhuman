@@ -125,7 +125,7 @@ const ProducerSession: FC<{ session: BusSession }> = ({ session }) => {
   // Frame counter feeding our own FrameContext below. We DON'T use the
   // shared `<FrameProvider>` wrapper because it ticks via
   // requestAnimationFrame, which Chromium throttles when the main
-  // openhuman window is backgrounded behind the Meet window — the
+  // aura window is backgrounded behind the Meet window — the
   // mascot would freeze the moment the user clicks into Meet. The
   // worker tick below advances this state from `Date.now()` instead,
   // which keeps running regardless of focus.
@@ -218,7 +218,7 @@ const ProducerSession: FC<{ session: BusSession }> = ({ session }) => {
 
     // Heartbeat from a Web Worker, NOT main-thread setInterval.
     // Background-throttling: when the meet window has focus, the main
-    // openhuman window is no longer foreground, and Chromium throttles
+    // aura window is no longer foreground, and Chromium throttles
     // main-thread setInterval to ~1Hz. Worker timers run in a separate
     // event loop and are throttled much less aggressively, which keeps
     // the producer hitting its target rate while the user is looking

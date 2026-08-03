@@ -582,7 +582,7 @@ describe('Conversations — smoke render (#1123 welcome-lock removal)', () => {
     });
 
     // dismissBanner writes to localStorage with the banner key — confirms line 1413 executed
-    expect(localStorage.getItem('openhuman:upsell:conversations-warning')).not.toBeNull();
+    expect(localStorage.getItem('aura:upsell:conversations-warning')).not.toBeNull();
   });
 
   // Covers line 1443: onClick inside "Top Up" button in budget-exceeded banner

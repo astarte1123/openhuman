@@ -1,4 +1,4 @@
-//! Startup recovery for OpenHuman processes left behind by hard exits.
+//! Startup recovery for Aura processes left behind by hard exits.
 
 #[cfg(target_os = "macos")]
 mod imp {
@@ -47,10 +47,10 @@ mod imp {
         }
     }
 
-    pub(crate) fn reap_stale_openhuman_processes() {
+    pub(crate) fn reap_stale_aura_processes() {
         if core_process::reuse_existing_listener_enabled() {
             log::info!(
-                "[startup-recovery] OPENHUMAN_CORE_REUSE_EXISTING=1; skipping stale process reap"
+                "[startup-recovery] AURA_CORE_REUSE_EXISTING=1; skipping stale process reap"
             );
             return;
         }
@@ -64,16 +64,16 @@ mod imp {
             }
         }
 
-        let initial = match enumerate_openhuman_processes() {
+        let initial = match enumerate_aura_processes() {
             Ok(processes) => processes,
             Err(err) => {
-                log::warn!("[startup-recovery] failed to enumerate OpenHuman processes: {err}");
+                log::warn!("[startup-recovery] failed to enumerate Aura processes: {err}");
                 return;
             }
         };
         let stale = filter_self_pid(&initial, std::process::id());
         if stale.is_empty() {
-            log::info!("[startup-recovery] no stale OpenHuman processes found");
+            log::info!("[startup-recovery] no stale Aura processes found");
             return;
         }
 
@@ -81,12 +81,12 @@ mod imp {
         for process in &stale {
             match killer.term(process.pid) {
                 Ok(()) => log::warn!(
-                    "[startup-recovery] SIGTERM stale OpenHuman pid={} argv0={}",
+                    "[startup-recovery] SIGTERM stale Aura pid={} argv0={}",
                     process.pid,
                     process.argv0
                 ),
                 Err(err) => log::warn!(
-                    "[startup-recovery] failed to SIGTERM stale OpenHuman pid={}: {err}",
+                    "[startup-recovery] failed to SIGTERM stale Aura pid={}: {err}",
                     process.pid
                 ),
             }
@@ -94,7 +94,7 @@ mod imp {
 
         std::thread::sleep(TERM_GRACE);
 
-        let after_term = match enumerate_openhuman_processes() {
+        let after_term = match enumerate_aura_processes() {
             Ok(processes) => processes,
             Err(err) => {
                 log::warn!(
@@ -121,7 +121,7 @@ mod imp {
         }
     }
 
-    pub(crate) fn enumerate_openhuman_processes() -> Result<Vec<ProcessInfo>, String> {
+    pub(crate) fn enumerate_aura_processes() -> Result<Vec<ProcessInfo>, String> {
         let Some((contents_dir, main_exe)) = current_bundle_contents_dir() else {
             log::debug!("[startup-recovery] current executable is not inside a .app bundle");
             return Ok(Vec::new());
@@ -179,13 +179,13 @@ mod imp {
                 Ok(()) => {
                     summary.kill += 1;
                     log::warn!(
-                        "[startup-recovery] SIGKILL stale OpenHuman pid={} argv0={}",
+                        "[startup-recovery] SIGKILL stale Aura pid={} argv0={}",
                         process.pid,
                         process.argv0
                     );
                 }
                 Err(err) => log::warn!(
-                    "[startup-recovery] failed to SIGKILL stale OpenHuman pid={}: {err}",
+                    "[startup-recovery] failed to SIGKILL stale Aura pid={}: {err}",
                     process.pid
                 ),
             }
@@ -303,7 +303,7 @@ mod imp {
     }
 
     fn cef_cache_path() -> Option<PathBuf> {
-        if let Some(configured) = std::env::var_os("OPENHUMAN_CEF_CACHE_PATH") {
+        if let Some(configured) = std::env::var_os("AURA_CEF_CACHE_PATH") {
             return Some(PathBuf::from(configured));
         }
         let home = std::env::var_os("HOME")?;
@@ -320,19 +320,19 @@ mod imp {
         use super::*;
 
         fn contents_dir() -> PathBuf {
-            PathBuf::from("/Applications/OpenHuman.app/Contents")
+            PathBuf::from("/Applications/Aura.app/Contents")
         }
 
         fn main_exe() -> PathBuf {
-            contents_dir().join("MacOS/OpenHuman")
+            contents_dir().join("MacOS/Aura")
         }
 
         #[test]
         fn parse_ps_matches_main_and_helper_bundle_argv0() {
             let stdout = "\
-  123   1 /Applications/OpenHuman.app/Contents/MacOS/OpenHuman
-  124 123 /Applications/OpenHuman.app/Contents/Frameworks/OpenHuman Helper (Renderer).app/Contents/MacOS/OpenHuman Helper (Renderer) --type=renderer
-  999   1 /Applications/Other.app/Contents/MacOS/OpenHuman
+  123   1 /Applications/Aura.app/Contents/MacOS/Aura
+  124 123 /Applications/Aura.app/Contents/Frameworks/Aura Helper (Renderer).app/Contents/MacOS/Aura Helper (Renderer) --type=renderer
+  999   1 /Applications/Other.app/Contents/MacOS/Aura
 ";
             let processes = parse_ps_output(stdout, &contents_dir(), Some(&main_exe()));
             assert_eq!(processes.len(), 2);
@@ -341,7 +341,7 @@ mod imp {
             assert_eq!(processes[1].pid, 124);
             assert_eq!(
                 processes[1].argv0,
-                "/Applications/OpenHuman.app/Contents/Frameworks/OpenHuman Helper (Renderer).app/Contents/MacOS/OpenHuman Helper (Renderer)"
+                "/Applications/Aura.app/Contents/Frameworks/Aura Helper (Renderer).app/Contents/MacOS/Aura Helper (Renderer)"
             );
         }
 
@@ -417,7 +417,7 @@ mod imp {
 }
 
 #[cfg(target_os = "macos")]
-pub(crate) use imp::{enumerate_openhuman_processes, reap_stale_openhuman_processes, ProcessInfo};
+pub(crate) use imp::{enumerate_aura_processes, reap_stale_aura_processes, ProcessInfo};
 
 #[cfg(not(target_os = "macos"))]
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]
@@ -429,11 +429,11 @@ pub(crate) struct ProcessInfo {
 }
 
 #[cfg(not(target_os = "macos"))]
-pub(crate) fn reap_stale_openhuman_processes() {
+pub(crate) fn reap_stale_aura_processes() {
     log::debug!("[startup-recovery] skipped on non-macos platform");
 }
 
 #[cfg(not(target_os = "macos"))]
-pub(crate) fn enumerate_openhuman_processes() -> Result<Vec<ProcessInfo>, String> {
+pub(crate) fn enumerate_aura_processes() -> Result<Vec<ProcessInfo>, String> {
     Ok(Vec::new())
 }

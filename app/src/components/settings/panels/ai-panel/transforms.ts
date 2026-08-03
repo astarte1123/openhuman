@@ -17,7 +17,7 @@ export function maskKeyLabel(hasKey: boolean): string {
  * to bearer, matching the OpenAI-compatible majority.
  */
 export function authStyleForSlug(slug: string): AuthStyle {
-  if (slug === 'openhuman') return 'openhuman_jwt';
+  if (slug === 'aura') return 'aura_jwt';
   if (slug === 'anthropic') return 'anthropic';
   if (slug === 'lmstudio' || slug === 'ollama') return 'none';
   if (slug === 'youworker') return 'youworker';
@@ -88,7 +88,7 @@ export function slugTone(slug: string): string {
 }
 
 export function describeProvider(ref: ProviderRef, providers: CloudProvider[]): string {
-  if (ref.kind === 'openhuman') return 'OpenHuman';
+  if (ref.kind === 'aura') return 'Aura';
   if (ref.kind === 'local') return `Local ${ref.model}`;
   const provider = providers.find(p => p.slug === ref.providerSlug);
   return `${provider?.label ?? ref.providerSlug} ${ref.model || 'custom model'}`;
@@ -96,8 +96,8 @@ export function describeProvider(ref: ProviderRef, providers: CloudProvider[]): 
 
 export function defaultEndpointFor(slug: string): string {
   switch (slug) {
-    case 'openhuman':
-      return 'https://api.openhuman.ai/v1';
+    case 'aura':
+      return 'https://api.aura.ai/v1';
     case 'openai':
       return 'https://api.openai.com/v1';
     case 'anthropic':

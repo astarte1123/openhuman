@@ -5,8 +5,8 @@
 //! Watch your cursor — it should curve, not teleport. Keep your hand
 //! off the mouse during the run.
 
-use openhuman_core::openhuman::security::SecurityPolicy;
-use openhuman_core::openhuman::tools::{MouseTool, Tool};
+use aura_core::aura::security::SecurityPolicy;
+use aura_core::aura::tools::{MouseTool, Tool};
 use serde_json::json;
 use std::sync::Arc;
 use std::time::Instant;

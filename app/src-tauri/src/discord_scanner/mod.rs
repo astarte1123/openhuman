@@ -191,7 +191,7 @@ fn parse_targets(v: &Value) -> Vec<CdpTarget> {
 async fn browser_ws_url() -> Result<String, String> {
     let url = format!("http://{CDP_HOST}:{CDP_PORT}/json/version");
     let resp = reqwest::Client::builder()
-        .user_agent("openhuman-cdp/1.0")
+        .user_agent("aura-cdp/1.0")
         .timeout(Duration::from_secs(5))
         .build()
         .map_err(|e| format!("reqwest build: {e}"))?

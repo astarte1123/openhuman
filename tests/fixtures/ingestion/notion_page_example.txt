@@ -1,4 +1,4 @@
-# OpenHuman Memory Layer Roadmap
+# Aura Memory Layer Roadmap
 
 Workspace: tinyhumans / engineering
 Owner: Sanil Jain
@@ -8,7 +8,7 @@ Tags: memory, rust-core, ingestion, neocortex
 
 ## Overview
 
-This page tracks the work needed to complete the OpenHuman memory layer in the Rust core.
+This page tracks the work needed to complete the Aura memory layer in the Rust core.
 
 The current direction is:
 - keep JSON-RPC as the transport
@@ -79,7 +79,7 @@ Documents should preserve:
 Graph storage should capture facts like:
 - Ravi works_on memory-layer-completion
 - Asha evaluates neocortex_v2
-- OpenHuman uses JSON-RPC
+- Aura uses JSON-RPC
 - memory-layer-completion depends_on API-contract
 
 ### Durable preferences
@@ -115,7 +115,7 @@ Success criteria:
 ## Risks
 
 - The frontend currently expects raw values for some memory methods.
-- neocortex_v2 preserves duplicate relation evidence, while OpenHuman may prefer aggregation.
+- neocortex_v2 preserves duplicate relation evidence, while Aura may prefer aggregation.
 - If we do not define request and response models early, parallel agents may diverge.
 
 ## Testing Notes

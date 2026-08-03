@@ -1,5 +1,5 @@
 import { waitForApp, waitForAppReady } from '../helpers/app-helpers';
-import { callOpenhumanRpc } from '../helpers/core-rpc';
+import { callAuraRpc } from '../helpers/core-rpc';
 import { triggerAuthDeepLinkBypass } from '../helpers/deep-link-helpers';
 import { waitForWebView, waitForWindowVisible } from '../helpers/element-helpers';
 import { supportsExecuteScript } from '../helpers/platform';
@@ -14,7 +14,7 @@ import { startMockServer, stopMockServer } from '../mock-server';
  * Tauri shell and core sidecar — store a fact, recall it via search, then
  * forget it and confirm the recall path no longer returns it.
  *
- * Driven via `callOpenhumanRpc` rather than UI navigation: the user-visible
+ * Driven via `callAuraRpc` rather than UI navigation: the user-visible
  * surface (Intelligence dashboard) is asserted in `insights-dashboard.spec.ts`.
  * Keeping this spec narrow to the RPC contract makes regressions in the
  * memory sidecar easy to bisect.
@@ -34,7 +34,7 @@ function stepLog(message: string, context?: unknown): void {
 const TEST_NAMESPACE = 'e2e-memory-roundtrip-773';
 const TEST_KEY = 'roundtrip-canary-key';
 const TEST_TITLE = 'Memory roundtrip canary';
-const TEST_CONTENT = 'OpenHuman memory roundtrip canary fact #773';
+const TEST_CONTENT = 'Aura memory roundtrip canary fact #773';
 
 describe('Memory subsystem round-trip', () => {
   before(async function beforeSuite() {
@@ -56,14 +56,14 @@ describe('Memory subsystem round-trip', () => {
 
     // Memory subsystem must be initialised before doc_put / recall.
     stepLog('initialising memory subsystem');
-    const init = await callOpenhumanRpc('openhuman.memory_init', { jwt_token: '' });
+    const init = await callAuraRpc('aura.memory_init', { jwt_token: '' });
     stepLog('memory_init response', init);
     expect(init.ok).toBe(true);
 
     // Make sure the namespace starts empty so the recall assertion in test 1
     // is unambiguous if a previous run left state behind.
     stepLog('clearing namespace pre-suite');
-    await callOpenhumanRpc('openhuman.memory_clear_namespace', { namespace: TEST_NAMESPACE });
+    await callAuraRpc('aura.memory_clear_namespace', { namespace: TEST_NAMESPACE });
   });
 
   after(async () => {
@@ -73,7 +73,7 @@ describe('Memory subsystem round-trip', () => {
 
   it('stores a document via memory_doc_put and finds it via recall_memories', async () => {
     stepLog('storing memory');
-    const storeResult = await callOpenhumanRpc('openhuman.memory_doc_put', {
+    const storeResult = await callAuraRpc('aura.memory_doc_put', {
       namespace: TEST_NAMESPACE,
       key: TEST_KEY,
       title: TEST_TITLE,
@@ -83,7 +83,7 @@ describe('Memory subsystem round-trip', () => {
     expect(storeResult.ok).toBe(true);
 
     stepLog('recalling memory');
-    const recallResult = await callOpenhumanRpc('openhuman.memory_recall_memories', {
+    const recallResult = await callAuraRpc('aura.memory_recall_memories', {
       namespace: TEST_NAMESPACE,
       limit: 10,
     });
@@ -110,11 +110,11 @@ describe('Memory subsystem round-trip', () => {
 
     // Seed fact in namespace A (simulates chat A).
     stepLog('clearing cross-chat namespaces');
-    await callOpenhumanRpc('openhuman.memory_clear_namespace', { namespace: NS_A });
-    await callOpenhumanRpc('openhuman.memory_clear_namespace', { namespace: NS_B });
+    await callAuraRpc('aura.memory_clear_namespace', { namespace: NS_A });
+    await callAuraRpc('aura.memory_clear_namespace', { namespace: NS_B });
 
     stepLog('storing fact in namespace A');
-    const storeResult = await callOpenhumanRpc('openhuman.memory_doc_put', {
+    const storeResult = await callAuraRpc('aura.memory_doc_put', {
       namespace: NS_A,
       key: FACT_KEY,
       title: 'Phoenix landing fact',
@@ -126,7 +126,7 @@ describe('Memory subsystem round-trip', () => {
     // Recall from namespace B — the memory backend is shared, so the
     // fact stored under A must be retrievable from B's recall path.
     stepLog('recalling from namespace B (cross-chat retrieval)');
-    const recallResult = await callOpenhumanRpc('openhuman.memory_recall_memories', {
+    const recallResult = await callAuraRpc('aura.memory_recall_memories', {
       namespace: NS_B,
       limit: 20,
     });
@@ -141,15 +141,15 @@ describe('Memory subsystem round-trip', () => {
     expect(typeof recallResult.result).not.toBe('undefined');
 
     stepLog('cleaning up cross-chat namespaces');
-    await callOpenhumanRpc('openhuman.memory_clear_namespace', { namespace: NS_A });
-    await callOpenhumanRpc('openhuman.memory_clear_namespace', { namespace: NS_B });
+    await callAuraRpc('aura.memory_clear_namespace', { namespace: NS_A });
+    await callAuraRpc('aura.memory_clear_namespace', { namespace: NS_B });
   });
 
   it('clears a namespace and recall returns no canary content (edge case)', async () => {
     // Seed a fresh canary inside this test so it cannot pass vacuously when
     // run in isolation (e.g. `mocha --grep "clears a namespace"`).
     stepLog('seeding canary before clear');
-    const seed = await callOpenhumanRpc('openhuman.memory_doc_put', {
+    const seed = await callAuraRpc('aura.memory_doc_put', {
       namespace: TEST_NAMESPACE,
       key: TEST_KEY,
       title: TEST_TITLE,
@@ -158,7 +158,7 @@ describe('Memory subsystem round-trip', () => {
     expect(seed.ok).toBe(true);
 
     // Sanity: canary is recallable before the clear.
-    const preClear = await callOpenhumanRpc('openhuman.memory_recall_memories', {
+    const preClear = await callAuraRpc('aura.memory_recall_memories', {
       namespace: TEST_NAMESPACE,
       limit: 10,
     });
@@ -166,14 +166,14 @@ describe('Memory subsystem round-trip', () => {
     expect(JSON.stringify(preClear.result ?? {}).includes(TEST_KEY)).toBe(true);
 
     stepLog('clearing namespace');
-    const forgetResult = await callOpenhumanRpc('openhuman.memory_clear_namespace', {
+    const forgetResult = await callAuraRpc('aura.memory_clear_namespace', {
       namespace: TEST_NAMESPACE,
     });
     stepLog('clear response', forgetResult);
     expect(forgetResult.ok).toBe(true);
 
     stepLog('recalling after clear — must miss');
-    const recallAfterForget = await callOpenhumanRpc('openhuman.memory_recall_memories', {
+    const recallAfterForget = await callAuraRpc('aura.memory_recall_memories', {
       namespace: TEST_NAMESPACE,
       limit: 10,
     });

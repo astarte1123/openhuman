@@ -1,10 +1,10 @@
 //! Integration tests for the TokenJuice module.
 //!
 //! Iterates vendored `*.fixture.json` files under
-//! `src/openhuman/tokenjuice/tests/fixtures/` and asserts that
+//! `src/aura/tokenjuice/tests/fixtures/` and asserts that
 //! `reduce_execution_with_rules` produces the expected output.
 
-use openhuman_core::openhuman::tokenjuice::{
+use aura_core::aura::tokenjuice::{
     reduce::reduce_execution_with_rules, rules::load_builtin_rules, types::RuleFixture,
 };
 
@@ -17,7 +17,7 @@ const KNOWN_DRIFT_FIXTURES: &[&str] = &[
 
 fn fixtures_dir() -> std::path::PathBuf {
     let manifest = std::env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR not set");
-    std::path::PathBuf::from(manifest).join("src/openhuman/tokenjuice/tests/fixtures")
+    std::path::PathBuf::from(manifest).join("src/aura/tokenjuice/tests/fixtures")
 }
 
 #[test]

@@ -2,7 +2,7 @@
 import { browser, expect } from '@wdio/globals';
 
 import { waitForApp, waitForAppReady } from '../helpers/app-helpers';
-import { callOpenhumanRpc } from '../helpers/core-rpc';
+import { callAuraRpc } from '../helpers/core-rpc';
 import { triggerAuthDeepLinkBypass } from '../helpers/deep-link-helpers';
 import {
   dumpAccessibilityTree,
@@ -54,7 +54,7 @@ async function waitForCoreSidecar(timeout = 30_000): Promise<void> {
   let lastErr: unknown;
   await browser.waitUntil(
     async () => {
-      const result = await callOpenhumanRpc('openhuman.about_info', {});
+      const result = await callAuraRpc('aura.about_info', {});
       if (result.ok) {
         stepLog('core sidecar ready', { result: result.result });
         return true;
@@ -90,7 +90,7 @@ describe('Notifications', () => {
   });
 
   it('notification_ingest creates a new notification via core RPC', async () => {
-    const result = await callOpenhumanRpc('openhuman.notification_ingest', {
+    const result = await callAuraRpc('aura.notification_ingest', {
       id: 'e2e-notif-001',
       category: 'system',
       title: 'E2E Test Notification',
@@ -105,7 +105,7 @@ describe('Notifications', () => {
   });
 
   it('notification_list returns the ingested notification', async () => {
-    const result = await callOpenhumanRpc('openhuman.notification_list', { limit: 20 });
+    const result = await callAuraRpc('aura.notification_list', { limit: 20 });
     stepLog('notification_list result', { ok: result.ok, result: result.result });
     expect(result.ok).toBe(true);
 
@@ -121,18 +121,18 @@ describe('Notifications', () => {
   });
 
   it('notification_mark_read transitions notification status', async () => {
-    const before = await callOpenhumanRpc('openhuman.notification_stats', {});
+    const before = await callAuraRpc('aura.notification_stats', {});
     expect(before.ok).toBe(true);
     const beforeStats = before.result?.result ?? {};
     const initialUnread = getUnreadCount(beforeStats);
 
-    const result = await callOpenhumanRpc('openhuman.notification_mark_read', {
+    const result = await callAuraRpc('aura.notification_mark_read', {
       id: 'e2e-notif-001',
     });
     stepLog('notification_mark_read result', { ok: result.ok, result: result.result });
     expect(result.ok).toBe(true);
 
-    const after = await callOpenhumanRpc('openhuman.notification_stats', {});
+    const after = await callAuraRpc('aura.notification_stats', {});
     expect(after.ok).toBe(true);
     const afterStats = after.result?.result ?? {};
     const finalUnread = getUnreadCount(afterStats);
@@ -144,7 +144,7 @@ describe('Notifications', () => {
   });
 
   it('notification_stats returns aggregate statistics', async () => {
-    const result = await callOpenhumanRpc('openhuman.notification_stats', {});
+    const result = await callAuraRpc('aura.notification_stats', {});
     stepLog('notification_stats result', { ok: result.ok, result: result.result });
     expect(result.ok).toBe(true);
     const stats = result.result?.result ?? {};
@@ -251,7 +251,7 @@ describe('Notifications', () => {
       }
       await invoker('plugin:notification|notify', {
         options: {
-          title: 'OpenHuman E2E notification',
+          title: 'Aura E2E notification',
           body: 'Verifies the plugin command is wired and callable.',
         },
       });

@@ -1,4 +1,4 @@
-//! JSON-RPC 2.0 server implementation for OpenHuman.
+//! JSON-RPC 2.0 server implementation for Aura.
 //!
 //! This module provides:
 //! - An Axum-based HTTP server for handling JSON-RPC requests.

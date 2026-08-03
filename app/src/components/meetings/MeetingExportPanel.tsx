@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useT } from '../../lib/i18n/I18nContext';
 import {
   type MeetingExportFormat,
-  openhumanMeetingsExport,
+  auraMeetingsExport,
 } from '../../utils/tauriCommands/meetings';
 
 interface Props {
@@ -22,7 +22,7 @@ export default function MeetingExportPanel({ meetingId, hasTranscript }: Props) 
     setError(null);
     setExportedPath(null);
     try {
-      const response = await openhumanMeetingsExport(meetingId, format);
+      const response = await auraMeetingsExport(meetingId, format);
       setExportedPath(response.result.path);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));

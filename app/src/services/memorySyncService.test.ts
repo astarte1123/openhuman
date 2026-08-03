@@ -29,7 +29,7 @@ describe('memorySyncService.memorySyncStatusList', () => {
   it('calls the correct RPC method without params', async () => {
     mockCallCoreRpc.mockResolvedValueOnce({ statuses: [] });
     await memorySyncStatusList();
-    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'openhuman.memory_sync_status_list' });
+    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'aura.memory_sync_status_list' });
   });
 
   it('returns the statuses array from the envelope', async () => {

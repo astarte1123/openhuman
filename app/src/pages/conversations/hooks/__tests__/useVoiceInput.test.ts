@@ -3,9 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
   notifyOverlaySttState,
-  openhumanVoiceStatus,
-  openhumanVoiceTranscribeBytes,
-  openhumanVoiceTts,
+  auraVoiceStatus,
+  auraVoiceTranscribeBytes,
+  auraVoiceTts,
 } from '../../../../utils/tauriCommands';
 import { useVoiceInput } from '../useVoiceInput';
 
@@ -15,9 +15,9 @@ vi.mock('@tauri-apps/api/core', () => ({
 
 vi.mock('../../../../utils/tauriCommands', () => ({
   notifyOverlaySttState: vi.fn(),
-  openhumanVoiceStatus: vi.fn(),
-  openhumanVoiceTranscribeBytes: vi.fn(),
-  openhumanVoiceTts: vi.fn(),
+  auraVoiceStatus: vi.fn(),
+  auraVoiceTranscribeBytes: vi.fn(),
+  auraVoiceTts: vi.fn(),
 }));
 
 class FakeMediaStreamTrack {
@@ -97,11 +97,11 @@ describe('useVoiceInput', () => {
       configurable: true,
     });
     vi.mocked(notifyOverlaySttState).mockReset();
-    vi.mocked(openhumanVoiceStatus)
+    vi.mocked(auraVoiceStatus)
       .mockReset()
       .mockResolvedValue({ stt_available: true } as any);
-    vi.mocked(openhumanVoiceTranscribeBytes).mockReset();
-    vi.mocked(openhumanVoiceTts).mockReset();
+    vi.mocked(auraVoiceTranscribeBytes).mockReset();
+    vi.mocked(auraVoiceTts).mockReset();
   });
 
   afterEach(() => {
@@ -185,7 +185,7 @@ describe('useVoiceInput', () => {
   });
 
   it('transcribeAndSendAudio: happy path transcribes captured audio and forwards it to onTranscript', async () => {
-    vi.mocked(openhumanVoiceTranscribeBytes).mockResolvedValue({ text: '  hello world  ' } as any);
+    vi.mocked(auraVoiceTranscribeBytes).mockResolvedValue({ text: '  hello world  ' } as any);
     const { result, onTranscript } = renderVoiceInput();
     await act(async () => {
       await result.current.handleVoiceRecordToggle();
@@ -199,13 +199,13 @@ describe('useVoiceInput', () => {
       await Promise.resolve();
     });
 
-    expect(openhumanVoiceTranscribeBytes).toHaveBeenCalled();
+    expect(auraVoiceTranscribeBytes).toHaveBeenCalled();
     expect(onTranscript).toHaveBeenCalledWith('hello world');
     expect(result.current.isTranscribing).toBe(false);
   });
 
   it('transcribeAndSendAudio: empty transcript → status message, no transcript sent', async () => {
-    vi.mocked(openhumanVoiceTranscribeBytes).mockResolvedValue({ text: '   ' } as any);
+    vi.mocked(auraVoiceTranscribeBytes).mockResolvedValue({ text: '   ' } as any);
     const { result, onTranscript } = renderVoiceInput();
     await act(async () => {
       await result.current.handleVoiceRecordToggle();
@@ -224,7 +224,7 @@ describe('useVoiceInput', () => {
   });
 
   it('transcribeAndSendAudio: surfaces a setup-specific error when transcription fails for a missing STT model', async () => {
-    vi.mocked(openhumanVoiceTranscribeBytes).mockRejectedValue(new Error('STT model not found'));
+    vi.mocked(auraVoiceTranscribeBytes).mockRejectedValue(new Error('STT model not found'));
     const { result, setSendError } = renderVoiceInput();
     await act(async () => {
       await result.current.handleVoiceRecordToggle();
@@ -252,7 +252,7 @@ describe('useVoiceInput', () => {
   });
 
   it('TTS playback effect: speaks a new agent message once when replyMode is voice', async () => {
-    vi.mocked(openhumanVoiceTts).mockResolvedValue({ output_path: '/tmp/reply.wav' } as any);
+    vi.mocked(auraVoiceTts).mockResolvedValue({ output_path: '/tmp/reply.wav' } as any);
     const messages = [{ id: 'a1', sender: 'agent', content: 'hello human' } as any];
     const { result, rerender } = renderVoiceInput({ messages: [] });
 
@@ -262,15 +262,15 @@ describe('useVoiceInput', () => {
       await Promise.resolve();
     });
 
-    expect(openhumanVoiceTts).toHaveBeenCalledWith('hello human');
+    expect(auraVoiceTts).toHaveBeenCalledWith('hello human');
     expect(result.current.isPlayingReply).toBe(false); // resolved by the time we assert
 
     // Re-rendering with the same latest agent message must not re-speak it.
-    vi.mocked(openhumanVoiceTts).mockClear();
+    vi.mocked(auraVoiceTts).mockClear();
     await act(async () => {
       rerender({ messages, replyMode: 'voice', rustChat: true });
     });
-    expect(openhumanVoiceTts).not.toHaveBeenCalled();
+    expect(auraVoiceTts).not.toHaveBeenCalled();
   });
 
   it('TTS playback effect: does not speak when replyMode is text', async () => {
@@ -281,6 +281,6 @@ describe('useVoiceInput', () => {
       await Promise.resolve();
     });
 
-    expect(openhumanVoiceTts).not.toHaveBeenCalled();
+    expect(auraVoiceTts).not.toHaveBeenCalled();
   });
 });

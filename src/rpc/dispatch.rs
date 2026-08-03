@@ -28,7 +28,7 @@ mod tests {
 
     #[tokio::test]
     async fn dispatch_security_method_now_falls_through() {
-        let result = try_dispatch("openhuman.security_policy_info", json!({})).await;
+        let result = try_dispatch("aura.security_policy_info", json!({})).await;
         assert!(
             result.is_none(),
             "security method should be handled by registry path"

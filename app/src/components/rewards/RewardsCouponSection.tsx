@@ -10,7 +10,7 @@ import {
   type RedeemedCoupon,
 } from '../../services/api/creditsApi';
 
-const log = createDebug('openhuman:rewards-coupons');
+const log = createDebug('aura:rewards-coupons');
 
 function formatUsd(amount: number): string {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);

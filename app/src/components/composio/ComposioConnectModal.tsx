@@ -560,7 +560,7 @@ export default function ComposioConnectModal({
                 <p className="mt-1 text-xs leading-relaxed text-stone-600">
                   {toolkit.name} can expose{' '}
                   <span className="font-medium">{toolkit.permissionLabel}</span>. After you connect,
-                  OpenHuman&apos;s own agent permissions are controlled below as read, write, and
+                  Aura&apos;s own agent permissions are controlled below as read, write, and
                   admin toggles.
                 </p>
               </div>
@@ -680,7 +680,7 @@ export default function ComposioConnectModal({
                   {toolkit.name} authorization expired
                 </div>
                 <p className="mt-2 text-xs leading-relaxed text-coral-700">
-                  Reconnect to re-enable {toolkit.name} tools. OpenHuman will keep this integration
+                  Reconnect to re-enable {toolkit.name} tools. Aura will keep this integration
                   unavailable until you refresh OAuth access.
                 </p>
               </div>

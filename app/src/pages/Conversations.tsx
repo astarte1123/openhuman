@@ -51,7 +51,7 @@ import type { TaskBoardCard, TaskBoardCardStatus } from '../types/turnState';
 import { splitAgentMessageIntoBubbles } from '../utils/agentMessageBubbles';
 import { BILLING_DASHBOARD_URL } from '../utils/links';
 import { openUrl } from '../utils/openUrl';
-import { isTauri, openhumanAutocompleteAccept } from '../utils/tauriCommands';
+import { isTauri, auraAutocompleteAccept } from '../utils/tauriCommands';
 import { formatTimelineEntry } from '../utils/toolTimelineFormatting';
 import { AgentMessageBubble, BubbleMarkdown } from './conversations/components/AgentMessageBubble';
 import { CitationChips, type MessageCitation } from './conversations/components/CitationChips';
@@ -268,7 +268,7 @@ const Conversations = ({ variant = 'page', composer = 'text' }: ConversationsPro
         // }
         const threadStateForSelect = store.getState().thread;
         // Worker/subagent threads are hidden from the conversation list
-        // (see tinyhumansai/openhuman#1624). Match the sidebar filter here so
+        // (see tinyhumansai/aura#1624). Match the sidebar filter here so
         // initial/resume selection can't auto-pick a hidden thread and leave
         // the UI showing a thread that isn't in the list.
         const visibleThreads = data.threads.filter(t => !t.parentThreadId);
@@ -549,7 +549,7 @@ const Conversations = ({ variant = 'page', composer = 'text' }: ConversationsPro
       setInputValue(nextValue);
       setInlineSuggestionValue('');
       if (isTauri()) {
-        void openhumanAutocompleteAccept({ suggestion: nextValue, skip_apply: true }).catch(() => {
+        void auraAutocompleteAccept({ suggestion: nextValue, skip_apply: true }).catch(() => {
           // Keep local UX smooth even if accept RPC fails.
         });
       }
