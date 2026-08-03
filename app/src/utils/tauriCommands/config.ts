@@ -21,7 +21,7 @@ export interface ModelRoute {
 }
 
 /** Authentication header style. Matches Rust AuthStyle enum. */
-export type AuthStyle = 'bearer' | 'anthropic' | 'openhuman_jwt' | 'none';
+export type AuthStyle = 'bearer' | 'anthropic' | 'openhuman_jwt' | 'none' | 'youworker';
 
 /** @deprecated Use AuthStyle. Kept for back-compat with old wire format. */
 export type CloudProviderType = 'openhuman' | 'openai' | 'anthropic' | 'openrouter' | 'custom';
@@ -40,6 +40,15 @@ export interface CloudProviderCreds {
   label: string;
   endpoint: string;
   auth_style: AuthStyle;
+  // ── youworker.ai (auth_style: 'youworker' only) ──────────────────────────
+  /** Autentika workspace issuer, e.g. `https://your-workspace.autentika.example`. */
+  autentika_url?: string | null;
+  /** Persona slug sent on `session.create` (deployment-specific). */
+  persona?: string | null;
+  /** Autentika service-principal client_id (not a secret by itself). */
+  client_id?: string | null;
+  /** The youworker end-user UUID presented as `subject_token`. */
+  subject_uuid?: string | null;
 }
 
 export interface ModelSettingsUpdate {

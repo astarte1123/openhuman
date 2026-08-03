@@ -114,6 +114,8 @@ fn build_registered_controllers() -> Vec<RegisteredController> {
     controllers.extend(crate::openhuman::composio::all_composio_registered_controllers());
     // Scheduled job management
     controllers.extend(crate::openhuman::cron::all_cron_registered_controllers());
+    // Meeting recordings, transcripts, and summaries
+    controllers.extend(crate::openhuman::meetings::all_meetings_registered_controllers());
     // Webview APIs bridge — proxies connector calls (Gmail, …) through
     // a WebSocket to the Tauri shell so curl reaches the live webview.
     controllers.extend(crate::openhuman::webview_apis::all_webview_apis_registered_controllers());
@@ -262,6 +264,7 @@ fn build_declared_controller_schemas() -> Vec<ControllerSchema> {
     schemas.extend(crate::openhuman::audio_toolkit::all_audio_toolkit_controller_schemas());
     schemas.extend(crate::openhuman::composio::all_composio_controller_schemas());
     schemas.extend(crate::openhuman::cron::all_cron_controller_schemas());
+    schemas.extend(crate::openhuman::meetings::all_meetings_controller_schemas());
     schemas.extend(crate::openhuman::webview_apis::all_webview_apis_controller_schemas());
     schemas.extend(crate::openhuman::agent::all_agent_controller_schemas());
     schemas.extend(crate::openhuman::health::all_health_controller_schemas());
@@ -367,6 +370,7 @@ pub fn namespace_description(namespace: &str) -> Option<&'static str> {
         ),
         "cron" => Some("Manage scheduled jobs and run history."),
         "decrypt" => Some("Decrypt secure values managed by secret storage."),
+        "meetings" => Some("Manage meeting recordings, transcripts, and summaries."),
         "doctor" => Some("Run diagnostics for workspace and runtime health."),
         "encrypt" => Some("Encrypt secure values managed by secret storage."),
         "health" => Some("Process and component health snapshots."),

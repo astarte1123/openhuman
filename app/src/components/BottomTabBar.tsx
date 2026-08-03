@@ -56,6 +56,21 @@ const makeTabs = (t: (key: string) => string) => [
     ),
   },
   {
+    id: 'meetings',
+    label: t('nav.meetings'),
+    path: '/meetings',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.8}
+          d="M15 10l4.55-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.45.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+        />
+      </svg>
+    ),
+  },
+  {
     id: 'skills',
     label: t('nav.connections'),
     path: '/skills',
@@ -164,6 +179,7 @@ const BottomTabBar = () => {
 
   const isActive = (path: string) => {
     if (path === '/chat') return location.pathname.startsWith('/chat');
+    if (path === '/meetings') return location.pathname.startsWith('/meetings');
     if (path === '/settings/cron-jobs') return location.pathname.startsWith('/settings/cron-jobs');
     if (path === '/settings/messaging') return location.pathname.startsWith('/settings/messaging');
     if (path === '/settings')

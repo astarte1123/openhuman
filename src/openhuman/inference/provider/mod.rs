@@ -19,6 +19,7 @@ pub mod schemas;
 pub mod temperature;
 pub mod thread_context;
 pub mod traits;
+pub mod youworker;
 
 #[allow(unused_imports)]
 pub use traits::{

@@ -46,6 +46,17 @@ pub async fn list_configured_models(
         .cloned()
         .ok_or_else(|| format!("no cloud provider with id '{}' found", provider_id))?;
 
+    if entry.auth_style == crate::openhuman::config::schema::cloud_providers::AuthStyle::YouWorker
+    {
+        // youworker.ai has no OpenAI-style `/models` listing — model choice
+        // is server-side, driven by the configured `persona`, not a
+        // client-selectable id.
+        return Err(
+            "youworker providers select their model via persona server-side — no model list to fetch"
+                .to_string(),
+        );
+    }
+
     let base = entry.endpoint.trim_end_matches('/');
     let models_url = format!("{}/models", base);
 
@@ -91,6 +102,9 @@ pub async fn list_configured_models(
             }
         }
         AuthStyle::None => request,
+        // Unreachable — the youworker guard above returns before this match
+        // is reached — but the match must stay exhaustive over `AuthStyle`.
+        AuthStyle::YouWorker => request,
     };
 
     let response = request

@@ -80,5 +80,12 @@ allow = [
     # entries the invoke is rejected with "Command not found".
     "meet_call_open_window",
     "meet_call_close_window",
+    # Meeting recorder: local audio capture (mic + system loopback) ->
+    # mixing -> VAD -> in-process Whisper -> core `meetings` RPC push. See
+    # app/src-tauri/src/meeting_recorder/. Without these allow entries the
+    # invoke is rejected with "Command not found".
+    "meeting_recorder_list_devices",
+    "meeting_recorder_start",
+    "meeting_recorder_stop",
 ]
 deny = []

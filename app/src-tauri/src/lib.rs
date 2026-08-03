@@ -19,6 +19,7 @@ mod meet_audio;
 mod meet_call;
 mod meet_scanner;
 mod meet_video;
+mod meeting_recorder;
 mod native_notifications;
 mod notification_settings;
 mod process_kill;
@@ -2096,6 +2097,7 @@ pub fn run() {
     let builder = builder.manage(meet_call::MeetCallState::new());
     let builder = builder.manage(meet_audio::MeetAudioState::new());
     let builder = builder.manage(meet_video::frame_bus::MeetVideoFrameBusState::new());
+    let builder = builder.manage(meeting_recorder::MeetingRecorderState::new());
     builder
         .setup(move |app| {
             #[cfg(windows)]
@@ -2741,7 +2743,10 @@ pub fn run() {
             file_logging::reveal_logs_folder,
             file_logging::logs_folder_path,
             meet_call::meet_call_open_window,
-            meet_call::meet_call_close_window
+            meet_call::meet_call_close_window,
+            meeting_recorder::recorder::meeting_recorder_list_devices,
+            meeting_recorder::recorder::meeting_recorder_start,
+            meeting_recorder::recorder::meeting_recorder_stop
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")

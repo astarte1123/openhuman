@@ -128,6 +128,40 @@ cef = { version = "=146.4.1", default-features = false }
 # `openhuman-core run` harness when one is already listening.
 openhuman_core = { path = "../..", package = "openhuman", default-features = false }
 
+# meeting_recorder: local audio capture + mixing + VAD + transcription
+# pipeline (Meetily-inspired, Phase 2+3 of the meetings integration).
+# Windows-only capability for now — non-Windows builds compile these deps
+# too (they're pure-Rust / prebuilt-binary, no heavy C++ toolchain) but
+# `meeting_recorder::devices` stubs out with an explicit "not yet
+# implemented" error rather than pretending to support it.
+cpal = "0.15.3"
+# Silero VAD. `default-features = false` drops the crate's own
+# `audio_resampler` feature (which would pull in `rubato 0.16`, a second
+# incompatible copy of the resampler we already depend on directly at
+# 0.15). We resample to 16kHz ourselves upstream of the VAD (see
+# `meeting_recorder::resample`) and always feed it pre-resampled audio.
+# `static-model` embeds the ONNX VAD model directly in the binary (~1.7MB)
+# so there's no separate VAD model download/path to manage.
+silero_rs = { git = "https://github.com/emotechlab/silero-rs", rev = "26a6460", package = "silero", default-features = false, features = [
+    "static-model",
+] }
+rubato = "0.15.0"
+ringbuf = "0.4.8"
+# meeting_recorder::screenshot: periodic primary-monitor capture for slide
+# OCR. Pure-Rust, cross-platform (Windows/macOS/Linux), no native C
+# toolchain requirement — capture itself is not gated behind the
+# Windows-only guard the rest of meeting_recorder has (whisper
+# transcription is Windows-only for now; screenshot capture works
+# everywhere `xcap::Monitor::all()` is supported).
+xcap = "0.9"
+# PNG encode/decode + downscaling for the screenshot dedup check above.
+# Already resolved transitively via `xcap`'s own `image` dependency (see
+# Cargo.lock) at the same 0.25 line as the root crate's `image` dep — declared
+# directly here because `screenshot.rs` uses `image::` paths itself, and Cargo
+# does not expose a transitive dependency's paths to a crate that doesn't
+# declare it directly.
+image = { version = "0.25", default-features = false, features = ["png"] }
+
 [target.'cfg(unix)'.dependencies]
 nix = { version = "0.29", default-features = false, features = ["signal"] }
 
@@ -168,6 +202,19 @@ windows-sys = { version = "0.59", features = [
     "Win32_System_Threading",
     "Win32_Security",
 ] }
+# meeting_recorder transcription engine (CPU-only, no vulkan/cuda/metal —
+# see the module doc comment for scope). Deliberately pinned to the SAME
+# version already resolved transitively via `openhuman_core` (root
+# Cargo.toml depends on `whisper-rs = "0.16"`) rather than the newer
+# `0.13.2`/`raw-api` combination used upstream by Meetily: app/src-tauri
+# and the root crate are separate crate graphs with separate Cargo.locks
+# (see CLAUDE.md), but pinning the same version here means Cargo unifies
+# on one resolved `whisper-rs`/`whisper-rs-sys`, so whisper.cpp is only
+# ever compiled once for this crate graph instead of twice — important
+# given how heavy that C++/cmake build is on disk and build time. The
+# `whisper-rs-sys` patch below already fixes the MSVC CRT mismatch for
+# both call sites.
+whisper-rs = "0.16"
 
 [features]
 default = []
@@ -188,6 +235,17 @@ e2e-test-support = ["openhuman_core/e2e-test-support"]
 # whisper.cpp to use MSVC's static runtime (/MT), matching CEF and avoiding
 # LNK2038/LNK1169 CRT conflicts on Windows.
 whisper-rs-sys = { git = "https://github.com/tinyhumansai/whisper-rs-sys.git", branch = "main" }
+
+# WASAPI loopback capture (meeting_recorder: opening an INPUT stream on an
+# OUTPUT device to record system audio) is not supported by stock cpal —
+# this fork adds it. Because `[patch.crates-io]` applies to the whole crate
+# graph resolved from THIS manifest, this also affects the `cpal = "0.15"`
+# dependency pulled in transitively via `openhuman_core` (used there only
+# for plain microphone capture in `openhuman::voice::audio_capture`) — the
+# fork is API-compatible with upstream 0.15.x for normal (non-loopback)
+# input capture, so this should be a no-op for that call site, but flag it
+# if mic dictation ever regresses after this patch lands.
+cpal = { git = "https://github.com/RustAudio/cpal", rev = "51c3b43" }
 
 # CEF support lives on the `feat/cef` branch of tauri-apps/tauri. We carry our
 # own fork at tinyhumansai/tauri-cef on `feat/cef-notification-intercept` which

@@ -25,6 +25,7 @@ use crate::openhuman::inference::provider::compatible::{
 };
 use crate::openhuman::inference::provider::openhuman_backend::OpenHumanBackendProvider;
 use crate::openhuman::inference::provider::traits::Provider;
+use crate::openhuman::inference::provider::youworker::{YouWorkerConfig, YouWorkerProvider};
 use crate::openhuman::inference::provider::ProviderRuntimeOptions;
 
 /// Sentinel meaning "use the OpenHuman backend session JWT".
@@ -303,7 +304,66 @@ fn make_cloud_provider_by_slug(
             )?;
             Ok((p, effective_model))
         }
+        AuthStyle::YouWorker => {
+            let p = make_youworker_provider(slug, entry, &key)?;
+            Ok((p, effective_model))
+        }
     }
+}
+
+/// Build a `YouWorkerProvider` from a `cloud_providers` entry. `client_secret`
+/// is the slug's resolved `provider:<slug>` credential (same lookup as every
+/// other provider's API key — `key` here is that secret, not a bearer token).
+fn make_youworker_provider(
+    slug: &str,
+    entry: &crate::openhuman::config::schema::cloud_providers::CloudProviderCreds,
+    client_secret: &str,
+) -> anyhow::Result<Box<dyn Provider>> {
+    let require = |field: Option<&String>, name: &str| -> anyhow::Result<String> {
+        field
+            .map(|s| s.trim().to_string())
+            .filter(|s| !s.is_empty())
+            .ok_or_else(|| {
+                anyhow::anyhow!(
+                    "[chat-factory] youworker provider '{}' is missing '{}' — set it on the \
+                     cloud_providers entry",
+                    slug,
+                    name
+                )
+            })
+    };
+    let autentika_url = require(entry.autentika_url.as_ref(), "autentika_url")?;
+    let persona = require(entry.persona.as_ref(), "persona")?;
+    let client_id = require(entry.client_id.as_ref(), "client_id")?;
+    let subject_uuid = require(entry.subject_uuid.as_ref(), "subject_uuid")?;
+    if client_secret.trim().is_empty() {
+        anyhow::bail!(
+            "[chat-factory] youworker provider '{}' has no client_secret stored — \
+             set it via auth (provider:{})",
+            slug,
+            slug
+        );
+    }
+    let yw_base = entry
+        .endpoint
+        .trim()
+        .trim_end_matches('/')
+        .to_string();
+    if yw_base.is_empty() {
+        anyhow::bail!(
+            "[chat-factory] youworker provider '{}' is missing 'endpoint' (used as yw_base)",
+            slug
+        );
+    }
+
+    Ok(Box::new(YouWorkerProvider::new(YouWorkerConfig {
+        autentika_url,
+        yw_base,
+        client_id,
+        client_secret: client_secret.to_string(),
+        persona,
+        subject_uuid,
+    })))
 }
 
 /// Fetch the bearer token for a slug from the workspace `auth-profiles.json`.

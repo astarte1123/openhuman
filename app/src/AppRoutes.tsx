@@ -9,6 +9,8 @@ import Channels from './pages/Channels';
 import Home from './pages/Home';
 import Intelligence from './pages/Intelligence';
 import Invites from './pages/Invites';
+import Meetings from './pages/Meetings';
+import MeetingDetail from './pages/meetings/MeetingDetail';
 import Notifications from './pages/Notifications';
 import Onboarding from './pages/onboarding/Onboarding';
 import Rewards from './pages/Rewards';
@@ -110,6 +112,24 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute requireAuth={true}>
             <Notifications />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/meetings"
+        element={
+          <ProtectedRoute requireAuth={true}>
+            <Meetings />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/meetings/:meetingId"
+        element={
+          <ProtectedRoute requireAuth={true}>
+            <MeetingDetail />
           </ProtectedRoute>
         }
       />

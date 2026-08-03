@@ -180,3 +180,137 @@ pub async fn ai_decrypt(password: String, encrypted: String) -> Result<String, S
     let key = EncryptionKey::derive(&password, &key_file.salt)?;
     key.decrypt_string(&encrypted)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn round_trips_bytes() {
+        let salt = EncryptionKey::generate_salt();
+        let key = EncryptionKey::derive("correct horse battery staple", &salt).unwrap();
+        let plaintext = b"sqlite-page-or-embedding-blob";
+
+        let payload = key.encrypt(plaintext).unwrap();
+        let decrypted = key.decrypt(&payload).unwrap();
+
+        assert_eq!(decrypted, plaintext);
+    }
+
+    #[test]
+    fn round_trips_strings() {
+        let salt = EncryptionKey::generate_salt();
+        let key = EncryptionKey::derive("pw", &salt).unwrap();
+        let plaintext = "session transcript with unicode: héllo wörld 日本語";
+
+        let encrypted = key.encrypt_string(plaintext).unwrap();
+        let decrypted = key.decrypt_string(&encrypted).unwrap();
+
+        assert_eq!(decrypted, plaintext);
+    }
+
+    #[test]
+    fn derive_is_deterministic_for_same_password_and_salt() {
+        let salt = EncryptionKey::generate_salt();
+        let key_a = EncryptionKey::derive("pw", &salt).unwrap();
+        let key_b = EncryptionKey::derive("pw", &salt).unwrap();
+
+        // Two independently-derived keys from the same password+salt must
+        // agree: what `key_a` encrypts, `key_b` must be able to decrypt.
+        let payload = key_a.encrypt(b"payload").unwrap();
+        assert_eq!(key_b.decrypt(&payload).unwrap(), b"payload");
+    }
+
+    #[test]
+    fn wrong_password_fails_to_decrypt() {
+        let salt = EncryptionKey::generate_salt();
+        let right_key = EncryptionKey::derive("correct-password", &salt).unwrap();
+        let wrong_key = EncryptionKey::derive("wrong-password", &salt).unwrap();
+
+        let payload = right_key.encrypt(b"top secret").unwrap();
+
+        assert!(wrong_key.decrypt(&payload).is_err());
+    }
+
+    #[test]
+    fn wrong_salt_fails_to_decrypt() {
+        let salt_a = EncryptionKey::generate_salt();
+        let salt_b = EncryptionKey::generate_salt();
+        let key_a = EncryptionKey::derive("same-password", &salt_a).unwrap();
+        let key_b = EncryptionKey::derive("same-password", &salt_b).unwrap();
+
+        let payload = key_a.encrypt(b"data").unwrap();
+
+        assert!(key_b.decrypt(&payload).is_err());
+    }
+
+    #[test]
+    fn tampered_ciphertext_is_rejected() {
+        let salt = EncryptionKey::generate_salt();
+        let key = EncryptionKey::derive("pw", &salt).unwrap();
+        let mut payload = key.encrypt(b"authenticated data").unwrap();
+
+        // Flip a bit in the ciphertext; AES-GCM's auth tag must catch this
+        // rather than silently returning corrupted plaintext.
+        let last = payload.ciphertext.len() - 1;
+        payload.ciphertext[last] ^= 0x01;
+
+        assert!(key.decrypt(&payload).is_err());
+    }
+
+    #[test]
+    fn tampered_nonce_is_rejected() {
+        let salt = EncryptionKey::generate_salt();
+        let key = EncryptionKey::derive("pw", &salt).unwrap();
+        let mut payload = key.encrypt(b"authenticated data").unwrap();
+
+        payload.nonce[0] ^= 0x01;
+
+        assert!(key.decrypt(&payload).is_err());
+    }
+
+    #[test]
+    fn same_plaintext_yields_different_ciphertext_each_call() {
+        // Nonce must be fresh per encryption so identical plaintexts don't
+        // leak equality via identical ciphertext (classic ECB-style leak).
+        let salt = EncryptionKey::generate_salt();
+        let key = EncryptionKey::derive("pw", &salt).unwrap();
+
+        let a = key.encrypt(b"same plaintext").unwrap();
+        let b = key.encrypt(b"same plaintext").unwrap();
+
+        assert_ne!(a.ciphertext, b.ciphertext);
+        assert_ne!(a.nonce, b.nonce);
+    }
+
+    #[test]
+    fn generate_salt_has_expected_length_and_varies() {
+        let a = EncryptionKey::generate_salt();
+        let b = EncryptionKey::generate_salt();
+
+        assert_eq!(a.len(), SALT_LENGTH);
+        assert_eq!(b.len(), SALT_LENGTH);
+        assert_ne!(a, b);
+    }
+
+    #[test]
+    fn decrypt_string_rejects_malformed_json() {
+        let salt = EncryptionKey::generate_salt();
+        let key = EncryptionKey::derive("pw", &salt).unwrap();
+
+        let result = key.decrypt_string("not valid json");
+
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn decrypt_string_rejects_truncated_ciphertext() {
+        let salt = EncryptionKey::generate_salt();
+        let key = EncryptionKey::derive("pw", &salt).unwrap();
+        let mut payload = key.encrypt(b"data").unwrap();
+        payload.ciphertext.truncate(payload.ciphertext.len().saturating_sub(4));
+
+        let encrypted_json = serde_json::to_string(&payload).unwrap();
+        assert!(key.decrypt_string(&encrypted_json).is_err());
+    }
+}

@@ -28,6 +28,13 @@ pub enum AuthStyle {
     OpenhumanJwt,
     /// No auth header — e.g. local Ollama.
     None,
+    /// youworker.ai native WebSocket transport (Autentika token-exchange +
+    /// `session.create`/`attach`/`message.send` over `youworker.v1`). Needs
+    /// [`CloudProviderCreds::autentika_url`], [`CloudProviderCreds::persona`],
+    /// [`CloudProviderCreds::client_id`] in addition to `endpoint` (used as
+    /// `yw_base`) and the usual `provider:<slug>` stored secret (here,
+    /// `client_secret` rather than a bearer API key).
+    YouWorker,
 }
 
 impl AuthStyle {
@@ -37,6 +44,7 @@ impl AuthStyle {
             Self::Anthropic => "anthropic",
             Self::OpenhumanJwt => "openhuman_jwt",
             Self::None => "none",
+            Self::YouWorker => "youworker",
         }
     }
 }
@@ -81,6 +89,26 @@ pub struct CloudProviderCreds {
     /// Legacy default model written by older builds. Read-only; never emitted.
     #[serde(default, skip_serializing)]
     pub default_model: Option<String>,
+
+    // ── youworker.ai (AuthStyle::YouWorker only) ─────────────────────────────
+    /// Autentika workspace issuer base URL, e.g.
+    /// `https://your-workspace.autentika.example`. Hosts the two token-exchange
+    /// endpoints (`/oauth2/token`, `/v1/oauth/token_exchange`).
+    #[serde(default)]
+    pub autentika_url: Option<String>,
+    /// Persona slug sent on `session.create` (deployment-specific).
+    #[serde(default)]
+    pub persona: Option<String>,
+    /// Autentika service-principal client_id for the `client_credentials` step.
+    /// Not a secret by itself (paired with `client_secret`, which lives in
+    /// `auth-profiles.json` like every other provider's key).
+    #[serde(default)]
+    pub client_id: Option<String>,
+    /// The youworker end-user UUID presented as `subject_token` in the RFC
+    /// 8693 token-exchange (MVP: every OpenHuman end-user maps to this one
+    /// youworker user). Not a secret.
+    #[serde(default)]
+    pub subject_uuid: Option<String>,
 }
 
 impl Default for CloudProviderCreds {
@@ -93,6 +121,10 @@ impl Default for CloudProviderCreds {
             auth_style: AuthStyle::Bearer,
             legacy_type: None,
             default_model: None,
+            autentika_url: None,
+            persona: None,
+            client_id: None,
+            subject_uuid: None,
         }
     }
 }

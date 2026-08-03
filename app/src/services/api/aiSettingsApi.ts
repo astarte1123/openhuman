@@ -207,12 +207,26 @@ export async function saveAISettings(prev: AISettings, next: AISettings): Promis
         n.slug !== p.slug ||
         n.label !== p.label ||
         n.endpoint !== p.endpoint ||
-        n.auth_style !== p.auth_style
+        n.auth_style !== p.auth_style ||
+        n.autentika_url !== p.autentika_url ||
+        n.persona !== p.persona ||
+        n.client_id !== p.client_id ||
+        n.subject_uuid !== p.subject_uuid
       );
     })
   ) {
     patch.cloud_providers = next.cloudProviders.map(
-      ({ id, slug, label, endpoint, auth_style }) => ({ id, slug, label, endpoint, auth_style })
+      ({ id, slug, label, endpoint, auth_style, autentika_url, persona, client_id, subject_uuid }) => ({
+        id,
+        slug,
+        label,
+        endpoint,
+        auth_style,
+        autentika_url,
+        persona,
+        client_id,
+        subject_uuid,
+      })
     );
   }
 

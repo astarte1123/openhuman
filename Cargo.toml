@@ -135,6 +135,27 @@ starship-battery = "0.10"
 ethers-core = { version = "2.0.14", default-features = false }
 ethers-signers = { version = "2.0.14", default-features = false }
 
+# Meeting transcript export (PDF + DOCX). Both are pure-Rust with no native
+# C toolchain requirement — deliberately chosen over CDP/webview-based PDF
+# generation (see `openhuman::meetings::export` doc comment) and over any
+# crate needing system libraries, given repeated disk/build pain from
+# native deps (whisper-rs-sys, onnxruntime) earlier in this project's history.
+# `default-features = false` on printpdf drops the `html`/`text_layout*`
+# feature set (built on the azul HTML/CSS layout engine) that this domain's
+# simple heading+paragraph export doesn't need — we lay out text manually
+# with `Op::WriteText` and a fixed line height instead.
+printpdf = { version = "0.12", default-features = false }
+docx-rs = "0.4"
+
+# Meeting slide OCR (screenshot capture -> text extraction). Pure-Rust OCR
+# engine backed by `rten` (the crate author's own pure-Rust tensor runtime,
+# NOT Microsoft's onnxruntime) — chosen specifically to avoid the
+# ORT_LIB_LOCATION/MSVC-CRT native-dep pain documented above for
+# whisper-rs-sys, and because this codebase has no working
+# vision-LLM/multimodal path (see `openhuman::meetings::ocr` doc comment).
+ocrs = "0.12"
+rten = "0.24"
+
 matrix-sdk = { version = "0.16", optional = true, default-features = false, features = ["e2e-encryption", "rustls-tls", "markdown"] }
 fantoccini = { version = "0.22.0", optional = true, default-features = false, features = ["rustls-tls"] }
 serde-big-array = { version = "0.5", optional = true }
@@ -171,6 +192,12 @@ rppal = { version = "0.22", optional = true }
 sentry = { version = "0.47.0", default-features = false, features = ["test"] }
 # Mock HTTP server for provider E2E tests (inference_provider_e2e).
 wiremock = "0.6"
+# Renders a synthetic test image with known text for
+# `openhuman::meetings::ocr`'s unit tests (`draw_text_mut`). `default-features
+# = false` drops imageproc's `rayon` feature, which this single-image test
+# usage doesn't need.
+imageproc = { version = "0.25", default-features = false }
+ab_glyph = "0.2"
 
 [features]
 sandbox-landlock = ["dep:landlock"]

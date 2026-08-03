@@ -1224,6 +1224,565 @@ async fn json_rpc_thread_labels_create_and_update() {
 }
 
 #[tokio::test]
+async fn json_rpc_meetings_create_transcript_and_finish_lifecycle() {
+    let _env_lock = json_rpc_e2e_env_lock();
+    let tmp = tempdir().expect("tempdir");
+    let home = tmp.path();
+    let openhuman_home = home.join(".openhuman");
+
+    let _home_guard = EnvVarGuard::set_to_path("HOME", home);
+    // `EnvVarGuard::unset("OPENHUMAN_WORKSPACE")` plus the `HOME` override above
+    // is the pattern used elsewhere in this file, but it does not actually
+    // isolate storage on Windows: `directories::UserDirs::home_dir()` (used by
+    // `default_root_openhuman_dir`) resolves via `SHGetKnownFolderPath`, which
+    // ignores the `HOME` env var entirely on that platform. Without this
+    // override, this test silently wrote its meetings into the real,
+    // developer-machine `~/.openhuman` workspace instead of the tempdir.
+    // `OPENHUMAN_WORKSPACE` is checked directly as an env var by
+    // `resolve_runtime_config_dirs_with` (step 1, "always wins") before any
+    // OS-level home-directory lookup, so pointing it at `openhuman_home` here
+    // (the same dir `write_min_config` below writes `config.toml` into)
+    // achieves real isolation on every platform, not just the ones where the
+    // `HOME` trick happens to work.
+    let _workspace_guard = EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", openhuman_home.as_path());
+    let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
+    let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
+    let _api_url_guard = EnvVarGuard::unset("OPENHUMAN_API_URL");
+
+    let (api_addr, api_join) = serve_on_ephemeral(mock_upstream_router()).await;
+    let api_origin = format!("http://{api_addr}");
+    write_min_config(openhuman_home.as_path(), &api_origin);
+
+    let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
+    let rpc_base = format!("http://{rpc_addr}");
+
+    // 1. Create a meeting.
+    let create = post_json_rpc(
+        &rpc_base,
+        9101,
+        "openhuman.meetings_create",
+        json!({ "title": "Sprint planning", "source": "manual" }),
+    )
+    .await;
+    let create_outer = assert_no_jsonrpc_error(&create, "meetings_create");
+    let created = create_outer
+        .get("result")
+        .expect("result envelope in meetings_create response");
+    let meeting_id = created
+        .get("id")
+        .and_then(Value::as_str)
+        .expect("id in created meeting")
+        .to_string();
+    assert_eq!(
+        created.get("title").and_then(Value::as_str),
+        Some("Sprint planning")
+    );
+    assert_eq!(
+        created.get("status").and_then(Value::as_str),
+        Some("recording")
+    );
+
+    // 2. Append two transcript chunks.
+    let chunk1 = post_json_rpc(
+        &rpc_base,
+        9102,
+        "openhuman.meetings_append_transcript_chunk",
+        json!({
+            "meeting_id": meeting_id,
+            "start_ms": 0,
+            "end_ms": 4000,
+            "text": "Let's review the backlog.",
+            "speaker": "alice"
+        }),
+    )
+    .await;
+    assert_no_jsonrpc_error(&chunk1, "meetings_append_transcript_chunk (1)");
+
+    let chunk2 = post_json_rpc(
+        &rpc_base,
+        9103,
+        "openhuman.meetings_append_transcript_chunk",
+        json!({
+            "meeting_id": meeting_id,
+            "start_ms": 4000,
+            "end_ms": 9000,
+            "text": "Sounds good, I will take the first ticket.",
+            "speaker": "bob"
+        }),
+    )
+    .await;
+    assert_no_jsonrpc_error(&chunk2, "meetings_append_transcript_chunk (2)");
+
+    // 3. Fetch the meeting and verify chunks are present and ordered.
+    let get = post_json_rpc(
+        &rpc_base,
+        9104,
+        "openhuman.meetings_get",
+        json!({ "meeting_id": meeting_id }),
+    )
+    .await;
+    let get_outer = assert_no_jsonrpc_error(&get, "meetings_get");
+    let get_result = get_outer
+        .get("result")
+        .expect("result envelope in meetings_get response");
+    let fetched_meeting = get_result
+        .get("meeting")
+        .expect("meeting in meetings_get result");
+    assert_eq!(
+        fetched_meeting.get("id").and_then(Value::as_str),
+        Some(meeting_id.as_str())
+    );
+    let chunks = get_result
+        .get("chunks")
+        .and_then(Value::as_array)
+        .expect("chunks array in meetings_get result");
+    assert_eq!(chunks.len(), 2, "both transcript chunks should be present");
+    assert_eq!(
+        chunks[0].get("text").and_then(Value::as_str),
+        Some("Let's review the backlog.")
+    );
+    assert_eq!(
+        chunks[1].get("text").and_then(Value::as_str),
+        Some("Sounds good, I will take the first ticket.")
+    );
+
+    // 4. Finish the meeting.
+    let finish = post_json_rpc(
+        &rpc_base,
+        9105,
+        "openhuman.meetings_finish",
+        json!({ "meeting_id": meeting_id, "duration_ms": 9000 }),
+    )
+    .await;
+    let finish_outer = assert_no_jsonrpc_error(&finish, "meetings_finish");
+    let finished = finish_outer
+        .get("result")
+        .expect("result envelope in meetings_finish response");
+    assert_eq!(
+        finished.get("status").and_then(Value::as_str),
+        Some("completed")
+    );
+    assert_eq!(
+        finished.get("duration_ms").and_then(Value::as_i64),
+        Some(9000)
+    );
+
+    // 5. List meetings and verify the completed status is reflected.
+    let list = post_json_rpc(&rpc_base, 9106, "openhuman.meetings_list", json!({})).await;
+    let list_outer = assert_no_jsonrpc_error(&list, "meetings_list");
+    let meetings = list_outer
+        .get("result")
+        .and_then(Value::as_array)
+        .expect("meetings array in meetings_list result");
+    let persisted = meetings
+        .iter()
+        .find(|m| m.get("id").and_then(Value::as_str) == Some(meeting_id.as_str()))
+        .expect("created meeting must appear in list");
+    assert_eq!(
+        persisted.get("status").and_then(Value::as_str),
+        Some("completed")
+    );
+
+    api_join.abort();
+    rpc_join.abort();
+}
+
+#[tokio::test]
+async fn json_rpc_meetings_search_finds_matching_chunk() {
+    let _env_lock = json_rpc_e2e_env_lock();
+    let tmp = tempdir().expect("tempdir");
+    let home = tmp.path();
+    let openhuman_home = home.join(".openhuman");
+
+    let _home_guard = EnvVarGuard::set_to_path("HOME", home);
+    // See the identical comment in `json_rpc_meetings_create_transcript_and_finish_lifecycle`:
+    // `HOME` alone does not isolate storage on Windows (`directories::UserDirs`
+    // ignores it there), so this test was silently writing into the real
+    // developer `~/.openhuman` workspace. `OPENHUMAN_WORKSPACE` is a plain env
+    // var read directly by `resolve_runtime_config_dirs_with`, bypassing OS
+    // home-directory resolution entirely.
+    let _workspace_guard = EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", openhuman_home.as_path());
+    let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
+    let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
+    let _api_url_guard = EnvVarGuard::unset("OPENHUMAN_API_URL");
+
+    let (api_addr, api_join) = serve_on_ephemeral(mock_upstream_router()).await;
+    let api_origin = format!("http://{api_addr}");
+    write_min_config(openhuman_home.as_path(), &api_origin);
+
+    let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
+    let rpc_base = format!("http://{rpc_addr}");
+
+    // 1. Create a meeting.
+    let create = post_json_rpc(
+        &rpc_base,
+        9111,
+        "openhuman.meetings_create",
+        json!({ "title": "Search target meeting", "source": "manual" }),
+    )
+    .await;
+    let create_outer = assert_no_jsonrpc_error(&create, "meetings_create (search test)");
+    let created = create_outer
+        .get("result")
+        .expect("result envelope in meetings_create response");
+    let meeting_id = created
+        .get("id")
+        .and_then(Value::as_str)
+        .expect("id in created meeting")
+        .to_string();
+
+    // 2. Append two chunks; only one mentions the search term.
+    let chunk1 = post_json_rpc(
+        &rpc_base,
+        9112,
+        "openhuman.meetings_append_transcript_chunk",
+        json!({
+            "meeting_id": meeting_id,
+            "start_ms": 0,
+            "end_ms": 4000,
+            "text": "We need to finalize the onboarding checklist.",
+            "speaker": "alice"
+        }),
+    )
+    .await;
+    assert_no_jsonrpc_error(&chunk1, "meetings_append_transcript_chunk (search test 1)");
+
+    let chunk2 = post_json_rpc(
+        &rpc_base,
+        9113,
+        "openhuman.meetings_append_transcript_chunk",
+        json!({
+            "meeting_id": meeting_id,
+            "start_ms": 4000,
+            "end_ms": 9000,
+            "text": "Let's push the release to next Friday.",
+            "speaker": "bob"
+        }),
+    )
+    .await;
+    assert_no_jsonrpc_error(&chunk2, "meetings_append_transcript_chunk (search test 2)");
+
+    // 3. Search for a term present in exactly one chunk.
+    let search = post_json_rpc(
+        &rpc_base,
+        9114,
+        "openhuman.meetings_search",
+        json!({ "query": "onboarding" }),
+    )
+    .await;
+    let search_outer = assert_no_jsonrpc_error(&search, "meetings_search");
+    let results = search_outer
+        .get("result")
+        .and_then(Value::as_array)
+        .expect("results array in meetings_search result");
+    assert_eq!(
+        results.len(),
+        1,
+        "only the chunk mentioning 'onboarding' should match"
+    );
+    assert_eq!(
+        results[0].get("meeting_id").and_then(Value::as_str),
+        Some(meeting_id.as_str())
+    );
+    assert_eq!(
+        results[0].get("meeting_title").and_then(Value::as_str),
+        Some("Search target meeting")
+    );
+    let snippet = results[0]
+        .get("snippet")
+        .and_then(Value::as_str)
+        .expect("snippet in search result");
+    assert!(
+        snippet.contains("<mark>"),
+        "snippet should highlight the match: {snippet}"
+    );
+
+    // 4. A blank query is rejected with a clear error, not a 500.
+    let empty_search = post_json_rpc(
+        &rpc_base,
+        9115,
+        "openhuman.meetings_search",
+        json!({ "query": "   " }),
+    )
+    .await;
+    let empty_err = assert_jsonrpc_error(&empty_search, "meetings_search with blank query");
+    assert!(
+        empty_err["message"]
+            .as_str()
+            .unwrap_or_default()
+            .to_lowercase()
+            .contains("empty"),
+        "blank query error should mention it must not be empty: {empty_err}"
+    );
+
+    api_join.abort();
+    rpc_join.abort();
+}
+
+#[tokio::test]
+async fn json_rpc_meetings_export_pdf_and_docx_write_files() {
+    let _env_lock = json_rpc_e2e_env_lock();
+    let tmp = tempdir().expect("tempdir");
+    let home = tmp.path();
+    let openhuman_home = home.join(".openhuman");
+
+    let _home_guard = EnvVarGuard::set_to_path("HOME", home);
+    // See the comment in `json_rpc_meetings_create_transcript_and_finish_lifecycle`:
+    // `HOME` alone does not isolate storage on Windows.
+    let _workspace_guard = EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", openhuman_home.as_path());
+    let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
+    let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
+    let _api_url_guard = EnvVarGuard::unset("OPENHUMAN_API_URL");
+
+    let (api_addr, api_join) = serve_on_ephemeral(mock_upstream_router()).await;
+    let api_origin = format!("http://{api_addr}");
+    write_min_config(openhuman_home.as_path(), &api_origin);
+
+    let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
+    let rpc_base = format!("http://{rpc_addr}");
+
+    let create = post_json_rpc(
+        &rpc_base,
+        9121,
+        "openhuman.meetings_create",
+        json!({ "title": "Export test meeting", "source": "manual" }),
+    )
+    .await;
+    let create_outer = assert_no_jsonrpc_error(&create, "meetings_create (export test)");
+    let meeting_id = create_outer
+        .get("result")
+        .and_then(|m| m.get("id"))
+        .and_then(Value::as_str)
+        .expect("id in created meeting")
+        .to_string();
+
+    let chunk = post_json_rpc(
+        &rpc_base,
+        9122,
+        "openhuman.meetings_append_transcript_chunk",
+        json!({
+            "meeting_id": meeting_id,
+            "start_ms": 0,
+            "end_ms": 4000,
+            "text": "This is the transcript to export.",
+            "speaker": "alice"
+        }),
+    )
+    .await;
+    assert_no_jsonrpc_error(&chunk, "meetings_append_transcript_chunk (export test)");
+
+    for format in ["pdf", "docx"] {
+        let export = post_json_rpc(
+            &rpc_base,
+            9123,
+            "openhuman.meetings_export",
+            json!({ "meeting_id": meeting_id, "format": format }),
+        )
+        .await;
+        let export_outer = assert_no_jsonrpc_error(&export, &format!("meetings_export ({format})"));
+        let path = export_outer
+            .get("result")
+            .and_then(|r| r.get("path"))
+            .and_then(Value::as_str)
+            .unwrap_or_else(|| panic!("path in meetings_export ({format}) result: {export_outer}"))
+            .to_string();
+        let metadata = std::fs::metadata(&path)
+            .unwrap_or_else(|e| panic!("exported {format} file should exist at {path}: {e}"));
+        assert!(
+            metadata.len() > 0,
+            "exported {format} file at {path} should be non-empty"
+        );
+    }
+
+    // Unsupported format is rejected with a clear error, not a 500.
+    let bad_format = post_json_rpc(
+        &rpc_base,
+        9124,
+        "openhuman.meetings_export",
+        json!({ "meeting_id": meeting_id, "format": "txt" }),
+    )
+    .await;
+    let bad_format_err = assert_jsonrpc_error(&bad_format, "meetings_export with unsupported format");
+    assert!(
+        bad_format_err["message"]
+            .as_str()
+            .unwrap_or_default()
+            .to_lowercase()
+            .contains("unsupported"),
+        "unsupported format error should say so: {bad_format_err}"
+    );
+
+    api_join.abort();
+    rpc_join.abort();
+}
+
+/// DejaVu Sans Mono, vendored from `alexheretic/ab-glyph`'s own `dev/fonts`
+/// test fixtures (Bitstream Vera / DejaVu license — permissive,
+/// redistributable) — same fixture used by
+/// `openhuman::meetings::ocr_tests`. Used only to render a synthetic PNG
+/// with known text for this test; never shipped in the product build.
+const MEETINGS_SCREENSHOT_TEST_FONT: &[u8] =
+    include_bytes!("../src/openhuman/meetings/test_fixtures/DejaVuSansMono.ttf");
+
+/// Renders a small PNG containing `text` and returns it base64-encoded, for
+/// exercising `meetings_append_screenshot`'s OCR pipeline end-to-end.
+fn base64_png_with_text(text: &str) -> String {
+    use ab_glyph::FontRef;
+    use base64::{engine::general_purpose::STANDARD, Engine as _};
+    use image::{Rgb, RgbImage};
+    use imageproc::drawing::draw_text_mut;
+
+    let font =
+        FontRef::try_from_slice(MEETINGS_SCREENSHOT_TEST_FONT).expect("embedded test font must parse");
+    let mut img = RgbImage::from_pixel(700, 120, Rgb([255, 255, 255]));
+    draw_text_mut(&mut img, Rgb([0, 0, 0]), 10, 30, 48.0, &font, text);
+
+    let mut png_bytes = Vec::new();
+    image::DynamicImage::ImageRgb8(img)
+        .write_to(&mut std::io::Cursor::new(&mut png_bytes), image::ImageFormat::Png)
+        .expect("encode synthetic test image as PNG");
+    STANDARD.encode(png_bytes)
+}
+
+#[tokio::test]
+async fn json_rpc_meetings_append_screenshot_writes_file_and_runs_ocr() {
+    let _env_lock = json_rpc_e2e_env_lock();
+    let tmp = tempdir().expect("tempdir");
+    let home = tmp.path();
+    let openhuman_home = home.join(".openhuman");
+
+    let _home_guard = EnvVarGuard::set_to_path("HOME", home);
+    // See the comment in `json_rpc_meetings_create_transcript_and_finish_lifecycle`:
+    // `HOME` alone does not isolate storage on Windows.
+    let _workspace_guard = EnvVarGuard::set_to_path("OPENHUMAN_WORKSPACE", openhuman_home.as_path());
+    let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
+    let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
+    let _api_url_guard = EnvVarGuard::unset("OPENHUMAN_API_URL");
+
+    let (api_addr, api_join) = serve_on_ephemeral(mock_upstream_router()).await;
+    let api_origin = format!("http://{api_addr}");
+    write_min_config(openhuman_home.as_path(), &api_origin);
+
+    let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
+    let rpc_base = format!("http://{rpc_addr}");
+
+    // 1. Create a meeting.
+    let create = post_json_rpc(
+        &rpc_base,
+        9131,
+        "openhuman.meetings_create",
+        json!({ "title": "Slides meeting", "source": "manual" }),
+    )
+    .await;
+    let create_outer = assert_no_jsonrpc_error(&create, "meetings_create (screenshot test)");
+    let meeting_id = create_outer
+        .get("result")
+        .and_then(|m| m.get("id"))
+        .and_then(Value::as_str)
+        .expect("id in created meeting")
+        .to_string();
+
+    // 2. Append a screenshot (downloads the OCR models on first use).
+    let image_base64 = base64_png_with_text("Quarterly Roadmap");
+    let append = post_json_rpc(
+        &rpc_base,
+        9132,
+        "openhuman.meetings_append_screenshot",
+        json!({
+            "meeting_id": meeting_id,
+            "captured_at_ms": 20_000,
+            "image_base64": image_base64,
+        }),
+    )
+    .await;
+    let append_outer = assert_no_jsonrpc_error(&append, "meetings_append_screenshot");
+    let screenshot = append_outer
+        .get("result")
+        .expect("result envelope in meetings_append_screenshot response");
+    assert_eq!(
+        screenshot.get("meeting_id").and_then(Value::as_str),
+        Some(meeting_id.as_str())
+    );
+    assert_eq!(
+        screenshot.get("captured_at_ms").and_then(Value::as_i64),
+        Some(20_000)
+    );
+    let image_path = screenshot
+        .get("image_path")
+        .and_then(Value::as_str)
+        .expect("image_path in screenshot result");
+    assert!(
+        std::fs::metadata(image_path).is_ok(),
+        "screenshot PNG should exist on disk at {image_path}"
+    );
+    let ocr_text = screenshot
+        .get("ocr_text")
+        .and_then(Value::as_str)
+        .expect("ocr_text in screenshot result");
+    assert!(
+        ocr_text.to_lowercase().contains("roadmap"),
+        "expected OCR text to mention 'roadmap': {ocr_text:?}"
+    );
+
+    // 3. meetings_get should include the screenshot.
+    let get = post_json_rpc(
+        &rpc_base,
+        9133,
+        "openhuman.meetings_get",
+        json!({ "meeting_id": meeting_id }),
+    )
+    .await;
+    let get_outer = assert_no_jsonrpc_error(&get, "meetings_get (screenshot test)");
+    let get_result = get_outer
+        .get("result")
+        .expect("result envelope in meetings_get response");
+    let screenshots = get_result
+        .get("screenshots")
+        .and_then(Value::as_array)
+        .expect("screenshots array in meetings_get result");
+    assert_eq!(screenshots.len(), 1, "the appended screenshot should be listed");
+    assert_eq!(
+        screenshots[0].get("captured_at_ms").and_then(Value::as_i64),
+        Some(20_000)
+    );
+
+    // 4. Appending against a non-recording meeting is rejected clearly.
+    let finish = post_json_rpc(
+        &rpc_base,
+        9134,
+        "openhuman.meetings_finish",
+        json!({ "meeting_id": meeting_id, "duration_ms": 20_000 }),
+    )
+    .await;
+    assert_no_jsonrpc_error(&finish, "meetings_finish (screenshot test)");
+
+    let rejected = post_json_rpc(
+        &rpc_base,
+        9135,
+        "openhuman.meetings_append_screenshot",
+        json!({
+            "meeting_id": meeting_id,
+            "captured_at_ms": 30_000,
+            "image_base64": image_base64,
+        }),
+    )
+    .await;
+    let rejected_err =
+        assert_jsonrpc_error(&rejected, "meetings_append_screenshot after finish");
+    assert!(
+        rejected_err["message"]
+            .as_str()
+            .unwrap_or_default()
+            .to_lowercase()
+            .contains("not recording"),
+        "error should say the meeting is not recording: {rejected_err}"
+    );
+
+    api_join.abort();
+    rpc_join.abort();
+}
+
+#[tokio::test]
 async fn json_rpc_thread_not_found_errors_are_structured() {
     let _env_lock = json_rpc_e2e_env_lock();
     let tmp = tempdir().expect("tempdir");

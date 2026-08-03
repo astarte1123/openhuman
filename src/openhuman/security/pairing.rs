@@ -20,7 +20,6 @@ const PAIR_LOCKOUT_SECS: u64 = 300; // 5 minutes
 /// Bearer tokens are stored as SHA-256 hashes to prevent plaintext exposure
 /// in config files. When a new token is generated, the plaintext is returned
 /// to the client once, and only the hash is retained.
-// TODO: I've just made this work with parking_lot but it should use either flume or tokio's async mutexes
 #[derive(Debug, Clone)]
 pub struct PairingGuard {
     /// Whether pairing is required at all.
@@ -83,7 +82,7 @@ impl PairingGuard {
         self.require_pairing
     }
 
-    fn try_pair_blocking(&self, code: &str) -> Result<Option<String>, u64> {
+    fn try_pair_sync(&self, code: &str) -> Result<Option<String>, u64> {
         // Check brute force lockout
         {
             let attempts = self.failed_attempts.lock();
@@ -144,15 +143,13 @@ impl PairingGuard {
 
     /// Attempt to pair with the given code. Returns a bearer token on success.
     /// Returns `Err(lockout_seconds)` if locked out due to brute force.
+    ///
+    /// `async` for call-site convenience (the caller already awaits other RPC
+    /// work); the body itself is synchronous in-memory `parking_lot::Mutex`
+    /// work and never holds a lock across an await point, so no
+    /// `spawn_blocking` is needed.
     pub async fn try_pair(&self, code: &str) -> Result<Option<String>, u64> {
-        let this = self.clone();
-        let code = code.to_string();
-        // TODO: make this function the main one without spawning a task
-        let handle = tokio::task::spawn_blocking(move || this.try_pair_blocking(&code));
-
-        handle
-            .await
-            .expect("failed to spawn blocking task this should not happen")
+        self.try_pair_sync(code)
     }
 
     /// Check if a bearer token is valid (compares against stored hashes).

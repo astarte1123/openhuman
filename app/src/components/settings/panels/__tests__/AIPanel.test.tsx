@@ -315,6 +315,69 @@ describe('AIPanel', () => {
     expect(screen.queryByRole('dialog', { name: /Connect Custom/i })).not.toBeInTheDocument();
   });
 
+  // ─── chip toggle: YouWorker opens its own multi-field dialog ────────────────
+
+  it('clicking the YouWorker chip (when disabled) opens the YouWorker dialog, not the key dialog', async () => {
+    vi.mocked(loadAISettings).mockResolvedValue({ ...baseSettings, cloudProviders: [] });
+
+    renderWithProviders(<AIPanel />);
+    await waitFor(() => expect(screen.getAllByText(/YouWorker/i).length).toBeGreaterThan(0));
+
+    const connectSwitch = screen.getByRole('switch', { name: /Connect YouWorker/i });
+    fireEvent.click(connectSwitch);
+
+    await waitFor(() =>
+      expect(screen.getByRole('dialog', { name: /Connect YouWorker/i })).toBeInTheDocument()
+    );
+    expect(screen.getByLabelText(/YouWorker base URL/i)).toBeInTheDocument();
+    expect(screen.queryByLabelText(/^API key$/i)).not.toBeInTheDocument();
+  });
+
+  it('filling and submitting the YouWorker dialog stores the secret and adds the provider to the draft', async () => {
+    vi.mocked(loadAISettings).mockResolvedValue({ ...baseSettings, cloudProviders: [] });
+
+    renderWithProviders(<AIPanel />);
+    await waitFor(() =>
+      expect(screen.getByRole('switch', { name: /Connect YouWorker/i })).toBeInTheDocument()
+    );
+    fireEvent.click(screen.getByRole('switch', { name: /Connect YouWorker/i }));
+    await waitFor(() =>
+      expect(screen.getByRole('dialog', { name: /Connect YouWorker/i })).toBeInTheDocument()
+    );
+
+    fireEvent.change(screen.getByLabelText(/YouWorker base URL/i), {
+      target: { value: 'https://example.youworker.test/api/v1' },
+    });
+    fireEvent.change(screen.getByLabelText(/Autentika URL/i), {
+      target: { value: 'https://example.autentika.test' },
+    });
+    fireEvent.change(screen.getByLabelText(/^Persona$/i), {
+      target: { value: 'test-persona' },
+    });
+    fireEvent.change(screen.getByLabelText(/Client ID/i), {
+      target: { value: '00000000-0000-0000-0000-000000000001' },
+    });
+    fireEvent.change(screen.getByLabelText(/Subject UUID/i), {
+      target: { value: '00000000-0000-0000-0000-000000000002' },
+    });
+    fireEvent.change(screen.getByLabelText(/Client secret/i), {
+      target: { value: 'test-client-secret' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /^Connect$/i }));
+
+    await waitFor(() =>
+      expect(vi.mocked(setCloudProviderKey)).toHaveBeenCalledWith('youworker', 'test-client-secret')
+    );
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('dialog', { name: /Connect YouWorker/i })
+      ).not.toBeInTheDocument()
+    );
+    // The chip should have flipped to the "Disconnect" (enabled) state.
+    expect(screen.getByRole('switch', { name: /Disconnect YouWorker/i })).toBeInTheDocument();
+  });
+
   // ─── chip toggle: toggle OFF scrubs routing entries ──────────────────────────
 
   it('toggling OFF an enabled provider scrubs routing entries that reference it', async () => {

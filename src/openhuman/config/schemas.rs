@@ -34,6 +34,14 @@ struct CloudProviderUpdate {
     /// Legacy field — tolerated on read.
     #[serde(default)]
     default_model: Option<String>,
+    #[serde(default)]
+    autentika_url: Option<String>,
+    #[serde(default)]
+    persona: Option<String>,
+    #[serde(default)]
+    client_id: Option<String>,
+    #[serde(default)]
+    subject_uuid: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -934,9 +942,10 @@ fn handle_update_model_settings(params: Map<String, Value>) -> ControllerFuture 
                                 "anthropic" => AuthStyle::Anthropic,
                                 "openhuman_jwt" | "openhumanjwt" => AuthStyle::OpenhumanJwt,
                                 "none" => AuthStyle::None,
+                                "youworker" => AuthStyle::YouWorker,
                                 other => {
                                     return Err(format!(
-                                        "unknown auth_style '{}'; valid: bearer, anthropic, openhuman_jwt, none",
+                                        "unknown auth_style '{}'; valid: bearer, anthropic, openhuman_jwt, none, youworker",
                                         other
                                     ))
                                 }
@@ -957,6 +966,10 @@ fn handle_update_model_settings(params: Map<String, Value>) -> ControllerFuture 
                                 auth_style,
                                 legacy_type: e.legacy_type,
                                 default_model: e.default_model,
+                                autentika_url: e.autentika_url,
+                                persona: e.persona,
+                                client_id: e.client_id,
+                                subject_uuid: e.subject_uuid,
                             };
                             // Apply any remaining legacy-field migration.
                             migrate_legacy_fields(&mut entry);

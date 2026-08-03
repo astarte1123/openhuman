@@ -1,4 +1,3 @@
-import { convertFileSrc } from '@tauri-apps/api/core';
 import debugFactory from 'debug';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -25,13 +24,7 @@ import { threadApi } from '../services/api/threadApi';
 // import { useCoreState } from '../providers/CoreStateProvider';
 import { chatCancel, chatSend, useRustChat } from '../services/chatService';
 import { store } from '../store';
-import {
-  loadAgentProfiles,
-  selectActiveAgentProfileId,
-  selectAgentProfile,
-  selectAgentProfiles,
-  upsertAgentProfile,
-} from '../store/agentProfileSlice';
+import { selectActiveAgentProfileId, selectAgentProfiles } from '../store/agentProfileSlice';
 import {
   beginInferenceTurn,
   clearRuntimeForThread,
@@ -52,22 +45,13 @@ import {
   setSelectedThread,
   THREAD_NOT_FOUND_MESSAGE,
 } from '../store/threadSlice';
-import type { AgentProfile } from '../types/agentProfile';
 import type { ConfirmationModal as ConfirmationModalType } from '../types/intelligence';
 import type { ThreadMessage } from '../types/thread';
 import type { TaskBoardCard, TaskBoardCardStatus } from '../types/turnState';
 import { splitAgentMessageIntoBubbles } from '../utils/agentMessageBubbles';
 import { BILLING_DASHBOARD_URL } from '../utils/links';
 import { openUrl } from '../utils/openUrl';
-import {
-  isTauri,
-  notifyOverlaySttState,
-  openhumanAutocompleteAccept,
-  openhumanAutocompleteCurrent,
-  openhumanVoiceStatus,
-  openhumanVoiceTranscribeBytes,
-  openhumanVoiceTts,
-} from '../utils/tauriCommands';
+import { isTauri, openhumanAutocompleteAccept } from '../utils/tauriCommands';
 import { formatTimelineEntry } from '../utils/toolTimelineFormatting';
 import { AgentMessageBubble, BubbleMarkdown } from './conversations/components/AgentMessageBubble';
 import { CitationChips, type MessageCitation } from './conversations/components/CitationChips';
@@ -79,6 +63,10 @@ import {
   getComposerBlockedSendFeedback,
   handleComposerSlashCommand,
 } from './conversations/composerSendDecision';
+import { DEFAULT_PROFILE_DRAFT, useAgentProfileDraft } from './conversations/hooks/useAgentProfileDraft';
+import { useInlineAutocomplete } from './conversations/hooks/useInlineAutocomplete';
+import { useSilenceTimer } from './conversations/hooks/useSilenceTimer';
+import { useVoiceInput } from './conversations/hooks/useVoiceInput';
 import {
   type AgentBubblePosition,
   buildAcceptedInlineCompletion,
@@ -87,6 +75,11 @@ import {
   getInlineCompletionSuffix,
 } from './conversations/utils/format';
 import { isThreadVisibleInTab, WORKERS_TAB_VALUE } from './conversations/utils/threadFilter';
+import {
+  formatThreadLoadError,
+  isComposerInteractionBlocked,
+  isImeCompositionKeyEvent,
+} from './conversations/threadHelpers';
 
 // Chat uses the reasoning model; `agentic-v1` is reserved for sub-agents
 // that execute tool calls, not the primary user-facing conversation.
@@ -96,17 +89,9 @@ const CHAT_MODEL_ID = 'reasoning-v1';
  *  on `chat_done` — this is purely a ticker-tape affordance to signal
  *  progress without jumping the scroll position as tokens arrive. */
 const STREAMING_PREVIEW_CHARS = 120;
-type InputMode = 'text' | 'voice';
-type ReplyMode = 'text' | 'voice';
-const AUTOCOMPLETE_POLL_DEBOUNCE_MS = 320;
-const AUTOCOMPLETE_MIN_CONTEXT_CHARS = 3;
+export type InputMode = 'text' | 'voice';
+export type ReplyMode = 'text' | 'voice';
 const debug = debugFactory('conversations');
-const DEFAULT_PROFILE_DRAFT = {
-  name: '',
-  agentId: 'orchestrator',
-  systemPromptSuffix: '',
-  allowedTools: '',
-};
 
 interface ConversationsProps {
   /**
@@ -126,57 +111,12 @@ interface ConversationsProps {
   composer?: 'text' | 'mic-cloud';
 }
 
-export function isComposerInteractionBlocked(args: {
-  activeThreadId: string | null;
-  welcomePending: boolean;
-  rustChat: boolean;
-}): boolean {
-  return !args.rustChat || Boolean(args.activeThreadId) || args.welcomePending;
-}
-
-interface ImeKeyboardEventLike {
-  isComposing?: boolean;
-  keyCode?: number;
-  which?: number;
-  nativeEvent?: { isComposing?: boolean; keyCode?: number; which?: number };
-}
-
-export function isImeCompositionKeyEvent(event: ImeKeyboardEventLike): boolean {
-  return (
-    event.isComposing === true ||
-    event.nativeEvent?.isComposing === true ||
-    event.nativeEvent?.keyCode === 229 ||
-    event.nativeEvent?.which === 229 ||
-    event.keyCode === 229 ||
-    event.which === 229
-  );
-}
-
-/**
- * Normalise the value thrown out of `dispatch(loadThreads()).unwrap()` into a
- * displayable string. `createAsyncThunk` re-throws Redux's `SerializedError`
- * (a plain object, not an `Error` instance) when the thunk rejects — which is
- * why the original Sentry report (OPENHUMAN-REACT-X) showed up as
- * "Non-Error promise rejection captured with value: …" rather than a stack.
- * Exported so the mount-effect's `.catch` stays a one-liner and the message
- * shape can be unit-tested without mounting the full page.
- */
-export function formatThreadLoadError(err: unknown): string {
-  if (err instanceof Error) return err.message;
-  if (err && typeof err === 'object' && 'message' in err) {
-    const message = (err as { message?: unknown }).message;
-    if (typeof message === 'string') return message;
-  }
-  return String(err);
-}
-
-function formatAgentProfileAgentLabel(agentId: string): string {
-  return agentId
-    .split(/[_-]+/)
-    .filter(Boolean)
-    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ');
-}
+export {
+  formatAgentProfileAgentLabel,
+  formatThreadLoadError,
+  isComposerInteractionBlocked,
+  isImeCompositionKeyEvent,
+} from './conversations/threadHelpers';
 
 // [#1123] Commented out — welcome-agent onboarding replaced by Joyride walkthrough
 // function WelcomeThinkingTypewriter() {
@@ -243,19 +183,21 @@ const Conversations = ({ variant = 'page', composer = 'text' }: ConversationsPro
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const [inputMode, setInputMode] = useState<InputMode>('text');
   const [replyMode, setReplyMode] = useState<ReplyMode>('text');
-  const [isRecording, setIsRecording] = useState(false);
-  const [isTranscribing, setIsTranscribing] = useState(false);
-  const [voiceStatus, setVoiceStatus] = useState<string | null>(null);
-  const [isPlayingReply, setIsPlayingReply] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState<string>('all');
-  const [inlineSuggestionValue, setInlineSuggestionValue] = useState('');
   const [sendError, setSendError] = useState<ChatSendError | null>(null);
   const [sendAdvisory, setSendAdvisory] = useState<string | null>(null);
-  const [profileDraftOpen, setProfileDraftOpen] = useState(false);
-  const [profileDraft, setProfileDraft] = useState(DEFAULT_PROFILE_DRAFT);
   const socketStatus = useAppSelector(selectSocketStatus);
   const agentProfiles = useAppSelector(selectAgentProfiles);
   const selectedAgentProfileId = useAppSelector(selectActiveAgentProfileId);
+  const {
+    profileDraftOpen,
+    setProfileDraftOpen,
+    profileDraft,
+    setProfileDraft,
+    agentProfileAgentOptions,
+    handleSelectAgentProfile,
+    handleCreateAgentProfile,
+  } = useAgentProfileDraft({ agentProfiles, dispatch, setSendAdvisory });
   const toolTimelineByThread = useAppSelector(state => state.chatRuntime.toolTimelineByThread);
   const taskBoardByThread = useAppSelector(state => state.chatRuntime.taskBoardByThread);
   const inferenceStatusByThread = useAppSelector(
@@ -291,106 +233,13 @@ const Conversations = ({ variant = 'page', composer = 'text' }: ConversationsPro
     onConfirm: () => {},
     onCancel: () => {},
   });
-  const agentProfileAgentOptions = useMemo(() => {
-    const seen = new Set<string>();
-    const options: Array<{ id: string; label: string }> = [];
-    for (const profile of agentProfiles) {
-      const id = profile.agentId.trim();
-      if (!id || seen.has(id)) continue;
-      seen.add(id);
-      options.push({
-        id,
-        label: profile.builtIn ? profile.name : formatAgentProfileAgentLabel(id),
-      });
-    }
-    if (profileDraft.agentId && !seen.has(profileDraft.agentId)) {
-      options.push({
-        id: profileDraft.agentId,
-        label: formatAgentProfileAgentLabel(profileDraft.agentId),
-      });
-    }
-    if (options.length === 0) {
-      options.push({ id: 'orchestrator', label: 'Orchestrator' });
-    }
-    return options;
-  }, [agentProfiles, profileDraft.agentId]);
-
   const textInputRef = useRef<HTMLTextAreaElement>(null);
   const isComposingTextRef = useRef(false);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const mediaStreamRef = useRef<MediaStream | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const replyAudioRef = useRef<HTMLAudioElement | null>(null);
-  const lastSpokenMessageIdRef = useRef<string | null>(null);
-  const autocompleteDebounceRef = useRef<number | null>(null);
-  const autocompleteRequestSeqRef = useRef(0);
-  const sendingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // Thread id whose send started the current silence timer. Tracked separately
-  // from `selectedThreadId` so switching threads mid-turn doesn't move the
-  // timer's reference point.
-  const sendingThreadIdRef = useRef<string | null>(null);
-
-  const getAudioExtension = (mimeType: string): string => {
-    const lower = mimeType.toLowerCase();
-    if (lower.includes('webm')) return 'webm';
-    if (lower.includes('ogg')) return 'ogg';
-    if (lower.includes('wav')) return 'wav';
-    if (lower.includes('mp4') || lower.includes('mpeg') || lower.includes('aac')) return 'm4a';
-    return 'webm';
-  };
-  const canUseMicrophoneApi =
-    typeof navigator !== 'undefined' &&
-    typeof navigator.mediaDevices !== 'undefined' &&
-    typeof navigator.mediaDevices.getUserMedia === 'function';
 
   const handleCreateNewThread = async () => {
     const thread = await dispatch(createNewThread()).unwrap();
     dispatch(setSelectedThread(thread.id));
     void dispatch(loadThreadMessages(thread.id));
-  };
-
-  const handleSelectAgentProfile = async (profileId: string) => {
-    try {
-      await dispatch(selectAgentProfile(profileId)).unwrap();
-    } catch (error) {
-      debug('agent profile select failed: %o', error);
-    }
-  };
-
-  const handleCreateAgentProfile = async () => {
-    const name = profileDraft.name.trim();
-    if (!name) return;
-    const duplicate = agentProfiles.some(
-      profile => profile.name.trim().toLowerCase() === name.toLowerCase()
-    );
-    if (duplicate) {
-      setSendAdvisory(`Agent profile "${name}" already exists.`);
-      return;
-    }
-    const id = `profile-${globalThis.crypto.randomUUID().slice(0, 8)}`;
-    const allowedTools = profileDraft.allowedTools
-      .split(',')
-      .map(tool => tool.trim())
-      .filter(Boolean);
-    const profile: AgentProfile = {
-      id,
-      name,
-      description: 'Custom agent profile',
-      agentId: profileDraft.agentId,
-      systemPromptSuffix: profileDraft.systemPromptSuffix.trim() || null,
-      allowedTools: allowedTools.length > 0 ? allowedTools : null,
-      builtIn: false,
-    };
-    try {
-      await dispatch(upsertAgentProfile(profile)).unwrap();
-      await dispatch(selectAgentProfile(id)).unwrap();
-      setProfileDraftOpen(false);
-      setProfileDraft(DEFAULT_PROFILE_DRAFT);
-      setSendAdvisory(null);
-    } catch (error) {
-      debug('agent profile create failed: %o', error);
-      setSendAdvisory('Could not create agent profile.');
-    }
   };
 
   useEffect(() => {
@@ -465,14 +314,6 @@ const Conversations = ({ variant = 'page', composer = 'text' }: ConversationsPro
     }
   }, [selectedThreadId, dispatch]);
 
-  useEffect(() => {
-    void dispatch(loadAgentProfiles())
-      .unwrap()
-      .catch(error => {
-        debug('agent profiles load failed: %o', error);
-      });
-  }, [dispatch]);
-
   // [#1123] Commented out — welcome-agent onboarding replaced by Joyride walkthrough
   // Welcome lockdown unlock (#883) — when `chatOnboardingCompleted`
   // transitions from `false` → `true` (the welcome agent just called
@@ -536,128 +377,20 @@ const Conversations = ({ variant = 'page', composer = 'text' }: ConversationsPro
     }
   }, [inputValue, sendAdvisory, sendError]);
 
-  const armSilenceTimer = (threadId: string) => {
-    if (sendingTimeoutRef.current) clearTimeout(sendingTimeoutRef.current);
-    sendingThreadIdRef.current = threadId;
-    sendingTimeoutRef.current = setTimeout(() => {
-      debug('armSilenceTimer: no inference signal for 120s — clearing runtime');
-      setSendError(chatSendError('safety_timeout', t('chat.safetyTimeout')));
-      dispatch(clearRuntimeForThread({ threadId }));
-      dispatch(setActiveThread(null));
-      sendingTimeoutRef.current = null;
-      sendingThreadIdRef.current = null;
-    }, 120_000);
-  };
+  const { armSilenceTimer, cancelSilenceTimer } = useSilenceTimer({
+    inferenceStatusByThread,
+    streamingAssistantByThread,
+    dispatch,
+    t,
+    setSendError,
+  });
 
-  // Rearm the silence timer on every inference signal for the sending
-  // thread. Tool / iteration / subagent events bump `inferenceStatusByThread`;
-  // pure-text streams (no tools) only bump `streamingAssistantByThread`, so
-  // both must be watched — otherwise a long text stream would trip the
-  // safety timer mid-reply. When the status is cleared (chat_done /
-  // chat_error), drop the timer — the completion handlers own UI cleanup.
-  useEffect(() => {
-    const threadId = sendingThreadIdRef.current;
-    if (!threadId || !sendingTimeoutRef.current) return;
-    const status = inferenceStatusByThread[threadId];
-    if (status === undefined) {
-      clearTimeout(sendingTimeoutRef.current);
-      sendingTimeoutRef.current = null;
-      sendingThreadIdRef.current = null;
-      return;
-    }
-    armSilenceTimer(threadId);
-    // armSilenceTimer is stable (refs + dispatch); depending on the
-    // selector references is enough to rearm on every progress event.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inferenceStatusByThread, streamingAssistantByThread]);
-
-  useEffect(() => {
-    if (
-      !isTauri() ||
-      !rustChat ||
-      inputMode !== 'text' ||
-      Boolean(activeThreadId) ||
-      inputValue.trim().length < AUTOCOMPLETE_MIN_CONTEXT_CHARS
-    ) {
-      setInlineSuggestionValue('');
-      return;
-    }
-
-    if (autocompleteDebounceRef.current !== null) {
-      window.clearTimeout(autocompleteDebounceRef.current);
-    }
-
-    autocompleteDebounceRef.current = window.setTimeout(() => {
-      const requestSeq = autocompleteRequestSeqRef.current + 1;
-      autocompleteRequestSeqRef.current = requestSeq;
-
-      void openhumanAutocompleteCurrent({ context: inputValue })
-        .then(response => {
-          if (autocompleteRequestSeqRef.current !== requestSeq) return;
-          setInlineSuggestionValue(response.result.suggestion?.value ?? '');
-        })
-        .catch(() => {
-          if (autocompleteRequestSeqRef.current !== requestSeq) return;
-          setInlineSuggestionValue('');
-        });
-    }, AUTOCOMPLETE_POLL_DEBOUNCE_MS);
-
-    return () => {
-      if (autocompleteDebounceRef.current !== null) {
-        window.clearTimeout(autocompleteDebounceRef.current);
-        autocompleteDebounceRef.current = null;
-      }
-    };
-  }, [activeThreadId, inputValue, inputMode, rustChat]);
-
-  useEffect(() => {
-    return () => {
-      mediaRecorderRef.current?.stop();
-      mediaStreamRef.current?.getTracks().forEach(track => track.stop());
-      replyAudioRef.current?.pause();
-      replyAudioRef.current = null;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (inputMode === 'text' && isRecording) {
-      mediaRecorderRef.current?.stop();
-    }
-  }, [inputMode, isRecording]);
-
-  useEffect(() => {
-    if (inputMode === 'voice') {
-      setReplyMode('voice');
-    } else if (replyMode === 'voice') {
-      setReplyMode('text');
-    }
-  }, [inputMode, replyMode]);
-
-  // Proactively check voice binary availability when switching to voice mode
-  useEffect(() => {
-    if (inputMode !== 'voice' || !rustChat) return;
-    let cancelled = false;
-    void (async () => {
-      try {
-        const status = await openhumanVoiceStatus();
-        if (cancelled) return;
-        if (!status.stt_available) {
-          setVoiceStatus(
-            'Voice input needs a speech model to work. Go to Settings > Local AI Models to set it up.'
-          );
-        } else {
-          setVoiceStatus('Ready — tap "Start Talking" to record.');
-        }
-      } catch {
-        if (!cancelled) {
-          setVoiceStatus('Could not check voice availability.');
-        }
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [inputMode, rustChat]);
+  const { inlineSuggestionValue, setInlineSuggestionValue } = useInlineAutocomplete({
+    activeThreadId,
+    inputValue,
+    inputMode,
+    rustChat,
+  });
 
   const handleSlashCommand = (command: string): boolean => {
     const decision = handleComposerSlashCommand(command, false);
@@ -764,11 +497,7 @@ const Conversations = ({ variant = 'page', composer = 'text' }: ConversationsPro
       // Active-thread reset happens in the global ChatRuntimeProvider events.
     } catch (err) {
       // Chat loop errors are emitted via socket events; this catch handles emit-level failures.
-      if (sendingTimeoutRef.current) {
-        clearTimeout(sendingTimeoutRef.current);
-        sendingTimeoutRef.current = null;
-      }
-      sendingThreadIdRef.current = null;
+      cancelSilenceTimer();
       const msg = err instanceof Error ? err.message : String(err);
       if (
         msg.toLowerCase().includes('blocked by a security policy') ||
@@ -786,175 +515,23 @@ const Conversations = ({ variant = 'page', composer = 'text' }: ConversationsPro
     }
   };
 
-  const transcribeAndSendAudio = async (mimeType: string) => {
-    setIsRecording(false);
-    mediaRecorderRef.current = null;
-    mediaStreamRef.current?.getTracks().forEach(track => track.stop());
-    mediaStreamRef.current = null;
-
-    const chunks = audioChunksRef.current;
-    audioChunksRef.current = [];
-    if (chunks.length === 0) {
-      notifyOverlaySttState('cancelled');
-      setVoiceStatus('No audio captured. Try again.');
-      return;
-    }
-
-    setIsTranscribing(true);
-    setVoiceStatus('Transcribing with Whisper…');
-    try {
-      const blob = new Blob(chunks, { type: mimeType || 'audio/webm' });
-      const audioBytes = Array.from(new Uint8Array(await blob.arrayBuffer()));
-      const extension = getAudioExtension(mimeType || blob.type);
-
-      // Build conversation context from recent messages for LLM cleanup.
-      const recentMessages = messages.slice(-10);
-      const context =
-        recentMessages.length > 0
-          ? recentMessages.map(m => `${m.sender}: ${m.content}`).join('\n')
-          : undefined;
-
-      const result = await openhumanVoiceTranscribeBytes(audioBytes, extension, context);
-      const transcript = result.text.trim();
-
-      if (!transcript) {
-        notifyOverlaySttState('cancelled');
-        setVoiceStatus('No speech detected. Try again.');
-        return;
-      }
-
-      notifyOverlaySttState('transcription_done', transcript);
-      setVoiceStatus(`Heard: ${transcript}`);
-      await handleSendMessage(transcript);
-    } catch (err) {
-      notifyOverlaySttState('error');
-      const message = err instanceof Error ? err.message : String(err);
-      const isSetupIssue =
-        message.includes('whisper') ||
-        message.includes('binary not found') ||
-        message.includes('STT model');
-      setSendError(
-        chatSendError(
-          isSetupIssue ? 'stt_not_ready' : 'voice_transcription',
-          isSetupIssue
-            ? 'Voice input needs a speech model. Go to Settings to download one.'
-            : `Voice transcription failed: ${message}`
-        )
-      );
-      setVoiceStatus(null);
-    } finally {
-      setIsTranscribing(false);
-    }
-  };
-
-  const handleVoiceRecordToggle = async () => {
-    if (!rustChat || Boolean(activeThreadId) || isTranscribing) return;
-    if (!canUseMicrophoneApi) {
-      setSendError(
-        chatSendError(
-          'microphone_unavailable',
-          'Microphone capture is unavailable in this runtime. Use Text mode, or run the desktop app bundle with microphone permissions enabled.'
-        )
-      );
-      return;
-    }
-
-    if (isRecording) {
-      mediaRecorderRef.current?.stop();
-      return;
-    }
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaStreamRef.current = stream;
-
-      const preferredTypes = [
-        'audio/webm;codecs=opus',
-        'audio/webm',
-        'audio/ogg;codecs=opus',
-        'audio/ogg',
-        'audio/mp4',
-      ];
-      const supportedType = preferredTypes.find(type => MediaRecorder.isTypeSupported(type));
-      const recorder = supportedType
-        ? new MediaRecorder(stream, { mimeType: supportedType })
-        : new MediaRecorder(stream);
-
-      audioChunksRef.current = [];
-      recorder.ondataavailable = event => {
-        if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data);
-        }
-      };
-      recorder.onerror = () => {
-        notifyOverlaySttState('error');
-        setIsRecording(false);
-        mediaStreamRef.current?.getTracks().forEach(track => track.stop());
-        mediaStreamRef.current = null;
-        setSendError(chatSendError('microphone_recording', 'Microphone recording failed.'));
-      };
-      recorder.onstop = () => {
-        void transcribeAndSendAudio(recorder.mimeType);
-      };
-
-      mediaRecorderRef.current = recorder;
-      setVoiceStatus('Listening… click Stop to send.');
-      setSendError(null);
-      setIsRecording(true);
-      recorder.start();
-      notifyOverlaySttState('recording_started');
-    } catch (err) {
-      notifyOverlaySttState('error');
-      const message = err instanceof Error ? err.message : String(err);
-      setSendError(chatSendError('microphone_access', `Microphone access failed: ${message}`));
-      setVoiceStatus(null);
-    }
-  };
-
-  useEffect(() => {
-    const latestAgentMessage = [...messages].reverse().find(m => m.sender === 'agent');
-    if (!latestAgentMessage) return;
-
-    if (replyMode === 'text') {
-      lastSpokenMessageIdRef.current = latestAgentMessage.id;
-      replyAudioRef.current?.pause();
-      replyAudioRef.current = null;
-      setIsPlayingReply(false);
-      return;
-    }
-
-    if (!rustChat || latestAgentMessage.id === lastSpokenMessageIdRef.current) return;
-
-    lastSpokenMessageIdRef.current = latestAgentMessage.id;
-    let cancelled = false;
-    setIsPlayingReply(true);
-
-    void (async () => {
-      try {
-        const ttsResult = await openhumanVoiceTts(latestAgentMessage.content);
-        if (cancelled) return;
-
-        const audioSrc = convertFileSrc(ttsResult.output_path);
-        const audio = new window.Audio(audioSrc);
-        replyAudioRef.current?.pause();
-        replyAudioRef.current = audio;
-
-        await audio.play();
-      } catch {
-        if (!cancelled) {
-          setSendError(chatSendError('voice_playback', 'Failed to play voice reply.'));
-        }
-      } finally {
-        if (!cancelled) {
-          setIsPlayingReply(false);
-        }
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [messages, replyMode, rustChat]);
+  const {
+    isRecording,
+    isTranscribing,
+    voiceStatus,
+    isPlayingReply,
+    handleVoiceRecordToggle,
+    canUseMicrophoneApi,
+  } = useVoiceInput({
+    rustChat,
+    activeThreadId,
+    messages,
+    inputMode,
+    replyMode,
+    setReplyMode,
+    setSendError,
+    onTranscript: handleSendMessage,
+  });
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (isComposingTextRef.current || isImeCompositionKeyEvent(e)) return;
