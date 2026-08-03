@@ -1,0 +1,4 @@
+[build]
+dist = "../dist"
+public-url = "./"
+filehash = false

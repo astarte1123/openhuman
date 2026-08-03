@@ -1,0 +1,11 @@
+node_modules/
+dist/
+target/
+pnpm-lock.yaml
+.env
+.DS_Store
+.idea/
+.vscode/
+frontend/pkg/
+frontend/target/
+frontend/trunk-cache/

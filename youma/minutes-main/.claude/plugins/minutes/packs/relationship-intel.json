@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "pack_id": "relationship-intel",
+  "title": "Relationship Intelligence",
+  "description": "A pack for users who want stronger recall on people, commitments, meeting outcomes, and relationship signals across a longer history.",
+  "recommended_surface": "claude-code-plugin",
+  "recommended_for": {
+    "roles": ["founder", "operator", "customer-facing"],
+    "contexts": ["person-briefing", "relationship-review", "theme-search"]
+  },
+  "skill_names": [
+    "minutes-brief",
+    "minutes-search",
+    "minutes-tag",
+    "minutes-mirror",
+    "minutes-graph",
+    "minutes-lint"
+  ],
+  "entrypoints": [
+    {
+      "trigger": "Need context on a person before a call",
+      "skill_name": "minutes-brief"
+    },
+    {
+      "trigger": "Need to query a theme or person across meetings",
+      "skill_name": "minutes-graph"
+    },
+    {
+      "trigger": "Want to review wins, losses, or behavior patterns",
+      "skill_name": "minutes-mirror"
+    }
+  ],
+  "notes": [
+    "Optimized for relationship-heavy operators, founders, and customer-facing work.",
+    "Pairs well with tagging meetings so mirror and graph get better over time."
+  ]
+}
