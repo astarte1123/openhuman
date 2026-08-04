@@ -1,11 +1,14 @@
 import packageJson from '../../package.json';
 
-const APP_ENV = (import.meta.env.VITE_AURA_APP_ENV as string | undefined)
-  ?.trim()
-  .toLowerCase();
+const APP_ENV = (import.meta.env.VITE_AURA_APP_ENV as string | undefined)?.trim().toLowerCase();
 
-const DEFAULT_BACKEND_URL =
-  APP_ENV === 'staging' ? 'https://staging-api.tinyhumans.ai' : 'https://api.tinyhumans.ai';
+// Aura ships with no hosted backend by default — this fork split off from a
+// product whose backend (`api.tinyhumans.ai`) we don't own, and there's no
+// reason to route real users' OAuth/session/billing data through a third
+// party's servers. Set `VITE_BACKEND_URL` to point at your own backend if
+// you stand one up; absent that, callers treat an empty backend URL as
+// "no backend configured" (see `getBackendUrl()` / `useBackendUrl()`).
+const DEFAULT_BACKEND_URL = '';
 
 /**
  * Build-time fallback for the Core JSON-RPC endpoint URL.
@@ -18,8 +21,7 @@ const DEFAULT_BACKEND_URL =
  *
  * Override at build time via `VITE_AURA_CORE_RPC_URL`.
  */
-export const CORE_RPC_URL =
-  import.meta.env.VITE_AURA_CORE_RPC_URL || 'http://127.0.0.1:7788/rpc';
+export const CORE_RPC_URL = import.meta.env.VITE_AURA_CORE_RPC_URL || 'http://127.0.0.1:7788/rpc';
 
 /** Matches core `AURA_TOOL_TIMEOUT_SECS` (default 120s, max 3600s). */
 const DEFAULT_TOOL_TIMEOUT_SECS = 120;
@@ -117,6 +119,16 @@ export const BACKEND_URL =
 /** Telegram bot username used for managed DM linking when backend does not return a launch URL. */
 export const TELEGRAM_BOT_USERNAME =
   (import.meta.env.VITE_TELEGRAM_BOT_USERNAME as string | undefined) || 'aura_bot';
+
+/**
+ * Gates the "Continue with Google/GitHub/Twitter" buttons on the Welcome
+ * screen. **Default off**: those flows proxy through a hosted backend
+ * (`getBackendUrl()`) that Aura does not ship by default — see
+ * `DEFAULT_BACKEND_URL` above. Flip on only once a backend that actually
+ * owns registered OAuth apps for these providers is configured.
+ * Override with `VITE_ENABLE_SOCIAL_LOGIN=true`.
+ */
+export const ENABLE_SOCIAL_LOGIN = import.meta.env.VITE_ENABLE_SOCIAL_LOGIN === 'true';
 
 /** Dev only: auto-inject JWT token to skip login flow. */
 export const DEV_JWT_TOKEN = import.meta.env.DEV

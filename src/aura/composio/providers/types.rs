@@ -323,6 +323,9 @@ mod tests {
         config.config_path = tmp.path().join("config.toml");
         config.workspace_dir = tmp.path().join("workspace");
         config.secrets.encrypt = false;
+        // `Config::default()`'s `composio.mode` is `"direct"` now — this
+        // test exercises the backend branch specifically, so pin it.
+        config.composio.mode = crate::aura::config::schema::COMPOSIO_MODE_BACKEND.to_string();
         config.save().await.expect("save fake config to disk");
 
         let ctx = ProviderContext {

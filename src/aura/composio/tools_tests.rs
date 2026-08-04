@@ -16,6 +16,11 @@ fn fake_config_arc() -> Arc<crate::aura::config::Config> {
     let tmp = tempfile::tempdir().expect("tempdir for fake_config_arc");
     let mut config = crate::aura::config::Config::default();
     config.config_path = tmp.path().join("config.toml");
+    // `Config::default()`'s `composio.mode` is `"direct"` (Aura ships with
+    // no hosted backend by default) — pin it to `"backend"` explicitly so
+    // this helper keeps testing the "no backend session" failure mode its
+    // doc comment describes, independent of what the ambient default is.
+    config.composio.mode = crate::aura::config::schema::COMPOSIO_MODE_BACKEND.to_string();
     // Leak the tempdir so the path remains valid for the test's lifetime
     // — `Config::config_path` is just used as a lookup key here, not
     // actually written to.
@@ -200,6 +205,9 @@ fn agent_tools_register_when_backend_signed_in() {
     let tmp = tempfile::tempdir().unwrap();
     let mut config = crate::aura::config::Config::default();
     config.config_path = tmp.path().join("config.toml");
+    // `Config::default()`'s `composio.mode` is `"direct"` now — this test
+    // exercises the backend branch specifically, so pin it.
+    config.composio.mode = crate::aura::config::schema::COMPOSIO_MODE_BACKEND.to_string();
     crate::aura::credentials::AuthService::from_config(&config)
         .store_provider_token(
             crate::aura::credentials::APP_SESSION_PROVIDER,
@@ -404,15 +412,13 @@ async fn sandbox_sandboxed_mode_does_not_trigger_readonly_gate() {
     config.save().await.expect("save fake config to disk");
 
     let t = ComposioExecuteTool::new(Arc::new(config));
-    let result = crate::aura::agent::harness::with_current_sandbox_mode(
-        SandboxMode::Sandboxed,
-        async {
+    let result =
+        crate::aura::agent::harness::with_current_sandbox_mode(SandboxMode::Sandboxed, async {
             t.execute(serde_json::json!({ "tool": "GMAIL_SEND_EMAIL" }))
                 .await
                 .unwrap()
-        },
-    )
-    .await;
+        })
+        .await;
     let msg = error_text(&result);
     assert!(
         !msg.contains("strict read-only"),
@@ -612,6 +618,9 @@ fn execute_tool_resolves_to_backend_kind_when_mode_is_backend() {
     let tmp = tempfile::tempdir().unwrap();
     let mut config = crate::aura::config::Config::default();
     config.config_path = tmp.path().join("config.toml");
+    // `Config::default()`'s `composio.mode` is `"direct"` now — this test
+    // exercises the backend branch specifically, so pin it.
+    config.composio.mode = crate::aura::config::schema::COMPOSIO_MODE_BACKEND.to_string();
     crate::aura::credentials::AuthService::from_config(&config)
         .store_provider_token(
             crate::aura::credentials::APP_SESSION_PROVIDER,

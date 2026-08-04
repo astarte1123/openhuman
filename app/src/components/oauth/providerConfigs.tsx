@@ -2,6 +2,7 @@
  * OAuth provider configurations with brand colors and icons
  */
 import type { OAuthProviderConfig } from '../../types/oauth';
+import { ENABLE_SOCIAL_LOGIN } from '../../utils/config';
 
 // Provider Icons
 const GoogleIcon = ({ className = '' }: { className?: string }) => (
@@ -51,7 +52,7 @@ export const oauthProviderConfigs: OAuthProviderConfig[] = [
     color: 'bg-white border border-gray-200',
     hoverColor: 'hover:bg-gray-50 hover:border-gray-300',
     textColor: 'text-gray-900',
-    showOnWelcome: true,
+    showOnWelcome: ENABLE_SOCIAL_LOGIN,
   },
   {
     id: 'github',
@@ -60,7 +61,7 @@ export const oauthProviderConfigs: OAuthProviderConfig[] = [
     color: 'bg-white border border-gray-200',
     hoverColor: 'hover:bg-gray-50 hover:border-gray-300',
     textColor: 'text-gray-900',
-    showOnWelcome: true,
+    showOnWelcome: ENABLE_SOCIAL_LOGIN,
   },
   {
     id: 'twitter',
@@ -69,7 +70,7 @@ export const oauthProviderConfigs: OAuthProviderConfig[] = [
     color: 'bg-white border border-gray-200',
     hoverColor: 'hover:bg-gray-50 hover:border-gray-300',
     textColor: 'text-gray-900',
-    showOnWelcome: true,
+    showOnWelcome: ENABLE_SOCIAL_LOGIN,
   },
   {
     id: 'discord',

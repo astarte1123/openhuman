@@ -33,6 +33,10 @@ fn test_config(tmp: &tempfile::TempDir) -> Config {
     let mut c = Config::default();
     c.workspace_dir = tmp.path().join("workspace");
     c.config_path = tmp.path().join("config.toml");
+    // `Config::default()`'s `composio.mode` is `"direct"` now (Aura ships
+    // with no hosted backend by default) — this helper's callers test
+    // backend-mode behavior specifically, so pin it explicitly.
+    c.composio.mode = crate::aura::config::schema::COMPOSIO_MODE_BACKEND.to_string();
     c
 }
 
@@ -283,6 +287,9 @@ fn config_with_backend(tmp: &tempfile::TempDir, base: String) -> Config {
     c.workspace_dir = tmp.path().join("workspace");
     c.config_path = tmp.path().join("config.toml");
     c.api_url = Some(base);
+    // See `test_config` above — pin to backend mode explicitly now that
+    // `"direct"` is the default.
+    c.composio.mode = crate::aura::config::schema::COMPOSIO_MODE_BACKEND.to_string();
     crate::aura::credentials::AuthService::from_config(&c)
         .store_provider_token(
             crate::aura::credentials::APP_SESSION_PROVIDER,

@@ -873,6 +873,11 @@ async fn execute_tool_sends_tool_slug_in_request_body() {
 fn config_with_session_token(tmp: &tempfile::TempDir) -> crate::aura::config::Config {
     let mut config = crate::aura::config::Config::default();
     config.config_path = tmp.path().join("config.toml");
+    // `Config::default()`'s `composio.mode` is `"direct"` now — both this
+    // helper's callers exercise backend-mode behavior (one relies on it as
+    // the ambient mode, the other overrides it to `""` and expects the
+    // backend fallback), so pin it explicitly here.
+    config.composio.mode = crate::aura::config::schema::COMPOSIO_MODE_BACKEND.to_string();
     crate::aura::credentials::AuthService::from_config(&config)
         .store_provider_token(
             crate::aura::credentials::APP_SESSION_PROVIDER,
@@ -912,6 +917,7 @@ fn create_composio_client_backend_errors_without_session() {
     let tmp = tempfile::tempdir().expect("tempdir");
     let mut config = crate::aura::config::Config::default();
     config.config_path = tmp.path().join("config.toml");
+    config.composio.mode = crate::aura::config::schema::COMPOSIO_MODE_BACKEND.to_string();
     let err = create_composio_client(&config)
         .err()
         .expect("must error without auth token");

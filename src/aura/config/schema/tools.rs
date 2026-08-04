@@ -451,7 +451,12 @@ pub const COMPOSIO_MODE_BACKEND: &str = "backend";
 pub const COMPOSIO_MODE_DIRECT: &str = "direct";
 
 fn default_composio_mode() -> String {
-    COMPOSIO_MODE_BACKEND.into()
+    // `backend` proxies through a hosted Aura backend — Aura ships with no
+    // such backend by default (see `src/api/config.rs`'s module docs), so
+    // defaulting here would silently route Composio calls nowhere/erroring.
+    // `direct` (BYO API key against backend.composio.dev) is the only mode
+    // that works out of the box.
+    COMPOSIO_MODE_DIRECT.into()
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -474,9 +479,10 @@ pub struct ComposioConfig {
     pub triage_disabled_toolkits: Vec<String>,
 
     /// Routing mode for the main Composio integration flow. One of
-    /// [`COMPOSIO_MODE_BACKEND`] (default — proxied through the Aura
-    /// backend) or [`COMPOSIO_MODE_DIRECT`] (BYO API key, calls
-    /// `backend.composio.dev` directly).
+    /// [`COMPOSIO_MODE_DIRECT`] (default — BYO API key, calls
+    /// `backend.composio.dev` directly) or [`COMPOSIO_MODE_BACKEND`]
+    /// (proxied through a hosted backend — Aura ships with none by
+    /// default, so this only works if you've configured your own).
     ///
     /// The user-provided API key for direct mode is *not* stored in the
     /// TOML — it lives in the encrypted keychain via
