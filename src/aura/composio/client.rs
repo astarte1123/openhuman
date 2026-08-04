@@ -625,15 +625,16 @@ impl ComposioClientKind {
 ///
 /// Supported `config.composio.mode` values:
 ///
-/// - `"backend"` (default) — backend-proxied; identical to
-///   [`build_composio_client`]. Returns
-///   `Err("no backend session")` when the user is not signed in.
-/// - `"direct"` — BYO key against `backend.composio.dev`. Requires a
-///   stored Composio API key under the
+/// - `"direct"` (default) — BYO key against `backend.composio.dev`. Requires
+///   a stored Composio API key under the
 ///   [`crate::aura::credentials::COMPOSIO_DIRECT_PROVIDER`]
 ///   slot **or** an `api_key` value in `config.composio.api_key`. The
 ///   stored key takes precedence so the encrypted keychain remains the
 ///   source of truth — `config.toml` is a fallback for power users.
+/// - `"backend"` — backend-proxied; identical to [`build_composio_client`].
+///   Aura ships with no hosted backend by default, so this only works if
+///   you've configured your own (`config.api_url`). Returns
+///   `Err("no backend session")` when the user is not signed in.
 ///
 /// Any other mode string is rejected with an explicit error so a typo
 /// in `config.toml` fails loud instead of silently downgrading.

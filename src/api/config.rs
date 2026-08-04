@@ -1,9 +1,21 @@
-//! Base URL and defaults for the TinyHumans / AlphaHuman hosted API.
+//! Base URL and defaults for an optional hosted backend API.
+//!
+//! Aura ships with **no hosted backend by default** — this fork split off
+//! from a product whose backend (TinyHumans/OpenHuman's `api.tinyhumans.ai`)
+//! we don't own and have no business routing real users' OAuth/session data
+//! through. `config.api_url` (or `BACKEND_URL`/`VITE_BACKEND_URL`) stays a
+//! real override for anyone who stands up their own backend later; absent
+//! that, [`effective_api_url`] returns an empty string and every consumer
+//! (`getBackendUrl()`, the OAuth login buttons, the Composio backend-proxy
+//! mode) is expected to treat that as "no backend configured", not silently
+//! fall through to a third party's servers.
 
 /// Default API host when `config.api_url` is unset or blank and no env override is set.
-pub const DEFAULT_API_BASE_URL: &str = "https://api.tinyhumans.ai";
+/// Empty — see the module docs above for why there is no hosted-backend default.
+pub const DEFAULT_API_BASE_URL: &str = "";
 /// Default staging API host when the app environment is explicitly `staging`.
-pub const DEFAULT_STAGING_API_BASE_URL: &str = "https://staging-api.tinyhumans.ai";
+/// Empty — see the module docs above for why there is no hosted-backend default.
+pub const DEFAULT_STAGING_API_BASE_URL: &str = "";
 /// Primary app-environment selector used by the core and desktop app.
 pub const APP_ENV_VAR: &str = "AURA_APP_ENV";
 /// Vite-exposed app-environment selector used by the frontend bundle.
@@ -46,10 +58,7 @@ pub fn effective_inference_url(
     {
         return u.to_string();
     }
-    api_url(
-        &effective_api_url(api_url_override),
-        AURA_INFERENCE_PATH,
-    )
+    api_url(&effective_api_url(api_url_override), AURA_INFERENCE_PATH)
 }
 
 pub fn effective_api_url(api_url: &Option<String>) -> String {

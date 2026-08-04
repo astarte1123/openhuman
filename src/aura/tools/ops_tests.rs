@@ -875,6 +875,9 @@ fn all_tools_registers_integration_families_when_enabled_and_signed_in() {
     cfg.integrations.stock_prices.enabled = true;
     cfg.integrations.twilio.enabled = true;
     cfg.composio.enabled = true;
+    // `Config::default()`'s `composio.mode` is `"direct"` now — this test
+    // exercises the backend-signed-in registration path specifically.
+    cfg.composio.mode = crate::aura::config::schema::COMPOSIO_MODE_BACKEND.to_string();
     store_test_session_token(&cfg);
 
     let tools = all_tools(
@@ -934,10 +937,7 @@ fn all_tools_registers_seltz_lsp_and_tool_stats_when_enabled() {
         .lock()
         .unwrap_or_else(|e| e.into_inner());
     unsafe {
-        std::env::set_var(
-            crate::aura::tools::implementations::LSP_ENABLED_ENV,
-            "1",
-        );
+        std::env::set_var(crate::aura::tools::implementations::LSP_ENABLED_ENV, "1");
     }
 
     let tools = all_tools(

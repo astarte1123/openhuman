@@ -412,6 +412,9 @@ mod tests {
         let mut config = Config::default();
         config.config_path = tmp.path().join("config.toml");
         config.workspace_dir = tmp.path().join("workspace");
+        // `Config::default()`'s `composio.mode` is `"direct"` now — this
+        // test exercises the backend branch specifically, so pin it.
+        config.composio.mode = crate::aura::config::schema::COMPOSIO_MODE_BACKEND.to_string();
         config.save().await.expect("save fake config to disk");
 
         let tool = ComposioActionTool::new(
@@ -519,6 +522,8 @@ mod tests {
         let mut backend_config = Config::default();
         backend_config.config_path = tmp_backend.path().join("config.toml");
         backend_config.workspace_dir = tmp_backend.path().join("workspace");
+        backend_config.composio.mode =
+            crate::aura::config::schema::COMPOSIO_MODE_BACKEND.to_string();
         backend_config
             .save()
             .await
@@ -546,8 +551,7 @@ mod tests {
         let mut direct_config = Config::default();
         direct_config.config_path = tmp_direct.path().join("config.toml");
         direct_config.workspace_dir = tmp_direct.path().join("workspace");
-        direct_config.composio.mode =
-            crate::aura::config::schema::COMPOSIO_MODE_DIRECT.to_string();
+        direct_config.composio.mode = crate::aura::config::schema::COMPOSIO_MODE_DIRECT.to_string();
         direct_config.composio.api_key = Some("test-direct-key".to_string());
         direct_config
             .save()

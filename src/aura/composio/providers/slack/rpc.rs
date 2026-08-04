@@ -227,6 +227,9 @@ mod tests {
         let tmp = tempfile::tempdir().expect("tempdir");
         let mut config = Config::default();
         config.config_path = tmp.path().join("config.toml");
+        // `Config::default()`'s `composio.mode` is `"direct"` now — this
+        // helper backs the backend-mode "no session" test, so pin it.
+        config.composio.mode = crate::aura::config::schema::COMPOSIO_MODE_BACKEND.to_string();
         std::mem::forget(tmp);
         config
     }
