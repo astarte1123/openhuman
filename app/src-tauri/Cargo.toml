@@ -145,6 +145,18 @@ cpal = "0.15.3"
 silero_rs = { git = "https://github.com/emotechlab/silero-rs", rev = "26a6460", package = "silero", default-features = false, features = [
     "static-model",
 ] }
+# `silero` depends on `ort` (onnxruntime bindings) for VAD inference. ort's
+# default download-strategy prebuilt libs are dynamically-linked (/MD) on
+# Windows, which conflicts (LNK2038/LNK1169) with the vendored
+# `whisper-rs-sys` fork's forced static CRT (/MT, patched to match CEF's
+# release DLLs — see the whisper-rs-sys patch comment below). Pinning a
+# direct `ort` dependency at the version silero already resolves to, with
+# `load-dynamic`, unifies Cargo's feature resolution so silero's `ort` build
+# ALSO loads onnxruntime.dll at runtime (dlopen-equivalent) instead of
+# statically linking an import lib — sidesteps the CRT conflict entirely.
+# Needs `ORT_DYLIB_PATH` set to a real onnxruntime.dll to actually run VAD;
+# the build succeeds either way since load-dynamic defers loading to first use.
+ort = { version = "=2.0.0-rc.10", default-features = false, features = ["load-dynamic"] }
 rubato = "0.15.0"
 ringbuf = "0.4.8"
 # meeting_recorder::screenshot: periodic primary-monitor capture for slide
