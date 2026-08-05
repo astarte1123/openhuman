@@ -433,6 +433,40 @@ describe('AIPanel', () => {
     expect(nextSettings.routing.coding).toEqual({ kind: 'aura' });
   });
 
+  // ─── SaveBar count reflects a provider add, not just routing changes ────────
+
+  it('connecting a provider (no routing change) shows a non-zero unsaved-change count', async () => {
+    vi.mocked(loadAISettings).mockResolvedValue({ ...baseSettings, cloudProviders: [] });
+    vi.mocked(setCloudProviderKey).mockResolvedValue(undefined);
+
+    renderWithProviders(<AIPanel />);
+
+    await waitFor(() =>
+      expect(screen.getByRole('switch', { name: /Connect OpenAI/i })).toBeInTheDocument()
+    );
+
+    fireEvent.click(screen.getByRole('switch', { name: /Connect OpenAI/i }));
+    await waitFor(() =>
+      expect(screen.getByRole('dialog', { name: /Connect OpenAI/i })).toBeInTheDocument()
+    );
+
+    fireEvent.change(screen.getByLabelText(/API key/i), { target: { value: 'sk-good-key' } });
+    fireEvent.click(screen.getByRole('button', { name: /^Save$/i }));
+
+    // The dialog closes once the key is stored and the draft is updated —
+    // confirms the provider was actually added (isDirty flips to true).
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog', { name: /Connect OpenAI/i })).not.toBeInTheDocument()
+    );
+
+    // The SaveBar's count must reflect the provider addition, not read "0
+    // unsaved changes" while still being shown (the bug: diffSummary only
+    // tracked routing, not cloudProviders).
+    await waitFor(() => expect(screen.getByText(/unsaved change/i)).toBeInTheDocument());
+    expect(screen.queryByText(/^0 unsaved change/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/\+ OpenAI/)).toBeInTheDocument();
+  });
+
   // ─── API-key dialog: failed setCloudProviderKey does not add provider ────────
 
   it('when setCloudProviderKey throws, the provider is NOT added to the draft', async () => {

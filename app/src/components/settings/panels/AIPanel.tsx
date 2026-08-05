@@ -75,6 +75,24 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
 
   const diffSummary = useMemo(() => {
     const out: string[] = [];
+
+    // Provider connect/disconnect/edit — added or removed providers, or
+    // an existing one whose fields changed (new key, new endpoint, …).
+    const savedById = new Map(saved.cloudProviders.map(cp => [cp.id, cp]));
+    const draftById = new Map(draft.cloudProviders.map(cp => [cp.id, cp]));
+    for (const [id, cp] of draftById) {
+      if (!savedById.has(id)) {
+        out.push(`+ ${cp.label}`);
+      } else if (JSON.stringify(savedById.get(id)) !== JSON.stringify(cp)) {
+        out.push(`~ ${cp.label}`);
+      }
+    }
+    for (const [id, cp] of savedById) {
+      if (!draftById.has(id)) {
+        out.push(`- ${cp.label}`);
+      }
+    }
+
     for (const w of WORKLOADS) {
       const a = saved.routing[w.id];
       const b = draft.routing[w.id];
