@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { KNOWN_MODEL_SUGGESTIONS } from './catalog';
 import type { CloudProvider, OllamaModel, ProviderRef, Workload } from './types';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -48,8 +49,7 @@ const CustomRoutingDialog = ({
   const [model, setModel] = useState<string>(() => {
     if (initial.kind === 'cloud' || initial.kind === 'local') return initial.model;
     if (initialSource?.kind === 'cloud') {
-      const p = customCloud.find(c => c.slug === initialSource.providerSlug);
-      return p ? '' : '';
+      return KNOWN_MODEL_SUGGESTIONS[initialSource.providerSlug]?.[0] ?? '';
     }
     return localModels[0]?.id ?? '';
   });
@@ -122,7 +122,7 @@ const CustomRoutingDialog = ({
                     setModel(localModels[0]?.id ?? '');
                   } else if (kind === 'cloud') {
                     setSource({ kind: 'cloud', providerSlug: slug });
-                    setModel('');
+                    setModel(KNOWN_MODEL_SUGGESTIONS[slug]?.[0] ?? '');
                   }
                 }}
                 className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
@@ -149,13 +149,33 @@ const CustomRoutingDialog = ({
                   ))}
                 </select>
               ) : (
-                <input
-                  type="text"
-                  value={model}
-                  onChange={e => setModel(e.target.value)}
-                  placeholder={selectedCloud ? `${selectedCloud.slug} model id` : 'model-id'}
-                  className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-mono text-stone-900 placeholder-stone-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
-                />
+                <>
+                  <input
+                    type="text"
+                    value={model}
+                    onChange={e => setModel(e.target.value)}
+                    placeholder={selectedCloud ? `${selectedCloud.slug} model id` : 'model-id'}
+                    className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-mono text-stone-900 placeholder-stone-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                  />
+                  {source?.kind === 'cloud' && KNOWN_MODEL_SUGGESTIONS[source.providerSlug] && (
+                    <div className="flex flex-wrap gap-1.5">
+                      <span className="text-[11px] text-stone-500">Not sure? Try:</span>
+                      {KNOWN_MODEL_SUGGESTIONS[source.providerSlug].map(suggestion => (
+                        <button
+                          key={suggestion}
+                          type="button"
+                          onClick={() => setModel(suggestion)}
+                          className={`rounded-full border px-2 py-0.5 text-[11px] font-mono transition-colors ${
+                            model === suggestion
+                              ? 'border-primary-500 bg-primary-50 text-primary-900'
+                              : 'border-stone-200 bg-white text-stone-600 hover:bg-stone-50'
+                          }`}>
+                          {suggestion}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>

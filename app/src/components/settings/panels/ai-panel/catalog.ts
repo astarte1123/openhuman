@@ -15,6 +15,17 @@ export const BUILTIN_PROVIDER_META: Record<string, { tone: string; label: string
   youworker: { label: 'YouWorker', tone: 'bg-sky-50 ring-sky-200 text-sky-900' },
 };
 
+// Starting-point model ids per built-in cloud provider slug, offered as
+// quick-pick suggestions in the Custom-routing dialog so a user doesn't
+// need to already know a valid model id to fill the (required) field.
+// First entry doubles as the auto-filled default when the provider is
+// selected. Freely overridable — these are suggestions, not a whitelist.
+export const KNOWN_MODEL_SUGGESTIONS: Record<string, string[]> = {
+  openai: ['gpt-4o-mini', 'gpt-4o', 'o3-mini'],
+  anthropic: ['claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022'],
+  openrouter: ['openai/gpt-4o-mini', 'anthropic/claude-3.5-sonnet'],
+};
+
 export const WORKLOADS: Workload[] = [
   {
     id: 'reasoning',
