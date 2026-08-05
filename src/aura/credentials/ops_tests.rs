@@ -1,4 +1,5 @@
 use super::*;
+use crate::aura::config::TEST_ENV_LOCK as ENV_LOCK;
 use serde_json::json;
 use tempfile::TempDir;
 
@@ -7,6 +8,24 @@ fn test_config(tmp: &TempDir) -> Config {
         workspace_dir: tmp.path().join("workspace"),
         config_path: tmp.path().join("config.toml"),
         ..Config::default()
+    }
+}
+
+/// `create_local_session` activates a user-scoped directory via
+/// `default_root_aura_dir()`, which reads `AURA_WORKSPACE` — scope it to a
+/// temp dir so the test never touches the real `~/.aura`. Guarded by
+/// `ENV_LOCK` since env mutation isn't test-isolated by default.
+fn set_workspace(tmp: &TempDir) {
+    // SAFETY: guarded by ENV_LOCK, which every test touching AURA_WORKSPACE
+    // in this module acquires first.
+    unsafe {
+        std::env::set_var("AURA_WORKSPACE", tmp.path());
+    }
+}
+
+fn clear_workspace() {
+    unsafe {
+        std::env::remove_var("AURA_WORKSPACE");
     }
 }
 
@@ -71,6 +90,45 @@ fn sanitize_stored_session_user_discards_empty_objects() {
         sanitize_stored_session_user(Some(json!({ "firstName": "steven" }))),
         Some(json!({ "firstName": "steven" }))
     );
+}
+
+// ── create_local_session ───────────────────────────────────────
+
+#[tokio::test]
+async fn create_local_session_activates_without_network() {
+    let _guard = ENV_LOCK.lock().unwrap();
+    let tmp = TempDir::new().unwrap();
+    set_workspace(&tmp);
+
+    let config = test_config(&tmp);
+    let result = create_local_session(&config).await.unwrap();
+    assert!(result.value.has_token);
+
+    let state = auth_get_state(&config).await.unwrap();
+    assert!(state.value.is_authenticated);
+    assert_eq!(state.value.user_id.as_deref(), Some(LOCAL_SESSION_USER_ID));
+
+    clear_workspace();
+}
+
+#[tokio::test]
+async fn create_local_session_reuses_the_same_stable_user_id() {
+    let _guard = ENV_LOCK.lock().unwrap();
+    let tmp = TempDir::new().unwrap();
+    set_workspace(&tmp);
+
+    let config = test_config(&tmp);
+    create_local_session(&config).await.unwrap();
+    // Re-minting (e.g. a second app launch before the first token ever
+    // persisted) must not error and must keep the same device-local user
+    // id — the frontend's identity-flip restart logic keys off exactly
+    // this value staying stable across launches.
+    create_local_session(&config).await.unwrap();
+
+    let state = auth_get_state(&config).await.unwrap();
+    assert_eq!(state.value.user_id.as_deref(), Some(LOCAL_SESSION_USER_ID));
+
+    clear_workspace();
 }
 
 // ── clear_session ──────────────────────────────────────────────

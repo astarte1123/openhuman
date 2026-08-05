@@ -146,6 +146,62 @@ pub async fn store_session(
         metadata.insert("user_id".to_string(), uid);
     }
     let user_for_store = sanitize_stored_session_user(user).unwrap_or(settings);
+
+    activate_session(
+        config,
+        trimmed_token,
+        metadata,
+        user_for_store,
+        vec![format!(
+            "session JWT verified via GET /auth/me on {}",
+            api_url.trim_end_matches('/')
+        )],
+    )
+    .await
+}
+
+/// Device-local pseudo-user id for the desktop app's `local` runtime mode,
+/// where there is no backend account at all — see [`create_local_session`].
+/// Stable across launches so the frontend's identity-flip detection
+/// (`CoreStateProvider`) never fires for it.
+pub const LOCAL_SESSION_USER_ID: &str = "local-device";
+
+/// Mint a session for the desktop app's `local` runtime mode: no backend
+/// account, no network call. Reuses the same activation path as a real
+/// backend-verified session (`AuthService::store_provider_token`, per-user
+/// directory activation, login-gated services) so the rest of the app —
+/// which assumes an authenticated session to do anything — works
+/// unmodified. Once stored, the token persists in the local secret store,
+/// so the frontend only needs to call this once per device.
+pub async fn create_local_session(
+    config: &Config,
+) -> Result<RpcOutcome<super::responses::AuthProfileSummary>, String> {
+    let token = format!("local-{}", uuid::Uuid::new_v4());
+    let mut metadata = std::collections::HashMap::new();
+    metadata.insert("user_id".to_string(), LOCAL_SESSION_USER_ID.to_string());
+    let user_for_store = json!({
+        "_id": LOCAL_SESSION_USER_ID,
+        "name": "Local User",
+        "isLocal": true,
+    });
+
+    activate_session(
+        config,
+        &token,
+        metadata,
+        user_for_store,
+        vec!["local device session created (no backend account)".to_string()],
+    )
+    .await
+}
+
+async fn activate_session(
+    config: &Config,
+    trimmed_token: &str,
+    mut metadata: std::collections::HashMap<String, String>,
+    user_for_store: serde_json::Value,
+    mut logs: Vec<String>,
+) -> Result<RpcOutcome<super::responses::AuthProfileSummary>, String> {
     metadata.insert("user_json".to_string(), user_for_store.to_string());
 
     // Determine user_id so we can scope the aura directory to this user.
@@ -153,11 +209,6 @@ pub async fn store_session(
 
     // If we know the user_id, activate the user-scoped directory BEFORE storing
     // the auth profile so that credentials land in the correct place.
-    let mut logs = vec![format!(
-        "session JWT verified via GET /auth/me on {}",
-        api_url.trim_end_matches('/')
-    )];
-
     if let Some(ref uid) = resolved_user_id {
         if let Ok(root_dir) = default_root_aura_dir() {
             // Snapshot before we overwrite `active_user.toml` so we can tell

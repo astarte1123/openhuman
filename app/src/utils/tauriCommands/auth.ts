@@ -71,6 +71,20 @@ export async function storeSession(token: string, user: object): Promise<void> {
   await callCoreRpc({ method: 'aura.auth_store_session', params: { token, user } });
 }
 
+/**
+ * Mint a device-local session for the `local` runtime mode — no backend
+ * account, no network call. Only meaningful when there's no existing
+ * session; the core persists the resulting token, so the caller only
+ * needs to call this once per device.
+ */
+export async function createLocalSession(): Promise<void> {
+  if (!isTauri()) {
+    return;
+  }
+
+  await callCoreRpc({ method: 'aura.auth_create_local_session' });
+}
+
 export async function auraEncryptSecret(plaintext: string): Promise<CommandResponse<string>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');

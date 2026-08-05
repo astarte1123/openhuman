@@ -5,6 +5,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import * as coreStateApi from '../../services/coreStateApi';
 import * as tauriCommands from '../../utils/tauriCommands';
 import { setCoreStateSnapshot } from '../../lib/coreState/store';
+import { store } from '../../store';
+import { resetCoreMode, setCoreMode } from '../../store/coreModeSlice';
 import { setActiveUserId } from '../../store/userScopedStorage';
 import CoreStateProvider, {
   coreStatePollFailureWarningMessage,
@@ -375,6 +377,79 @@ describe('CoreStateProvider — identity-change cache clearing', () => {
     expect(vi.mocked(tauriCommands.auraUpdateMeetSettings)).toHaveBeenCalledWith({
       auto_orchestrator_handoff: false,
     });
+  });
+
+  // The `local` runtime mode (embedded core, no remote backend) has no
+  // account system — there is no OAuth flow to obtain a sessionToken from.
+  // Without minting a device-local session, `ProtectedRoute` would never
+  // pass and the app would be stuck on Welcome forever.
+  it('mints a local device session on bootstrap when runtime mode is local and no session exists', async () => {
+    store.dispatch(setCoreMode({ kind: 'local' }));
+    vi.mocked(tauriCommands.createLocalSession).mockReset();
+    vi.mocked(tauriCommands.createLocalSession).mockResolvedValue(undefined);
+    listTeams.mockResolvedValue([]);
+
+    try {
+      fetchSnapshot
+        .mockResolvedValueOnce(makeSnapshot({ userId: null, sessionToken: null }))
+        .mockResolvedValueOnce(
+          makeSnapshot({ userId: 'local-device', sessionToken: 'local-tok' })
+        );
+
+      render(
+        <CoreStateProvider>
+          <Consumer />
+        </CoreStateProvider>
+      );
+
+      await waitFor(() =>
+        expect(vi.mocked(tauriCommands.createLocalSession)).toHaveBeenCalledTimes(1)
+      );
+      await waitFor(() => expect(screen.getByTestId('token').textContent).toBe('local-tok'));
+    } finally {
+      store.dispatch(resetCoreMode());
+    }
+  });
+
+  it('does not mint a local session when runtime mode is not local', async () => {
+    store.dispatch(resetCoreMode());
+    vi.mocked(tauriCommands.createLocalSession).mockReset();
+    vi.mocked(tauriCommands.createLocalSession).mockResolvedValue(undefined);
+    fetchSnapshot.mockResolvedValue(makeSnapshot({ userId: null, sessionToken: null }));
+    listTeams.mockResolvedValue([]);
+
+    render(
+      <CoreStateProvider>
+        <Consumer />
+      </CoreStateProvider>
+    );
+
+    await waitFor(() => expect(screen.getByTestId('ready').textContent).toBe('ready'));
+    expect(vi.mocked(tauriCommands.createLocalSession)).not.toHaveBeenCalled();
+  });
+
+  it('does not re-mint a local session once one already exists', async () => {
+    store.dispatch(setCoreMode({ kind: 'local' }));
+    vi.mocked(tauriCommands.createLocalSession).mockReset();
+    vi.mocked(tauriCommands.createLocalSession).mockResolvedValue(undefined);
+    listTeams.mockResolvedValue([]);
+
+    try {
+      fetchSnapshot.mockResolvedValue(
+        makeSnapshot({ userId: 'local-device', sessionToken: 'local-tok' })
+      );
+
+      render(
+        <CoreStateProvider>
+          <Consumer />
+        </CoreStateProvider>
+      );
+
+      await waitFor(() => expect(screen.getByTestId('ready').textContent).toBe('ready'));
+      expect(vi.mocked(tauriCommands.createLocalSession)).not.toHaveBeenCalled();
+    } finally {
+      store.dispatch(resetCoreMode());
+    }
   });
 });
 
