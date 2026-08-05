@@ -69,16 +69,18 @@ pub struct LocalAiConfig {
     pub stt_model_id: String,
     #[serde(default = "default_stt_download_url")]
     pub stt_download_url: Option<String>,
-    /// Voice STT provider selector. `"cloud"` (default) routes through the
-    /// backend Whisper proxy; `"whisper"` runs local whisper.cpp via the
-    /// `WHISPER_BIN` env var. Surfaced in Settings → Voice.
+    /// Voice STT provider selector. `"whisper"` (default) runs local
+    /// whisper.cpp via the `WHISPER_BIN` env var — no backend account
+    /// needed. `"cloud"` routes through the backend Whisper proxy, which
+    /// requires a configured backend URL. Surfaced in Settings → Voice.
     #[serde(default = "default_stt_provider")]
     pub stt_provider: String,
     #[serde(default = "default_tts_voice_id")]
     pub tts_voice_id: String,
-    /// Voice TTS provider selector. `"cloud"` (default) routes through the
-    /// backend ElevenLabs proxy and returns rich visemes; `"piper"` runs
-    /// local Piper via the `PIPER_BIN` env var.
+    /// Voice TTS provider selector. `"piper"` (default) runs local Piper
+    /// via the `PIPER_BIN` env var — no backend account needed. `"cloud"`
+    /// routes through the backend ElevenLabs proxy and returns rich
+    /// visemes, but requires a configured backend URL.
     #[serde(default = "default_tts_provider")]
     pub tts_provider: String,
     #[serde(default = "default_tts_download_url")]
@@ -161,11 +163,11 @@ fn default_tts_voice_id() -> String {
 }
 
 fn default_stt_provider() -> String {
-    "cloud".to_string()
+    "whisper".to_string()
 }
 
 fn default_tts_provider() -> String {
-    "cloud".to_string()
+    "piper".to_string()
 }
 
 fn default_stt_download_url() -> Option<String> {
@@ -292,5 +294,25 @@ impl Default for LocalAiConfig {
             voice_llm_cleanup_enabled: default_voice_llm_cleanup_enabled(),
             usage: LocalAiUsage::default(),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::LocalAiConfig;
+
+    // Voice STT/TTS default to local (no backend account needed) rather
+    // than the backend-proxied "cloud" path, matching the rest of the app's
+    // no-default-backend stance. See `effective_stt_provider` /
+    // `effective_tts_provider` in `aura::voice::schemas`, which read these
+    // fields verbatim.
+    #[test]
+    fn stt_provider_defaults_to_local_whisper() {
+        assert_eq!(LocalAiConfig::default().stt_provider, "whisper");
+    }
+
+    #[test]
+    fn tts_provider_defaults_to_local_piper() {
+        assert_eq!(LocalAiConfig::default().tts_provider, "piper");
     }
 }
