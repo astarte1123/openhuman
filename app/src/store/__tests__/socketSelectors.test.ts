@@ -4,19 +4,13 @@ import { type CoreState, setCoreStateSnapshot } from '../../lib/coreState/store'
 import type { RootState } from '../index';
 import { selectSocketId, selectSocketStatus } from '../socketSelectors';
 
-function encodeJwt(payload: Record<string, unknown>): string {
-  const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
-  const body = btoa(JSON.stringify(payload));
-  return `${header}.${body}.signature`;
-}
-
-function makeCoreState(token: string | null): CoreState {
+function makeCoreState(userId: string | null): CoreState {
   return {
     isBootstrapping: false,
     isReady: true,
     snapshot: {
-      auth: { isAuthenticated: !!token, userId: null, user: null, profileId: null },
-      sessionToken: token,
+      auth: { isAuthenticated: !!userId, userId, user: null, profileId: null },
+      sessionToken: userId ? `token-for-${userId}` : null,
       currentUser: null,
       onboardingCompleted: false,
       chatOnboardingCompleted: false,
@@ -42,30 +36,47 @@ describe('selectSocketStatus', () => {
     setCoreStateSnapshot(makeCoreState(null));
   });
 
-  it('returns disconnected when no token', () => {
+  it('returns disconnected when no userId', () => {
     const state = makeState();
     expect(selectSocketStatus(state)).toBe('disconnected');
   });
 
-  it('returns status from user state based on JWT tgUserId', () => {
-    setCoreStateSnapshot(makeCoreState(encodeJwt({ tgUserId: 'tg123' })));
+  it('returns status from user state keyed by auth.userId', () => {
+    setCoreStateSnapshot(makeCoreState('tg123'));
     const state = makeState({ tg123: { status: 'connected', socketId: 'sock-1' } });
 
     expect(selectSocketStatus(state)).toBe('connected');
   });
 
-  it('returns disconnected when JWT user has no socket state', () => {
-    setCoreStateSnapshot(makeCoreState(encodeJwt({ tgUserId: 'tg123' })));
+  it('returns disconnected when the user has no socket state yet', () => {
+    setCoreStateSnapshot(makeCoreState('tg123'));
     const state = makeState();
 
     expect(selectSocketStatus(state)).toBe('disconnected');
   });
 
-  it('uses __pending__ for invalid JWT', () => {
-    setCoreStateSnapshot(makeCoreState('not-a-jwt'));
+  it('uses __pending__ when there is no userId at all', () => {
+    setCoreStateSnapshot(makeCoreState(null));
     const state = makeState({ __pending__: { status: 'connecting', socketId: null } });
 
     expect(selectSocketStatus(state)).toBe('connecting');
+  });
+
+  // Regression test: the `local` runtime mode's device-local session
+  // (`create_local_session`) sets `auth.userId` to a plain string like
+  // `local-device` — not a JWT. The selector previously tried to decode
+  // `sessionToken` as a JWT to recover a user id, which always failed for
+  // this non-JWT token and silently fell back to `__pending__`, so
+  // `state.socket.byUser['local-device']` (where the socket connection is
+  // actually keyed, via the same `auth.userId` field) was never found —
+  // `selectSocketStatus` reported 'disconnected' forever regardless of the
+  // real connection state, permanently blocking chat sends with no visible
+  // error. `auth.userId` is used directly now, matching socketService.ts.
+  it('resolves status correctly for a device-local (non-JWT) session', () => {
+    setCoreStateSnapshot(makeCoreState('local-device'));
+    const state = makeState({ 'local-device': { status: 'connected', socketId: 'sock-local' } });
+
+    expect(selectSocketStatus(state)).toBe('connected');
   });
 });
 
@@ -74,13 +85,13 @@ describe('selectSocketId', () => {
     setCoreStateSnapshot(makeCoreState(null));
   });
 
-  it('returns null when no token', () => {
+  it('returns null when no userId', () => {
     const state = makeState();
     expect(selectSocketId(state)).toBeNull();
   });
 
   it('returns socketId from user state', () => {
-    setCoreStateSnapshot(makeCoreState(encodeJwt({ tgUserId: 'tg123' })));
+    setCoreStateSnapshot(makeCoreState('tg123'));
     const state = makeState({ tg123: { status: 'connected', socketId: 'sock-abc' } });
 
     expect(selectSocketId(state)).toBe('sock-abc');
