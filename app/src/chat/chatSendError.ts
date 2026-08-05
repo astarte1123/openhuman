@@ -2,6 +2,7 @@
 
 export type ChatSendErrorCode =
   | 'socket_disconnected'
+  | 'turn_in_progress'
   | 'local_model_failed'
   | 'cloud_send_failed'
   | 'voice_transcription'

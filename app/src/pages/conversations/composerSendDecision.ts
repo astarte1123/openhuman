@@ -25,7 +25,7 @@ export interface ComposerSendDecision {
 
 export interface ComposerBlockedSendFeedback {
   showLimitModal: boolean;
-  error: { code: 'usage_limit_reached' | 'socket_disconnected'; message: string };
+  error: { code: 'usage_limit_reached' | 'socket_disconnected' | 'turn_in_progress'; message: string };
 }
 
 export interface ComposerKeyDownEventLike {
@@ -109,6 +109,16 @@ export const getComposerBlockedSendFeedback = (
         code: 'socket_disconnected',
         message:
           'Realtime socket is not connected — responses cannot be delivered without a client ID.',
+      },
+    };
+  }
+
+  if (blockReason === 'composer_blocked') {
+    return {
+      showLimitModal: false,
+      error: {
+        code: 'turn_in_progress',
+        message: 'Still waiting on a response for this chat — send again once it finishes.',
       },
     };
   }

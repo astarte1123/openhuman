@@ -419,11 +419,21 @@ const Conversations = ({ variant = 'page', composer = 'text' }: ConversationsPro
     });
     const trimmed = sendDecision.trimmedText;
 
-    if (
-      sendDecision.blockReason === 'empty_input' ||
-      sendDecision.blockReason === 'missing_thread' ||
-      sendDecision.blockReason === 'composer_blocked'
-    ) {
+    if (sendDecision.blockReason) {
+      // Every block reason is logged unconditionally — a message that silently
+      // goes nowhere (no RPC call, no error, no hint) is the hardest kind of
+      // bug to diagnose from a bug report alone.
+      debug(
+        'handleSendMessage blocked reason=%s selectedThreadId=%s composerInteractionBlocked=%s isAtLimit=%s socketStatus=%s',
+        sendDecision.blockReason,
+        selectedThreadId,
+        composerInteractionBlocked,
+        isAtLimit,
+        socketStatus
+      );
+    }
+
+    if (sendDecision.blockReason === 'empty_input' || sendDecision.blockReason === 'missing_thread') {
       return;
     }
 

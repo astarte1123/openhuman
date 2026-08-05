@@ -151,8 +151,19 @@ describe('getComposerBlockedSendFeedback', () => {
     });
   });
 
+  it('returns send error feedback for composer-blocked (turn in progress)', () => {
+    expect(getComposerBlockedSendFeedback('composer_blocked')).toEqual({
+      showLimitModal: false,
+      error: {
+        code: 'turn_in_progress',
+        message: 'Still waiting on a response for this chat — send again once it finishes.',
+      },
+    });
+  });
+
   it('ignores block reasons that do not surface user feedback', () => {
     expect(getComposerBlockedSendFeedback('empty_input')).toBeNull();
+    expect(getComposerBlockedSendFeedback('missing_thread')).toBeNull();
     expect(getComposerBlockedSendFeedback(undefined)).toBeNull();
   });
 });
