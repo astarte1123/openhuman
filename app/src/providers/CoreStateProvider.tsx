@@ -33,6 +33,7 @@ import { getActiveUserId, setActiveUserId } from '../store/userScopedStorage';
 import {
   auraUpdateAnalyticsSettings,
   auraUpdateMeetSettings,
+  createLocalSession,
   restartApp,
   setOnboardingCompleted,
   storeSession,
@@ -373,6 +374,29 @@ export default function CoreStateProvider({ children }: { children: ReactNode })
     [commitState]
   );
 
+  /**
+   * The `local` runtime mode (embedded core, no remote backend) has no
+   * account system to sign into — `store_session` only exists for the
+   * cloud/backend OAuth flow. Without this, `ProtectedRoute`'s
+   * `snapshot.sessionToken` check would never pass and the app would be
+   * permanently stuck on Welcome. Mints a device-local pseudo-session once
+   * (via the same activation path a real login uses — user-scoped
+   * directory, login-gated services) so the rest of the app can treat
+   * "signed in" uniformly regardless of runtime mode. The core persists the
+   * resulting token, so this is a one-time cost per device, not per launch.
+   */
+  const ensureLocalSessionIfNeeded = useCallback(async () => {
+    if (store.getState().coreMode.mode.kind !== 'local') return;
+    if (getCoreStateSnapshot().snapshot.sessionToken) return;
+    try {
+      log('[core-state] bootstrap — minting local device session (no backend account)');
+      await createLocalSession();
+      await refresh();
+    } catch (error) {
+      console.warn('[core-state] local session bootstrap failed:', sanitizeError(error));
+    }
+  }, [refresh]);
+
   useEffect(() => {
     let cancelled = false;
     const doRefresh = async () => {
@@ -408,6 +432,7 @@ export default function CoreStateProvider({ children }: { children: ReactNode })
     const load = async () => {
       await doRefresh();
       if (!cancelled) {
+        await ensureLocalSessionIfNeeded();
         const next = getCoreStateSnapshot();
         if (next.snapshot.auth.isAuthenticated) {
           await refreshTeams().catch(err => {
@@ -435,7 +460,7 @@ export default function CoreStateProvider({ children }: { children: ReactNode })
         window.clearTimeout(timeoutId);
       }
     };
-  }, [commitState, refresh, refreshTeams]);
+  }, [commitState, ensureLocalSessionIfNeeded, refresh, refreshTeams]);
 
   useEffect(() => {
     const onSessionTokenUpdated = (event: Event) => {

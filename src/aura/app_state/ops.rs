@@ -314,6 +314,14 @@ fn sanitize_snapshot_user(user: Option<Value>) -> Option<Value> {
     }
 }
 
+/// True when a backend URL is actually configured (default is empty — see
+/// `DEFAULT_API_BASE_URL`). Used to skip the `GET /auth/me` refresh for
+/// sessions with no backend at all (the `local` runtime mode's device-local
+/// session) instead of retrying — and warning on failure — every poll tick.
+fn has_backend_configured(config: &Config) -> bool {
+    !effective_backend_api_url(&config.api_url).trim().is_empty()
+}
+
 async fn fetch_current_user_cached(config: &Config, token: &str) -> Result<Option<Value>, String> {
     let api_base = effective_backend_api_url(&config.api_url)
         .trim()
@@ -449,7 +457,12 @@ pub async fn snapshot() -> Result<RpcOutcome<AppStateSnapshot>, String> {
     let mut auth = build_session_state(&config)?;
     let session_token = get_session_token(&config)?;
     let stored_user = sanitize_snapshot_user(auth.user.clone());
-    let current_user = if let Some(token) = session_token.clone().filter(|t| !t.trim().is_empty()) {
+    let current_user = if !has_backend_configured(&config) {
+        // No backend configured at all (e.g. the `local` runtime mode's
+        // device-local session) — skip the network round-trip entirely
+        // instead of retrying every poll tick and warning on every failure.
+        stored_user.clone()
+    } else if let Some(token) = session_token.clone().filter(|t| !t.trim().is_empty()) {
         match fetch_current_user_cached(&config, &token).await {
             Ok(fresh_user) => fresh_user.or(stored_user.clone()),
             Err(error) => {

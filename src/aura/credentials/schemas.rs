@@ -91,6 +91,7 @@ struct AuthOauthRevokeParams {
 pub fn all_controller_schemas() -> Vec<ControllerSchema> {
     vec![
         schemas("auth_store_session"),
+        schemas("auth_create_local_session"),
         schemas("auth_clear_session"),
         schemas("auth_get_state"),
         schemas("auth_get_session_token"),
@@ -113,6 +114,10 @@ pub fn all_registered_controllers() -> Vec<RegisteredController> {
         RegisteredController {
             schema: schemas("auth_store_session"),
             handler: handle_auth_store_session,
+        },
+        RegisteredController {
+            schema: schemas("auth_create_local_session"),
+            handler: handle_auth_create_local_session,
         },
         RegisteredController {
             schema: schemas("auth_clear_session"),
@@ -184,6 +189,13 @@ pub fn schemas(function: &str) -> ControllerSchema {
                 optional_json("user_id", "Optional user id hint."),
                 optional_json("user", "Optional user payload."),
             ],
+            outputs: vec![json_output("profile", "Stored auth profile summary.")],
+        },
+        "auth_create_local_session" => ControllerSchema {
+            namespace: "auth",
+            function: "create_local_session",
+            description: "Mint a device-local session for the `local` runtime mode — no backend account, no network call.",
+            inputs: vec![],
             outputs: vec![json_output("profile", "Stored auth profile summary.")],
         },
         "auth_clear_session" => ControllerSchema {
@@ -332,6 +344,13 @@ fn handle_auth_store_session(params: Map<String, Value>) -> ControllerFuture {
             )
             .await?,
         )
+    })
+}
+
+fn handle_auth_create_local_session(_params: Map<String, Value>) -> ControllerFuture {
+    Box::pin(async move {
+        let config = config_rpc::load_config_with_timeout().await?;
+        to_json(crate::aura::credentials::rpc::create_local_session(&config).await?)
     })
 }
 

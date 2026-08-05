@@ -60,6 +60,20 @@ fn resolve_base_normalizes_missing_trailing_slash() {
 }
 
 #[test]
+fn has_backend_configured_is_false_by_default() {
+    // `DEFAULT_API_BASE_URL` is empty — no backend configured out of the box.
+    let cfg = Config::default();
+    assert!(!has_backend_configured(&cfg));
+}
+
+#[test]
+fn has_backend_configured_is_true_when_api_url_is_set() {
+    let mut cfg = Config::default();
+    cfg.api_url = Some("https://api.example.test/aura".into());
+    assert!(has_backend_configured(&cfg));
+}
+
+#[test]
 fn resolve_base_rejects_invalid_urls() {
     let mut cfg = Config::default();
     cfg.api_url = Some("://definitely-not-a-url".into());

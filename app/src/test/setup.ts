@@ -124,6 +124,7 @@ vi.mock('@tauri-apps/plugin-os', () => ({ platform: vi.fn().mockResolvedValue('m
 vi.mock('../utils/tauriCommands', () => ({
   isTauri: vi.fn(() => false),
   storeSession: vi.fn().mockResolvedValue(undefined),
+  createLocalSession: vi.fn().mockResolvedValue(undefined),
   getSessionToken: vi.fn().mockResolvedValue(null),
   getAuthState: vi.fn().mockResolvedValue({ is_authenticated: false }),
   logout: vi.fn().mockResolvedValue(undefined),
