@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useT } from '../../../lib/i18n/I18nContext';
 import {
   isTauri,
   MEMORY_CONTEXT_WINDOWS,
@@ -20,28 +21,30 @@ interface PresetMeta {
  * `src/aura/config/schema/agent.rs`) — these strings only describe
  * the UX tradeoff so users can pick without doing math.
  */
-export const MEMORY_WINDOW_PRESET_META: Record<MemoryContextWindow, PresetMeta> = {
-  minimal: {
-    label: 'Minimal',
-    badge: 'Cheapest',
-    hint: 'Smallest memory window. Cheapest, fastest, least continuity between runs.',
-  },
-  balanced: {
-    label: 'Balanced',
-    badge: 'Recommended',
-    hint: 'Sensible default — good continuity without burning extra tokens on every run.',
-  },
-  extended: {
-    label: 'Extended',
-    badge: 'More context',
-    hint: 'More long-term memory injected into each run. Higher token cost per turn.',
-  },
-  maximum: {
-    label: 'Maximum',
-    badge: 'Highest cost',
-    hint: 'The largest safe window. Best continuity, meaningfully higher token bill on every run.',
-  },
-};
+function usePresetMeta(t: (key: string) => string): Record<MemoryContextWindow, PresetMeta> {
+  return {
+    minimal: {
+      label: t('settings.memory_window_control.minimal_label'),
+      badge: t('settings.memory_window_control.minimal_badge'),
+      hint: t('settings.memory_window_control.minimal_hint'),
+    },
+    balanced: {
+      label: t('settings.memory_window_control.balanced_label'),
+      badge: t('settings.memory_window_control.balanced_badge'),
+      hint: t('settings.memory_window_control.balanced_hint'),
+    },
+    extended: {
+      label: t('settings.memory_window_control.extended_label'),
+      badge: t('settings.memory_window_control.extended_badge'),
+      hint: t('settings.memory_window_control.extended_hint'),
+    },
+    maximum: {
+      label: t('settings.memory_window_control.maximum_label'),
+      badge: t('settings.memory_window_control.maximum_badge'),
+      hint: t('settings.memory_window_control.maximum_hint'),
+    },
+  };
+}
 
 const isMemoryContextWindow = (value: unknown): value is MemoryContextWindow =>
   typeof value === 'string' && (MEMORY_CONTEXT_WINDOWS as readonly string[]).includes(value);
@@ -70,6 +73,8 @@ interface Props {
  *   the cost / continuity tradeoff.
  */
 const MemoryWindowControl = ({ onError, onSaved }: Props) => {
+  const { t } = useT();
+  const presetMeta = usePresetMeta(t);
   const [current, setCurrent] = useState<MemoryContextWindow>('balanced');
   const [pending, setPending] = useState<MemoryContextWindow | null>(null);
   const [loaded, setLoaded] = useState(false);
@@ -88,7 +93,9 @@ const MemoryWindowControl = ({ onError, onSaved }: Props) => {
         setCurrent(extractCurrentWindow(response.result));
       } catch (err) {
         if (cancelled) return;
-        onError?.(err instanceof Error ? err.message : 'Failed to load memory settings');
+        onError?.(
+          err instanceof Error ? err.message : t('settings.memory_window_control.load_failed')
+        );
       } finally {
         if (!cancelled) setLoaded(true);
       }
@@ -97,7 +104,7 @@ const MemoryWindowControl = ({ onError, onSaved }: Props) => {
     return () => {
       cancelled = true;
     };
-  }, [onError]);
+  }, [onError, t]);
 
   const select = async (next: MemoryContextWindow) => {
     if (next === current || saving) return;
@@ -110,7 +117,9 @@ const MemoryWindowControl = ({ onError, onSaved }: Props) => {
       setCurrent(next);
       onSaved?.(next);
     } catch (err) {
-      onError?.(err instanceof Error ? err.message : 'Failed to save memory window');
+      onError?.(
+        err instanceof Error ? err.message : t('settings.memory_window_control.save_failed')
+      );
     } finally {
       setSaving(null);
       setPending(null);
@@ -118,7 +127,7 @@ const MemoryWindowControl = ({ onError, onSaved }: Props) => {
   };
 
   const activeForUi = pending ?? current;
-  const meta = MEMORY_WINDOW_PRESET_META[activeForUi];
+  const meta = presetMeta[activeForUi];
 
   return (
     <div
@@ -126,20 +135,20 @@ const MemoryWindowControl = ({ onError, onSaved }: Props) => {
       data-testid="memory-window-control">
       <div className="flex items-baseline justify-between">
         <div>
-          <h3 className="text-base font-semibold">Long-term memory window</h3>
+          <h3 className="text-base font-semibold">
+            {t('settings.memory_window_control.heading')}
+          </h3>
           <p className="text-sm text-muted-foreground">
-            How much remembered context Aura injects into every new agent run. Larger windows
-            feel more aware of past conversations but use more tokens — and cost more — on every
-            run.
+            {t('settings.memory_window_control.description')}
           </p>
         </div>
       </div>
       <div
         role="radiogroup"
-        aria-label="Long-term memory window"
+        aria-label={t('settings.memory_window_control.heading')}
         className="grid grid-cols-2 gap-2">
         {MEMORY_CONTEXT_WINDOWS.map(option => {
-          const optionMeta = MEMORY_WINDOW_PRESET_META[option];
+          const optionMeta = presetMeta[option];
           const isActive = activeForUi === option;
           const isSaving = saving === option;
           return (

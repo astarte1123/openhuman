@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 
+import { useT } from '../../lib/i18n/I18nContext';
 import { useCoreState } from '../../providers/CoreStateProvider';
 import {
   auraAutocompleteSetStyle,
@@ -22,6 +23,7 @@ interface Props {
 }
 
 export default function AutocompleteSetupModal({ onClose }: Props) {
+  const { t } = useT();
   const navigate = useNavigate();
   const { snapshot, refresh } = useCoreState();
   const status = snapshot.runtime.autocomplete;
@@ -50,7 +52,9 @@ export default function AutocompleteSetupModal({ onClose }: Props) {
       await refresh();
       setStep('success');
     } catch (error) {
-      setEnableError(error instanceof Error ? error.message : 'Failed to enable autocomplete');
+      setEnableError(
+        error instanceof Error ? error.message : t('skills.autocomplete_setup.enable_error')
+      );
     } finally {
       setIsEnabling(false);
     }
@@ -86,10 +90,10 @@ export default function AutocompleteSetupModal({ onClose }: Props) {
               </svg>
             </div>
             <div>
-              <h2 id="ac-setup-title" className="text-sm font-semibold text-stone-900">Text Auto-Complete</h2>
+              <h2 id="ac-setup-title" className="text-sm font-semibold text-stone-900">{t('skills.autocomplete_setup.title')}</h2>
               <p className="text-xs text-stone-500">
-                {step === 'enable' && 'Enable inline completions'}
-                {step === 'success' && 'Ready to go'}
+                {step === 'enable' && t('skills.autocomplete_setup.subtitle_enable')}
+                {step === 'success' && t('skills.autocomplete_setup.subtitle_success')}
               </p>
             </div>
           </div>
@@ -109,26 +113,26 @@ export default function AutocompleteSetupModal({ onClose }: Props) {
           {step === 'enable' && (
             <div className="space-y-4">
               <p className="text-xs text-stone-500 leading-relaxed">
-                Text Auto-Complete suggests inline completions as you type across any app. Suggestions appear as an overlay you can accept with Tab.
+                {t('skills.autocomplete_setup.description')}
               </p>
 
               {!status?.platform_supported && status !== null && (
                 <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-700">
-                  Auto-complete is not supported on this platform.
+                  {t('skills.autocomplete_setup.platform_unsupported')}
                 </div>
               )}
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-3 py-2.5">
-                  <span className="text-sm text-stone-700">Style preset</span>
-                  <span className="text-xs text-stone-500">Balanced (configurable later)</span>
+                  <span className="text-sm text-stone-700">{t('skills.autocomplete_setup.style_preset_label')}</span>
+                  <span className="text-xs text-stone-500">{t('skills.autocomplete_setup.style_preset_value')}</span>
                 </div>
                 <div className="flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-3 py-2.5">
-                  <span className="text-sm text-stone-700">Accept key</span>
-                  <span className="text-xs font-mono text-stone-500">Tab</span>
+                  <span className="text-sm text-stone-700">{t('skills.autocomplete_setup.accept_key_label')}</span>
+                  <span className="text-xs font-mono text-stone-500">{t('skills.autocomplete_setup.accept_key_value')}</span>
                 </div>
                 <div className="flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-3 py-2.5">
-                  <span className="text-sm text-stone-700">Debounce</span>
+                  <span className="text-sm text-stone-700">{t('skills.autocomplete_setup.debounce_label')}</span>
                   <span className="text-xs text-stone-500">{status?.debounce_ms ?? 120}ms</span>
                 </div>
               </div>
@@ -144,7 +148,7 @@ export default function AutocompleteSetupModal({ onClose }: Props) {
                 onClick={() => void handleEnable()}
                 disabled={isEnabling || (status !== null && !status.platform_supported)}
                 className="w-full rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-50 transition-colors">
-                {isEnabling ? 'Enabling...' : 'Enable Auto-Complete'}
+                {isEnabling ? t('skills.autocomplete_setup.enabling') : t('skills.autocomplete_setup.enable_button')}
               </button>
             </div>
           )}
@@ -159,9 +163,9 @@ export default function AutocompleteSetupModal({ onClose }: Props) {
               </div>
 
               <div>
-                <h3 className="text-sm font-semibold text-stone-900">Auto-Complete is Active</h3>
+                <h3 className="text-sm font-semibold text-stone-900">{t('skills.autocomplete_setup.success_title')}</h3>
                 <p className="mt-1 text-xs text-stone-500 leading-relaxed">
-                  Start typing in any app and suggestions will appear as an inline overlay. Press Tab to accept.
+                  {t('skills.autocomplete_setup.success_description')}
                 </p>
               </div>
 
@@ -170,13 +174,13 @@ export default function AutocompleteSetupModal({ onClose }: Props) {
                   type="button"
                   onClick={handleGoToSettings}
                   className="w-full rounded-xl border border-primary-200 bg-primary-50 px-4 py-2.5 text-sm font-medium text-primary-700 hover:bg-primary-100 transition-colors">
-                  Customize Settings
+                  {t('skills.autocomplete_setup.customize_settings')}
                 </button>
                 <button
                   type="button"
                   onClick={onClose}
                   className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-2.5 text-sm font-medium text-stone-600 hover:bg-stone-100 transition-colors">
-                  Done
+                  {t('skills.autocomplete_setup.done')}
                 </button>
               </div>
             </div>

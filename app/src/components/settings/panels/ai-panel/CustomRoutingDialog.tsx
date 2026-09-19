@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useT } from '../../../../lib/i18n/I18nContext';
 import { KNOWN_MODEL_SUGGESTIONS } from './catalog';
 import type { CloudProvider, OllamaModel, ProviderRef, Workload } from './types';
 
@@ -29,6 +30,7 @@ const CustomRoutingDialog = ({
   onClose,
   onSubmit,
 }: CustomRoutingDialogProps) => {
+  const { t } = useT();
   // Non-aura cloud providers + local-ollama (if available) are the
   // "Custom" options. Aura is excluded — it's the Default path.
   const customCloud = cloudProviders.filter(p => p.slug !== 'aura');
@@ -74,19 +76,21 @@ const CustomRoutingDialog = ({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={`Custom routing for ${workload.label}`}
+      aria-label={t('settings.custom_routing_dialog.aria_label', { workload: workload.label })}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
       <div className="w-full max-w-md rounded-2xl border border-stone-200 bg-white p-6 shadow-soft">
         <div className="flex items-start justify-between gap-3 mb-4">
           <div>
-            <h3 className="text-base font-semibold text-stone-900">Custom routing</h3>
+            <h3 className="text-base font-semibold text-stone-900">
+              {t('settings.custom_routing_dialog.title')}
+            </h3>
             <p className="mt-0.5 text-xs text-stone-500">{workload.label}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
             className="rounded-md p-1 text-stone-400 hover:bg-stone-100 hover:text-stone-700">
-            <span className="sr-only">Close</span>
+            <span className="sr-only">{t('settings.custom_routing_dialog.close')}</span>
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -100,13 +104,14 @@ const CustomRoutingDialog = ({
 
         {noProviders ? (
           <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
-            No custom providers are set up yet. Add a cloud provider key above, or enable the local
-            Ollama runtime, then come back to pick one.
+            {t('settings.custom_routing_dialog.no_providers')}
           </div>
         ) : (
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium text-stone-700">Provider</label>
+              <label className="text-xs font-medium text-stone-700">
+                {t('settings.custom_routing_dialog.provider_label')}
+              </label>
               <select
                 value={
                   source
@@ -131,12 +136,16 @@ const CustomRoutingDialog = ({
                     {p.label}
                   </option>
                 ))}
-                {localAvailable && <option value="local:">Local (Ollama)</option>}
+                {localAvailable && (
+                  <option value="local:">{t('settings.custom_routing_dialog.local_ollama')}</option>
+                )}
               </select>
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium text-stone-700">Model</label>
+              <label className="text-xs font-medium text-stone-700">
+                {t('settings.custom_routing_dialog.model_label')}
+              </label>
               {source?.kind === 'local' ? (
                 <select
                   value={model}
@@ -154,12 +163,20 @@ const CustomRoutingDialog = ({
                     type="text"
                     value={model}
                     onChange={e => setModel(e.target.value)}
-                    placeholder={selectedCloud ? `${selectedCloud.slug} model id` : 'model-id'}
+                    placeholder={
+                      selectedCloud
+                        ? t('settings.custom_routing_dialog.model_placeholder_slug', {
+                            slug: selectedCloud.slug,
+                          })
+                        : t('settings.custom_routing_dialog.model_placeholder_generic')
+                    }
                     className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-mono text-stone-900 placeholder-stone-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                   />
                   {source?.kind === 'cloud' && KNOWN_MODEL_SUGGESTIONS[source.providerSlug] && (
                     <div className="flex flex-wrap gap-1.5">
-                      <span className="text-[11px] text-stone-500">Not sure? Try:</span>
+                      <span className="text-[11px] text-stone-500">
+                        {t('settings.custom_routing_dialog.try_suggestion')}
+                      </span>
                       {KNOWN_MODEL_SUGGESTIONS[source.providerSlug].map(suggestion => (
                         <button
                           key={suggestion}
@@ -186,14 +203,14 @@ const CustomRoutingDialog = ({
             type="button"
             onClick={onClose}
             className="rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm font-medium text-stone-700 hover:bg-stone-50">
-            Cancel
+            {t('settings.custom_routing_dialog.cancel')}
           </button>
           <button
             type="button"
             onClick={handleSave}
             disabled={!canSave}
             className="rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-50">
-            Save
+            {t('settings.custom_routing_dialog.save')}
           </button>
         </div>
       </div>

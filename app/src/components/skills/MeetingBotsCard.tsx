@@ -9,6 +9,7 @@
 
 import { useEffect, useState } from 'react';
 
+import { useT } from '../../lib/i18n/I18nContext';
 import {
   joinMeetingViaMascotBot,
   SERVER_OVERLOADED_MESSAGE,
@@ -24,16 +25,29 @@ interface Props {
 
 interface PlatformDef {
   platform: MascotMeetPlatform;
+  labelKey: string;
   label: string;
   domainHint: string;
   comingSoon?: boolean;
 }
 
 const PLATFORMS: PlatformDef[] = [
-  { platform: 'gmeet', label: 'Google Meet', domainHint: 'meet.google.com/abc-defg-hij' },
-  { platform: 'zoom', label: 'Zoom', domainHint: 'zoom.us/j/…', comingSoon: true },
+  {
+    platform: 'gmeet',
+    labelKey: 'skills.meeting_bots_card.platform_gmeet',
+    label: 'Google Meet',
+    domainHint: 'meet.google.com/abc-defg-hij',
+  },
+  {
+    platform: 'zoom',
+    labelKey: 'skills.meeting_bots_card.platform_zoom',
+    label: 'Zoom',
+    domainHint: 'zoom.us/j/…',
+    comingSoon: true,
+  },
   {
     platform: 'teams',
+    labelKey: 'skills.meeting_bots_card.platform_teams',
     label: 'Microsoft Teams',
     domainHint: 'teams.microsoft.com/…',
     comingSoon: true,
@@ -56,6 +70,7 @@ export default function MeetingBotsCard({ onToast }: Props) {
 }
 
 function MeetingBotsBanner({ onClick }: { onClick: () => void }) {
+  const { t } = useT();
   return (
     <button
       type="button"
@@ -87,15 +102,14 @@ function MeetingBotsBanner({ onClick }: { onClick: () => void }) {
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-semibold text-stone-900">
-              Send Aura to a meeting
+              {t('skills.meeting_bots_card.banner_title')}
             </h2>
             <span className="rounded-full bg-primary-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-700">
-              New
+              {t('skills.meeting_bots_card.new_badge')}
             </span>
           </div>
           <p className="mt-0.5 line-clamp-1 text-[11px] leading-relaxed text-stone-600">
-            Drop a Google Meet link and Aura joins as a guest, talks, listens, and waves
-            back.
+            {t('skills.meeting_bots_card.banner_description')}
           </p>
         </div>
 
@@ -115,6 +129,7 @@ interface ModalProps {
 }
 
 function MeetingBotsModal({ onClose, onToast }: ModalProps) {
+  const { t } = useT();
   const [platform, setPlatform] = useState<MascotMeetPlatform>('gmeet');
   const [meetUrl, setMeetUrl] = useState('');
   const [displayName, setDisplayName] = useState('Aura');
@@ -124,6 +139,7 @@ function MeetingBotsModal({ onClose, onToast }: ModalProps) {
 
   const selected = PLATFORMS.find(p => p.platform === platform) ?? PLATFORMS[0];
   const isComingSoon = !!selected.comingSoon;
+  const selectedLabel = t(selected.labelKey);
 
   // Esc closes the modal — matches the AuraLinkModal pattern.
   useEffect(() => {
@@ -139,7 +155,7 @@ function MeetingBotsModal({ onClose, onToast }: ModalProps) {
     setError(null);
     setCapacityGated(false);
     if (isComingSoon) {
-      setError(`${selected.label} support is coming soon.`);
+      setError(t('skills.meeting_bots_card.coming_soon_error', { platform: selectedLabel }));
       return;
     }
     setSubmitting(true);
@@ -147,8 +163,8 @@ function MeetingBotsModal({ onClose, onToast }: ModalProps) {
       await joinMeetingViaMascotBot({ platform, meetUrl, displayName });
       onToast?.({
         type: 'success',
-        title: 'Aura is joining the meeting',
-        message: 'It should appear as a participant in a few seconds.',
+        title: t('skills.meeting_bots_card.toast_joining_title'),
+        message: t('skills.meeting_bots_card.toast_joining_message'),
       });
       setMeetUrl('');
       onClose();
@@ -159,13 +175,15 @@ function MeetingBotsModal({ onClose, onToast }: ModalProps) {
         setError(message);
         onToast?.({
           type: 'error',
-          title: err.isCapacityGated ? 'Aura is busy' : 'Could not start Aura',
+          title: err.isCapacityGated
+            ? t('skills.meeting_bots_card.toast_busy_title')
+            : t('skills.meeting_bots_card.toast_failed_title'),
           message,
         });
       } else {
-        const message = err instanceof Error ? err.message : 'Failed to start Aura.';
+        const message = err instanceof Error ? err.message : t('skills.meeting_bots_card.default_error_message');
         setError(message);
-        onToast?.({ type: 'error', title: 'Could not start Aura', message });
+        onToast?.({ type: 'error', title: t('skills.meeting_bots_card.toast_failed_title'), message });
       }
     } finally {
       setSubmitting(false);
@@ -176,7 +194,7 @@ function MeetingBotsModal({ onClose, onToast }: ModalProps) {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Send Aura to a meeting"
+      aria-label={t('skills.meeting_bots_card.modal_aria_label')}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
       onClick={onClose}>
       <div
@@ -188,14 +206,13 @@ function MeetingBotsModal({ onClose, onToast }: ModalProps) {
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t('skills.meeting_bots_card.close_aria')}
             className="absolute right-3 top-3 rounded-full p-1 text-stone-500 hover:bg-white/80 hover:text-stone-800">
             ✕
           </button>
-          <h2 className="text-base font-semibold text-stone-900">Send Aura to a meeting</h2>
+          <h2 className="text-base font-semibold text-stone-900">{t('skills.meeting_bots_card.modal_title')}</h2>
           <p className="mt-1 text-xs leading-relaxed text-stone-600">
-            Aura joins as an anonymous guest, streams its video into the call, and replies
-            via the agent.
+            {t('skills.meeting_bots_card.modal_description')}
           </p>
         </div>
 
@@ -216,8 +233,8 @@ function MeetingBotsModal({ onClose, onToast }: ModalProps) {
                       ? 'bg-primary-500 text-white'
                       : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
                   }`}>
-                  {p.label}
-                  {p.comingSoon && <span className="ml-1 opacity-70">· soon</span>}
+                  {t(p.labelKey)}
+                  {p.comingSoon && <span className="ml-1 opacity-70">{t('skills.meeting_bots_card.soon_suffix')}</span>}
                 </button>
               );
             })}
@@ -226,7 +243,7 @@ function MeetingBotsModal({ onClose, onToast }: ModalProps) {
           <form onSubmit={handleSubmit} className="space-y-3">
             <label className="block">
               <span className="text-[10px] font-medium uppercase tracking-wide text-stone-500">
-                Meeting link
+                {t('skills.meeting_bots_card.meeting_link_label')}
               </span>
               <input
                 type="url"
@@ -245,7 +262,7 @@ function MeetingBotsModal({ onClose, onToast }: ModalProps) {
 
             <label className="block">
               <span className="text-[10px] font-medium uppercase tracking-wide text-stone-500">
-                Display name
+                {t('skills.meeting_bots_card.display_name_label')}
               </span>
               <input
                 type="text"
@@ -274,17 +291,17 @@ function MeetingBotsModal({ onClose, onToast }: ModalProps) {
                 type="button"
                 onClick={onClose}
                 className="rounded-xl px-3 py-2 text-sm font-medium text-stone-600 hover:bg-stone-100">
-                Cancel
+                {t('skills.meeting_bots_card.cancel')}
               </button>
               <button
                 type="submit"
                 disabled={submitting || isComingSoon || !meetUrl.trim()}
                 className="rounded-xl bg-primary-500 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-stone-200 disabled:text-stone-400">
                 {isComingSoon
-                  ? `${selected.label} coming soon`
+                  ? t('skills.meeting_bots_card.coming_soon_button', { platform: selectedLabel })
                   : submitting
-                    ? 'Starting…'
-                    : `Send to ${selected.label}`}
+                    ? t('skills.meeting_bots_card.starting')
+                    : t('skills.meeting_bots_card.send_to_button', { platform: selectedLabel })}
               </button>
             </div>
           </form>

@@ -1,3 +1,5 @@
+import { useT } from '../../lib/i18n/I18nContext';
+import type { TranslationParams } from '../../lib/i18n/types';
 import type { IntegrationNotification } from '../../types/notifications';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -5,15 +7,15 @@ import type { IntegrationNotification } from '../../types/notifications';
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** Relative human-readable time string, e.g. "2m ago". */
-function relativeTime(isoString: string): string {
+function relativeTime(isoString: string, t: (key: string, params?: TranslationParams) => string): string {
   const diff = Date.now() - new Date(isoString).getTime();
   const s = Math.floor(diff / 1000);
-  if (s < 60) return `${s}s ago`;
+  if (s < 60) return t('notifications.card.seconds_ago', { count: s });
   const m = Math.floor(s / 60);
-  if (m < 60) return `${m}m ago`;
+  if (m < 60) return t('notifications.card.minutes_ago', { count: m });
   const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  return `${Math.floor(h / 24)}d ago`;
+  if (h < 24) return t('notifications.card.hours_ago', { count: h });
+  return t('notifications.card.days_ago', { count: Math.floor(h / 24) });
 }
 
 /** Provider badge color class based on slug. */
@@ -55,6 +57,7 @@ interface Props {
 }
 
 const NotificationCard = ({ notification: n, onMarkRead, onNavigate, onDismiss }: Props) => {
+  const { t } = useT();
   const isUnread = n.status === 'unread';
 
   const handleBodyClick = () => {
@@ -91,7 +94,9 @@ const NotificationCard = ({ notification: n, onMarkRead, onNavigate, onDismiss }
             {n.importance_score !== undefined && (
               <span
                 className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium border ${scoreBadgeClass(n.importance_score)}`}
-                title={`Importance: ${(n.importance_score * 100).toFixed(0)}%`}>
+                title={t('notifications.card.importance_title', {
+                  percent: (n.importance_score * 100).toFixed(0),
+                })}>
                 {(n.importance_score * 100).toFixed(0)}%
               </span>
             )}
@@ -103,7 +108,7 @@ const NotificationCard = ({ notification: n, onMarkRead, onNavigate, onDismiss }
             )}
 
             <span className="ml-auto text-[11px] text-stone-400 flex-shrink-0">
-              {relativeTime(n.received_at)}
+              {relativeTime(n.received_at, t)}
             </span>
           </div>
 
@@ -117,7 +122,7 @@ const NotificationCard = ({ notification: n, onMarkRead, onNavigate, onDismiss }
           <button
             onClick={() => onDismiss(n.id)}
             className="mt-0.5 ml-1 flex-shrink-0 p-0.5 rounded hover:bg-stone-200 text-stone-400 hover:text-stone-600 transition-colors"
-            aria-label="Dismiss notification">
+            aria-label={t('notifications.card.dismiss_aria_label')}>
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"

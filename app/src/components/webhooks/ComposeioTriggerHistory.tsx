@@ -1,4 +1,5 @@
 import { formatTriggerLabel } from '../../lib/composio/formatters';
+import { useT } from '../../lib/i18n/I18nContext';
 import type { ComposioTriggerHistoryEntry } from '../../utils/tauriCommands';
 
 interface ComposeioTriggerHistoryProps {
@@ -26,12 +27,16 @@ function formatPayload(payload: unknown): string {
 }
 
 export default function ComposeioTriggerHistory({ entries }: ComposeioTriggerHistoryProps) {
+  const { t } = useT();
+
   if (entries.length === 0) {
     return (
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-stone-900">ComposeIO Trigger History</h3>
+        <h3 className="text-lg font-semibold text-stone-900">
+          {t('webhooks.composio_history.title')}
+        </h3>
         <p className="rounded-xl border border-dashed border-stone-200 bg-stone-50 px-4 py-6 text-center text-sm text-stone-500">
-          No ComposeIO triggers have been captured yet.
+          {t('webhooks.composio_history.empty')}
         </p>
       </div>
     );
@@ -40,7 +45,7 @@ export default function ComposeioTriggerHistory({ entries }: ComposeioTriggerHis
   return (
     <div className="space-y-3">
       <h3 className="text-lg font-semibold text-stone-900">
-        ComposeIO Trigger History{' '}
+        {t('webhooks.composio_history.title')}{' '}
         <span className="text-sm font-normal text-stone-400">({entries.length})</span>
       </h3>
       <div className="space-y-3">
@@ -62,17 +67,23 @@ export default function ComposeioTriggerHistory({ entries }: ComposeioTriggerHis
 
             <dl className="mt-3 grid gap-2 text-sm text-stone-700 md:grid-cols-2">
               <div>
-                <dt className="text-xs uppercase tracking-wide text-stone-400">Metadata ID</dt>
+                <dt className="text-xs uppercase tracking-wide text-stone-400">
+                  {t('webhooks.composio_history.metadata_id')}
+                </dt>
                 <dd className="font-mono text-xs break-all">{entry.metadata_id}</dd>
               </div>
               <div>
-                <dt className="text-xs uppercase tracking-wide text-stone-400">Metadata UUID</dt>
+                <dt className="text-xs uppercase tracking-wide text-stone-400">
+                  {t('webhooks.composio_history.metadata_uuid')}
+                </dt>
                 <dd className="font-mono text-xs break-all">{entry.metadata_uuid}</dd>
               </div>
             </dl>
 
             <div className="mt-3">
-              <div className="mb-2 text-xs uppercase tracking-wide text-stone-400">Payload</div>
+              <div className="mb-2 text-xs uppercase tracking-wide text-stone-400">
+                {t('webhooks.composio_history.payload')}
+              </div>
               <pre className="max-h-64 overflow-auto rounded-xl bg-stone-900 px-3 py-3 text-xs text-stone-100">
                 {formatPayload(entry.payload)}
               </pre>

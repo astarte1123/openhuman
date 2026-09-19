@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { BackendMascot } from '../../../features/human/Mascot/backend/BackendMascot';
 import type { MascotDetail, MascotSummary } from '../../../features/human/Mascot/backend/types';
 import { getMascotPalette, type MascotColor } from '../../../features/human/Mascot/mascotPalette';
+import { useT } from '../../../lib/i18n/I18nContext';
 import { fetchMascotList, getCachedMascotDetail } from '../../../services/mascotService';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import {
@@ -18,18 +19,19 @@ import { useSettingsNavigation } from '../hooks/useSettingsNavigation';
 
 interface ColorOption {
   id: MascotColor;
-  label: string;
+  labelKey: string;
 }
 
 const COLOR_OPTIONS: ColorOption[] = [
-  { id: 'yellow', label: 'Yellow' },
-  { id: 'burgundy', label: 'Burgundy' },
-  { id: 'black', label: 'Black' },
-  { id: 'navy', label: 'Navy' },
-  { id: 'green', label: 'Green' },
+  { id: 'yellow', labelKey: 'settings.mascot_panel.color_yellow' },
+  { id: 'burgundy', labelKey: 'settings.mascot_panel.color_burgundy' },
+  { id: 'black', labelKey: 'settings.mascot_panel.color_black' },
+  { id: 'navy', labelKey: 'settings.mascot_panel.color_navy' },
+  { id: 'green', labelKey: 'settings.mascot_panel.color_green' },
 ];
 
 const MascotPanel = () => {
+  const { t } = useT();
   const { navigateBack, breadcrumbs } = useSettingsNavigation();
   const dispatch = useAppDispatch();
   const storedColor = useAppSelector(selectMascotColor);
@@ -53,14 +55,15 @@ const MascotPanel = () => {
       })
       .catch((err: unknown) => {
         if (cancelled) return;
-        const message = err instanceof Error ? err.message : 'Could not load mascot library.';
+        const message =
+          err instanceof Error ? err.message : t('settings.mascot_panel.load_library_error');
         setBackendListError(message);
         setBackendList([]);
       });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     if (!selectedMascotId) {
@@ -76,14 +79,15 @@ const MascotPanel = () => {
       })
       .catch((err: unknown) => {
         if (cancelled) return;
-        const message = err instanceof Error ? err.message : 'Could not load mascot.';
+        const message =
+          err instanceof Error ? err.message : t('settings.mascot_panel.load_mascot_error');
         setDetailError(message);
         setActiveDetail(null);
       });
     return () => {
       cancelled = true;
     };
-  }, [selectedMascotId]);
+  }, [selectedMascotId, t]);
 
   const handleSelectBackend = (id: string | null) => {
     dispatch(setSelectedMascotId(id));
@@ -110,7 +114,7 @@ const MascotPanel = () => {
   return (
     <div>
       <SettingsHeader
-        title="Aura"
+        title={t('settings.mascot_panel.header_title')}
         showBackButton={true}
         onBack={navigateBack}
         breadcrumbs={breadcrumbs}
@@ -119,28 +123,29 @@ const MascotPanel = () => {
       <div className="p-4 space-y-4">
         <div>
           <h3 className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-2 px-1">
-            Color
+            {t('settings.mascot_panel.color_heading')}
           </h3>
           <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
             {available.length === 0 ? (
               <p className="p-4 text-sm text-stone-500">
-                No Aura color variants are available in this build.
+                {t('settings.mascot_panel.no_color_variants')}
               </p>
             ) : (
               <div
                 className="grid grid-cols-5 gap-3 p-4"
                 role="radiogroup"
-                aria-label="Aura color">
+                aria-label={t('settings.mascot_panel.color_radiogroup_aria')}>
                 {available.map(opt => {
                   const palette = getMascotPalette(opt.id);
                   const selected = opt.id === activeColor;
+                  const label = t(opt.labelKey);
                   return (
                     <button
                       key={opt.id}
                       type="button"
                       role="radio"
                       aria-checked={selected}
-                      aria-label={opt.label}
+                      aria-label={label}
                       onClick={() => handleSelect(opt.id)}
                       data-testid={`mascot-color-${opt.id}`}
                       className={`flex flex-col items-center gap-2 rounded-lg p-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 ${
@@ -152,7 +157,7 @@ const MascotPanel = () => {
                         }`}
                         style={{ backgroundColor: palette.bodyFill }}
                       />
-                      <span className="text-xs text-stone-700">{opt.label}</span>
+                      <span className="text-xs text-stone-700">{label}</span>
                     </button>
                   );
                 })}
@@ -160,28 +165,28 @@ const MascotPanel = () => {
             )}
           </div>
           <p className="text-xs text-stone-500 leading-relaxed px-1 mt-2">
-            The selected color is applied everywhere Aura appears and is remembered across
-            restarts.
+            {t('settings.mascot_panel.color_footer_hint')}
           </p>
         </div>
 
         <div>
           <h3 className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-2 px-1">
-            Character
+            {t('settings.mascot_panel.character_heading')}
           </h3>
           <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
             {backendListError && (
               <p className="p-4 text-sm text-coral-700">
-                Aura library unavailable: {backendListError}
+                {t('settings.mascot_panel.library_unavailable', { error: backendListError })}
               </p>
             )}
             {!backendListError && backendList === null && (
-              <p className="p-4 text-sm text-stone-500">Loading Aura library…</p>
+              <p className="p-4 text-sm text-stone-500">
+                {t('settings.mascot_panel.loading_library')}
+              </p>
             )}
             {backendList && backendList.length === 0 && !backendListError && (
               <p className="p-4 text-sm text-stone-500">
-                No Aura characters are available yet. Local color variants above are still
-                active.
+                {t('settings.mascot_panel.no_characters')}
               </p>
             )}
             {backendList && backendList.length > 0 && (
@@ -194,9 +199,11 @@ const MascotPanel = () => {
                     className={`flex w-full items-center justify-between px-4 py-3 text-left text-sm hover:bg-stone-50 ${
                       selectedMascotId == null ? 'bg-stone-50 font-medium' : ''
                     }`}>
-                    <span>Local Aura (default)</span>
+                    <span>{t('settings.mascot_panel.local_aura_default')}</span>
                     {selectedMascotId == null && (
-                      <span className="text-[10px] uppercase text-primary-600">Active</span>
+                      <span className="text-[10px] uppercase text-primary-600">
+                        {t('settings.mascot_panel.active_badge')}
+                      </span>
                     )}
                   </button>
                 </li>
@@ -215,12 +222,19 @@ const MascotPanel = () => {
                         <span className="flex flex-col">
                           <span>{summary.name}</span>
                           <span className="text-[10px] text-stone-500">
-                            v{summary.version} · {summary.states.length} states
-                            {summary.hasVisemes ? ' · visemes' : ''}
+                            {t('settings.mascot_panel.version_states', {
+                              version: summary.version,
+                              states: summary.states.length,
+                            })}
+                            {summary.hasVisemes
+                              ? t('settings.mascot_panel.visemes_suffix')
+                              : ''}
                           </span>
                         </span>
                         {active && (
-                          <span className="text-[10px] uppercase text-primary-600">Active</span>
+                          <span className="text-[10px] uppercase text-primary-600">
+                            {t('settings.mascot_panel.active_badge')}
+                          </span>
                         )}
                       </button>
                     </li>
@@ -233,7 +247,7 @@ const MascotPanel = () => {
           {activeDetail && (
             <div className="mt-3 rounded-xl border border-stone-200 bg-stone-50 p-4">
               <p className="text-[11px] font-medium uppercase tracking-wide text-stone-500 mb-2">
-                Preview · {activeDetail.name}
+                {t('settings.mascot_panel.preview_label', { name: activeDetail.name })}
               </p>
               <div className="flex justify-center">
                 <div style={{ width: 160, height: 160 }}>
@@ -244,8 +258,7 @@ const MascotPanel = () => {
           )}
           {detailError && <p className="mt-2 text-xs text-coral-700 px-1">{detailError}</p>}
           <p className="text-xs text-stone-500 leading-relaxed px-1 mt-2">
-            Characters come from the server-side library and animate via the same tween and viseme
-            pipeline as the meeting bot video stream.
+            {t('settings.mascot_panel.character_footer_hint')}
           </p>
         </div>
       </div>

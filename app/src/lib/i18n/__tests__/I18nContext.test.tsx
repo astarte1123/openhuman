@@ -4,20 +4,8 @@ import { Provider } from 'react-redux';
 import { describe, expect, it } from 'vitest';
 
 import localeReducer, { setLocale } from '../../../store/localeSlice';
-import en from '../en';
+import type { SupportedLocale } from '../locales';
 import { I18nProvider, useT } from '../I18nContext';
-import type { Locale, TranslationMap } from '../types';
-import zhCN from '../zh-CN';
-
-function unwrapTranslationMap(map: TranslationMap): TranslationMap {
-  const raw = map as unknown as Record<string, unknown>;
-  return raw != null &&
-    typeof raw === 'object' &&
-    'default' in raw &&
-    typeof raw.default === 'object'
-    ? (raw.default as TranslationMap)
-    : map;
-}
 
 function Probe() {
   const { locale, t } = useT();
@@ -25,14 +13,13 @@ function Probe() {
   return (
     <>
       <span data-testid="locale">{locale}</span>
-      <span>{t('settings.language')}</span>
-      <span>{t('clearData.title')}</span>
-      <span>{t('bootCheck.quit')}</span>
+      <span data-testid="known-key">{t('settings.language')}</span>
+      <span data-testid="missing-key">{t('this.key.does.not.exist')}</span>
     </>
   );
 }
 
-function renderWithLocale(locale: Locale) {
+function renderWithLocale(locale: SupportedLocale) {
   const store = configureStore({ reducer: { locale: localeReducer } });
   store.dispatch(setLocale(locale));
 
@@ -46,21 +33,30 @@ function renderWithLocale(locale: Locale) {
 }
 
 describe('I18nProvider', () => {
-  it('serves Indonesian translations with English fallback for missing keys', () => {
-    renderWithLocale('id');
+  it('resolves a known en-GB key', () => {
+    renderWithLocale('en-GB');
 
-    expect(screen.getByTestId('locale')).toHaveTextContent('id');
-    expect(screen.getByText('Bahasa')).toBeInTheDocument();
-    expect(screen.getByText('Bersihkan Data Aplikasi')).toBeInTheDocument();
-    expect(screen.getByText('Quit')).toBeInTheDocument();
+    expect(screen.getByTestId('locale')).toHaveTextContent('en-GB');
+    expect(screen.getByTestId('known-key').textContent).not.toBe('settings.language');
   });
 
-  it('keeps the Simplified Chinese locale complete against English keys', () => {
-    const englishKeys = Object.keys(unwrapTranslationMap(en));
-    const simplifiedChinese = unwrapTranslationMap(zhCN);
-    const missingKeys = englishKeys.filter(key => !(key in simplifiedChinese));
+  it('falls back to the raw key when nothing in the catalog or en-GB matches', () => {
+    renderWithLocale('en-GB');
 
-    expect(englishKeys.length).toBeGreaterThan(0);
-    expect(missingKeys).toEqual([]);
+    expect(screen.getByTestId('missing-key')).toHaveTextContent('this.key.does.not.exist');
+  });
+
+  it('falls back to en-GB content for a locale with no catalog registered yet', () => {
+    renderWithLocale('it-IT');
+
+    expect(screen.getByTestId('locale')).toHaveTextContent('it-IT');
+    // it-IT has no catalog yet — must render the en-GB string, not the raw key.
+    expect(screen.getByTestId('known-key').textContent).not.toBe('settings.language');
+  });
+
+  it('syncs document.documentElement.lang to the active locale', () => {
+    renderWithLocale('de-DE');
+
+    expect(document.documentElement.lang).toBe('de-DE');
   });
 });

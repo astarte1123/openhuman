@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useT } from '../../../../lib/i18n/I18nContext';
 import { BUILTIN_PROVIDER_META } from './catalog';
 import { authStyleForSlug, defaultEndpointFor, maskKeyLabel } from './transforms';
 import type { CloudProvider } from './types';
@@ -21,6 +22,7 @@ const CloudProviderEditor = ({
   onSubmit: (next: CloudProvider, apiKey: string) => Promise<void> | void;
   onClearKey: (slug: string) => Promise<void> | void;
 }) => {
+  const { t } = useT();
   const defaultSlug: string =
     initial?.slug ??
     (['openai', 'anthropic', 'openrouter', 'custom'] as const).find(
@@ -42,16 +44,20 @@ const CloudProviderEditor = ({
       <div className="w-full max-w-md rounded-lg border border-stone-200 bg-white shadow-float">
         <div className="border-b border-stone-200 px-4 py-3">
           <div className="text-sm font-semibold text-stone-900">
-            {initial ? `Edit ${initial.label}` : 'Add cloud provider'}
+            {initial
+              ? t('settings.cloud_provider_editor.edit_title', { label: initial.label })
+              : t('settings.cloud_provider_editor.add_title')}
           </div>
           <div className="mt-0.5 text-xs text-stone-500">
-            API keys are encrypted at rest in <span className="font-mono">auth-profiles.json</span>.
+            {t('settings.cloud_provider_editor.encrypted_hint_prefix')}{' '}
+            <span className="font-mono">auth-profiles.json</span>
+            {t('settings.cloud_provider_editor.encrypted_hint_suffix')}
           </div>
         </div>
         <div className="space-y-3 px-4 py-3">
           <div>
             <label className="text-[10px] font-semibold uppercase tracking-wide text-stone-500">
-              Provider slug
+              {t('settings.cloud_provider_editor.provider_slug_label')}
             </label>
             <select
               value={slug}
@@ -76,36 +82,36 @@ const CloudProviderEditor = ({
           </div>
           <div>
             <label className="text-[10px] font-semibold uppercase tracking-wide text-stone-500">
-              Display label
+              {t('settings.cloud_provider_editor.display_label_label')}
             </label>
             <input
               value={label}
               onChange={e => setLabel(e.target.value)}
               className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 placeholder:text-stone-400 focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-200"
-              placeholder="My Provider"
+              placeholder={t('settings.cloud_provider_editor.display_label_placeholder')}
             />
           </div>
           <div>
             <label className="text-[10px] font-semibold uppercase tracking-wide text-stone-500">
-              Endpoint
+              {t('settings.cloud_provider_editor.endpoint_label')}
             </label>
             <input
               value={endpoint}
               onChange={e => setEndpoint(e.target.value)}
               disabled={isAura}
               className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-3 py-2 font-mono text-xs text-stone-900 placeholder:text-stone-400 disabled:opacity-60 focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-200"
-              placeholder="https://api.example.com/v1"
+              placeholder={t('settings.cloud_provider_editor.endpoint_placeholder')}
             />
           </div>
           {!isAura && (
             <div>
               <label className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-wide text-stone-500">
-                <span>API key</span>
+                <span>{t('settings.cloud_provider_editor.api_key_label')}</span>
                 {hasExistingKey && (
                   <button
                     onClick={() => void onClearKey(slug)}
                     className="text-[10px] font-medium normal-case text-coral-600 hover:text-coral-700">
-                    Clear stored key
+                    {t('settings.cloud_provider_editor.clear_stored_key')}
                   </button>
                 )}
               </label>
@@ -114,7 +120,11 @@ const CloudProviderEditor = ({
                 value={apiKey}
                 onChange={e => setApiKey(e.target.value)}
                 className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-3 py-2 font-mono text-xs text-stone-900 placeholder:text-stone-400 focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-200"
-                placeholder={hasExistingKey ? 'Leave blank to keep existing key' : 'sk-...'}
+                placeholder={
+                  hasExistingKey
+                    ? t('settings.cloud_provider_editor.api_key_placeholder_existing')
+                    : t('settings.cloud_provider_editor.api_key_placeholder_new')
+                }
               />
             </div>
           )}
@@ -124,7 +134,7 @@ const CloudProviderEditor = ({
             onClick={onClose}
             disabled={saving}
             className="rounded-lg border border-stone-200 px-3 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50 disabled:opacity-50">
-            Cancel
+            {t('settings.cloud_provider_editor.cancel')}
           </button>
           <button
             onClick={async () => {
@@ -147,7 +157,11 @@ const CloudProviderEditor = ({
             }}
             disabled={saving || !endpoint.trim()}
             className="rounded-lg bg-primary-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary-600 disabled:opacity-50">
-            {saving ? 'Saving…' : initial ? 'Save changes' : 'Add provider'}
+            {saving
+              ? t('settings.cloud_provider_editor.saving')
+              : initial
+                ? t('settings.cloud_provider_editor.save_changes')
+                : t('settings.cloud_provider_editor.add_provider')}
           </button>
         </div>
       </div>

@@ -1,12 +1,13 @@
 import { LuArrowLeft, LuArrowRight } from 'react-icons/lu';
 
+import { useT } from '../../../lib/i18n/I18nContext';
 import type { TaskBoard, TaskBoardCard, TaskBoardCardStatus } from '../../../types/turnState';
 
-const COLUMNS: Array<{ status: TaskBoardCardStatus; label: string }> = [
-  { status: 'todo', label: 'To do' },
-  { status: 'in_progress', label: 'In progress' },
-  { status: 'blocked', label: 'Blocked' },
-  { status: 'done', label: 'Done' },
+const COLUMNS: Array<{ status: TaskBoardCardStatus; labelKey: string }> = [
+  { status: 'todo', labelKey: 'conversations.task_kanban.column_todo' },
+  { status: 'in_progress', labelKey: 'conversations.task_kanban.column_in_progress' },
+  { status: 'blocked', labelKey: 'conversations.task_kanban.column_blocked' },
+  { status: 'done', labelKey: 'conversations.task_kanban.column_done' },
 ];
 
 const STATUS_INDEX = new Map(COLUMNS.map((column, index) => [column.status, index]));
@@ -18,6 +19,7 @@ interface TaskKanbanBoardProps {
 }
 
 export function TaskKanbanBoard({ board, disabled = false, onMove }: TaskKanbanBoardProps) {
+  const { t } = useT();
   if (board.cards.length === 0) return null;
 
   const cardsByStatus = COLUMNS.reduce(
@@ -42,14 +44,18 @@ export function TaskKanbanBoard({ board, disabled = false, onMove }: TaskKanbanB
   return (
     <div className="rounded-xl border border-stone-200 bg-white px-3 py-3 shadow-sm">
       <div className="mb-2 flex items-center justify-between gap-3">
-        <h4 className="text-xs font-semibold uppercase tracking-wide text-stone-500">Tasks</h4>
+        <h4 className="text-xs font-semibold uppercase tracking-wide text-stone-500">
+          {t('conversations.task_kanban.tasks_heading')}
+        </h4>
         <span className="text-[10px] text-stone-400">{board.cards.length}</span>
       </div>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-4">
         {COLUMNS.map(column => (
           <section key={column.status} className="min-w-0 rounded-lg bg-stone-50 p-2">
             <div className="mb-2 flex items-center justify-between gap-2">
-              <h5 className="truncate text-[11px] font-medium text-stone-600">{column.label}</h5>
+              <h5 className="truncate text-[11px] font-medium text-stone-600">
+                {t(column.labelKey)}
+              </h5>
               <span className="text-[10px] text-stone-400">
                 {cardsByStatus[column.status].length}
               </span>
@@ -67,8 +73,8 @@ export function TaskKanbanBoard({ board, disabled = false, onMove }: TaskKanbanB
                       <div className="flex flex-shrink-0 items-center gap-0.5">
                         <button
                           type="button"
-                          title="Move left"
-                          aria-label="Move left"
+                          title={t('conversations.task_kanban.move_left')}
+                          aria-label={t('conversations.task_kanban.move_left')}
                           disabled={disabled || column.status === 'todo'}
                           onClick={() => moveCard(card, -1)}
                           className="flex h-5 w-5 items-center justify-center rounded-md text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-700 disabled:opacity-25">
@@ -76,8 +82,8 @@ export function TaskKanbanBoard({ board, disabled = false, onMove }: TaskKanbanB
                         </button>
                         <button
                           type="button"
-                          title="Move right"
-                          aria-label="Move right"
+                          title={t('conversations.task_kanban.move_right')}
+                          aria-label={t('conversations.task_kanban.move_right')}
                           disabled={disabled || column.status === 'done'}
                           onClick={() => moveCard(card, 1)}
                           className="flex h-5 w-5 items-center justify-center rounded-md text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-700 disabled:opacity-25">

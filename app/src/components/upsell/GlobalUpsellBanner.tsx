@@ -1,4 +1,5 @@
 import { useUsageState } from '../../hooks/useUsageState';
+import { useT } from '../../lib/i18n/I18nContext';
 import { BILLING_DASHBOARD_URL } from '../../utils/links';
 import { openUrl } from '../../utils/openUrl';
 import UpsellBanner from './UpsellBanner';
@@ -6,6 +7,7 @@ import UpsellBanner from './UpsellBanner';
 export default function GlobalUpsellBanner() {
   const { teamUsage, isLoading, isAtLimit, isNearLimit, isFreeTier, usagePct10h, usagePct7d } =
     useUsageState();
+  const { t } = useT();
 
   if (isLoading || !teamUsage) return null;
 
@@ -14,9 +16,9 @@ export default function GlobalUpsellBanner() {
       <div className="relative z-20">
         <UpsellBanner
           variant="upgrade"
-          title="You've reached your usage limit"
-          message="Upgrade your plan or top up credits to continue"
-          ctaLabel="Upgrade"
+          title={t('upsell.global_banner.limit_reached_title')}
+          message={t('upsell.global_banner.limit_reached_message')}
+          ctaLabel={t('upsell.global_banner.upgrade_cta')}
           rounded={false}
           onCtaClick={() => {
             void openUrl(BILLING_DASHBOARD_URL);
@@ -32,9 +34,9 @@ export default function GlobalUpsellBanner() {
       <div className="relative z-20">
         <UpsellBanner
           variant="warning"
-          title="Approaching usage limit"
-          message={`You've used ${pct}% of your usage limit. Upgrade for higher limits.`}
-          ctaLabel="Upgrade"
+          title={t('upsell.global_banner.near_limit_title')}
+          message={t('upsell.global_banner.near_limit_message', { pct })}
+          ctaLabel={t('upsell.global_banner.upgrade_cta')}
           rounded={false}
           onCtaClick={() => {
             void openUrl(BILLING_DASHBOARD_URL);

@@ -14,6 +14,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useChannelDefinitions } from '../hooks/useChannelDefinitions';
+import { useT } from '../lib/i18n/I18nContext';
+import type { TranslationParams } from '../lib/i18n/types';
 import {
   ensureNotificationPermission,
   getNotificationPermissionState,
@@ -53,6 +55,7 @@ type AllowedPath = (typeof ALLOWED_PATHS)[number];
 const ALLOWED_PATHS_SET = new Set<string>(ALLOWED_PATHS);
 
 const AuraLinkModal = () => {
+  const { t } = useT();
   const [activePath, setActivePath] = useState<AllowedPath | null>(null);
 
   useEffect(() => {
@@ -87,11 +90,11 @@ const AuraLinkModal = () => {
         className="w-full max-w-md rounded-2xl bg-white shadow-xl overflow-hidden"
         onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-stone-100 px-5 py-3">
-          <h2 className="text-sm font-semibold text-stone-900">{titleForPath(activePath)}</h2>
+          <h2 className="text-sm font-semibold text-stone-900">{titleForPath(activePath, t)}</h2>
           <button
             type="button"
             onClick={close}
-            aria-label="Close"
+            aria-label={t('aura_link_modal.close_aria')}
             className="rounded p-1 text-stone-500 hover:bg-stone-100 hover:text-stone-800">
             <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path
@@ -116,6 +119,7 @@ const AuraLinkModal = () => {
  * so the user gets feedback instead of a flashing screen.
  */
 const MessagingSetupBridge = ({ onClose }: { onClose: () => void }) => {
+  const { t } = useT();
   const { definitions, loading } = useChannelDefinitions();
   const telegram = useMemo(() => definitions.find(d => d.id === 'telegram') ?? null, [definitions]);
 
@@ -123,7 +127,7 @@ const MessagingSetupBridge = ({ onClose }: { onClose: () => void }) => {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
         <div className="rounded-2xl bg-white px-6 py-4 text-sm text-stone-600 shadow-xl">
-          Loading channel setup…
+          {t('aura_link_modal.loading_channel_setup')}
         </div>
       </div>
     );
@@ -137,16 +141,13 @@ const MessagingSetupBridge = ({ onClose }: { onClose: () => void }) => {
         <div
           className="rounded-2xl bg-white p-6 text-sm text-stone-700 shadow-xl max-w-sm"
           onClick={e => e.stopPropagation()}>
-          <p>
-            Telegram channel definition isn't available right now. Try again from Settings →
-            Messaging.
-          </p>
+          <p>{t('aura_link_modal.telegram_unavailable')}</p>
           <div className="mt-3 flex justify-end">
             <button
               type="button"
               onClick={onClose}
               className="rounded-lg border border-stone-200 px-3 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50">
-              Close
+              {t('aura_link_modal.close_button')}
             </button>
           </div>
         </div>
@@ -157,18 +158,20 @@ const MessagingSetupBridge = ({ onClose }: { onClose: () => void }) => {
   return <ChannelSetupModal definition={telegram} onClose={onClose} />;
 };
 
-function titleForPath(path: AllowedPath): string {
+type TFn = (key: string, params?: TranslationParams) => string;
+
+function titleForPath(path: AllowedPath, t: TFn): string {
   switch (path) {
     case 'settings/notifications':
-      return 'Allow notifications';
+      return t('aura_link_modal.title_notifications');
     case 'settings/billing':
-      return 'Billing & credits';
+      return t('aura_link_modal.title_billing');
     case 'settings/messaging':
-      return 'Connect a chat channel';
+      return t('aura_link_modal.title_messaging');
     case 'community/discord':
-      return 'Join the community';
+      return t('aura_link_modal.title_discord');
     case 'accounts/setup':
-      return 'Connect your apps';
+      return t('aura_link_modal.title_accounts_setup');
   }
 }
 
@@ -194,6 +197,7 @@ function renderBody(path: AllowedPath, close: () => void) {
 // ── Notifications ────────────────────────────────────────────────────────
 
 const NotificationsBody = ({ close }: { close: () => void }) => {
+  const { t } = useT();
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [error, setError] = useState<string | null>(null);
   const [permissionState, setPermissionState] = useState<NotificationPermissionState>('unknown');
@@ -219,9 +223,7 @@ const NotificationsBody = ({ close }: { close: () => void }) => {
     try {
       if (!isTauri()) {
         setStatus('error');
-        setError(
-          'Native notifications are only available in the desktop app (run `pnpm dev:app`).'
-        );
+        setError(t('aura_link_modal.notifications_desktop_only'));
         return;
       }
 
@@ -230,22 +232,17 @@ const NotificationsBody = ({ close }: { close: () => void }) => {
         const nextState = await getNotificationPermissionState({ requestIfNeeded: false });
         setPermissionState(nextState);
         setStatus('error');
-        setError(
-          'Notification permission is off. Enable Aura in System Settings → Notifications, then retry.'
-        );
+        setError(t('aura_link_modal.notifications_permission_off'));
         return;
       }
       const sendResult = await showNativeNotification({
-        title: 'Aura is good to go',
-        body: 'You will get pings here when something needs your attention.',
+        title: t('aura_link_modal.notification_title'),
+        body: t('aura_link_modal.notification_body'),
         tag: 'welcome-notification-test',
       });
       if (!sendResult.delivered) {
         setStatus('error');
-        setError(
-          sendResult.error ??
-            'Aura could not trigger a system notification. Check OS notification settings and retry.'
-        );
+        setError(sendResult.error ?? t('aura_link_modal.notification_send_failed'));
         return;
       }
       setPermissionState('granted');
@@ -258,24 +255,21 @@ const NotificationsBody = ({ close }: { close: () => void }) => {
 
   return (
     <div className="space-y-4 text-sm text-stone-700">
-      <p>
-        Aura uses native notifications so it can ping you when something needs your attention,
-        even when the chat window is hidden.
-      </p>
+      <p>{t('aura_link_modal.notifications_intro')}</p>
       {permissionState === 'denied' && (
         <div className="rounded-xl border border-coral-200 bg-coral-50 p-3 text-xs text-coral-700">
-          Notifications are currently blocked.
+          {t('aura_link_modal.notifications_blocked_line1')}
           <br />
-          1. Open System Settings → Notifications → Aura
+          {t('aura_link_modal.notifications_blocked_line2')}
           <br />
-          2. Turn on Allow Notifications
+          {t('aura_link_modal.notifications_blocked_line3')}
           <br />
-          3. Return here and tap Retry test notification
+          {t('aura_link_modal.notifications_blocked_line4')}
         </div>
       )}
       {(permissionState === 'prompt' || permissionState === 'unknown') && (
         <div className="rounded-xl border border-stone-200 bg-stone-50 p-3 text-xs text-stone-700">
-          First step: tap Send test notification and allow permission in the macOS prompt.
+          {t('aura_link_modal.notifications_first_step')}
         </div>
       )}
       <button
@@ -284,18 +278,19 @@ const NotificationsBody = ({ close }: { close: () => void }) => {
         disabled={status === 'sending'}
         className="w-full rounded-xl bg-primary-500 text-white text-sm font-medium py-2.5 hover:bg-primary-600 transition-colors disabled:opacity-60">
         {status === 'sending'
-          ? 'Asking your OS…'
+          ? t('aura_link_modal.asking_os')
           : status === 'error'
-            ? 'Retry test notification'
-            : 'Send test notification'}
+            ? t('aura_link_modal.retry_test_notification')
+            : t('aura_link_modal.send_test_notification')}
       </button>
       {status === 'sent' && (
-        <p className="text-xs text-sage-700">
-          Test notification sent. If you didn’t receive it, go to System Settings → Notifications →
-          Aura, turn on Allow Notifications, and set Banner Style to Persistent.
+        <p className="text-xs text-sage-700">{t('aura_link_modal.notification_sent_success')}</p>
+      )}
+      {status === 'error' && (
+        <p className="text-xs text-coral-600">
+          {t('aura_link_modal.notification_send_error', { error: error ?? '' })}
         </p>
       )}
-      {status === 'error' && <p className="text-xs text-coral-600">Couldn't send: {error}</p>}
       <DoneFooter close={close} />
     </div>
   );
@@ -304,14 +299,17 @@ const NotificationsBody = ({ close }: { close: () => void }) => {
 // ── Billing ──────────────────────────────────────────────────────────────
 
 const BillingBody = ({ close }: { close: () => void }) => {
+  const { t } = useT();
   return (
     <div className="space-y-4 text-sm text-stone-700">
       <div className="rounded-xl border border-stone-200 bg-stone-50 p-4">
-        <p className="text-xs uppercase tracking-wide text-stone-500">Trial credit</p>
-        <p className="mt-1 text-2xl font-semibold text-stone-900">$1.00</p>
-        <p className="mt-1 text-xs text-stone-500">
-          More than enough to play around. Top up or pick a plan when you want real usage.
+        <p className="text-xs uppercase tracking-wide text-stone-500">
+          {t('aura_link_modal.trial_credit_label')}
         </p>
+        <p className="mt-1 text-2xl font-semibold text-stone-900">
+          {t('aura_link_modal.trial_credit_amount')}
+        </p>
+        <p className="mt-1 text-xs text-stone-500">{t('aura_link_modal.trial_credit_hint')}</p>
       </div>
       <button
         type="button"
@@ -319,9 +317,9 @@ const BillingBody = ({ close }: { close: () => void }) => {
           void openUrl(BILLING_DASHBOARD_URL).catch(() => {});
         }}
         className="w-full rounded-xl bg-primary-500 text-white text-sm font-medium py-2.5 hover:bg-primary-600 transition-colors">
-        Open dashboard in browser
+        {t('aura_link_modal.open_dashboard')}
       </button>
-      <DoneFooter close={close} skipLabel="Stay on trial" />
+      <DoneFooter close={close} skipLabel={t('aura_link_modal.stay_on_trial')} />
     </div>
   );
 };
@@ -331,29 +329,26 @@ const BillingBody = ({ close }: { close: () => void }) => {
 const DISCORD_INVITE_URL = 'https://discord.tinyhumans.ai/';
 
 const DiscordBody = ({ close }: { close: () => void }) => {
+  const { t } = useT();
   return (
     <div className="space-y-4 text-sm text-stone-700">
-      <p>
-        Hop into our Discord and link your Aura account. You'll get exclusive early access to
-        features, free credits to play with, a great community to nerd out with, and yes, free
-        merch.
-      </p>
+      <p>{t('aura_link_modal.discord_intro')}</p>
       <ul className="space-y-1.5 text-xs text-stone-600 pl-1">
         <li className="flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-primary-400 flex-shrink-0" />
-          Exclusive feature access
+          {t('aura_link_modal.discord_perk_feature_access')}
         </li>
         <li className="flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-primary-400 flex-shrink-0" />
-          Free credits for active members
+          {t('aura_link_modal.discord_perk_free_credits')}
         </li>
         <li className="flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-primary-400 flex-shrink-0" />
-          Community of builders and operators
+          {t('aura_link_modal.discord_perk_community')}
         </li>
         <li className="flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-primary-400 flex-shrink-0" />
-          Free merch when you stick around
+          {t('aura_link_modal.discord_perk_merch')}
         </li>
       </ul>
       <button
@@ -362,9 +357,9 @@ const DiscordBody = ({ close }: { close: () => void }) => {
           void openUrl(DISCORD_INVITE_URL).catch(() => {});
         }}
         className="w-full rounded-xl bg-primary-500 text-white text-sm font-medium py-2.5 hover:bg-primary-600 transition-colors">
-        Open Discord invite
+        {t('aura_link_modal.open_discord_invite')}
       </button>
-      <DoneFooter close={close} skipLabel="Maybe later" />
+      <DoneFooter close={close} skipLabel={t('aura_link_modal.maybe_later')} />
     </div>
   );
 };
@@ -399,24 +394,25 @@ function makeAccountId(): string {
 }
 
 /** Status label + color for a given account lifecycle status. */
-function statusDisplay(status: AccountStatus): { label: string; dotClass: string } {
+function statusDisplay(status: AccountStatus, t: TFn): { label: string; dotClass: string } {
   switch (status) {
     case 'open':
-      return { label: 'Connected', dotClass: 'bg-emerald-500' };
+      return { label: t('aura_link_modal.account_status_connected'), dotClass: 'bg-emerald-500' };
     case 'loading':
-      return { label: 'Loading…', dotClass: 'bg-amber-400' };
+      return { label: t('aura_link_modal.account_status_loading'), dotClass: 'bg-amber-400' };
     case 'pending':
-      return { label: 'Needs sign-in', dotClass: 'bg-amber-400' };
+      return { label: t('aura_link_modal.account_status_needs_sign_in'), dotClass: 'bg-amber-400' };
     case 'timeout':
-      return { label: 'Timed out', dotClass: 'bg-red-400' };
+      return { label: t('aura_link_modal.account_status_timed_out'), dotClass: 'bg-red-400' };
     case 'error':
-      return { label: 'Error', dotClass: 'bg-red-400' };
+      return { label: t('aura_link_modal.account_status_error'), dotClass: 'bg-red-400' };
     case 'closed':
-      return { label: 'Closed', dotClass: 'bg-stone-300' };
+      return { label: t('aura_link_modal.account_status_closed'), dotClass: 'bg-stone-300' };
   }
 }
 
 const AccountsSetupBody = ({ close }: { close: () => void }) => {
+  const { t } = useT();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const accountsById = useAppSelector(s => s.accounts.accounts);
@@ -481,15 +477,13 @@ const AccountsSetupBody = ({ close }: { close: () => void }) => {
 
   // Dynamic CTA based on what's been toggled on
   const firstNewLabel = [...newlyAdded.values()][0];
-  const doneLabel = firstNewLabel ? `Continue with ${firstNewLabel} sign-in` : 'Done';
+  const doneLabel = firstNewLabel
+    ? t('aura_link_modal.continue_with_sign_in', { label: firstNewLabel })
+    : undefined;
 
   return (
     <div className="space-y-4 text-sm text-stone-700">
-      <p>
-        Pick the chat apps and inboxes you already use. We'll add them as built-in webviews here so
-        you can ditch six browser tabs and stick with one app, and the agent can listen in across
-        all of them in the background.
-      </p>
+      <p>{t('aura_link_modal.accounts_setup_intro')}</p>
       <div className="space-y-2">
         {providerDescriptors.map(p => {
           const acct = accountByProvider.get(p.id);
@@ -505,9 +499,9 @@ const AccountsSetupBody = ({ close }: { close: () => void }) => {
                 {on && status ? (
                   <div className="flex items-center gap-1.5">
                     <span
-                      className={`inline-block h-1.5 w-1.5 rounded-full ${statusDisplay(status).dotClass}`}
+                      className={`inline-block h-1.5 w-1.5 rounded-full ${statusDisplay(status, t).dotClass}`}
                     />
-                    <span className="text-xs text-stone-500">{statusDisplay(status).label}</span>
+                    <span className="text-xs text-stone-500">{statusDisplay(status, t).label}</span>
                   </div>
                 ) : (
                   <p className="line-clamp-1 text-xs text-stone-500">{p.description}</p>
@@ -517,7 +511,10 @@ const AccountsSetupBody = ({ close }: { close: () => void }) => {
                 type="button"
                 role="switch"
                 aria-checked={on}
-                aria-label={`${on ? 'Disconnect' : 'Connect'} ${p.label}`}
+                aria-label={t(
+                  on ? 'aura_link_modal.disconnect_provider' : 'aura_link_modal.connect_provider',
+                  { label: p.label }
+                )}
                 onClick={() => handleToggle(p.id, p.label, on)}
                 className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors ${
                   on ? 'bg-primary-500' : 'bg-stone-200'
@@ -532,10 +529,7 @@ const AccountsSetupBody = ({ close }: { close: () => void }) => {
           );
         })}
       </div>
-      <p className="text-xs text-stone-400">
-        Toggling on adds a private webview. You'll sign in the first time you open it — credentials
-        stay on your device.
-      </p>
+      <p className="text-xs text-stone-400">{t('aura_link_modal.accounts_setup_privacy_hint')}</p>
       <DoneFooter close={close} onDone={handleDone} doneLabel={doneLabel} />
     </div>
   );
@@ -546,28 +540,33 @@ const AccountsSetupBody = ({ close }: { close: () => void }) => {
 const DoneFooter = ({
   close,
   onDone,
-  doneLabel = 'Done',
-  skipLabel = 'Skip for now',
+  doneLabel,
+  skipLabel,
 }: {
   close: () => void;
   onDone?: () => void;
   doneLabel?: string;
   skipLabel?: string;
-}) => (
-  <div className="flex items-center justify-between gap-3 pt-1">
-    <button
-      type="button"
-      onClick={close}
-      className="text-xs font-medium text-stone-500 hover:text-stone-800">
-      {skipLabel}
-    </button>
-    <button
-      type="button"
-      onClick={onDone ?? close}
-      className="rounded-lg border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50">
-      {doneLabel}
-    </button>
-  </div>
-);
+}) => {
+  const { t } = useT();
+  const resolvedDoneLabel = doneLabel ?? t('aura_link_modal.done_default');
+  const resolvedSkipLabel = skipLabel ?? t('aura_link_modal.skip_default');
+  return (
+    <div className="flex items-center justify-between gap-3 pt-1">
+      <button
+        type="button"
+        onClick={close}
+        className="text-xs font-medium text-stone-500 hover:text-stone-800">
+        {resolvedSkipLabel}
+      </button>
+      <button
+        type="button"
+        onClick={onDone ?? close}
+        className="rounded-lg border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50">
+        {resolvedDoneLabel}
+      </button>
+    </div>
+  );
+};
 
 export default AuraLinkModal;

@@ -1,3 +1,4 @@
+import { useT } from '../../../../lib/i18n/I18nContext';
 import type { AutoRechargeSettings, SavedCard } from '../../../../services/api/creditsApi';
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -68,14 +69,18 @@ const AutoRechargeSection = ({
   onSetDefault,
   onDeleteCard,
   onAddCard,
-}: AutoRechargeSectionProps) => (
+}: AutoRechargeSectionProps) => {
+  const { t } = useT();
+  return (
   <div className="rounded-2xl border border-stone-200 bg-white overflow-hidden">
     {/* Header row */}
     <div className="flex items-center justify-between p-3">
       <div>
-        <p className="text-md font-semibold text-stone-900">Enable Auto-Recharge</p>
+        <p className="text-md font-semibold text-stone-900">
+          {t('settings.auto_recharge.enable_title')}
+        </p>
         <p className="text-[11px] text-stone-400 mt-0.5">
-          Automatically top up when your balance runs low
+          {t('settings.auto_recharge.enable_subtitle')}
         </p>
       </div>
       {arLoading ? (
@@ -86,7 +91,7 @@ const AutoRechargeSection = ({
           disabled={arSaving}
           role="switch"
           aria-checked={arSettings?.enabled ?? false}
-          aria-label="Toggle auto-recharge"
+          aria-label={t('settings.auto_recharge.toggle_aria_label')}
           className={`relative w-10 h-5 rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-900 ${
             arSaving ? 'opacity-50 cursor-not-allowed' : ''
           } ${arSettings?.enabled ? 'bg-primary-500' : 'bg-stone-600'}`}>
@@ -140,21 +145,24 @@ const AutoRechargeSection = ({
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                 />
               </svg>
-              Recharge in progress
+              {t('settings.auto_recharge.recharge_in_progress')}
             </span>
           )}
           {arSettings.spentThisWeekUsd > 0 && (
             <span className="text-[10px] text-stone-400">
-              ${arSettings.spentThisWeekUsd.toFixed(2)} of ${arSettings.weeklyLimitUsd} used this
-              week
+              {t('settings.auto_recharge.weekly_spent', {
+                spent: arSettings.spentThisWeekUsd.toFixed(2),
+                limit: arSettings.weeklyLimitUsd,
+              })}
             </span>
           )}
           {arSettings.lastRechargeAt && (
             <span className="text-[10px] text-stone-500">
-              Last recharged{' '}
-              {new Date(arSettings.lastRechargeAt).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
+              {t('settings.auto_recharge.last_recharged', {
+                date: new Date(arSettings.lastRechargeAt).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                }),
               })}
             </span>
           )}
@@ -176,14 +184,18 @@ const AutoRechargeSection = ({
               />
             </svg>
             <p className="text-[10px] text-coral-300">
-              Last recharge failed: {arSettings.lastError}
+              {t('settings.auto_recharge.last_recharge_failed', {
+                error: arSettings.lastError,
+              })}
             </p>
           </div>
         )}
 
         {/* Trigger threshold */}
         <div>
-          <p className="text-[11px] text-stone-400 mb-1.5">Recharge when balance drops below</p>
+          <p className="text-[11px] text-stone-400 mb-1.5">
+            {t('settings.auto_recharge.threshold_label')}
+          </p>
           <div className="flex gap-1.5 flex-wrap">
             {THRESHOLD_OPTIONS.map(v => (
               <button
@@ -202,7 +214,9 @@ const AutoRechargeSection = ({
 
         {/* Recharge amount */}
         <div>
-          <p className="text-[11px] text-stone-400 mb-1.5">Add this amount</p>
+          <p className="text-[11px] text-stone-400 mb-1.5">
+            {t('settings.auto_recharge.amount_label')}
+          </p>
           <div className="flex gap-1.5 flex-wrap">
             {RECHARGE_OPTIONS.map(v => (
               <button
@@ -221,7 +235,9 @@ const AutoRechargeSection = ({
 
         {/* Weekly limit */}
         <div>
-          <p className="text-[11px] text-stone-400 mb-1.5">Weekly spending limit</p>
+          <p className="text-[11px] text-stone-400 mb-1.5">
+            {t('settings.auto_recharge.weekly_limit_label')}
+          </p>
           <div className="flex gap-1.5 flex-wrap">
             {WEEKLY_LIMIT_OPTIONS.map(v => (
               <button
@@ -241,7 +257,7 @@ const AutoRechargeSection = ({
         {/* Validation hint */}
         {arAmount <= arThreshold && (
           <p className="text-[10px] text-amber-400">
-            Recharge amount should be greater than the trigger threshold.
+            {t('settings.auto_recharge.validation_hint')}
           </p>
         )}
 
@@ -255,7 +271,9 @@ const AutoRechargeSection = ({
                 ? 'bg-stone-700/40 text-stone-500 cursor-not-allowed'
                 : 'bg-primary-500 hover:bg-primary-600 text-white'
             }`}>
-            {arSaving ? 'Saving…' : 'Save Settings'}
+            {arSaving
+              ? t('settings.auto_recharge.saving')
+              : t('settings.auto_recharge.save_settings')}
           </button>
         )}
       </div>
@@ -264,11 +282,13 @@ const AutoRechargeSection = ({
     {/* Payment methods */}
     <div className="border-t border-stone-200 px-3 py-2.5">
       <div className="flex items-center justify-between mb-2">
-        <p className="text-[11px] font-medium text-stone-600">Payment Methods</p>
+        <p className="text-[11px] font-medium text-stone-600">
+          {t('settings.auto_recharge.payment_methods_title')}
+        </p>
         <button
           onClick={onAddCard}
           className="text-[11px] text-primary-400 hover:text-primary-300 font-medium transition-colors">
-          + Add card on Stripe
+          {t('settings.auto_recharge.add_card')}
         </button>
       </div>
 
@@ -293,7 +313,7 @@ const AutoRechargeSection = ({
             />
           </svg>
           <p className="text-[11px] text-stone-500">
-            No saved cards. Add one to enable auto-recharge.
+            {t('settings.auto_recharge.no_cards')}
           </p>
         </div>
       ) : (
@@ -329,13 +349,15 @@ const AutoRechargeSection = ({
                     </span>
                     {card.isDefault && (
                       <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-primary-500/20 text-primary-400 border border-primary-500/30 font-medium">
-                        Default
+                        {t('settings.auto_recharge.default_badge')}
                       </span>
                     )}
                   </div>
                   <p className="text-[10px] text-stone-500 mt-0.5">
-                    Expires {String(card.expMonth).padStart(2, '0')}/
-                    {String(card.expYear).slice(-2)}
+                    {t('settings.auto_recharge.expires', {
+                      month: String(card.expMonth).padStart(2, '0'),
+                      year: String(card.expYear).slice(-2),
+                    })}
                   </p>
                 </div>
 
@@ -346,7 +368,7 @@ const AutoRechargeSection = ({
                       onClick={() => onSetDefault(card.id)}
                       disabled={!!settingDefaultId || !!deletingCardId}
                       className="text-[10px] text-stone-500 hover:text-stone-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed px-1.5 py-1">
-                      {isSettingDefault ? '…' : 'Set default'}
+                      {isSettingDefault ? '…' : t('settings.auto_recharge.set_default')}
                     </button>
                   )}
 
@@ -356,12 +378,12 @@ const AutoRechargeSection = ({
                         onClick={() => onDeleteCard(card.id)}
                         disabled={isDeleting}
                         className="text-[10px] text-coral-400 hover:text-coral-300 font-medium transition-colors disabled:opacity-40 px-1.5 py-1">
-                        {isDeleting ? '…' : 'Confirm'}
+                        {isDeleting ? '…' : t('settings.auto_recharge.confirm')}
                       </button>
                       <button
                         onClick={() => setConfirmDeleteId(null)}
                         className="text-[10px] text-stone-500 hover:text-stone-400 transition-colors px-1 py-1">
-                        Cancel
+                        {t('settings.auto_recharge.cancel')}
                       </button>
                     </div>
                   ) : (
@@ -369,7 +391,7 @@ const AutoRechargeSection = ({
                       onClick={() => setConfirmDeleteId(card.id)}
                       disabled={isDeleting || !!settingDefaultId}
                       className="text-[10px] text-stone-500 hover:text-coral-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed px-1.5 py-1">
-                      Remove
+                      {t('settings.auto_recharge.remove')}
                     </button>
                   )}
                 </div>
@@ -380,6 +402,7 @@ const AutoRechargeSection = ({
       )}
     </div>
   </div>
-);
+  );
+};
 
 export default AutoRechargeSection;

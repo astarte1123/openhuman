@@ -14,6 +14,7 @@
 //     BackendProviderPanel / LocalModelPanel / VoicePanel.
 import { useEffect, useRef, useState } from 'react';
 
+import { useT } from '../../../lib/i18n/I18nContext';
 import {
   type ComposioModeStatus,
   auraComposioClearApiKey,
@@ -32,6 +33,7 @@ interface ComposioPanelProps {
 }
 
 const ComposioPanel = ({ embedded = false }: ComposioPanelProps = {}) => {
+  const { t } = useT();
   const { navigateBack, breadcrumbs } = useSettingsNavigation();
 
   const [mode, setMode] = useState<Mode>('backend');
@@ -195,14 +197,14 @@ const ComposioPanel = ({ embedded = false }: ComposioPanelProps = {}) => {
       <div>
         {!embedded && (
           <SettingsHeader
-            title="Composio"
+            title={t('settings.composio_panel.title')}
             showBackButton
             onBack={navigateBack}
             breadcrumbs={breadcrumbs}
           />
         )}
         <div className={embedded ? '' : 'p-4'}>
-          <p className="text-sm text-stone-500">Loading…</p>
+          <p className="text-sm text-stone-500">{t('settings.composio_panel.loading')}</p>
         </div>
       </div>
     );
@@ -212,7 +214,7 @@ const ComposioPanel = ({ embedded = false }: ComposioPanelProps = {}) => {
     <div>
       {!embedded && (
         <SettingsHeader
-          title="Composio"
+          title={t('settings.composio_panel.title')}
           showBackButton
           onBack={navigateBack}
           breadcrumbs={breadcrumbs}
@@ -221,16 +223,17 @@ const ComposioPanel = ({ embedded = false }: ComposioPanelProps = {}) => {
 
       <div className={embedded ? 'space-y-5' : 'p-4 space-y-5'}>
         <p className="text-sm text-stone-500">
-          Composio powers integrations with Gmail, Notion, Slack, GitHub, and 1000+ other apps. By
-          default Aura manages it for you, so you don&apos;t need to bring an API key. If you
-          prefer to use your own Composio account directly, switch to{' '}
-          <span className="font-medium">Direct</span> mode and paste your key below.
+          {t('settings.composio_panel.intro_prefix')}{' '}
+          <span className="font-medium">{t('settings.composio_panel.direct_word')}</span>{' '}
+          {t('settings.composio_panel.intro_suffix')}
         </p>
 
         {/* Mode toggle */}
         <div className="rounded-2xl border border-stone-200 bg-stone-50/60 p-4 space-y-3">
           <fieldset>
-            <legend className="text-sm font-medium text-stone-900 mb-2">Routing mode</legend>
+            <legend className="text-sm font-medium text-stone-900 mb-2">
+              {t('settings.composio_panel.routing_mode_legend')}
+            </legend>
             <div className="space-y-2">
               <label className="flex items-start gap-3 cursor-pointer">
                 <input
@@ -239,16 +242,15 @@ const ComposioPanel = ({ embedded = false }: ComposioPanelProps = {}) => {
                   value="backend"
                   checked={mode === 'backend'}
                   onChange={() => setMode('backend')}
-                  aria-label="Managed (Aura handles it for you)"
+                  aria-label={t('settings.composio_panel.managed_aria_label')}
                   className="mt-1"
                 />
                 <div className="text-left">
                   <span className="text-sm font-medium text-stone-900">
-                    Managed (Aura handles it for you)
+                    {t('settings.composio_panel.managed_title')}
                   </span>
                   <p className="text-xs text-stone-500 mt-0.5">
-                    Default. Aura manages the Composio connection for you. Trigger webhooks
-                    (real-time Gmail / Slack events) work out of the box.
+                    {t('settings.composio_panel.managed_description')}
                   </p>
                 </div>
               </label>
@@ -259,18 +261,21 @@ const ComposioPanel = ({ embedded = false }: ComposioPanelProps = {}) => {
                   value="direct"
                   checked={mode === 'direct'}
                   onChange={() => setMode('direct')}
-                  aria-label="Direct (bring your own API key)"
+                  aria-label={t('settings.composio_panel.direct_aria_label')}
                   className="mt-1"
                 />
                 <div className="text-left">
                   <span className="text-sm font-medium text-stone-900">
-                    Direct (bring your own API key)
+                    {t('settings.composio_panel.direct_title')}
                   </span>
                   <p className="text-xs text-stone-500 mt-0.5">
-                    Calls go to <span className="font-mono">backend.composio.dev</span> directly.
-                    Sovereign / offline-friendly. Tool execution works synchronously; real-time
-                    trigger webhooks are <span className="font-medium">not yet routed</span> in
-                    direct mode (follow-up issue).
+                    {t('settings.composio_panel.direct_description_prefix')}{' '}
+                    <span className="font-mono">backend.composio.dev</span>{' '}
+                    {t('settings.composio_panel.direct_description_middle')}{' '}
+                    <span className="font-medium">
+                      {t('settings.composio_panel.not_yet_routed')}
+                    </span>{' '}
+                    {t('settings.composio_panel.direct_description_suffix')}
                   </p>
                 </div>
               </label>
@@ -282,11 +287,12 @@ const ComposioPanel = ({ embedded = false }: ComposioPanelProps = {}) => {
         {mode === 'direct' && (
           <div className="space-y-2">
             <label className="block text-sm font-medium text-stone-800" htmlFor="composio-api-key">
-              Composio API key
+              {t('settings.composio_panel.api_key_label')}
             </label>
             <p className="text-xs text-stone-500">
-              Find your key at <span className="font-mono">app.composio.dev/api-keys</span>. The key
-              is stored encrypted on this device and is never sent to Aura.
+              {t('settings.composio_panel.api_key_help_prefix')}{' '}
+              <span className="font-mono">app.composio.dev/api-keys</span>.{' '}
+              {t('settings.composio_panel.api_key_help_suffix')}
             </p>
             <input
               id="composio-api-key"
@@ -296,14 +302,14 @@ const ComposioPanel = ({ embedded = false }: ComposioPanelProps = {}) => {
               onChange={e => setApiKey(e.target.value)}
               placeholder={
                 apiKeyStored
-                  ? '••••••••••••  (key stored — paste a new key to replace)'
-                  : 'ck_live_xxxxxxxxxxxxxxxx'
+                  ? t('settings.composio_panel.api_key_placeholder_stored')
+                  : t('settings.composio_panel.api_key_placeholder_empty')
               }
               className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm font-mono text-stone-900 placeholder-stone-400 focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-400"
             />
             {apiKeyStored && (
               <p className="text-xs text-green-600">
-                A Composio API key is currently stored on this device.
+                {t('settings.composio_panel.api_key_stored_notice')}
               </p>
             )}
           </div>
@@ -321,24 +327,25 @@ const ComposioPanel = ({ embedded = false }: ComposioPanelProps = {}) => {
             aria-labelledby="composio-confirm-title"
             className="rounded-2xl border border-amber-200 bg-amber-50/80 p-4 space-y-3">
             <p id="composio-confirm-title" className="text-sm font-medium text-amber-900">
-              ⚠️ Switching to Direct mode
+              {t('settings.composio_panel.confirm_title')}
             </p>
             <div className="text-xs text-amber-900 space-y-2">
               <p>
-                Your existing integrations (Gmail, Slack, GitHub, etc. linked through Aura){' '}
-                <span className="font-semibold">won&apos;t be visible</span> — they live in the
-                Aura-managed Composio tenant.
+                {t('settings.composio_panel.confirm_integrations_prefix')}{' '}
+                <span className="font-semibold">
+                  {t('settings.composio_panel.wont_be_visible')}
+                </span>{' '}
+                {t('settings.composio_panel.confirm_integrations_suffix')}
               </p>
-              <p>You&apos;ll need:</p>
+              <p>{t('settings.composio_panel.confirm_needs_title')}</p>
               <ol className="list-decimal list-inside space-y-0.5 ml-2">
                 <li>
-                  An account at <span className="font-mono">app.composio.dev</span> with an API key
+                  {t('settings.composio_panel.confirm_need_account_prefix')}{' '}
+                  <span className="font-mono">app.composio.dev</span>{' '}
+                  {t('settings.composio_panel.confirm_need_account_suffix')}
                 </li>
-                <li>To re-link each integration through your personal Composio account</li>
-                <li>
-                  Note: Composio triggers (real-time webhooks) don&apos;t fire in Direct mode yet —
-                  only synchronous tool calls
-                </li>
+                <li>{t('settings.composio_panel.confirm_need_relink')}</li>
+                <li>{t('settings.composio_panel.confirm_need_triggers_note')}</li>
               </ol>
             </div>
             <div className="flex gap-2 pt-1">
@@ -347,14 +354,16 @@ const ComposioPanel = ({ embedded = false }: ComposioPanelProps = {}) => {
                 onClick={handleCancelTransition}
                 disabled={saving}
                 className="flex-1 py-2 rounded-xl border border-stone-300 bg-white text-stone-800 text-sm font-medium hover:bg-stone-50 transition-colors disabled:opacity-50">
-                Cancel
+                {t('settings.composio_panel.cancel')}
               </button>
               <button
                 type="button"
                 onClick={handleConfirmTransition}
                 disabled={saving}
                 className="flex-1 py-2 rounded-xl bg-amber-600 text-white text-sm font-medium hover:bg-amber-500 transition-colors disabled:opacity-50">
-                {saving ? 'Switching…' : 'I understand, switch to Direct'}
+                {saving
+                  ? t('settings.composio_panel.switching')
+                  : t('settings.composio_panel.confirm_switch_button')}
               </button>
             </div>
           </div>
@@ -364,19 +373,23 @@ const ComposioPanel = ({ embedded = false }: ComposioPanelProps = {}) => {
             onClick={handleSave}
             disabled={saving}
             className="w-full py-2 rounded-xl bg-primary-600 text-white text-sm font-medium hover:bg-primary-500 transition-colors disabled:opacity-50">
-            {saving ? 'Saving…' : 'Save'}
+            {saving ? t('settings.composio_panel.saving') : t('settings.composio_panel.save')}
           </button>
         )}
 
         {saveStatus === 'saved' && (
-          <p className="text-xs text-center text-green-600">Settings saved</p>
+          <p className="text-xs text-center text-green-600">
+            {t('settings.composio_panel.settings_saved')}
+          </p>
         )}
         {saveStatus === 'cleared' && (
-          <p className="text-xs text-center text-green-600">Switched to Backend mode</p>
+          <p className="text-xs text-center text-green-600">
+            {t('settings.composio_panel.switched_to_backend')}
+          </p>
         )}
         {saveStatus === 'error' && (
           <p className="text-xs text-center text-red-500">
-            Failed to save. Direct mode requires a non-empty API key.
+            {t('settings.composio_panel.save_error')}
           </p>
         )}
       </div>

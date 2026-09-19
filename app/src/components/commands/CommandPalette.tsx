@@ -5,6 +5,7 @@ import { useMemo, useSyncExternalStore } from 'react';
 import { hotkeyManager } from '../../lib/commands/hotkeyManager';
 import { registry } from '../../lib/commands/registry';
 import type { RegisteredAction } from '../../lib/commands/types';
+import { useT } from '../../lib/i18n/I18nContext';
 import Kbd from './Kbd';
 
 interface Props {
@@ -26,12 +27,13 @@ function getSnapshot(): RegisteredAction[] {
 }
 
 export default function CommandPalette({ open, onOpenChange }: Props) {
+  const { t } = useT();
   const actions = useSyncExternalStore(subscribe, getSnapshot);
 
   const groups = useMemo(() => {
     const byGroup = new Map<string, RegisteredAction[]>();
     for (const a of actions) {
-      const g = a.group ?? 'Actions';
+      const g = a.group ?? t('commands.palette.default_group');
       if (!byGroup.has(g)) byGroup.set(g, []);
       byGroup.get(g)!.push(a);
     }
@@ -45,7 +47,7 @@ export default function CommandPalette({ open, onOpenChange }: Props) {
       return ai - bi;
     });
     return keys.map(k => [k, byGroup.get(k)!] as const);
-  }, [actions]);
+  }, [actions, t]);
 
   function runAction(action: RegisteredAction): void {
     onOpenChange(false);
@@ -60,21 +62,21 @@ export default function CommandPalette({ open, onOpenChange }: Props) {
         <Dialog.Overlay className="fixed inset-0 bg-cmd-overlay z-40" />
         <Dialog.Content
           className="fixed left-1/2 top-[20vh] -translate-x-1/2 w-[min(640px,calc(100vw-32px))] bg-cmd-surface text-cmd-foreground border border-cmd-border rounded-xl shadow-cmd-palette z-50 overflow-hidden"
-          aria-label="Command palette">
-          <Dialog.Title className="sr-only">Command palette</Dialog.Title>
+          aria-label={t('commands.palette.aria_label')}>
+          <Dialog.Title className="sr-only">{t('commands.palette.title')}</Dialog.Title>
           <Dialog.Description className="sr-only">
-            Search and run commands. Use arrow keys to navigate, Enter to select, Escape to close.
+            {t('commands.palette.description')}
           </Dialog.Description>
           <Command label="Commands" shouldFilter={true}>
             <Command.Input
               autoFocus
-              placeholder="Type a command or search…"
+              placeholder={t('commands.palette.placeholder')}
               className="w-full px-4 py-3 bg-transparent outline-none border-b border-cmd-border text-cmd-foreground placeholder:text-cmd-foreground-muted"
-              aria-label="Search commands"
+              aria-label={t('commands.palette.search_aria_label')}
             />
             <Command.List className="max-h-[50vh] overflow-auto py-2">
               <Command.Empty className="px-4 py-8 text-center text-cmd-foreground-muted">
-                No results.
+                {t('commands.palette.no_results')}
               </Command.Empty>
               {groups.map(([groupName, items]) => (
                 <Command.Group
@@ -106,7 +108,7 @@ export default function CommandPalette({ open, onOpenChange }: Props) {
               ))}
             </Command.List>
             <div className="px-4 py-2 border-t border-cmd-border text-xs text-cmd-foreground-muted">
-              Press ? for all shortcuts
+              {t('commands.palette.footer_hint')}
             </div>
           </Command>
         </Dialog.Content>

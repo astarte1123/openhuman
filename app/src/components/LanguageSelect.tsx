@@ -1,12 +1,6 @@
-import type { Locale } from '../lib/i18n/types';
+import { SUPPORTED_LOCALES } from '../lib/i18n/locales';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setLocale } from '../store/localeSlice';
-
-const LOCALE_OPTIONS: Array<{ value: Locale; flag: string; label: string }> = [
-  { value: 'en', flag: '🇬🇧', label: 'English' },
-  { value: 'id', flag: '🇮🇩', label: 'Bahasa Indonesia' },
-  { value: 'zh-CN', flag: '🇨🇳', label: '中文' },
-];
 
 interface LanguageSelectProps {
   /** Accessible label for the underlying <select>. */
@@ -22,8 +16,9 @@ const DEFAULT_CLASS =
 
 /**
  * Shared language picker used by the boot-check gate and the Settings home
- * screen. Renders the locale options as flag + label pairs and dispatches
- * `setLocale` to the redux store on change.
+ * screen. Each language is shown by its own native name (e.g. "Italiano",
+ * "Deutsch") — never translated — and dispatches `setLocale` (an explicit
+ * pick, persisted and never auto-overridden) to the redux store on change.
  */
 const LanguageSelect = ({ ariaLabel = 'Language', id, className }: LanguageSelectProps) => {
   const dispatch = useAppDispatch();
@@ -33,12 +28,12 @@ const LanguageSelect = ({ ariaLabel = 'Language', id, className }: LanguageSelec
     <select
       id={id}
       value={current}
-      onChange={e => dispatch(setLocale(e.target.value as Locale))}
+      onChange={e => dispatch(setLocale(e.target.value as (typeof SUPPORTED_LOCALES)[number]['code']))}
       aria-label={ariaLabel}
       className={className ?? DEFAULT_CLASS}>
-      {LOCALE_OPTIONS.map(opt => (
-        <option key={opt.value} value={opt.value}>
-          {opt.flag} {opt.label}
+      {SUPPORTED_LOCALES.map(locale => (
+        <option key={locale.code} value={locale.code}>
+          {locale.nativeName}
         </option>
       ))}
     </select>

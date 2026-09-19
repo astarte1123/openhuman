@@ -9,6 +9,7 @@
  */
 import { useEffect, useState } from 'react';
 
+import { useT } from '../../lib/i18n/I18nContext';
 import {
   type Chunk,
   type EntityRef,
@@ -52,6 +53,7 @@ function shortChunkId(id: string): string {
 }
 
 export function MemoryChunkDetail({ chunk, onSelectEntity }: MemoryChunkDetailProps) {
+  const { t } = useT();
   const [entities, setEntities] = useState<EntityRef[]>([]);
   const [breakdown, setBreakdown] = useState<ScoreBreakdown | null>(null);
   const [copied, setCopied] = useState(false);
@@ -120,12 +122,25 @@ export function MemoryChunkDetail({ chunk, onSelectEntity }: MemoryChunkDetailPr
           <footer className="mw-letter-footer">
             {chunk.source_ref && <span>{chunk.source_ref}</span>}
             <span>·</span>
-            <button type="button" onClick={() => void handleCopyId()} title="Copy chunk id">
-              chunk {shortChunkId(chunk.id)}
-              {copied && <span style={{ marginLeft: 6, color: 'var(--sage)' }}>copied</span>}
+            <button
+              type="button"
+              onClick={() => void handleCopyId()}
+              title={t('intelligence.memory_chunk_detail.copy_chunk_id')}>
+              {t('intelligence.memory_chunk_detail.chunk_label', {
+                id: shortChunkId(chunk.id),
+              })}
+              {copied && (
+                <span style={{ marginLeft: 6, color: 'var(--sage)' }}>
+                  {t('intelligence.memory_chunk_detail.copied')}
+                </span>
+              )}
             </button>
             <span>·</span>
-            <span>{chunk.has_embedding ? 'bge-m3 1024dim' : 'no embedding'}</span>
+            <span>
+              {chunk.has_embedding
+                ? t('intelligence.memory_chunk_detail.embedding_present')
+                : t('intelligence.memory_chunk_detail.embedding_absent')}
+            </span>
           </footer>
         </div>
       </div>

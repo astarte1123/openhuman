@@ -1,3 +1,4 @@
+import { useT } from '../../../../lib/i18n/I18nContext';
 import type { AcceptedCompletion } from '../../../../utils/tauriCommands';
 
 interface CompletionStyleSectionProps {
@@ -53,12 +54,17 @@ const CompletionStyleSection = ({
   onSaveConfig,
   onClearHistory,
 }: CompletionStyleSectionProps) => {
+  const { t } = useT();
   return (
     <>
       <section className="rounded-2xl border border-stone-200 bg-white p-4 space-y-3">
-        <h3 className="text-sm font-semibold text-stone-900">Settings</h3>
+        <h3 className="text-sm font-semibold text-stone-900">
+          {t('settings.completion_style.settings_title')}
+        </h3>
         <label className="flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-3 py-2">
-          <span className="text-sm text-stone-700">Enabled</span>
+          <span className="text-sm text-stone-700">
+            {t('settings.completion_style.enabled_label')}
+          </span>
           <input
             type="checkbox"
             checked={enabled}
@@ -66,7 +72,9 @@ const CompletionStyleSection = ({
           />
         </label>
         <label className="flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-3 py-2">
-          <span className="text-sm text-stone-700">Accept With Tab</span>
+          <span className="text-sm text-stone-700">
+            {t('settings.completion_style.accept_with_tab_label')}
+          </span>
           <input
             type="checkbox"
             checked={acceptWithTab}
@@ -74,7 +82,9 @@ const CompletionStyleSection = ({
           />
         </label>
         <label className="flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-3 py-2">
-          <span className="text-sm text-stone-700">Debounce (ms)</span>
+          <span className="text-sm text-stone-700">
+            {t('settings.completion_style.debounce_label')}
+          </span>
           <input
             type="number"
             min={50}
@@ -86,7 +96,9 @@ const CompletionStyleSection = ({
           />
         </label>
         <label className="flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-3 py-2">
-          <span className="text-sm text-stone-700">Max Chars</span>
+          <span className="text-sm text-stone-700">
+            {t('settings.completion_style.max_chars_label')}
+          </span>
           <input
             type="number"
             min={32}
@@ -98,7 +110,9 @@ const CompletionStyleSection = ({
           />
         </label>
         <label className="flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-3 py-2">
-          <span className="text-sm text-stone-700">Overlay TTL (ms)</span>
+          <span className="text-sm text-stone-700">
+            {t('settings.completion_style.overlay_ttl_label')}
+          </span>
           <input
             type="number"
             min={300}
@@ -110,20 +124,24 @@ const CompletionStyleSection = ({
           />
         </label>
         <label className="flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-3 py-2">
-          <span className="text-sm text-stone-700">Style Preset</span>
+          <span className="text-sm text-stone-700">
+            {t('settings.completion_style.style_preset_label')}
+          </span>
           <select
             value={stylePreset}
             onChange={event => onSetStylePreset(event.target.value)}
             className="rounded border border-stone-300 bg-white px-2 py-1 text-xs text-stone-700">
-            <option value="balanced">Balanced</option>
-            <option value="concise">Concise</option>
-            <option value="formal">Formal</option>
-            <option value="casual">Casual</option>
-            <option value="custom">Custom</option>
+            <option value="balanced">{t('settings.completion_style.preset_balanced')}</option>
+            <option value="concise">{t('settings.completion_style.preset_concise')}</option>
+            <option value="formal">{t('settings.completion_style.preset_formal')}</option>
+            <option value="casual">{t('settings.completion_style.preset_casual')}</option>
+            <option value="custom">{t('settings.completion_style.preset_custom')}</option>
           </select>
         </label>
         <div className="space-y-1">
-          <div className="text-xs text-stone-600">Style Instructions</div>
+          <div className="text-xs text-stone-600">
+            {t('settings.completion_style.style_instructions_label')}
+          </div>
           <textarea
             value={styleInstructions}
             onChange={event => onSetStyleInstructions(event.target.value)}
@@ -132,7 +150,9 @@ const CompletionStyleSection = ({
           />
         </div>
         <div className="space-y-1">
-          <div className="text-xs text-stone-600">Style Examples (one per line)</div>
+          <div className="text-xs text-stone-600">
+            {t('settings.completion_style.style_examples_label')}
+          </div>
           <textarea
             value={styleExamplesText}
             onChange={event => onSetStyleExamplesText(event.target.value)}
@@ -142,7 +162,7 @@ const CompletionStyleSection = ({
         </div>
         <div className="space-y-1">
           <div className="text-xs text-stone-600">
-            Disabled Apps (one bundle/app token per line)
+            {t('settings.completion_style.disabled_apps_label')}
           </div>
           <textarea
             value={disabledAppsText}
@@ -156,27 +176,35 @@ const CompletionStyleSection = ({
           onClick={onSaveConfig}
           disabled={isSaving}
           className="rounded-lg border border-primary-500/60 bg-primary-50 px-3 py-2 text-sm text-primary-600 disabled:opacity-50">
-          {isSaving ? 'Saving…' : 'Save Autocomplete Settings'}
+          {isSaving
+            ? t('settings.completion_style.saving')
+            : t('settings.completion_style.save_autocomplete_settings')}
         </button>
       </section>
 
       <section className="rounded-2xl border border-stone-200 bg-white p-4 space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-stone-900">Personalization History</h3>
+          <h3 className="text-sm font-semibold text-stone-900">
+            {t('settings.completion_style.personalization_history_title')}
+          </h3>
           <button
             type="button"
             onClick={onClearHistory}
             disabled={isClearingHistory || historyEntries.length === 0}
             className="rounded-lg border border-red-500/60 bg-red-50 px-3 py-1.5 text-xs text-red-600 disabled:opacity-40">
-            {isClearingHistory ? 'Clearing…' : 'Clear History'}
+            {isClearingHistory
+              ? t('settings.completion_style.clearing')
+              : t('settings.completion_style.clear_history')}
           </button>
         </div>
         <p className="text-xs text-stone-500">
           {isHistoryLoading
-            ? 'Loading…'
+            ? t('settings.completion_style.loading')
             : historyEntries.length === 0
-              ? 'No accepted completions yet. Accept suggestions with Tab to start personalising.'
-              : `${String(historyEntries.length)} accepted completion${historyEntries.length === 1 ? '' : 's'} stored — used to personalise future suggestions.`}
+              ? t('settings.completion_style.no_history_yet')
+              : t('settings.completion_style.history_count_stored', {
+                  count: historyEntries.length,
+                })}
         </p>
         {historyEntries.length > 0 && (
           <div className="max-h-48 overflow-y-auto rounded-xl border border-stone-200 bg-stone-50 p-2 space-y-1">

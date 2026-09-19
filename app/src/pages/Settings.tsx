@@ -33,6 +33,7 @@ import VoicePanel from '../components/settings/panels/VoicePanel';
 import WebhooksDebugPanel from '../components/settings/panels/WebhooksDebugPanel';
 import SettingsHome from '../components/settings/SettingsHome';
 import SettingsSectionPage from '../components/settings/SettingsSectionPage';
+import { useT } from '../lib/i18n/I18nContext';
 import { APP_VERSION } from '../utils/config';
 import Intelligence from './Intelligence';
 import Webhooks from './Webhooks';
@@ -225,103 +226,94 @@ const WrappedSettingsPage = ({ children }: { children: ReactNode }) => {
   );
 };
 
-function wrapSettingsPage(element: ReactNode) {
+function wrapSettingsPage(element: ReactNode, footerText: string) {
   return (
     <WrappedSettingsPage>
       {element}
       <div className="border-t border-stone-100 px-4 py-3 text-center text-[11px] text-stone-400">
-        Beta build - v{APP_VERSION}
+        {footerText}
       </div>
     </WrappedSettingsPage>
   );
 }
 
 const Settings = () => {
+  const { t } = useT();
+  const footerText = t('settings.page.footer_beta_build', { version: APP_VERSION });
+  const wrap = (element: ReactNode) => wrapSettingsPage(element, footerText);
   return (
     <div>
       <Routes>
-        <Route index element={wrapSettingsPage(<SettingsHome />)} />
+        <Route index element={wrap(<SettingsHome />)} />
         <Route
           path="account"
-          element={wrapSettingsPage(
+          element={wrap(
             <SettingsSectionPage
-              title="Account"
-              description="Recovery phrase, team, connections, and privacy settings."
+              title={t('settings.page.account_title')}
+              description={t('settings.page.account_description')}
               items={accountSettingsItems}
             />
           )}
         />
         <Route
           path="features"
-          element={wrapSettingsPage(
+          element={wrap(
             <SettingsSectionPage
-              title="Features"
-              description="Screen awareness, messaging, and tools."
+              title={t('settings.page.features_title')}
+              description={t('settings.page.features_description')}
               items={featuresSettingsItems}
             />
           )}
         />
         <Route
           path="ai"
-          element={wrapSettingsPage(
+          element={wrap(
             <SettingsSectionPage
-              title="AI"
-              description="Language model providers, local Ollama, and voice (STT / TTS)."
+              title={t('settings.page.ai_title')}
+              description={t('settings.page.ai_description')}
               items={aiSettingsItems}
             />
           )}
         />
         {/* Account & Billing leaf panels */}
-        <Route path="recovery-phrase" element={wrapSettingsPage(<RecoveryPhrasePanel />)} />
-        <Route path="team" element={wrapSettingsPage(<TeamPanel />)} />
-        <Route path="team/manage/:teamId" element={wrapSettingsPage(<TeamManagementPanel />)} />
-        <Route
-          path="team/manage/:teamId/members"
-          element={wrapSettingsPage(<TeamMembersPanel />)}
-        />
-        <Route
-          path="team/manage/:teamId/invites"
-          element={wrapSettingsPage(<TeamInvitesPanel />)}
-        />
-        <Route path="team/members" element={wrapSettingsPage(<TeamMembersPanel />)} />
-        <Route path="team/invites" element={wrapSettingsPage(<TeamInvitesPanel />)} />
-        <Route path="connections" element={wrapSettingsPage(<ConnectionsPanel />)} />
+        <Route path="recovery-phrase" element={wrap(<RecoveryPhrasePanel />)} />
+        <Route path="team" element={wrap(<TeamPanel />)} />
+        <Route path="team/manage/:teamId" element={wrap(<TeamManagementPanel />)} />
+        <Route path="team/manage/:teamId/members" element={wrap(<TeamMembersPanel />)} />
+        <Route path="team/manage/:teamId/invites" element={wrap(<TeamInvitesPanel />)} />
+        <Route path="team/members" element={wrap(<TeamMembersPanel />)} />
+        <Route path="team/invites" element={wrap(<TeamInvitesPanel />)} />
+        <Route path="connections" element={wrap(<ConnectionsPanel />)} />
         {/* BillingPanel intentionally uses its own wider layout. */}
         <Route path="billing" element={<BillingPanel />} />
-        <Route path="privacy" element={wrapSettingsPage(<PrivacyPanel />)} />
+        <Route path="privacy" element={wrap(<PrivacyPanel />)} />
         {/* Features leaf panels */}
-        <Route path="screen-intelligence" element={wrapSettingsPage(<ScreenIntelligencePanel />)} />
-        <Route path="autocomplete" element={wrapSettingsPage(<AutocompletePanel />)} />
-        <Route path="voice" element={wrapSettingsPage(<VoicePanel />)} />
-        <Route path="messaging" element={wrapSettingsPage(<MessagingPanel />)} />
-        <Route path="notifications" element={wrapSettingsPage(<NotificationsPanel />)} />
-        <Route path="mascot" element={wrapSettingsPage(<MascotPanel />)} />
-        <Route path="tools" element={wrapSettingsPage(<ToolsPanel />)} />
+        <Route path="screen-intelligence" element={wrap(<ScreenIntelligencePanel />)} />
+        <Route path="autocomplete" element={wrap(<AutocompletePanel />)} />
+        <Route path="voice" element={wrap(<VoicePanel />)} />
+        <Route path="messaging" element={wrap(<MessagingPanel />)} />
+        <Route path="notifications" element={wrap(<NotificationsPanel />)} />
+        <Route path="mascot" element={wrap(<MascotPanel />)} />
+        <Route path="tools" element={wrap(<ToolsPanel />)} />
         {/* Developer Options */}
-        <Route path="developer-options" element={wrapSettingsPage(<DeveloperOptionsPanel />)} />
-        <Route
-          path="notification-routing"
-          element={wrapSettingsPage(<NotificationRoutingPanel />)}
-        />
-        <Route path="llm" element={wrapSettingsPage(<AIPanel />)} />
-        <Route path="agent-chat" element={wrapSettingsPage(<AgentChatPanel />)} />
-        <Route path="cron-jobs" element={wrapSettingsPage(<CronJobsPanel />)} />
-        <Route
-          path="screen-awareness-debug"
-          element={wrapSettingsPage(<ScreenAwarenessDebugPanel />)}
-        />
-        <Route path="autocomplete-debug" element={wrapSettingsPage(<AutocompleteDebugPanel />)} />
-        <Route path="voice-debug" element={wrapSettingsPage(<VoiceDebugPanel />)} />
-        <Route path="local-model-debug" element={wrapSettingsPage(<LocalModelDebugPanel />)} />
-        <Route path="webhooks-debug" element={wrapSettingsPage(<WebhooksDebugPanel />)} />
-        <Route path="memory-data" element={wrapSettingsPage(<MemoryDataPanel />)} />
-        <Route path="memory-debug" element={wrapSettingsPage(<MemoryDebugPanel />)} />
+        <Route path="developer-options" element={wrap(<DeveloperOptionsPanel />)} />
+        <Route path="notification-routing" element={wrap(<NotificationRoutingPanel />)} />
+        <Route path="llm" element={wrap(<AIPanel />)} />
+        <Route path="agent-chat" element={wrap(<AgentChatPanel />)} />
+        <Route path="cron-jobs" element={wrap(<CronJobsPanel />)} />
+        <Route path="screen-awareness-debug" element={wrap(<ScreenAwarenessDebugPanel />)} />
+        <Route path="autocomplete-debug" element={wrap(<AutocompleteDebugPanel />)} />
+        <Route path="voice-debug" element={wrap(<VoiceDebugPanel />)} />
+        <Route path="local-model-debug" element={wrap(<LocalModelDebugPanel />)} />
+        <Route path="webhooks-debug" element={wrap(<WebhooksDebugPanel />)} />
+        <Route path="memory-data" element={wrap(<MemoryDataPanel />)} />
+        <Route path="memory-debug" element={wrap(<MemoryDebugPanel />)} />
         <Route path="intelligence" element={<Intelligence />} />
         <Route path="webhooks-triggers" element={<Webhooks />} />
-        <Route path="composio-triggers" element={wrapSettingsPage(<ComposioTriagePanel />)} />
-        <Route path="composio-routing" element={wrapSettingsPage(<ComposioPanel />)} />
+        <Route path="composio-triggers" element={wrap(<ComposioTriagePanel />)} />
+        <Route path="composio-routing" element={wrap(<ComposioPanel />)} />
         {/* About / updates */}
-        <Route path="about" element={wrapSettingsPage(<AboutPanel />)} />
+        <Route path="about" element={wrap(<AboutPanel />)} />
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/settings" replace />} />
       </Routes>

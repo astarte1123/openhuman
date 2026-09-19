@@ -9,6 +9,7 @@ import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 
 import type { VoiceSkillStatus } from '../../features/voice/useVoiceSkillStatus';
+import { useT } from '../../lib/i18n/I18nContext';
 import {
   auraVoiceServerStart,
   auraUpdateVoiceServerSettings,
@@ -22,6 +23,7 @@ interface Props {
 }
 
 export default function VoiceSetupModal({ onClose, skillStatus }: Props) {
+  const { t } = useT();
   const navigate = useNavigate();
   const { sttModelMissing, serverStatus } = skillStatus;
 
@@ -48,7 +50,11 @@ export default function VoiceSetupModal({ onClose, skillStatus }: Props) {
       await auraVoiceServerStart();
       setStep('success');
     } catch (error) {
-      setEnableError(error instanceof Error ? error.message : 'Failed to start voice server');
+      setEnableError(
+        error instanceof Error
+          ? error.message
+          : t('skills.voice_setup.start_server_error_fallback')
+      );
     } finally {
       setIsEnabling(false);
     }
@@ -91,11 +97,13 @@ export default function VoiceSetupModal({ onClose, skillStatus }: Props) {
               </svg>
             </div>
             <div>
-              <h2 id="voice-setup-title" className="text-sm font-semibold text-stone-900">Voice Intelligence</h2>
+              <h2 id="voice-setup-title" className="text-sm font-semibold text-stone-900">
+                {t('skills.voice_setup.title')}
+              </h2>
               <p className="text-xs text-stone-500">
-                {step === 'setup' && 'Model download required'}
-                {step === 'enable' && 'Start voice server'}
-                {step === 'success' && 'Ready to go'}
+                {step === 'setup' && t('skills.voice_setup.subtitle_setup')}
+                {step === 'enable' && t('skills.voice_setup.subtitle_enable')}
+                {step === 'success' && t('skills.voice_setup.subtitle_success')}
               </p>
             </div>
           </div>
@@ -119,13 +127,13 @@ export default function VoiceSetupModal({ onClose, skillStatus }: Props) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
                 <div className="text-xs text-amber-700 leading-relaxed">
-                  <p className="font-medium">Speech-to-text model not ready</p>
-                  <p className="mt-1">Voice Intelligence requires a local Whisper model for transcription. Download it from the Local Model settings.</p>
+                  <p className="font-medium">{t('skills.voice_setup.stt_not_ready_heading')}</p>
+                  <p className="mt-1">{t('skills.voice_setup.stt_not_ready_body')}</p>
                 </div>
               </div>
 
               <p className="text-xs text-stone-500 leading-relaxed">
-                Once the STT model is downloaded, you can return here to enable voice dictation and voice-driven AI chat.
+                {t('skills.voice_setup.stt_download_hint')}
               </p>
 
               <div className="flex flex-col gap-2">
@@ -133,13 +141,13 @@ export default function VoiceSetupModal({ onClose, skillStatus }: Props) {
                   type="button"
                   onClick={handleGoToLocalModel}
                   className="w-full rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-600 transition-colors">
-                  Download STT Model
+                  {t('skills.voice_setup.download_stt_button')}
                 </button>
                 <button
                   type="button"
                   onClick={onClose}
                   className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-2.5 text-sm font-medium text-stone-600 hover:bg-stone-100 transition-colors">
-                  Cancel
+                  {t('skills.voice_setup.cancel_button')}
                 </button>
               </div>
             </div>
@@ -152,21 +160,25 @@ export default function VoiceSetupModal({ onClose, skillStatus }: Props) {
                 <svg className="w-4 h-4 text-sage-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span className="text-xs text-sage-700">Speech-to-text model ready</span>
+                <span className="text-xs text-sage-700">{t('skills.voice_setup.stt_ready_label')}</span>
               </div>
 
               <p className="text-xs text-stone-500 leading-relaxed">
-                Start the voice server to use dictation and voice-driven chat. Press the hotkey to toggle recording.
+                {t('skills.voice_setup.enable_hint')}
               </p>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-3 py-2.5">
-                  <span className="text-sm text-stone-700">Hotkey</span>
+                  <span className="text-sm text-stone-700">{t('skills.voice_setup.hotkey_label')}</span>
                   <span className="text-xs font-mono text-stone-500">{serverStatus?.hotkey ?? 'Fn'}</span>
                 </div>
                 <div className="flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-3 py-2.5">
-                  <span className="text-sm text-stone-700">Activation</span>
-                  <span className="text-xs text-stone-500">{serverStatus?.activation_mode === 'push' ? 'Push-to-talk' : 'Tap to toggle'}</span>
+                  <span className="text-sm text-stone-700">{t('skills.voice_setup.activation_label')}</span>
+                  <span className="text-xs text-stone-500">
+                    {serverStatus?.activation_mode === 'push'
+                      ? t('skills.voice_setup.activation_push')
+                      : t('skills.voice_setup.activation_tap')}
+                  </span>
                 </div>
               </div>
 
@@ -181,7 +193,9 @@ export default function VoiceSetupModal({ onClose, skillStatus }: Props) {
                 onClick={() => void handleEnable()}
                 disabled={isEnabling}
                 className="w-full rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-50 transition-colors">
-                {isEnabling ? 'Starting...' : 'Start Voice Server'}
+                {isEnabling
+                  ? t('skills.voice_setup.starting_button')
+                  : t('skills.voice_setup.start_server_button')}
               </button>
             </div>
           )}
@@ -196,9 +210,13 @@ export default function VoiceSetupModal({ onClose, skillStatus }: Props) {
               </div>
 
               <div>
-                <h3 className="text-sm font-semibold text-stone-900">Voice Intelligence is Active</h3>
+                <h3 className="text-sm font-semibold text-stone-900">
+                  {t('skills.voice_setup.success_heading')}
+                </h3>
                 <p className="text-center mt-1 text-xs text-stone-500 leading-relaxed">
-                  Press <span className="font-mono font-medium">{serverStatus?.hotkey ?? 'Fn'}</span> to start dictating. Your voice will be transcribed and sent to your agent.
+                  {t('skills.voice_setup.success_desc_prefix')}{' '}
+                  <span className="font-mono font-medium">{serverStatus?.hotkey ?? 'Fn'}</span>{' '}
+                  {t('skills.voice_setup.success_desc_suffix')}
                 </p>
               </div>
 
@@ -207,13 +225,13 @@ export default function VoiceSetupModal({ onClose, skillStatus }: Props) {
                   type="button"
                   onClick={handleGoToSettings}
                   className="w-full rounded-xl border border-primary-200 bg-primary-50 px-4 py-2.5 text-sm font-medium text-primary-700 hover:bg-primary-100 transition-colors">
-                  Customize Settings
+                  {t('skills.voice_setup.customize_settings_button')}
                 </button>
                 <button
                   type="button"
                   onClick={onClose}
                   className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-2.5 text-sm font-medium text-stone-600 hover:bg-stone-100 transition-colors">
-                  Done
+                  {t('skills.voice_setup.done_button')}
                 </button>
               </div>
             </div>

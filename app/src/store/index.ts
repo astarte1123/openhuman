@@ -75,7 +75,11 @@ const coreModePersistConfig = {
 };
 const persistedCoreModeReducer = persistReducer(coreModePersistConfig, coreModeReducer);
 
-const localePersistConfig = { key: 'locale', storage: localStorageAdapter, whitelist: ['current'] };
+const localePersistConfig = {
+  key: 'locale',
+  storage: localStorageAdapter,
+  whitelist: ['current', 'isExplicit'],
+};
 const persistedLocaleReducer = persistReducer(localePersistConfig, localeReducer);
 
 const channelConnectionsPersistConfig = {

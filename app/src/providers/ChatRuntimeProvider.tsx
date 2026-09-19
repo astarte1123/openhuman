@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { requestUsageRefresh } from '../hooks/usageRefresh';
 import { useRefetchSnapshotOnTurnEnd } from '../hooks/useRefetchSnapshotOnTurnEnd';
+import { useT } from '../lib/i18n/I18nContext';
 import {
   type ChatDoneEvent,
   type ChatInferenceStartEvent,
@@ -44,8 +45,6 @@ import { IS_PROD } from '../utils/config';
 import { formatTimelineEntry, promptFromArgsBuffer } from '../utils/toolTimelineFormatting';
 
 const logChatRuntime = debug('aura:chat-runtime');
-const USER_FACING_AGENT_ERROR_MESSAGE =
-  'Something went wrong. Please try again.\nThis error has been reported. You can also report it on Discord.\n<aura-link path="community/discord">Report on Discord</aura-link>';
 
 const SEGMENT_DELIVERY_TTL_MS = 5 * 60 * 1000;
 const MAX_SEGMENT_DELIVERIES = 100;
@@ -147,6 +146,7 @@ function chatDoneExtraMetadata(event: ChatDoneEvent): Record<string, unknown> | 
 }
 
 const ChatRuntimeProvider = ({ children }: { children: React.ReactNode }) => {
+  const { t } = useT();
   const dispatch = useAppDispatch();
   const { refetch: refetchSnapshot } = useRefetchSnapshotOnTurnEnd();
   const socketStatus = useAppSelector(selectSocketStatus);
@@ -853,10 +853,11 @@ const ChatRuntimeProvider = ({ children }: { children: React.ReactNode }) => {
           // use the safe user-facing constant instead. For all other classified types
           // (rate_limited, timeout, auth_error, etc.) the message comes from
           // classify_inference_error() in web.rs and is already user-friendly.
+          const userFacingAgentErrorMessage = t('chat.runtime_provider.agent_error_message');
           const errorContent =
             event.error_type === 'inference'
-              ? USER_FACING_AGENT_ERROR_MESSAGE
-              : event.message || USER_FACING_AGENT_ERROR_MESSAGE;
+              ? userFacingAgentErrorMessage
+              : event.message || userFacingAgentErrorMessage;
           if (!(lastMsg?.sender === 'agent' && lastMsg?.content === errorContent)) {
             void dispatch(
               addInferenceResponse({ content: errorContent, threadId: event.thread_id })
@@ -880,7 +881,7 @@ const ChatRuntimeProvider = ({ children }: { children: React.ReactNode }) => {
       rtLog('unsubscribe_chat_events');
       cleanup();
     };
-  }, [dispatch, resolveVisibleThreadForProactive, socketStatus, refetchSnapshot]);
+  }, [dispatch, resolveVisibleThreadForProactive, socketStatus, refetchSnapshot, t]);
 
   // Socket-disconnect reconciliation.
   //

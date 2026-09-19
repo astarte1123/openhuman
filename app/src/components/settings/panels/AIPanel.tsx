@@ -13,6 +13,7 @@
  */
 import { useMemo, useState } from 'react';
 
+import { useT } from '../../../lib/i18n/I18nContext';
 import {
   clearCloudProviderKey,
   clearYouWorkerOutboundSecret,
@@ -49,6 +50,7 @@ interface AIPanelProps {
 }
 
 const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
+  const { t } = useT();
   const { navigateBack, breadcrumbs } = useSettingsNavigation();
   const { saved, draft, setDraft, isDirty, save, discard, loading, error, reload } =
     useAISettings();
@@ -116,7 +118,7 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
     <div className="relative">
       {!embedded && (
         <SettingsHeader
-          title="LLM"
+          title={t('settings.ai_panel.header_title')}
           showBackButton
           onBack={navigateBack}
           breadcrumbs={breadcrumbs}
@@ -130,16 +132,19 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
             ═══════════════════════════════════════════════════════════════ */}
         <div className="space-y-4">
           <div className="border-b border-stone-200 pb-2">
-            <h2 className="text-base font-semibold text-stone-900">LLM Providers</h2>
+            <h2 className="text-base font-semibold text-stone-900">
+              {t('settings.ai_panel.providers_heading')}
+            </h2>
             <p className="text-xs text-stone-500 mt-0.5">
-              Connect the language-model backends you want Aura to use. Toggle a provider on to
-              add its key; toggle off to disconnect.
+              {t('settings.ai_panel.providers_subtitle')}
             </p>
           </div>
 
           {/* ─── Provider chip-toggle list ────────────────────────────────── */}
           <section className="space-y-3">
-            {loading && <div className="text-xs text-stone-500">Loading…</div>}
+            {loading && (
+              <div className="text-xs text-stone-500">{t('settings.ai_panel.loading')}</div>
+            )}
             {error && (
               <div className="rounded-md border border-coral-200 bg-coral-50 px-3 py-2 text-xs text-coral-700">
                 {error}
@@ -211,7 +216,12 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
                       type="button"
                       role="switch"
                       aria-checked={enabled}
-                      aria-label={`${enabled ? 'Disconnect' : 'Connect'} ${label}`}
+                      aria-label={t(
+                        enabled
+                          ? 'settings.ai_panel.local_runtime_disconnect_aria'
+                          : 'settings.ai_panel.local_runtime_connect_aria',
+                        { label }
+                      )}
                       disabled={busyAction === `toggle-${localKind}`}
                       onClick={() => {
                         if (enabled && existing) {
@@ -253,10 +263,11 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
             ═══════════════════════════════════════════════════════════════ */}
         <div className="space-y-4">
           <div className="border-b border-stone-200 pb-2">
-            <h2 className="text-base font-semibold text-stone-900">Routing</h2>
+            <h2 className="text-base font-semibold text-stone-900">
+              {t('settings.ai_panel.routing_heading')}
+            </h2>
             <p className="text-xs text-stone-500 mt-0.5">
-              Pick how each workload is served. Default uses Aura; Custom lets you point a
-              workload at a specific provider and model.
+              {t('settings.ai_panel.routing_subtitle')}
             </p>
           </div>
 
@@ -264,7 +275,7 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
             <div className="overflow-hidden rounded-lg border border-stone-200 bg-stone-50 px-3">
               <div className="pt-3">
                 <div className="text-[10px] font-semibold uppercase tracking-wide text-stone-400">
-                  Chat
+                  {t('settings.ai_panel.chat_group_label')}
                 </div>
                 <div className="divide-y divide-stone-200">
                   {chatRows.map(w => (
@@ -283,7 +294,7 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
               </div>
               <div className="pb-3 pt-3">
                 <div className="text-[10px] font-semibold uppercase tracking-wide text-stone-400">
-                  Background
+                  {t('settings.ai_panel.background_group_label')}
                 </div>
                 <div className="divide-y divide-stone-200">
                   {bgRows.map(w => (
@@ -303,7 +314,9 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
             </div>
 
             <div className="text-[11px] text-stone-500">
-              Default resolves to <span className="font-mono text-stone-700">Aura</span>.
+              {t('settings.ai_panel.default_resolves_prefix')}{' '}
+              <span className="font-mono text-stone-700">Aura</span>
+              {t('settings.ai_panel.default_resolves_suffix')}
             </div>
           </section>
         </div>

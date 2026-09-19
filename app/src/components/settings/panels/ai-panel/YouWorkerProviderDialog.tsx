@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useT } from '../../../../lib/i18n/I18nContext';
 import type { CloudProvider } from './types';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -29,6 +30,7 @@ const YouWorkerProviderDialog = ({
   onClearSecret: () => Promise<void> | void;
   onClearOutboundSecret: () => Promise<void> | void;
 }) => {
+  const { t } = useT();
   const [label, setLabel] = useState(initial?.label ?? 'YouWorker');
   const [ywBase, setYwBase] = useState(initial?.endpoint ?? '');
   const [autentikaUrl, setAutentikaUrl] = useState(initial?.autentikaUrl ?? '');
@@ -81,22 +83,24 @@ const YouWorkerProviderDialog = ({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Connect YouWorker"
+      aria-label={t('settings.you_worker_provider_dialog.connect_youworker_aria_label')}
       className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/30 p-4">
       <div className="w-full max-w-md rounded-lg border border-stone-200 bg-white shadow-float">
         <div className="border-b border-stone-200 px-4 py-3">
           <div className="text-sm font-semibold text-stone-900">
-            {initial ? 'Edit YouWorker' : 'Connect YouWorker'}
+            {initial
+              ? t('settings.you_worker_provider_dialog.edit_youworker_title')
+              : t('settings.you_worker_provider_dialog.connect_youworker_title')}
           </div>
           <div className="mt-0.5 text-xs text-stone-500">
-            Params come from your youworker.ai deployment's integration handoff doc — the client
-            secret is encrypted at rest in <span className="font-mono">auth-profiles.json</span>.
+            {t('settings.you_worker_provider_dialog.intro_prefix')}{' '}
+            <span className="font-mono">auth-profiles.json</span>.
           </div>
         </div>
         <div className="max-h-[60vh] space-y-3 overflow-y-auto px-4 py-3">
           <div>
             <label className="text-[10px] font-semibold uppercase tracking-wide text-stone-500">
-              Display label
+              {t('settings.you_worker_provider_dialog.display_label_label')}
             </label>
             <input
               value={label}
@@ -109,41 +113,55 @@ const YouWorkerProviderDialog = ({
             <label
               htmlFor="transport"
               className="text-[10px] font-semibold uppercase tracking-wide text-stone-500">
-              Transport
+              {t('settings.you_worker_provider_dialog.transport_label')}
             </label>
             <select
               id="transport"
               value={transport}
               onChange={e => setTransport(e.target.value as 'webhook' | 'websocket')}
               className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-200">
-              <option value="webhook">Webhook (needs a public outbound endpoint)</option>
-              <option value="websocket">WebSocket (reply on the same connection, no setup)</option>
+              <option value="webhook">
+                {t('settings.you_worker_provider_dialog.transport_webhook_option')}
+              </option>
+              <option value="websocket">
+                {t('settings.you_worker_provider_dialog.transport_websocket_option')}
+              </option>
             </select>
             <p className="mt-1 text-[10px] text-stone-500">
-              WebSocket needs no outbound HMAC secret or public URL — youworker.ai replies on the
-              connection this app opens. Webhook scales better once youworker.ai has your outbound
-              endpoint registered.
+              {t('settings.you_worker_provider_dialog.transport_hint')}
             </p>
           </div>
           {field(
             'yw-base',
-            'YouWorker base URL (yw_base)',
+            t('settings.you_worker_provider_dialog.yw_base_label'),
             ywBase,
             setYwBase,
             'https://your-deployment.example/api/v1'
           )}
           {field(
             'autentika-url',
-            'Autentika URL',
+            t('settings.you_worker_provider_dialog.autentika_url_label'),
             autentikaUrl,
             setAutentikaUrl,
             'https://your-workspace.autentika.example'
           )}
-          {field('persona', 'Persona', persona, setPersona, 'your-persona-slug')}
-          {field('client-id', 'Client ID', clientId, setClientId, 'service-principal client_id')}
+          {field(
+            'persona',
+            t('settings.you_worker_provider_dialog.persona_label'),
+            persona,
+            setPersona,
+            'your-persona-slug'
+          )}
+          {field(
+            'client-id',
+            t('settings.you_worker_provider_dialog.client_id_label'),
+            clientId,
+            setClientId,
+            'service-principal client_id'
+          )}
           {field(
             'subject-uuid',
-            'Subject UUID',
+            t('settings.you_worker_provider_dialog.subject_uuid_label'),
             subjectUuid,
             setSubjectUuid,
             'youworker end-user UUID'
@@ -152,13 +170,13 @@ const YouWorkerProviderDialog = ({
             <label
               htmlFor="client-secret"
               className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-wide text-stone-500">
-              <span>Client secret</span>
+              <span>{t('settings.you_worker_provider_dialog.client_secret_label')}</span>
               {hasExistingSecret && (
                 <button
                   type="button"
                   onClick={() => void onClearSecret()}
                   className="text-[10px] font-medium normal-case text-coral-600 hover:text-coral-700">
-                  Clear stored secret
+                  {t('settings.you_worker_provider_dialog.clear_stored_secret')}
                 </button>
               )}
             </label>
@@ -170,7 +188,9 @@ const YouWorkerProviderDialog = ({
               onChange={e => setClientSecret(e.target.value)}
               className="mt-1 w-full rounded-lg border border-stone-200 bg-white px-3 py-2 font-mono text-xs text-stone-900 placeholder:text-stone-400 focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-200"
               placeholder={
-                hasExistingSecret ? 'Leave blank to keep existing secret' : 'client_secret'
+                hasExistingSecret
+                  ? t('settings.you_worker_provider_dialog.client_secret_placeholder_existing')
+                  : 'client_secret'
               }
             />
           </div>
@@ -179,12 +199,12 @@ const YouWorkerProviderDialog = ({
               <label
                 htmlFor="outbound-hmac-secret"
                 className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-wide text-stone-500">
-                <span>Outbound webhook HMAC secret</span>
+                <span>{t('settings.you_worker_provider_dialog.outbound_hmac_secret_label')}</span>
                 <button
                   type="button"
                   onClick={() => void onClearOutboundSecret()}
                   className="text-[10px] font-medium normal-case text-coral-600 hover:text-coral-700">
-                  Clear stored secret
+                  {t('settings.you_worker_provider_dialog.clear_stored_secret')}
                 </button>
               </label>
               <input
@@ -197,9 +217,7 @@ const YouWorkerProviderDialog = ({
                 placeholder="whsec_… (leave blank to keep unchanged)"
               />
               <p className="mt-1 text-[10px] text-stone-500">
-                Verifies youworker&apos;s async reply webhook. Optional to save now, but chat calls
-                will time out without it once youworker.ai can reach this app&apos;s outbound
-                endpoint.
+                {t('settings.you_worker_provider_dialog.outbound_hmac_hint')}
               </p>
             </div>
           )}
@@ -210,7 +228,7 @@ const YouWorkerProviderDialog = ({
             onClick={onClose}
             disabled={saving}
             className="rounded-lg border border-stone-200 px-3 py-1.5 text-xs font-medium text-stone-700 hover:bg-stone-50 disabled:opacity-50">
-            Cancel
+            {t('settings.you_worker_provider_dialog.cancel')}
           </button>
           <button
             onClick={async () => {
@@ -226,8 +244,8 @@ const YouWorkerProviderDialog = ({
                     authStyle: 'youworker',
                     maskedKey:
                       hasExistingSecret || clientSecret.trim()
-                        ? '•••• configured'
-                        : 'Not configured',
+                        ? t('settings.you_worker_provider_dialog.masked_key_configured')
+                        : t('settings.you_worker_provider_dialog.masked_key_not_configured'),
                     autentikaUrl: autentikaUrl.trim(),
                     persona: persona.trim(),
                     clientId: clientId.trim(),
@@ -245,7 +263,11 @@ const YouWorkerProviderDialog = ({
             }}
             disabled={saving || !canSave}
             className="rounded-lg bg-primary-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary-600 disabled:opacity-50">
-            {saving ? 'Saving…' : initial ? 'Save changes' : 'Connect'}
+            {saving
+              ? t('settings.you_worker_provider_dialog.saving')
+              : initial
+                ? t('settings.you_worker_provider_dialog.save_changes')
+                : t('settings.you_worker_provider_dialog.connect')}
           </button>
         </div>
       </div>

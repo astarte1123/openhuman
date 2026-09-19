@@ -109,10 +109,13 @@ describe('SettingsHome', () => {
   });
 
   describe('language selector', () => {
-    it('offers Bahasa Indonesia as a display language', () => {
+    it('offers all 25 supported languages by their native name', () => {
       renderSettingsHome();
 
-      expect(screen.getByRole('option', { name: /Bahasa Indonesia/ })).toHaveValue('id');
+      expect(screen.getByRole('option', { name: 'Italiano' })).toHaveValue('it-IT');
+      expect(screen.getByRole('option', { name: 'Deutsch' })).toHaveValue('de-DE');
+      expect(screen.getByRole('option', { name: 'Norsk bokmål' })).toHaveValue('nb-NO');
+      expect(screen.getAllByRole('option')).toHaveLength(25);
     });
   });
 

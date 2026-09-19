@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useT } from '../../lib/i18n/I18nContext';
 import { resolveIntegrationRoute } from '../../lib/notificationRouter';
 import {
   dismissNotification,
@@ -24,6 +25,7 @@ import NotificationCard from './NotificationCard';
 // ─────────────────────────────────────────────────────────────────────────────
 
 const NotificationCenter = () => {
+  const { t } = useT();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const {
@@ -58,7 +60,11 @@ const NotificationCenter = () => {
       } catch (err) {
         if (!cancelled) {
           dispatch(
-            setIntegrationError(err instanceof Error ? err.message : 'Failed to load notifications')
+            setIntegrationError(
+              err instanceof Error
+                ? err.message
+                : t('notifications.center.load_failed')
+            )
           );
         }
       }
@@ -67,7 +73,7 @@ const NotificationCenter = () => {
     return () => {
       cancelled = true;
     };
-  }, [dispatch, selectedProvider]);
+  }, [dispatch, selectedProvider, t]);
 
   const handleMarkRead = async (id: string) => {
     dispatch(markIntegrationRead(id));
@@ -121,7 +127,9 @@ const NotificationCenter = () => {
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-stone-200">
         <div className="flex items-center gap-2">
-          <h2 className="text-base font-semibold text-stone-900">Notifications</h2>
+          <h2 className="text-base font-semibold text-stone-900">
+            {t('notifications.center.title')}
+          </h2>
           {filteredUnreadCount > 0 && (
             <span className="px-1.5 py-0.5 rounded-full text-[11px] font-semibold bg-primary-500 text-white">
               {filteredUnreadCount}
@@ -134,7 +142,7 @@ const NotificationCenter = () => {
               void handleMarkAllRead();
             }}
             className="text-xs text-primary-600 hover:text-primary-700 font-medium transition-colors">
-            Mark all read
+            {t('notifications.center.mark_all_read')}
           </button>
         )}
       </div>
@@ -149,7 +157,7 @@ const NotificationCenter = () => {
                 ? 'bg-primary-500 text-white'
                 : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
             }`}>
-            All
+            {t('notifications.center.all_filter')}
           </button>
           {allProviders.map(p => (
             <button
@@ -170,7 +178,7 @@ const NotificationCenter = () => {
       <div className="flex-1 overflow-y-auto">
         {loading && (
           <div className="flex items-center justify-center py-12 text-stone-400 text-sm">
-            Loading…
+            {t('notifications.center.loading')}
           </div>
         )}
 
@@ -194,9 +202,9 @@ const NotificationCenter = () => {
                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
               />
             </svg>
-            <p className="text-sm font-medium">No notifications yet</p>
+            <p className="text-sm font-medium">{t('notifications.center.empty_title')}</p>
             <p className="text-xs mt-1 opacity-70">
-              Notifications from your connected accounts will appear here.
+              {t('notifications.center.empty_subtitle')}
             </p>
           </div>
         )}

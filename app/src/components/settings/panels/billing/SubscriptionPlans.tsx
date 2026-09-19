@@ -1,3 +1,4 @@
+import { useT } from '../../../../lib/i18n/I18nContext';
 import type { PlanTier } from '../../../../types/api';
 import { annualSavings, isUpgrade as checkIsUpgrade, displayPrice, PLANS } from '../billingHelpers';
 
@@ -23,21 +24,25 @@ const SubscriptionPlans = ({
   purchasingTier,
   paymentConfirmed,
   onUpgrade,
-}: SubscriptionPlansProps) => (
+}: SubscriptionPlansProps) => {
+  const { t } = useT();
+  return (
   <>
     <div className="flex flex-col gap-2 rounded-2xl bg-white p-4 border border-stone-200">
       <h3 className="font-headline text-2xl font-bold tracking-tight text-stone-950">
-        Choose a Subscription Plan
+        {t('settings.subscription_plans.choose_a_plan')}
       </h3>
       <p className="mt-1 text-sm text-stone-500">
-        Compare plans, switch billing cadence, and choose a payment method.
+        {t('settings.subscription_plans.compare_plans_subtitle')}
       </p>
 
       <div className="flex items-center justify-between mt-4">
         <div>
-          <p className="text-sm font-semibold text-stone-950">Pay using crypto?</p>
+          <p className="text-sm font-semibold text-stone-950">
+            {t('settings.subscription_plans.pay_using_crypto')}
+          </p>
           <p className="mt-0.5 text-xs text-stone-500">
-            You can optionally choose to pay annually using BTC/ETH/USDC.
+            {t('settings.subscription_plans.pay_annually_crypto_hint')}
           </p>
         </div>
         <button
@@ -69,7 +74,7 @@ const SubscriptionPlans = ({
                 ? 'bg-primary-600 text-white'
                 : 'text-stone-500 hover:text-stone-900'
             } ${paymentMethod === 'crypto' ? 'cursor-not-allowed opacity-40' : ''}`}>
-            Monthly
+            {t('settings.subscription_plans.monthly')}
           </button>
           <button
             onClick={() => setBillingInterval('annual')}
@@ -78,7 +83,7 @@ const SubscriptionPlans = ({
                 ? 'bg-primary-600 text-white'
                 : 'text-stone-500 hover:text-stone-900'
             }`}>
-            Annual
+            {t('settings.subscription_plans.annual')}
           </button>
         </div>
       </div>
@@ -99,7 +104,7 @@ const SubscriptionPlans = ({
               />
             </svg>
             <p className="text-sm font-medium text-sage-700">
-              Payment confirmed! Your plan has been updated.
+              {t('settings.subscription_plans.payment_confirmed')}
             </p>
           </div>
         </div>
@@ -124,8 +129,7 @@ const SubscriptionPlans = ({
               />
             </svg>
             <p className="text-sm text-amber-700">
-              Waiting for payment confirmation... Complete checkout in the browser window that
-              opened.
+              {t('settings.subscription_plans.waiting_for_payment_confirmation')}
             </p>
           </div>
         </div>
@@ -190,12 +194,12 @@ const SubscriptionPlans = ({
                     </h4>
                     {isPopular && (
                       <span className="rounded-full bg-primary-600 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-white">
-                        Popular
+                        {t('settings.subscription_plans.popular_badge')}
                       </span>
                     )}
                     {isCurrent && !plan.recommended && (
                       <span className="rounded-full bg-stone-950 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-white">
-                        Current
+                        {t('settings.subscription_plans.current_badge')}
                       </span>
                     )}
                   </div>
@@ -216,22 +220,28 @@ const SubscriptionPlans = ({
                   <p className="text-2xl font-bold tracking-tight text-stone-950">
                     {displayPrice(plan, billingInterval)}
                     {plan.tier !== 'FREE' && (
-                      <span className="text-sm font-medium text-stone-400">/mo</span>
+                      <span className="text-sm font-medium text-stone-400">
+                        {t('settings.subscription_plans.per_month_suffix')}
+                      </span>
                     )}
                   </p>
                   {plan.tier !== 'FREE' && billingInterval === 'annual' && (
-                    <p className="mt-1 text-xs text-stone-500">Billed ${plan.annualPrice}/yr</p>
+                    <p className="mt-1 text-xs text-stone-500">
+                      {t('settings.subscription_plans.billed_annual_price', {
+                        price: plan.annualPrice,
+                      })}
+                    </p>
                   )}
                   {savings && (
                     <p className="mt-1 text-xs font-semibold uppercase text-primary-600">
-                      Save {savings}%
+                      {t('settings.subscription_plans.save_percent', { percent: savings })}
                     </p>
                   )}
                 </div>
 
                 {isCurrent ? (
                   <div className="rounded-full bg-primary-600 px-4 py-2 text-xs font-semibold text-white">
-                    Current Plan
+                    {t('settings.subscription_plans.current_plan')}
                   </div>
                 ) : isUpgrade ? (
                   <button
@@ -242,7 +252,9 @@ const SubscriptionPlans = ({
                         ? 'cursor-not-allowed bg-stone-200 text-stone-400'
                         : 'bg-stone-950 text-white hover:bg-primary-600'
                     }`}>
-                    {isThisPurchasing ? 'Waiting…' : 'Upgrade'}
+                    {isThisPurchasing
+                      ? t('settings.subscription_plans.waiting')
+                      : t('settings.subscription_plans.upgrade')}
                   </button>
                 ) : null}
               </div>
@@ -252,6 +264,7 @@ const SubscriptionPlans = ({
       </div>
     </div>
   </>
-);
+  );
+};
 
 export default SubscriptionPlans;

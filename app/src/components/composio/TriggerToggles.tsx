@@ -8,6 +8,7 @@ import {
 } from '../../lib/composio/composioApi';
 import { formatTriggerLabel } from '../../lib/composio/formatters';
 import type { ComposioActiveTrigger, ComposioAvailableTrigger } from '../../lib/composio/types';
+import { useT } from '../../lib/i18n/I18nContext';
 
 /**
  * Stable signature for matching an `AvailableTrigger` to an
@@ -47,6 +48,7 @@ export default function TriggerToggles({
   toolkitName,
   connectionId,
 }: TriggerTogglesProps) {
+  const { t } = useT();
   const [available, setAvailable] = useState<ComposioAvailableTrigger[] | null>(null);
   const [activeBySignature, setActiveBySignature] = useState<Map<string, ComposioActiveTrigger>>(
     new Map()
@@ -70,21 +72,21 @@ export default function TriggerToggles({
         if (cancelled) return;
         setAvailable(avail.triggers);
         const map = new Map<string, ComposioActiveTrigger>();
-        for (const t of active.triggers) {
-          if (t.connectionId && t.connectionId !== connectionId) continue;
-          map.set(activeTriggerSignature(t), t);
+        for (const trigger of active.triggers) {
+          if (trigger.connectionId && trigger.connectionId !== connectionId) continue;
+          map.set(activeTriggerSignature(trigger), trigger);
         }
         setActiveBySignature(map);
       } catch (err) {
         if (cancelled) return;
         const msg = err instanceof Error ? err.message : String(err);
-        setLoadError(`Couldn't load triggers: ${msg}`);
+        setLoadError(t('composio.trigger_toggles.load_error', { message: msg }));
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [toolkitSlug, connectionId]);
+  }, [toolkitSlug, connectionId, t]);
 
   const handleToggle = useCallback(
     async (entry: ComposioAvailableTrigger) => {
@@ -123,14 +125,21 @@ export default function TriggerToggles({
         }
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
+        const actionLabel = existing
+          ? t('composio.trigger_toggles.action_disable')
+          : t('composio.trigger_toggles.action_enable');
         setRowError(
-          `${existing ? 'Disable' : 'Enable'} failed for ${formatTriggerLabel(entry.slug)}: ${msg}`
+          t('composio.trigger_toggles.action_failed', {
+            action: actionLabel,
+            triggerName: formatTriggerLabel(entry.slug),
+            message: msg,
+          })
         );
       } finally {
         setPendingSignature(null);
       }
     },
-    [activeBySignature, connectionId, pendingSignature, toolkitSlug]
+    [activeBySignature, connectionId, pendingSignature, toolkitSlug, t]
   );
 
   if (loadError) {
@@ -144,8 +153,10 @@ export default function TriggerToggles({
   if (available === null) {
     return (
       <div className="border-t border-stone-100 pt-3 mt-1">
-        <h3 className="text-xs font-semibold text-stone-700 uppercase tracking-wide">Triggers</h3>
-        <p className="mt-1 text-[11px] text-stone-400">Loading…</p>
+        <h3 className="text-xs font-semibold text-stone-700 uppercase tracking-wide">
+          {t('composio.trigger_toggles.heading')}
+        </h3>
+        <p className="mt-1 text-[11px] text-stone-400">{t('composio.trigger_toggles.loading')}</p>
       </div>
     );
   }
@@ -153,9 +164,11 @@ export default function TriggerToggles({
   if (available.length === 0) {
     return (
       <div className="border-t border-stone-100 pt-3 mt-1">
-        <h3 className="text-xs font-semibold text-stone-700 uppercase tracking-wide">Triggers</h3>
+        <h3 className="text-xs font-semibold text-stone-700 uppercase tracking-wide">
+          {t('composio.trigger_toggles.heading')}
+        </h3>
         <p className="mt-1 text-[11px] text-stone-400">
-          No triggers are currently available for {toolkitName}.
+          {t('composio.trigger_toggles.empty_state', { toolkitName })}
         </p>
       </div>
     );
@@ -164,8 +177,12 @@ export default function TriggerToggles({
   return (
     <div className="border-t border-stone-100 pt-3 mt-1 space-y-2" data-testid="trigger-toggles">
       <div className="flex items-baseline justify-between">
-        <h3 className="text-xs font-semibold text-stone-700 uppercase tracking-wide">Triggers</h3>
-        <p className="text-[10px] text-stone-400">Listen for events from {toolkitName}</p>
+        <h3 className="text-xs font-semibold text-stone-700 uppercase tracking-wide">
+          {t('composio.trigger_toggles.heading')}
+        </h3>
+        <p className="text-[10px] text-stone-400">
+          {t('composio.trigger_toggles.subtitle', { toolkitName })}
+        </p>
       </div>
       <ul className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
         {available.map(entry => {
@@ -185,14 +202,21 @@ export default function TriggerToggles({
             entry.scope === 'github_repo'
               ? formatTriggerLabel(entry.slug)
               : requiresConfig
-                ? 'Needs configuration'
+                ? t('composio.trigger_toggles.needs_configuration')
                 : '';
-          const action = enabled ? 'Disable' : 'Enable';
+          const action = enabled
+            ? t('composio.trigger_toggles.action_disable')
+            : t('composio.trigger_toggles.action_enable');
           const triggerName = formatTriggerLabel(entry.slug);
           const ariaLabel =
             entry.scope === 'github_repo' && entry.repo
-              ? `${action} ${triggerName} for ${entry.repo.owner}/${entry.repo.repo}`
-              : `${action} ${triggerName}`;
+              ? t('composio.trigger_toggles.aria_label_repo', {
+                  action,
+                  triggerName,
+                  owner: entry.repo.owner,
+                  repo: entry.repo.repo,
+                })
+              : t('composio.trigger_toggles.aria_label', { action, triggerName });
 
           return (
             <li

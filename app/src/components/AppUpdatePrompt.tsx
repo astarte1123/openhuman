@@ -17,6 +17,8 @@ import { useCallback, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { useAppUpdate } from '../hooks/useAppUpdate';
+import { useT } from '../lib/i18n/I18nContext';
+import type { TranslationParams } from '../lib/i18n/types';
 import { formatBytes } from '../utils/localAiHelpers';
 
 interface AppUpdatePromptProps {
@@ -43,13 +45,14 @@ function shouldShow(phase: ReturnType<typeof useAppUpdate>['phase']): boolean {
 }
 
 const AppUpdatePrompt = (props: AppUpdatePromptProps) => {
+  const { t } = useT();
   const { phase, info, bytesDownloaded, totalBytes, error, install, download, reset } =
     useAppUpdate(props);
 
   const [dismissed, setDismissed] = useState(false);
   const [prevPhase, setPrevPhase] = useState(phase);
   const dismissedErrorRef = useRef<string | null>(null);
-  const currentErrorKey = error ?? 'Update failed. See logs for details.';
+  const currentErrorKey = error ?? t('app_update_prompt.default_error');
   // Re-show on every transition INTO a visible non-error phase, or when a new
   // error differs from the one the user already dismissed this session.
   if (phase !== prevPhase) {
@@ -100,13 +103,13 @@ const AppUpdatePrompt = (props: AppUpdatePromptProps) => {
         <div className="flex items-center justify-between px-4 pt-3 pb-1">
           <div className="flex items-center gap-2">
             <UpdateIcon className="w-4 h-4 text-primary-400" />
-            <span className="text-sm font-medium text-white">{headerLabel(phase)}</span>
+            <span className="text-sm font-medium text-white">{headerLabel(phase, t)}</span>
           </div>
           {(phase === 'ready_to_install' || phase === 'error') && (
             <button
               onClick={phase === 'error' ? handleDismissError : handleLater}
               className="p-1 text-stone-500 hover:text-stone-300 transition-colors"
-              aria-label="Dismiss update notification">
+              aria-label={t('app_update_prompt.dismiss_aria_label')}>
               <CloseIcon className="w-3.5 h-3.5" />
             </button>
           )}
@@ -118,27 +121,29 @@ const AppUpdatePrompt = (props: AppUpdatePromptProps) => {
             <>
               <p className="text-xs text-stone-300 leading-relaxed">
                 {newVersion
-                  ? `Version ${newVersion} is ready to install.`
-                  : 'A new version is ready to install.'}
+                  ? t('app_update_prompt.version_ready', { version: newVersion })
+                  : t('app_update_prompt.new_version_ready')}
                 {currentVersion && (
-                  <span className="text-stone-500"> Currently on {currentVersion}.</span>
+                  <span className="text-stone-500">
+                    {' '}
+                    {t('app_update_prompt.currently_on', { version: currentVersion })}
+                  </span>
                 )}
               </p>
               {info?.body && <ReleaseNotes body={info.body} />}
               <p className="mt-2 text-[11px] text-stone-500 leading-relaxed">
-                Restarting will close any open conversations briefly. The new build launches
-                automatically.
+                {t('app_update_prompt.restart_notice')}
               </p>
               <div className="mt-3 flex gap-2">
                 <button
                   onClick={handleInstall}
                   className="flex-1 px-3 py-1.5 rounded-lg bg-primary-500 hover:bg-primary-400 text-white text-xs font-medium transition-colors">
-                  Restart now
+                  {t('app_update_prompt.restart_now')}
                 </button>
                 <button
                   onClick={handleLater}
                   className="px-3 py-1.5 rounded-lg border border-stone-700 text-stone-300 hover:bg-stone-800 text-xs transition-colors">
-                  Later
+                  {t('app_update_prompt.later')}
                 </button>
               </div>
             </>
@@ -148,7 +153,7 @@ const AppUpdatePrompt = (props: AppUpdatePromptProps) => {
             <>
               <ProgressBar indeterminate />
               <div className="mt-2 flex items-center justify-between text-[11px] text-stone-400">
-                <span>{progressDetail(phase, bytesDownloaded, totalBytes, percent)}</span>
+                <span>{progressDetail(phase, bytesDownloaded, totalBytes, percent, t)}</span>
                 {newVersion && <span className="text-stone-500">v{newVersion}</span>}
               </div>
             </>
@@ -157,18 +162,18 @@ const AppUpdatePrompt = (props: AppUpdatePromptProps) => {
           {phase === 'error' && (
             <>
               <p className="text-xs text-coral-300 leading-relaxed">
-                {error ?? 'Something went wrong while updating.'}
+                {error ?? t('app_update_prompt.generic_error')}
               </p>
               <div className="mt-3 flex gap-2">
                 <button
                   onClick={handleRetryDownload}
                   className="flex-1 px-3 py-1.5 rounded-lg bg-primary-500 hover:bg-primary-400 text-white text-xs font-medium transition-colors">
-                  Try again
+                  {t('app_update_prompt.try_again')}
                 </button>
                 <button
                   onClick={handleDismissError}
                   className="px-3 py-1.5 rounded-lg border border-stone-700 text-stone-300 hover:bg-stone-800 text-xs transition-colors">
-                  Dismiss
+                  {t('app_update_prompt.dismiss')}
                 </button>
               </div>
             </>
@@ -180,18 +185,21 @@ const AppUpdatePrompt = (props: AppUpdatePromptProps) => {
   );
 };
 
-function headerLabel(phase: ReturnType<typeof useAppUpdate>['phase']): string {
+function headerLabel(
+  phase: ReturnType<typeof useAppUpdate>['phase'],
+  t: (key: string, params?: TranslationParams) => string
+): string {
   switch (phase) {
     case 'ready_to_install':
-      return 'Update ready to install';
+      return t('app_update_prompt.header_ready_to_install');
     case 'installing':
-      return 'Installing update';
+      return t('app_update_prompt.header_installing');
     case 'restarting':
-      return 'Restarting…';
+      return t('app_update_prompt.header_restarting');
     case 'error':
-      return 'Update failed';
+      return t('app_update_prompt.header_error');
     default:
-      return 'Update';
+      return t('app_update_prompt.header_default');
   }
 }
 
@@ -199,15 +207,16 @@ function progressDetail(
   phase: ReturnType<typeof useAppUpdate>['phase'],
   downloaded: number,
   total: number | null,
-  percent: number | null
+  percent: number | null,
+  t: (key: string, params?: TranslationParams) => string
 ): string {
-  if (phase === 'installing') return 'Installing the new version…';
-  if (phase === 'restarting') return 'Relaunching the app…';
+  if (phase === 'installing') return t('app_update_prompt.installing_new_version');
+  if (phase === 'restarting') return t('app_update_prompt.relaunching_app');
   if (total != null && total > 0) {
     return `${formatBytes(downloaded)} / ${formatBytes(total)}`;
   }
-  if (downloaded > 0) return `${formatBytes(downloaded)} downloaded`;
-  return percent != null ? `${percent}%` : 'Working…';
+  if (downloaded > 0) return t('app_update_prompt.downloaded', { size: formatBytes(downloaded) });
+  return percent != null ? `${percent}%` : t('app_update_prompt.working');
 }
 
 const ProgressBar = ({
@@ -231,6 +240,7 @@ const ProgressBar = ({
 };
 
 const ReleaseNotes = ({ body }: { body: string }) => {
+  const { t } = useT();
   const [expanded, setExpanded] = useState(false);
   const trimmed = body.trim();
   if (!trimmed) return null;
@@ -244,7 +254,7 @@ const ReleaseNotes = ({ body }: { body: string }) => {
           type="button"
           onClick={() => setExpanded(prev => !prev)}
           className="mt-1 text-[11px] text-primary-300 hover:text-primary-200 transition-colors">
-          {expanded ? 'Show less' : 'Show more'}
+          {expanded ? t('app_update_prompt.show_less') : t('app_update_prompt.show_more')}
         </button>
       )}
     </div>

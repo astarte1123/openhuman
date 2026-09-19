@@ -1,20 +1,24 @@
 import { useNavigate } from 'react-router-dom';
 
+import { useT } from '../../lib/i18n/I18nContext';
 import type { RewardsAchievement, RewardsSnapshot } from '../../types/rewards';
 import { DISCORD_INVITE_URL } from '../../utils/links';
 import { openUrl } from '../../utils/openUrl';
 
-function discordMembershipLabel(snapshot: RewardsSnapshot | null): string {
-  if (!snapshot) return 'Waiting for backend sync';
+function discordMembershipLabel(
+  snapshot: RewardsSnapshot | null,
+  t: (key: string) => string
+): string {
+  if (!snapshot) return t('rewards.community.discord_waiting_sync');
   switch (snapshot.discord.membershipStatus) {
     case 'member':
-      return 'Joined the server';
+      return t('rewards.community.discord_joined');
     case 'not_in_guild':
-      return 'Linked, but not in server';
+      return t('rewards.community.discord_linked_not_in_server');
     case 'not_linked':
-      return 'Not linked';
+      return t('rewards.community.discord_not_linked');
     default:
-      return 'Membership status unavailable';
+      return t('rewards.community.discord_status_unavailable');
   }
 }
 
@@ -79,6 +83,7 @@ export default function RewardsCommunityTab({
   onRetry,
   snapshot,
 }: RewardsCommunityTabProps) {
+  const { t } = useT();
   const navigate = useNavigate();
   const rewardRoles: RewardsAchievement[] = snapshot?.achievements ?? [];
   const unlocked =
@@ -96,11 +101,10 @@ export default function RewardsCommunityTab({
         <div className="relative z-10 space-y-4">
           <div className="space-y-2">
             <h1 className="text-2xl font-bold tracking-tight text-white">
-              Earn Rewards & Discord Roles
+              {t('rewards.community.hero_heading')}
             </h1>
             <p className="text-sm font-medium leading-relaxed text-white/90">
-              Unlock exclusive channels, supporter badges, and backend-synced rewards by connecting
-              your Discord account.
+              {t('rewards.community.hero_description')}
             </p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">
@@ -120,7 +124,7 @@ export default function RewardsCommunityTab({
                   d="M13.828 10.172a4 4 0 0 0-5.656 0l-1 1a4 4 0 0 0 5.656 5.656l.586-.586m-3.242-2.828a4 4 0 0 0 5.656 0l1-1a4 4 0 1 0-5.656-5.656l-.586.586"
                 />
               </svg>
-              Connect Discord
+              {t('rewards.community.connect_discord_button')}
             </button>
             <button
               onClick={() => {
@@ -130,7 +134,7 @@ export default function RewardsCommunityTab({
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M20.317 4.369A19.79 19.79 0 0 0 15.885 3c-.191.328-.403.775-.552 1.124a18.27 18.27 0 0 0-5.29 0A11.56 11.56 0 0 0 9.49 3a19.74 19.74 0 0 0-4.433 1.369C2.253 8.51 1.492 12.55 1.872 16.533a19.9 19.9 0 0 0 5.239 2.673c.423-.58.8-1.196 1.123-1.845a12.84 12.84 0 0 1-1.767-.85c.148-.106.292-.217.43-.332c3.408 1.6 7.104 1.6 10.472 0c.14.115.283.226.43.332c-.565.338-1.157.623-1.771.851c.322.648.698 1.264 1.123 1.844a19.84 19.84 0 0 0 5.241-2.673c.446-4.617-.761-8.621-3.787-12.164ZM9.46 14.088c-1.02 0-1.855-.936-1.855-2.084c0-1.148.82-2.084 1.855-2.084c1.044 0 1.87.944 1.855 2.084c0 1.148-.82 2.084-1.855 2.084Zm5.08 0c-1.02 0-1.855-.936-1.855-2.084c0-1.148.82-2.084 1.855-2.084c1.044 0 1.87.944 1.855 2.084c0 1.148-.812 2.084-1.855 2.084Z" />
               </svg>
-              Join Discord
+              {t('rewards.community.join_discord_button')}
             </button>
           </div>
         </div>
@@ -143,10 +147,7 @@ export default function RewardsCommunityTab({
           role="alert"
           data-testid="rewards-error"
           className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          <span>
-            Rewards sync is unavailable right now. The page is showing connection guidance without
-            claiming new unlocks. Details: {error}
-          </span>
+          <span>{t('rewards.community.sync_error', { error })}</span>
           {onRetry ? (
             <button
               type="button"
@@ -154,7 +155,9 @@ export default function RewardsCommunityTab({
               onClick={onRetry}
               disabled={isLoading}
               className="rounded-full border border-amber-300 bg-white px-3 py-1 text-xs font-semibold text-amber-800 shadow-sm transition-colors hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-60">
-              {isLoading ? 'Retrying…' : 'Try again'}
+              {isLoading
+                ? t('rewards.community.retrying')
+                : t('rewards.community.try_again')}
             </button>
           ) : null}
         </div>
@@ -164,9 +167,13 @@ export default function RewardsCommunityTab({
         <section className="rounded-[1.25rem] bg-white p-6 shadow-[0_4px_20px_rgba(25,28,30,0.04)]">
           <div className="mb-6 flex items-center justify-between gap-4">
             <div>
-              <h2 className="text-lg font-bold text-stone-900">Your Progress</h2>
+              <h2 className="text-lg font-bold text-stone-900">
+                {t('rewards.community.your_progress_heading')}
+              </h2>
               <p className="text-xs text-stone-500">
-                {isLoading ? 'Loading rewards…' : `${unlocked} of ${total} achievements unlocked`}
+                {isLoading
+                  ? t('rewards.community.loading_rewards')
+                  : t('rewards.community.achievements_unlocked', { unlocked, total })}
               </p>
             </div>
             <div className="relative flex h-14 w-14 items-center justify-center">
@@ -215,11 +222,15 @@ export default function RewardsCommunityTab({
 
         <section className="space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-stone-900">Roles & Rewards</h2>
+            <h2 className="text-lg font-bold text-stone-900">
+              {t('rewards.community.roles_rewards_heading')}
+            </h2>
           </div>
           {isLoading ? (
             <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-soft">
-              <div className="text-sm text-stone-600">Loading rewards…</div>
+              <div className="text-sm text-stone-600">
+                {t('rewards.community.loading_rewards')}
+              </div>
             </div>
           ) : rewardRoles.length > 0 ? (
             rewardRoles.map((role, index) => {
@@ -248,7 +259,9 @@ export default function RewardsCommunityTab({
                     </div>
                     <div className="flex items-center gap-1 text-primary-700">
                       <span className="text-[10px] font-bold uppercase tracking-[0.16em]">
-                        {role.unlocked ? 'Unlocked' : 'Locked'}
+                        {role.unlocked
+                          ? t('rewards.community.unlocked_label')
+                          : t('rewards.community.locked_label')}
                       </span>
                       <svg
                         className="h-4 w-4"
@@ -268,10 +281,11 @@ export default function RewardsCommunityTab({
             })
           ) : (
             <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-soft">
-              <h2 className="text-lg font-semibold text-stone-900">Rewards sync pending</h2>
+              <h2 className="text-lg font-semibold text-stone-900">
+                {t('rewards.community.sync_pending_heading')}
+              </h2>
               <p className="mt-2 text-sm text-stone-600">
-                The backend did not return achievement data yet. Join Discord and connect your
-                account now, then refresh this page once sync is available again.
+                {t('rewards.community.sync_pending_description')}
               </p>
             </div>
           )}
@@ -279,19 +293,27 @@ export default function RewardsCommunityTab({
 
         <section className="rounded-[1.25rem] bg-[#f2f4f6] p-4 text-sm text-stone-600">
           <div className="flex items-center justify-between gap-3">
-            <span>Discord server</span>
-            <span className="font-semibold text-stone-900">{discordMembershipLabel(snapshot)}</span>
-          </div>
-          <div className="mt-3 flex items-center justify-between gap-3">
-            <span>Current streak</span>
+            <span>{t('rewards.community.discord_server_label')}</span>
             <span className="font-semibold text-stone-900">
-              {snapshot ? `${snapshot.metrics.currentStreakDays} days` : 'Unknown'}
+              {discordMembershipLabel(snapshot, t)}
             </span>
           </div>
           <div className="mt-3 flex items-center justify-between gap-3">
-            <span>Cumulative tokens</span>
+            <span>{t('rewards.community.current_streak_label')}</span>
             <span className="font-semibold text-stone-900">
-              {snapshot ? formatNumber(snapshot.metrics.cumulativeTokens) : 'Unknown'}
+              {snapshot
+                ? t('rewards.community.streak_days_value', {
+                    days: snapshot.metrics.currentStreakDays,
+                  })
+                : t('rewards.community.unknown_value')}
+            </span>
+          </div>
+          <div className="mt-3 flex items-center justify-between gap-3">
+            <span>{t('rewards.community.cumulative_tokens_label')}</span>
+            <span className="font-semibold text-stone-900">
+              {snapshot
+                ? formatNumber(snapshot.metrics.cumulativeTokens)
+                : t('rewards.community.unknown_value')}
             </span>
           </div>
         </section>

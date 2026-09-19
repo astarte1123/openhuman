@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { useT } from '../../../../lib/i18n/I18nContext';
 import { listConnections as listComposioConnections } from '../../../../lib/composio/composioApi';
 import type { ComposioConnection } from '../../../../lib/composio/types';
 import {
@@ -47,6 +48,7 @@ const BackgroundLoopControls = ({
   routing: RoutingMap;
   cloudProviders: CloudProvider[];
 }) => {
+  const { t } = useT();
   const [settings, setSettings] = useState<HeartbeatSettings | null>(null);
   const [usage, setUsage] = useState<TeamUsage | null>(null);
   const [transactions, setTransactions] = useState<CreditTransaction[]>([]);
@@ -79,7 +81,9 @@ const BackgroundLoopControls = ({
       commitSettings(heartbeatResult.value.result.settings);
     } else {
       setError(
-        heartbeatResult.reason instanceof Error ? heartbeatResult.reason.message : 'Load failed'
+        heartbeatResult.reason instanceof Error
+          ? heartbeatResult.reason.message
+          : t('settings.background_loop_controls.load_failed')
       );
     }
 
@@ -95,7 +99,7 @@ const BackgroundLoopControls = ({
       setConnections(connectionsResult.value.connections ?? []);
     }
     setLoading(false);
-  }, [commitSettings]);
+  }, [commitSettings, t]);
 
   useEffect(() => {
     void refresh();
@@ -206,61 +210,78 @@ const BackgroundLoopControls = ({
         })
       : 'n/a';
 
+  const minutesCadence = (minutes: number) =>
+    t('settings.background_loop_controls.cadence_minutes', { minutes });
+
   const loops = [
     {
-      name: 'Heartbeat planner',
+      name: t('settings.background_loop_controls.loop_heartbeat_planner_name'),
       enabled: Boolean(settings?.enabled),
-      cadence: `${settings?.interval_minutes ?? 5} min`,
+      cadence: minutesCadence(settings?.interval_minutes ?? 5),
       route: describeProvider(routing.heartbeat, cloudProviders),
-      work: 'Runs proactive collectors: cron reminders, calendar meetings, relevant notifications.',
+      work: t('settings.background_loop_controls.loop_heartbeat_planner_work'),
       risk: settings?.notify_meetings
-        ? `${calendarPlannerCallsPerTick} Composio read call(s)/tick; ${calendarConnectionsSkipped} calendar link(s) over cap skipped.`
-        : 'Calendar collector off; planner reads only local enabled categories.',
+        ? t('settings.background_loop_controls.loop_heartbeat_planner_risk_on', {
+            calendarPlannerCallsPerTick,
+            calendarConnectionsSkipped,
+          })
+        : t('settings.background_loop_controls.loop_heartbeat_planner_risk_off'),
     },
     {
-      name: 'Subconscious tick',
+      name: t('settings.background_loop_controls.loop_subconscious_tick_name'),
       enabled: Boolean(settings?.enabled && settings?.inference_enabled),
-      cadence: `${settings?.interval_minutes ?? 5} min`,
+      cadence: minutesCadence(settings?.interval_minutes ?? 5),
       route: describeProvider(routing.subconscious, cloudProviders),
-      work: 'Evaluates subconscious tasks/reflections through kind=subconscious_tick.',
+      work: t('settings.background_loop_controls.loop_subconscious_tick_work'),
       risk:
         subconsciousModelCallsPerWeek > 0
-          ? `${formatCount(subconsciousModelCallsPerWeek)} model call(s)/week at current interval.`
-          : 'Inference off; no scheduled subconscious model calls.',
+          ? t('settings.background_loop_controls.loop_subconscious_tick_risk_on', {
+              calls: formatCount(subconsciousModelCallsPerWeek),
+            })
+          : t('settings.background_loop_controls.loop_subconscious_tick_risk_off'),
     },
     {
-      name: 'Memory tree workers',
+      name: t('settings.background_loop_controls.loop_memory_workers_name'),
       enabled: true,
-      cadence: 'queue',
+      cadence: t('settings.background_loop_controls.cadence_queue'),
       route: describeProvider(routing.memory, cloudProviders),
-      work: 'Extracts chunks, seals branches, runs daily digests, routes topics.',
-      risk: `${MEMORY_WORKERS} workers poll every ${MEMORY_POLL_SECONDS}s; LLM calls only when queue has extract/seal/digest/topic jobs.`,
+      work: t('settings.background_loop_controls.loop_memory_workers_work'),
+      risk: t('settings.background_loop_controls.loop_memory_workers_risk', {
+        workers: MEMORY_WORKERS,
+        pollSeconds: MEMORY_POLL_SECONDS,
+      }),
     },
     {
-      name: 'Reflection rebuild',
+      name: t('settings.background_loop_controls.loop_reflection_rebuild_name'),
       enabled: true,
-      cadence: '30 min',
+      cadence: minutesCadence(30),
       route: describeProvider(routing.learning, cloudProviders),
-      work: 'Refreshes reflection state after memory activity.',
-      risk: `${formatCount(learningTicksPerWeek)} wakeups/week; LLM work only when rebuild needs reflection.`,
+      work: t('settings.background_loop_controls.loop_reflection_rebuild_work'),
+      risk: t('settings.background_loop_controls.loop_reflection_rebuild_risk', {
+        wakeups: formatCount(learningTicksPerWeek),
+      }),
     },
     {
-      name: 'Composio sync',
+      name: t('settings.background_loop_controls.loop_composio_sync_name'),
       enabled: true,
-      cadence: '20 min',
-      route: 'Integration APIs',
-      work: 'Polls connected tools when provider sync is due.',
-      risk: `${formatCount(composioPeriodicTicksPerWeek)} wakeups/week; scans ${activeConnections.length} active connection(s).`,
+      cadence: minutesCadence(20),
+      route: t('settings.background_loop_controls.loop_composio_sync_route'),
+      work: t('settings.background_loop_controls.loop_composio_sync_work'),
+      risk: t('settings.background_loop_controls.loop_composio_sync_risk', {
+        wakeups: formatCount(composioPeriodicTicksPerWeek),
+        connections: activeConnections.length,
+      }),
     },
   ];
 
   return (
     <div className="space-y-4">
       <div className="border-b border-stone-200 pb-2">
-        <h2 className="text-base font-semibold text-stone-900">Background loops</h2>
+        <h2 className="text-base font-semibold text-stone-900">
+          {t('settings.background_loop_controls.background_loops_title')}
+        </h2>
         <p className="mt-0.5 text-xs text-stone-500">
-          See what runs without a chat message, pause heartbeat work, and inspect recent credit
-          ledger rows.
+          {t('settings.background_loop_controls.background_loops_description')}
         </p>
       </div>
 
@@ -275,9 +296,11 @@ const BackgroundLoopControls = ({
           <div className="rounded-lg border border-stone-200 bg-stone-50 p-3">
             <div className="mb-3 flex items-center justify-between gap-3">
               <div>
-                <div className="text-sm font-semibold text-stone-900">Heartbeat controls</div>
+                <div className="text-sm font-semibold text-stone-900">
+                  {t('settings.background_loop_controls.heartbeat_controls_title')}
+                </div>
                 <div className="text-xs text-stone-500">
-                  Defaults off. Enabling starts the loop; disabling aborts the running task.
+                  {t('settings.background_loop_controls.heartbeat_controls_description')}
                 </div>
               </div>
               <button
@@ -285,22 +308,24 @@ const BackgroundLoopControls = ({
                 onClick={() => void refresh()}
                 disabled={loading}
                 className="rounded-md border border-stone-200 bg-white px-2 py-1 text-xs font-medium text-stone-700 hover:bg-stone-50 disabled:opacity-50">
-                Refresh
+                {t('settings.background_loop_controls.refresh')}
               </button>
             </div>
 
             {settings ? (
               <div className="space-y-2">
                 <LoopToggle
-                  label="Heartbeat loop"
-                  description="Master scheduler for planner + optional subconscious inference."
+                  label={t('settings.background_loop_controls.heartbeat_loop_label')}
+                  description={t('settings.background_loop_controls.heartbeat_loop_description')}
                   checked={settings.enabled}
                   busy={saving === 'enabled'}
                   onToggle={() => void applyHeartbeatPatch({ enabled: !settings.enabled })}
                 />
                 <LoopToggle
-                  label="Subconscious inference"
-                  description="Runs model-backed task/reflection evaluation on heartbeat ticks."
+                  label={t('settings.background_loop_controls.subconscious_inference_label')}
+                  description={t(
+                    'settings.background_loop_controls.subconscious_inference_description'
+                  )}
                   checked={settings.inference_enabled}
                   busy={saving === 'inference_enabled'}
                   onToggle={() =>
@@ -308,8 +333,10 @@ const BackgroundLoopControls = ({
                   }
                 />
                 <LoopToggle
-                  label="Calendar meeting checks"
-                  description="Calls calendar event list for active Google Calendar connections."
+                  label={t('settings.background_loop_controls.calendar_meeting_checks_label')}
+                  description={t(
+                    'settings.background_loop_controls.calendar_meeting_checks_description'
+                  )}
                   checked={settings.notify_meetings}
                   busy={saving === 'notify_meetings'}
                   onToggle={() =>
@@ -318,7 +345,7 @@ const BackgroundLoopControls = ({
                 />
                 <div className="grid gap-2 rounded-lg border border-stone-200 bg-white px-3 py-2 md:grid-cols-3">
                   <label className="space-y-1 text-xs font-medium text-stone-700">
-                    <span>Calendar cap</span>
+                    <span>{t('settings.background_loop_controls.calendar_cap_label')}</span>
                     <select
                       value={maxCalendarConnectionsPerTick}
                       disabled={saving === 'max_calendar_connections_per_tick'}
@@ -330,13 +357,13 @@ const BackgroundLoopControls = ({
                       className="w-full rounded-md border border-stone-200 bg-white px-2 py-1 text-xs text-stone-900 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
                       {[1, 2, 3, 5, 10].map(count => (
                         <option key={count} value={count}>
-                          {count} conn/tick
+                          {t('settings.background_loop_controls.conn_per_tick_option', { count })}
                         </option>
                       ))}
                     </select>
                   </label>
                   <label className="space-y-1 text-xs font-medium text-stone-700">
-                    <span>Meeting lookahead</span>
+                    <span>{t('settings.background_loop_controls.meeting_lookahead_label')}</span>
                     <select
                       value={settings.meeting_lookahead_minutes}
                       disabled={saving === 'meeting_lookahead_minutes'}
@@ -348,13 +375,13 @@ const BackgroundLoopControls = ({
                       className="w-full rounded-md border border-stone-200 bg-white px-2 py-1 text-xs text-stone-900 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
                       {[15, 30, 60, 120, 240].map(minutes => (
                         <option key={minutes} value={minutes}>
-                          {minutes} min
+                          {minutesCadence(minutes)}
                         </option>
                       ))}
                     </select>
                   </label>
                   <label className="space-y-1 text-xs font-medium text-stone-700">
-                    <span>Reminder lookahead</span>
+                    <span>{t('settings.background_loop_controls.reminder_lookahead_label')}</span>
                     <select
                       value={settings.reminder_lookahead_minutes}
                       disabled={saving === 'reminder_lookahead_minutes'}
@@ -366,15 +393,17 @@ const BackgroundLoopControls = ({
                       className="w-full rounded-md border border-stone-200 bg-white px-2 py-1 text-xs text-stone-900 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
                       {[5, 15, 30, 60, 120].map(minutes => (
                         <option key={minutes} value={minutes}>
-                          {minutes} min
+                          {minutesCadence(minutes)}
                         </option>
                       ))}
                     </select>
                   </label>
                 </div>
                 <LoopToggle
-                  label="Cron reminder checks"
-                  description="Scans enabled cron jobs for reminder-like upcoming items."
+                  label={t('settings.background_loop_controls.cron_reminder_checks_label')}
+                  description={t(
+                    'settings.background_loop_controls.cron_reminder_checks_description'
+                  )}
                   checked={settings.notify_reminders}
                   busy={saving === 'notify_reminders'}
                   onToggle={() =>
@@ -382,8 +411,10 @@ const BackgroundLoopControls = ({
                   }
                 />
                 <LoopToggle
-                  label="Relevant notification checks"
-                  description="Promotes urgent local notifications into proactive alerts."
+                  label={t('settings.background_loop_controls.relevant_notification_checks_label')}
+                  description={t(
+                    'settings.background_loop_controls.relevant_notification_checks_description'
+                  )}
                   checked={settings.notify_relevant_events}
                   busy={saving === 'notify_relevant_events'}
                   onToggle={() =>
@@ -393,8 +424,10 @@ const BackgroundLoopControls = ({
                   }
                 />
                 <LoopToggle
-                  label="External delivery"
-                  description="Lets heartbeat alerts send proactive messages to external channels."
+                  label={t('settings.background_loop_controls.external_delivery_label')}
+                  description={t(
+                    'settings.background_loop_controls.external_delivery_description'
+                  )}
                   checked={settings.external_delivery_enabled}
                   busy={saving === 'external_delivery_enabled'}
                   onToggle={() =>
@@ -408,7 +441,7 @@ const BackgroundLoopControls = ({
                   <label
                     className="text-xs font-medium text-stone-700"
                     htmlFor="heartbeat-interval">
-                    Interval
+                    {t('settings.background_loop_controls.interval_label')}
                   </label>
                   <select
                     id="heartbeat-interval"
@@ -420,7 +453,7 @@ const BackgroundLoopControls = ({
                     className="rounded-md border border-stone-200 bg-white px-2 py-1 text-xs text-stone-900 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500">
                     {[5, 10, 15, 30, 60].map(minutes => (
                       <option key={minutes} value={minutes}>
-                        {minutes} min
+                        {minutesCadence(minutes)}
                       </option>
                     ))}
                   </select>
@@ -429,28 +462,34 @@ const BackgroundLoopControls = ({
                     onClick={() => void runPlannerNow()}
                     disabled={runningTick}
                     className="ml-auto rounded-md border border-stone-200 bg-white px-2 py-1 text-xs font-medium text-stone-700 hover:bg-stone-50 disabled:opacity-50">
-                    {runningTick ? 'Running...' : 'Planner tick now'}
+                    {runningTick
+                      ? t('settings.background_loop_controls.running')
+                      : t('settings.background_loop_controls.planner_tick_now')}
                   </button>
                 </div>
 
                 {plannerSummary && (
                   <div className="rounded-md border border-primary-100 bg-primary-50 px-3 py-2 text-xs text-primary-900">
-                    Planner: {plannerSummary.source_events} source events,{' '}
-                    {plannerSummary.deliveries_sent} sent, {plannerSummary.deliveries_skipped_dedup}{' '}
-                    deduped.
+                    {t('settings.background_loop_controls.planner_summary', {
+                      sourceEvents: plannerSummary.source_events,
+                      deliveriesSent: plannerSummary.deliveries_sent,
+                      deliveriesSkippedDedup: plannerSummary.deliveries_skipped_dedup,
+                    })}
                   </div>
                 )}
               </div>
             ) : (
               <div className="text-xs text-stone-500">
-                {loading ? 'Loading heartbeat controls...' : 'Heartbeat controls unavailable.'}
+                {loading
+                  ? t('settings.background_loop_controls.loading_heartbeat_controls')
+                  : t('settings.background_loop_controls.heartbeat_controls_unavailable')}
               </div>
             )}
           </div>
 
           <div className="overflow-hidden rounded-lg border border-stone-200 bg-stone-50">
             <div className="border-b border-stone-200 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-stone-400">
-              Loop map
+              {t('settings.background_loop_controls.loop_map_heading')}
             </div>
             <div className="divide-y divide-stone-200">
               {loops.map(loop => (
@@ -458,14 +497,18 @@ const BackgroundLoopControls = ({
                   <div>
                     <div className="text-sm font-medium text-stone-900">{loop.name}</div>
                     <div className="mt-0.5 flex flex-wrap gap-1 text-[11px] text-stone-500">
-                      <span>{loop.enabled ? 'on' : 'off'}</span>
+                      <span>
+                        {loop.enabled
+                          ? t('settings.background_loop_controls.loop_on')
+                          : t('settings.background_loop_controls.loop_off')}
+                      </span>
                       <span>{loop.cadence}</span>
                     </div>
                   </div>
                   <div className="text-xs text-stone-600">
                     <div>{loop.work}</div>
                     <div className="mt-1 font-mono text-[11px] text-stone-500">
-                      route: {loop.route}
+                      {t('settings.background_loop_controls.route_prefix', { route: loop.route })}
                     </div>
                     <div className="mt-1 text-stone-500">{loop.risk}</div>
                   </div>
@@ -478,9 +521,11 @@ const BackgroundLoopControls = ({
         <div className="rounded-lg border border-stone-200 bg-white p-3">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <div className="text-sm font-semibold text-stone-900">Recent usage ledger</div>
+              <div className="text-sm font-semibold text-stone-900">
+                {t('settings.background_loop_controls.recent_usage_ledger_title')}
+              </div>
               <div className="text-xs text-stone-500">
-                Backend rows expose action/time today; source tags need backend support.
+                {t('settings.background_loop_controls.recent_usage_ledger_description')}
               </div>
             </div>
             <button
@@ -488,103 +533,144 @@ const BackgroundLoopControls = ({
               onClick={() => void refresh()}
               disabled={loading}
               className="rounded-md border border-stone-200 px-2 py-1 text-xs font-medium text-stone-700 hover:bg-stone-50 disabled:opacity-50">
-              Reload
+              {t('settings.background_loop_controls.reload')}
             </button>
           </div>
 
           <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-3">
             <MetricTile
-              label="Week budget"
+              label={t('settings.background_loop_controls.week_budget_label')}
               value={usage ? formatUsd(usage.cycleBudgetUsd) : 'n/a'}
-              detail={`resets ${formatDateTime(usage?.cycleEndsAt)}`}
+              detail={t('settings.background_loop_controls.resets_detail', {
+                dateTime: formatDateTime(usage?.cycleEndsAt),
+              })}
             />
             <MetricTile
-              label="Week remaining"
+              label={t('settings.background_loop_controls.week_remaining_label')}
               value={usage ? formatUsd(usage.remainingUsd) : 'n/a'}
-              detail={usage ? `${formatUsd(usage.cycleLimit7day)} used` : undefined}
+              detail={
+                usage
+                  ? t('settings.background_loop_controls.used_detail', {
+                      amount: formatUsd(usage.cycleLimit7day),
+                    })
+                  : undefined
+              }
             />
             <MetricTile
-              label="5h window"
+              label={t('settings.background_loop_controls.five_hour_window_label')}
               value={
                 usage
                   ? `${formatUsd(usage.cycleLimit5hr)} / ${formatUsd(usage.fiveHourCapUsd)}`
                   : 'n/a'
               }
-              detail={`resets ${formatDateTime(usage?.fiveHourResetsAt)}`}
+              detail={t('settings.background_loop_controls.resets_detail', {
+                dateTime: formatDateTime(usage?.fiveHourResetsAt),
+              })}
             />
             <MetricTile
-              label="Avg spend row"
+              label={t('settings.background_loop_controls.avg_spend_row_label')}
               value={spendSample.avgRowUsd > 0 ? formatUsd(spendSample.avgRowUsd) : 'n/a'}
-              detail={`${spendRows.length} recent spend rows`}
+              detail={t('settings.background_loop_controls.recent_spend_rows_detail', {
+                count: spendRows.length,
+              })}
             />
             <MetricTile
-              label="Bg API reads"
-              value={`${formatCount(backgroundApiReadsPerWeek)}/week`}
-              detail={`${formatCount(calendarPlannerCallsPerWeek)} planner + ${formatCount(composioConnectionScansPerWeek)} sync`}
+              label={t('settings.background_loop_controls.bg_api_reads_label')}
+              value={t('settings.background_loop_controls.per_week', {
+                value: formatCount(backgroundApiReadsPerWeek),
+              })}
+              detail={t('settings.background_loop_controls.planner_plus_sync_detail', {
+                planner: formatCount(calendarPlannerCallsPerWeek),
+                sync: formatCount(composioConnectionScansPerWeek),
+              })}
             />
             <MetricTile
-              label="Bg wakeups"
-              value={`${formatCount(backgroundWakeupsPerWeek)}/week`}
-              detail={`${formatCount(memoryPollsPerWeek)} memory polls`}
+              label={t('settings.background_loop_controls.bg_wakeups_label')}
+              value={t('settings.background_loop_controls.per_week', {
+                value: formatCount(backgroundWakeupsPerWeek),
+              })}
+              detail={t('settings.background_loop_controls.memory_polls_detail', {
+                value: formatCount(memoryPollsPerWeek),
+              })}
             />
           </div>
 
           <div className="mt-3 rounded-lg border border-stone-200 bg-stone-50 p-3">
             <div className="text-[10px] font-semibold uppercase tracking-wide text-stone-400">
-              Budget math
+              {t('settings.background_loop_controls.budget_math_heading')}
             </div>
             <div className="mt-2 grid gap-2">
               <FormulaRow
-                label="Rows left"
+                label={t('settings.background_loop_controls.rows_left_label')}
                 value={estimatedRowsLeft !== null ? formatCount(estimatedRowsLeft) : 'n/a'}
                 detail={
                   estimatedRowsLeft !== null
-                    ? `remaining / avg row = ${formatUsd(usage?.remainingUsd ?? 0)} / ${formatUsd(spendSample.avgRowUsd)}`
-                    : 'Need recent spend rows to estimate.'
+                    ? t('settings.background_loop_controls.rows_left_formula', {
+                        remaining: formatUsd(usage?.remainingUsd ?? 0),
+                        avgRow: formatUsd(spendSample.avgRowUsd),
+                      })
+                    : t('settings.background_loop_controls.need_recent_spend_rows')
                 }
               />
               <FormulaRow
-                label="Rows per full week budget"
+                label={t('settings.background_loop_controls.rows_per_budget_label')}
                 value={
                   estimatedRowsPerBudget !== null ? formatCount(estimatedRowsPerBudget) : 'n/a'
                 }
                 detail={
                   estimatedRowsPerBudget !== null
-                    ? `cycle budget / avg row = ${formatUsd(usage?.cycleBudgetUsd ?? 0)} / ${formatUsd(spendSample.avgRowUsd)}`
-                    : 'Need recent spend rows to estimate.'
+                    ? t('settings.background_loop_controls.rows_per_budget_formula', {
+                        cycleBudget: formatUsd(usage?.cycleBudgetUsd ?? 0),
+                        avgRow: formatUsd(spendSample.avgRowUsd),
+                      })
+                    : t('settings.background_loop_controls.need_recent_spend_rows')
                 }
               />
               <FormulaRow
-                label="Sample burn rate"
+                label={t('settings.background_loop_controls.sample_burn_rate_label')}
                 value={
-                  spendSample.spendPerHour > 0 ? `${formatUsd(spendSample.spendPerHour)}/hr` : 'n/a'
+                  spendSample.spendPerHour > 0
+                    ? t('settings.background_loop_controls.per_hour', {
+                        amount: formatUsd(spendSample.spendPerHour),
+                      })
+                    : 'n/a'
                 }
                 detail={
                   spendSample.sampleHours > 0
-                    ? `${formatCount(spendSample.rowsPerHour)} rows/hr across ${spendSample.sampleHours.toFixed(1)}h sample`
-                    : 'Need timestamps from at least two spend rows.'
+                    ? t('settings.background_loop_controls.sample_burn_rate_detail', {
+                        rowsPerHour: formatCount(spendSample.rowsPerHour),
+                        sampleHours: spendSample.sampleHours.toFixed(1),
+                      })
+                    : t('settings.background_loop_controls.need_two_spend_rows')
                 }
               />
               <FormulaRow
-                label="Projected empty"
+                label={t('settings.background_loop_controls.projected_empty_label')}
                 value={projectedExhaustAt}
                 detail={
                   projectedHoursLeft !== null
-                    ? `${projectedHoursLeft.toFixed(1)}h after latest spend at recent burn rate`
-                    : 'No projection without recent hourly spend.'
+                    ? t('settings.background_loop_controls.projected_empty_detail', {
+                        hours: projectedHoursLeft.toFixed(1),
+                      })
+                    : t('settings.background_loop_controls.no_projection')
                 }
               />
               <FormulaRow
-                label="API reads per $ remaining"
+                label={t('settings.background_loop_controls.api_reads_per_dollar_label')}
                 value={
                   scheduledCallsPerRemainingDollar !== null
-                    ? `${formatCount(scheduledCallsPerRemainingDollar)} reads/$`
+                    ? t('settings.background_loop_controls.reads_per_dollar', {
+                        value: formatCount(scheduledCallsPerRemainingDollar),
+                      })
                     : 'n/a'
                 }
                 detail={
                   usage
-                    ? `background API reads/week / remaining = ${formatCount(backgroundApiReadsPerWeek)} / ${formatUsd(usage.remainingUsd)}`
-                    : 'Need usage response to estimate.'
+                    ? t('settings.background_loop_controls.api_reads_per_dollar_formula', {
+                        reads: formatCount(backgroundApiReadsPerWeek),
+                        remaining: formatUsd(usage.remainingUsd),
+                      })
+                    : t('settings.background_loop_controls.need_usage_response')
                 }
               />
             </div>
@@ -592,66 +678,97 @@ const BackgroundLoopControls = ({
 
           <div className="mt-3 rounded-lg border border-stone-200 bg-stone-50 p-3">
             <div className="text-[10px] font-semibold uppercase tracking-wide text-stone-400">
-              Loop call budget
+              {t('settings.background_loop_controls.loop_call_budget_heading')}
             </div>
             <div className="mt-2 grid gap-2">
               <FormulaRow
-                label="Heartbeat ticks"
-                value={`${formatCount(heartbeatTicksPerWeek)}/week`}
-                detail={`10080 min/week / ${heartbeatIntervalMinutes} min interval`}
+                label={t('settings.background_loop_controls.heartbeat_ticks_label')}
+                value={t('settings.background_loop_controls.per_week', {
+                  value: formatCount(heartbeatTicksPerWeek),
+                })}
+                detail={t('settings.background_loop_controls.heartbeat_ticks_detail', {
+                  intervalMinutes: heartbeatIntervalMinutes,
+                })}
               />
               <FormulaRow
-                label="Calendar planner calls"
-                value={`${formatCount(calendarPlannerCallsPerWeek)}/week`}
+                label={t('settings.background_loop_controls.calendar_planner_calls_label')}
+                value={t('settings.background_loop_controls.per_week', {
+                  value: formatCount(calendarPlannerCallsPerWeek),
+                })}
                 detail={
                   settings?.notify_meetings
-                    ? `ticks * (1 list_connections + ${calendarConnectionsPolled} GOOGLECALENDAR_EVENTS_LIST)`
-                    : 'Meeting collector disabled.'
+                    ? t('settings.background_loop_controls.calendar_planner_calls_detail', {
+                        calendarConnectionsPolled,
+                      })
+                    : t('settings.background_loop_controls.meeting_collector_disabled')
                 }
               />
               <FormulaRow
-                label="Calendar fanout cap"
-                value={`${formatCount(calendarConnectionsPolled)}/${formatCount(activeCalendarConnections.length)} conn/tick`}
-                detail={`max_calendar_connections_per_tick = ${maxCalendarConnectionsPerTick}; skipped now = ${calendarConnectionsSkipped}`}
+                label={t('settings.background_loop_controls.calendar_fanout_cap_label')}
+                value={t('settings.background_loop_controls.calendar_fanout_cap_value', {
+                  polled: formatCount(calendarConnectionsPolled),
+                  active: formatCount(activeCalendarConnections.length),
+                })}
+                detail={t('settings.background_loop_controls.calendar_fanout_cap_detail', {
+                  maxCalendarConnectionsPerTick,
+                  calendarConnectionsSkipped,
+                })}
               />
               <FormulaRow
-                label="Subconscious model calls"
-                value={`${formatCount(subconsciousModelCallsPerWeek)}/week`}
+                label={t('settings.background_loop_controls.subconscious_model_calls_label')}
+                value={t('settings.background_loop_controls.per_week', {
+                  value: formatCount(subconsciousModelCallsPerWeek),
+                })}
                 detail={
                   settings?.enabled && settings.inference_enabled
-                    ? 'one kind=subconscious_tick model call per heartbeat tick'
-                    : 'Heartbeat inference disabled.'
+                    ? t('settings.background_loop_controls.subconscious_model_calls_detail_on')
+                    : t('settings.background_loop_controls.heartbeat_inference_disabled')
                 }
               />
               <FormulaRow
-                label="Composio sync scans"
-                value={`${formatCount(composioConnectionScansPerWeek)}/week`}
-                detail={`${activeConnections.length} active integration connection(s) scanned every ${COMPOSIO_PERIODIC_TICK_MINUTES} min`}
+                label={t('settings.background_loop_controls.composio_sync_scans_label')}
+                value={t('settings.background_loop_controls.per_week', {
+                  value: formatCount(composioConnectionScansPerWeek),
+                })}
+                detail={t('settings.background_loop_controls.composio_sync_scans_detail', {
+                  connections: activeConnections.length,
+                  intervalMinutes: COMPOSIO_PERIODIC_TICK_MINUTES,
+                })}
               />
               <FormulaRow
-                label="Total bg API read budget"
-                value={`${formatCount(backgroundApiReadsPerWeek)}/week`}
-                detail={`calendar planner reads + periodic integration scans; excludes user-initiated chat tools`}
+                label={t('settings.background_loop_controls.total_bg_api_read_budget_label')}
+                value={t('settings.background_loop_controls.per_week', {
+                  value: formatCount(backgroundApiReadsPerWeek),
+                })}
+                detail={t('settings.background_loop_controls.total_bg_api_read_budget_detail')}
               />
               <FormulaRow
-                label="Memory worker polls"
-                value={`${formatCount(memoryPollsPerWeek)}/week max`}
-                detail={`${MEMORY_WORKERS} workers * ${MEMORY_POLL_SECONDS}s poll; LLM calls only for queued jobs`}
+                label={t('settings.background_loop_controls.memory_worker_polls_label')}
+                value={t('settings.background_loop_controls.per_week_max', {
+                  value: formatCount(memoryPollsPerWeek),
+                })}
+                detail={t('settings.background_loop_controls.memory_worker_polls_detail', {
+                  workers: MEMORY_WORKERS,
+                  pollSeconds: MEMORY_POLL_SECONDS,
+                })}
               />
             </div>
           </div>
 
           {latestSpend && (
             <div className="mt-3 rounded-md border border-stone-200 bg-stone-50 px-3 py-2 text-xs text-stone-600">
-              Latest spend: {formatUsd(spendAmount(latestSpend))} at{' '}
-              {new Date(latestSpend.createdAt).toLocaleString()} ({latestSpend.action})
+              {t('settings.background_loop_controls.latest_spend', {
+                amount: formatUsd(spendAmount(latestSpend)),
+                dateTime: new Date(latestSpend.createdAt).toLocaleString(),
+                action: latestSpend.action,
+              })}
             </div>
           )}
 
           <div className="mt-3 space-y-3">
             <div>
               <div className="text-[10px] font-semibold uppercase tracking-wide text-stone-400">
-                Top actions
+                {t('settings.background_loop_controls.top_actions_heading')}
               </div>
               <div className="mt-1 space-y-1">
                 {actionSummary.length > 0 ? (
@@ -661,19 +778,24 @@ const BackgroundLoopControls = ({
                       className="flex items-center justify-between gap-2 text-xs text-stone-600">
                       <span className="truncate font-mono">{action}</span>
                       <span className="shrink-0 text-stone-500">
-                        {count} / {formatUsd(total)}
+                        {t('settings.background_loop_controls.count_over_amount', {
+                          count,
+                          amount: formatUsd(total),
+                        })}
                       </span>
                     </div>
                   ))
                 ) : (
-                  <div className="text-xs text-stone-500">No spend rows loaded.</div>
+                  <div className="text-xs text-stone-500">
+                    {t('settings.background_loop_controls.no_spend_rows_loaded')}
+                  </div>
                 )}
               </div>
             </div>
 
             <div>
               <div className="text-[10px] font-semibold uppercase tracking-wide text-stone-400">
-                Top hours
+                {t('settings.background_loop_controls.top_hours_heading')}
               </div>
               <div className="mt-1 space-y-1">
                 {hourSummary.length > 0 ? (
@@ -686,7 +808,9 @@ const BackgroundLoopControls = ({
                     </div>
                   ))
                 ) : (
-                  <div className="text-xs text-stone-500">No hourly spend yet.</div>
+                  <div className="text-xs text-stone-500">
+                    {t('settings.background_loop_controls.no_hourly_spend_yet')}
+                  </div>
                 )}
               </div>
             </div>
