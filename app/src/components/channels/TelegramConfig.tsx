@@ -2,6 +2,7 @@ import debug from 'debug';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { AUTH_MODE_LABELS } from '../../lib/channels/definitions';
+import { useT } from '../../lib/i18n/I18nContext';
 import { channelConnectionsApi } from '../../services/api/channelConnectionsApi';
 import { callCoreRpc } from '../../services/coreRpcClient';
 import {
@@ -22,14 +23,15 @@ import ChannelFieldInput from './ChannelFieldInput';
 import ChannelStatusBadge from './ChannelStatusBadge';
 
 const log = debug('channels:telegram');
-const MANAGED_DM_CONNECTING_MESSAGE = 'Open Telegram and message the bot to complete setup.';
-const MANAGED_DM_TIMEOUT_MESSAGE = 'Managed DM verification timed out. Try connecting again.';
 
 interface TelegramConfigProps {
   definition: ChannelDefinition;
 }
 
 const TelegramConfig = ({ definition }: TelegramConfigProps) => {
+  const { t } = useT();
+  const MANAGED_DM_CONNECTING_MESSAGE = t('channels.telegram_config.managed_dm_connecting');
+  const MANAGED_DM_TIMEOUT_MESSAGE = t('channels.telegram_config.managed_dm_timeout');
   const dispatch = useAppDispatch();
   const channelConnections = useAppSelector(state => state.channelConnections);
 
@@ -146,7 +148,7 @@ const TelegramConfig = ({ definition }: TelegramConfigProps) => {
         }
       })();
     },
-    [dispatch, stopManagedDmPolling]
+    [dispatch, stopManagedDmPolling, MANAGED_DM_TIMEOUT_MESSAGE]
   );
 
   const handleConnect = useCallback(
@@ -172,7 +174,7 @@ const TelegramConfig = ({ definition }: TelegramConfigProps) => {
                 channel: 'telegram',
                 authMode: spec.mode,
                 status: 'error',
-                lastError: `${field.label} is required`,
+                lastError: t('channels.telegram_config.field_required', { field: field.label }),
               })
             );
             return;
@@ -262,7 +264,7 @@ const TelegramConfig = ({ definition }: TelegramConfigProps) => {
           } catch (restartErr) {
             const msg = restartErr instanceof Error ? restartErr.message : String(restartErr);
             log('core restart failed: %s', msg);
-            setError('Channel saved. Restart the app to activate it.');
+            setError(t('channels.telegram_config.restart_required_error'));
           }
         } else {
           dispatch(
@@ -275,7 +277,7 @@ const TelegramConfig = ({ definition }: TelegramConfigProps) => {
         }
       });
     },
-    [dispatch, fieldValues, runBusy, startManagedDmPolling]
+    [dispatch, fieldValues, runBusy, startManagedDmPolling, t, MANAGED_DM_CONNECTING_MESSAGE]
   );
 
   const handleDisconnect = useCallback(
@@ -339,14 +341,16 @@ const TelegramConfig = ({ definition }: TelegramConfigProps) => {
                 disabled={busyKeys[compositeKey]}
                 onClick={() => handleConnect(spec)}
                 className="rounded-lg bg-primary-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary-600 disabled:opacity-50">
-                {status === 'connected' ? 'Reconnect' : 'Connect'}
+                {status === 'connected'
+                  ? t('channels.telegram_config.reconnect_button')
+                  : t('channels.telegram_config.connect_button')}
               </button>
               <button
                 type="button"
                 disabled={busyKeys[compositeKey] || status === 'disconnected'}
                 onClick={() => handleDisconnect(spec.mode)}
                 className="rounded-lg border border-stone-200 px-3 py-1.5 text-xs font-medium text-stone-600 hover:border-stone-300 disabled:opacity-50">
-                Disconnect
+                {t('channels.telegram_config.disconnect_button')}
               </button>
             </div>
           </div>

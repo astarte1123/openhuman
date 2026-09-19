@@ -1,6 +1,7 @@
 import debug from 'debug';
 import { useEffect, useState } from 'react';
 
+import { useT } from '../lib/i18n/I18nContext';
 import { persistor } from '../store';
 import RouteLoadingScreen from './RouteLoadingScreen';
 
@@ -24,6 +25,7 @@ const REHYDRATION_WARN_TIMEOUT_MS = 10_000;
  * finishes, so a slow-but-eventual boot behaves identically to today.
  */
 function PersistRehydrationScreen() {
+  const { t } = useT();
   const [timedOut, setTimedOut] = useState(false);
   const [resetting, setResetting] = useState(false);
 
@@ -55,19 +57,19 @@ function PersistRehydrationScreen() {
     <div className="fixed inset-0 flex items-center justify-center bg-canvas-50 p-6">
       <div className="max-w-sm w-full space-y-4 rounded-xl border border-stone-200 bg-white p-6 shadow-soft text-center">
         <p className="text-sm font-medium text-stone-900">
-          Aura is taking longer than usual to load.
+          {t('common.persist_rehydration_screen.title')}
         </p>
         <p className="text-xs text-stone-500 leading-relaxed">
-          Local app state may be corrupted. Resetting will sign you out and clear cached data on
-          this device; you&apos;ll reconnect your accounts on next launch. Your data on the server
-          is not affected.
+          {t('common.persist_rehydration_screen.description')}
         </p>
         <button
           type="button"
           onClick={handleReset}
           disabled={resetting}
           className="w-full rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-60">
-          {resetting ? 'Resetting…' : 'Reset local state'}
+          {resetting
+            ? t('common.persist_rehydration_screen.resetting')
+            : t('common.persist_rehydration_screen.reset_button')}
         </button>
       </div>
     </div>

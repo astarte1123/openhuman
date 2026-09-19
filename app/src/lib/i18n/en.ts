@@ -2630,6 +2630,61 @@ const en: TranslationMap = {
   'upsell.usage_limit_modal.weekly_included_inference': '${amount}/week included inference',
   'upsell.usage_limit_modal.upgrade_plan': 'Upgrade Plan',
   'upsell.usage_limit_modal.not_now': 'Not Now',
+
+  // channels.telegram_config
+  'channels.telegram_config.managed_dm_connecting': 'Open Telegram and message the bot to complete setup.',
+  'channels.telegram_config.managed_dm_timeout':
+    'Managed DM verification timed out. Try connecting again.',
+  'channels.telegram_config.field_required': '{field} is required',
+  'channels.telegram_config.restart_required_error': 'Channel saved. Restart the app to activate it.',
+  'channels.telegram_config.reconnect_button': 'Reconnect',
+  'channels.telegram_config.connect_button': 'Connect',
+  'channels.telegram_config.disconnect_button': 'Disconnect',
+
+  // chat.unsubscribe_approval_card
+  'chat.unsubscribe_approval_card.title': 'Unsubscribe Request',
+  'chat.unsubscribe_approval_card.error_fallback': 'Missing permissions or network error',
+  'chat.unsubscribe_approval_card.processing': 'Processing...',
+  'chat.unsubscribe_approval_card.approve_button': 'Approve & Unsubscribe',
+  'chat.unsubscribe_approval_card.deny_button': 'Deny',
+  'chat.unsubscribe_approval_card.success_message': '✓ Successfully unsubscribed.',
+  'chat.unsubscribe_approval_card.denied_message': '✕ Request denied.',
+
+  // oauth.provider_button
+  'oauth.provider_button.twitter_startup_failure':
+    'Twitter/X sign-in could not start. Check that the Twitter OAuth app callback URL, client ID/secret, and requested scopes match the Aura backend, then try again.',
+  'oauth.provider_button.generic_startup_failure': '{providerName} sign-in could not start. Please try again.',
+  'oauth.provider_button.connecting': 'Connecting...',
+
+  // skills.search_bar
+  'skills.search_bar.placeholder': 'Search skills...',
+
+  // common.persist_rehydration_screen
+  'common.persist_rehydration_screen.title': 'Aura is taking longer than usual to load.',
+  'common.persist_rehydration_screen.description':
+    "Local app state may be corrupted. Resetting will sign you out and clear cached data on this device; you'll reconnect your accounts on next launch. Your data on the server is not affected.",
+  'common.persist_rehydration_screen.resetting': 'Resetting…',
+  'common.persist_rehydration_screen.reset_button': 'Reset local state',
+
+  // common.route_loading_screen
+  'common.route_loading_screen.initializing': 'Initializing Aura...',
+
+  // privacy.what_leaves_link
+  'privacy.what_leaves_link.label': 'What leaves my computer?',
+
+  // settings.provider_key_dialog
+  'settings.provider_key_dialog.api_key_required': 'Please paste your API key to continue.',
+  'settings.provider_key_dialog.connect_title': 'Connect {label}',
+  'settings.provider_key_dialog.subtitle': "Paste your API key. It's stored encrypted on this device only.",
+  'settings.provider_key_dialog.api_key_label': 'API key',
+  'settings.provider_key_dialog.cancel_button': 'Cancel',
+  'settings.provider_key_dialog.saving': 'Saving…',
+  'settings.provider_key_dialog.save_button': 'Save',
+
+  // settings.workload_row
+  'settings.workload_row.aura_default': 'Aura (default)',
+  'settings.workload_row.default_button': 'Default',
+  'settings.workload_row.custom_button': 'Custom',
 };
 
 export default en;

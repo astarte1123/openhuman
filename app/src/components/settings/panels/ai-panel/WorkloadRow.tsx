@@ -1,3 +1,5 @@
+import { useT } from '../../../../lib/i18n/I18nContext';
+
 import type { CloudProvider, OllamaModel, OllamaState, ProviderRef, Workload } from './types';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -22,6 +24,7 @@ const WorkloadRow = ({
   onChange,
   onCustomClick,
 }: WorkloadRowProps & { onCustomClick: () => void }) => {
+  const { t } = useT();
   const selectedCloud =
     ref_.kind === 'cloud' ? cloudProviders.find(c => c.slug === ref_.providerSlug) : undefined;
 
@@ -29,7 +32,7 @@ const WorkloadRow = ({
 
   let resolved: string;
   if (ref_.kind === 'aura') {
-    resolved = 'Aura (default)';
+    resolved = t('settings.workload_row.aura_default');
   } else if (ref_.kind === 'cloud') {
     if (!selectedCloud) resolved = `${ref_.providerSlug} · ${ref_.model}`;
     else resolved = `${selectedCloud.label} · ${ref_.model}`;
@@ -59,13 +62,13 @@ const WorkloadRow = ({
           type="button"
           onClick={() => onChange({ kind: 'aura' })}
           className={`${segmentBase} ${isDefault ? activeSegment : inactiveSegment}`}>
-          Default
+          {t('settings.workload_row.default_button')}
         </button>
         <button
           type="button"
           onClick={onCustomClick}
           className={`${segmentBase} ${!isDefault ? activeSegment : inactiveSegment}`}>
-          Custom
+          {t('settings.workload_row.custom_button')}
         </button>
       </div>
     </div>
