@@ -970,6 +970,12 @@ impl Config {
             }
         }
 
+        if let Some(locale) = env.get("AURA_LOCALE") {
+            if !locale.is_empty() {
+                self.locale = Some(crate::aura::locale::resolve_supported_locale(Some(&locale)).to_string());
+            }
+        }
+
         if let Some(temp_str) = env.get("AURA_TEMPERATURE") {
             if let Ok(temp) = temp_str.parse::<f64>() {
                 if (0.0..=2.0).contains(&temp) {

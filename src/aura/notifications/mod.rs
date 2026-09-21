@@ -23,6 +23,7 @@
 //! - [`schemas`] — Controller schema definitions and registered handler wrappers
 
 pub mod bus;
+mod i18n;
 pub mod rpc;
 pub mod schemas;
 pub mod store;

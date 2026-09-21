@@ -114,6 +114,8 @@ fn build_registered_controllers() -> Vec<RegisteredController> {
     controllers.extend(crate::aura::composio::all_composio_registered_controllers());
     // Scheduled job management
     controllers.extend(crate::aura::cron::all_cron_registered_controllers());
+    // Locale resolution — supported-locale registry and tag→locale cascade
+    controllers.extend(crate::aura::locale::all_locale_registered_controllers());
     // Meeting recordings, transcripts, and summaries
     controllers.extend(crate::aura::meetings::all_meetings_registered_controllers());
     // Webview APIs bridge — proxies connector calls (Gmail, …) through
@@ -264,6 +266,7 @@ fn build_declared_controller_schemas() -> Vec<ControllerSchema> {
     schemas.extend(crate::aura::audio_toolkit::all_audio_toolkit_controller_schemas());
     schemas.extend(crate::aura::composio::all_composio_controller_schemas());
     schemas.extend(crate::aura::cron::all_cron_controller_schemas());
+    schemas.extend(crate::aura::locale::all_locale_controller_schemas());
     schemas.extend(crate::aura::meetings::all_meetings_controller_schemas());
     schemas.extend(crate::aura::webview_apis::all_webview_apis_controller_schemas());
     schemas.extend(crate::aura::agent::all_agent_controller_schemas());
@@ -369,6 +372,7 @@ pub fn namespace_description(namespace: &str) -> Option<&'static str> {
             "Connectivity diagnostics for the local sidecar, listening port, and backend Socket.IO state.",
         ),
         "cron" => Some("Manage scheduled jobs and run history."),
+        "locale" => Some("Resolve locale/language tags and list supported locales."),
         "decrypt" => Some("Decrypt secure values managed by secret storage."),
         "meetings" => Some("Manage meeting recordings, transcripts, and summaries."),
         "doctor" => Some("Run diagnostics for workspace and runtime health."),

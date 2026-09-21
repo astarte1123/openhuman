@@ -16,6 +16,7 @@ use tokio::sync::broadcast;
 use crate::core::event_bus::{DomainEvent, EventHandler};
 use async_trait::async_trait;
 
+use super::i18n::strings_for;
 use super::types::{CoreNotificationCategory, CoreNotificationEvent};
 
 const LOG_PREFIX: &str = "[core-notify]";
@@ -57,10 +58,24 @@ fn now_ms() -> u64 {
         .unwrap_or(0)
 }
 
-/// Pure translation function — kept free so unit tests can drive it
-/// without spinning up tokio or the broadcast channel.
+/// Pure translation function, pinned to en-GB — kept for the existing test
+/// suite and any caller that doesn't have a locale to pass. Prefer
+/// [`event_to_notification_with_locale`] wherever a locale is available
+/// (the subscriber `handle()` below always has one).
 pub fn event_to_notification(event: &DomainEvent) -> Option<CoreNotificationEvent> {
+    event_to_notification_with_locale(event, crate::aura::locale::DEFAULT_LOCALE)
+}
+
+/// Pure translation function — kept free so unit tests can drive it
+/// without spinning up tokio or the broadcast channel. Renders the
+/// notification's title/body in `locale`, falling back to en-GB for any
+/// locale without a translated string set (see `i18n::strings_for`).
+pub fn event_to_notification_with_locale(
+    event: &DomainEvent,
+    locale: &str,
+) -> Option<CoreNotificationEvent> {
     let ts = now_ms();
+    let s = strings_for(locale);
     match event {
         DomainEvent::CronJobCompleted {
             job_id, success, ..
@@ -68,14 +83,15 @@ pub fn event_to_notification(event: &DomainEvent) -> Option<CoreNotificationEven
             id: format!("cron:{}:{}", job_id, ts),
             category: CoreNotificationCategory::Agents,
             title: if *success {
-                "Cron job completed".into()
+                s.cron_completed_title
             } else {
-                "Cron job failed".into()
-            },
+                s.cron_failed_title
+            }
+            .into(),
             body: if *success {
-                format!("Job {job_id} finished successfully.")
+                s.cron_completed_body.replace("{job_id}", job_id)
             } else {
-                format!("Job {job_id} did not complete — check your cron schedule.")
+                s.cron_failed_body.replace("{job_id}", job_id)
             },
             deep_link: Some("/settings/cron-jobs".into()),
             timestamp_ms: ts,
@@ -94,14 +110,18 @@ pub fn event_to_notification(event: &DomainEvent) -> Option<CoreNotificationEven
             Some(CoreNotificationEvent {
                 id: format!("webhook:{}:{}", skill_id, ts),
                 category: CoreNotificationCategory::System,
-                title: "Webhook error".into(),
+                title: s.webhook_error_title.into(),
                 body: match error {
-                    Some(err) => {
-                        format!("{skill_id} webhook failed after {elapsed_ms}ms: {err}")
-                    }
-                    None => format!(
-                        "{skill_id} webhook returned HTTP {status_code} after {elapsed_ms}ms"
-                    ),
+                    Some(err) => s
+                        .webhook_error_body_with_err
+                        .replace("{skill_id}", skill_id)
+                        .replace("{elapsed_ms}", &elapsed_ms.to_string())
+                        .replace("{err}", err),
+                    None => s
+                        .webhook_error_body_no_err
+                        .replace("{skill_id}", skill_id)
+                        .replace("{status_code}", &status_code.to_string())
+                        .replace("{elapsed_ms}", &elapsed_ms.to_string()),
                 },
                 deep_link: Some("/settings/webhooks-triggers".into()),
                 timestamp_ms: ts,
@@ -116,8 +136,11 @@ pub fn event_to_notification(event: &DomainEvent) -> Option<CoreNotificationEven
         } => Some(CoreNotificationEvent {
             id: format!("subagent:{}:{}:{}", parent_session, task_id, ts),
             category: CoreNotificationCategory::Agents,
-            title: "Sub-agent finished".into(),
-            body: format!("{agent_id} produced {output_chars} chars of output."),
+            title: s.subagent_completed_title.into(),
+            body: s
+                .subagent_completed_body
+                .replace("{agent_id}", agent_id)
+                .replace("{output_chars}", &output_chars.to_string()),
             deep_link: Some("/chat".into()),
             timestamp_ms: ts,
         }),
@@ -129,11 +152,11 @@ pub fn event_to_notification(event: &DomainEvent) -> Option<CoreNotificationEven
         } => Some(CoreNotificationEvent {
             id: format!("subagent:{}:{}:{}", parent_session, task_id, ts),
             category: CoreNotificationCategory::Agents,
-            title: "Sub-agent failed".into(),
-            body: format!(
-                "{agent_id} encountered an error: {}",
-                error.chars().take(100).collect::<String>()
-            ),
+            title: s.subagent_failed_title.into(),
+            body: s
+                .subagent_failed_body
+                .replace("{agent_id}", agent_id)
+                .replace("{error}", &error.chars().take(100).collect::<String>()),
             deep_link: Some("/chat".into()),
             timestamp_ms: ts,
         }),
@@ -145,20 +168,15 @@ pub fn event_to_notification(event: &DomainEvent) -> Option<CoreNotificationEven
             latency_ms,
             routed,
         } if *routed && (action == "escalate" || action == "react") => {
+            let score = format!("{:.0}", importance_score * 100.0);
             Some(CoreNotificationEvent {
                 id: format!("notification-triaged:{}:{}:{}", id, action, latency_ms),
                 category: CoreNotificationCategory::Agents,
-                title: format!("High-priority {} notification", provider),
+                title: s.triaged_title.replace("{provider}", provider),
                 body: if action == "escalate" {
-                    format!(
-                        "Action: escalate (score: {:.0}%). Routed to orchestrator.",
-                        importance_score * 100.0
-                    )
+                    s.triaged_escalate_body.replace("{score}", &score)
                 } else {
-                    format!(
-                        "Action: react (score: {:.0}%). Routed for follow-up.",
-                        importance_score * 100.0
-                    )
+                    s.triaged_react_body.replace("{score}", &score)
                 },
                 deep_link: Some("/notifications".into()),
                 timestamp_ms: ts,
@@ -180,7 +198,15 @@ impl EventHandler for NotificationBridgeSubscriber {
     // correctness boundary.
 
     async fn handle(&self, event: &DomainEvent) {
-        if let Some(notification) = event_to_notification(event) {
+        // Best-effort: an unreadable config falls back to en-GB rather than
+        // dropping the notification — a locale mismatch is far less bad
+        // than a missing alert.
+        let locale = crate::aura::config::ops::load_config_with_timeout()
+            .await
+            .ok()
+            .and_then(|c| c.locale)
+            .unwrap_or_else(|| crate::aura::locale::DEFAULT_LOCALE.to_string());
+        if let Some(notification) = event_to_notification_with_locale(event, &locale) {
             publish_core_notification(notification);
         }
     }

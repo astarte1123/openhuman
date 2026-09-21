@@ -43,6 +43,14 @@ pub struct Config {
     /// the first launch of the new build.
     #[serde(default)]
     pub schema_version: u32,
+    /// Locale this device/user last explicitly chose (BCP 47, e.g. "it-IT").
+    /// `None` means "no explicit choice yet — use auto-detection." Always
+    /// resolve through [`crate::aura::locale::resolve_supported_locale`]
+    /// rather than trusting this value raw; it may predate a locale being
+    /// dropped from the supported set. Synced from the frontend's own
+    /// `localeSlice`, not decided independently here.
+    #[serde(default)]
+    pub locale: Option<String>,
     pub api_url: Option<String>,
     pub api_key: Option<String>,
     /// Custom LLM inference endpoint (OpenAI-compatible). When set together
@@ -489,6 +497,7 @@ impl Default for Config {
             workspace_dir: aura_dir.join("workspace"),
             config_path: aura_dir.join("config.toml"),
             schema_version: 0,
+            locale: None,
             api_url: None,
             api_key: None,
             inference_url: None,
