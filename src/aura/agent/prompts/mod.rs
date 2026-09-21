@@ -109,6 +109,17 @@ impl SystemPromptBuilder {
         Self { sections }
     }
 
+    /// Append a [`LanguageSection`] for `locale` — the single place a
+    /// caller opts a prompt into locale-aware response-language
+    /// instructions. Purely additive: existing callers that never call
+    /// this are byte-identical to before. Safe to chain onto any builder
+    /// variant, including [`Self::for_subagent`] (see [`LanguageSection`]
+    /// for why it doesn't break prefix-cache stability there).
+    pub fn with_locale(mut self, locale: crate::aura::locale::LocaleContext) -> Self {
+        self.sections.push(Box::new(LanguageSection { locale }));
+        self
+    }
+
     /// Build from a fully-assembled prompt string — no section wrapping.
     ///
     /// Used when the caller has already composed the final prompt (e.g.
@@ -388,6 +399,21 @@ pub struct SafetySection;
 pub struct WorkspaceSection;
 pub struct RuntimeSection;
 pub struct DateTimeSection;
+/// Instructs the model what language to respond in — the single place
+/// that construction happens, instead of a hint duplicated across
+/// individual agents' `prompt.rs` files (brief section 6: "centralizza
+/// la costruzione di questo contesto linguistico").
+///
+/// Not part of [`SystemPromptBuilder::with_defaults`]'s static chain —
+/// opt in via [`SystemPromptBuilder::with_locale`] once a caller has a
+/// resolved [`crate::aura::locale::LocaleContext`] for the request.
+/// Stable per session (same locale in, same text out), so it's safe to
+/// include in [`SystemPromptBuilder::for_subagent`] without breaking the
+/// prefix-cache stability documented there — unlike `DateTimeSection`,
+/// nothing here changes between repeat spawns of the same definition.
+pub struct LanguageSection {
+    pub locale: crate::aura::locale::LocaleContext,
+}
 pub struct UserMemorySection;
 /// Renders explicit user reflections — a privileged memory class
 /// distinct from generic tree summaries. Rendered above
@@ -638,6 +664,39 @@ impl PromptSection for RuntimeSection {
             "## Runtime\n\nHost: {host} | OS: {} | Model: {}",
             std::env::consts::OS,
             ctx.model_name
+        ))
+    }
+}
+
+impl PromptSection for LanguageSection {
+    fn name(&self) -> &str {
+        "language"
+    }
+
+    fn build(&self, _ctx: &PromptContext<'_>) -> Result<String> {
+        // English is the model's native/default output language — when the
+        // resolved locale is en-GB there is nothing corrective to say, so
+        // stay silent rather than spend prompt tokens confirming the
+        // default. Every non-English locale gets an explicit, unambiguous
+        // instruction: respond in that language for the whole turn, don't
+        // drift back to English mid-response, but never translate content
+        // the user explicitly wants preserved (a quote, code, a request to
+        // correct/analyze text as-is) or a one-off translation request the
+        // user makes for a specific piece of content.
+        if self.locale.locale == crate::aura::locale::DEFAULT_LOCALE {
+            return Ok(String::new());
+        }
+        Ok(format!(
+            "## Response Language\n\n\
+             Respond in {} ({}) for this entire turn — menus, explanations, \
+             summaries, and any generated content are all in {}. Do not \
+             switch back to English mid-response. Keep code, technical \
+             identifiers, proper nouns, and direct quotations in their \
+             original language. If the user's own message needs correcting, \
+             analyzing, or preserving verbatim, don't translate it — only \
+             translate when the user explicitly asks you to translate \
+             something, and only for that specific content.",
+            self.locale.language, self.locale.response_language, self.locale.language
         ))
     }
 }

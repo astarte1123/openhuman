@@ -1420,3 +1420,65 @@ fn tools_section_native_with_dispatcher_instructions_returns_instructions() {
         "Native mode must not include the tool catalogue header, got: {out:?}"
     );
 }
+
+fn empty_prompt_context() -> PromptContext<'static> {
+    static EMPTY_TOOLS: &[PromptTool<'static>] = &[];
+    PromptContext {
+        workspace_dir: Path::new("/tmp"),
+        model_name: "test-model",
+        agent_id: "",
+        tools: EMPTY_TOOLS,
+        skills: &[],
+        dispatcher_instructions: "",
+        learned: LearnedContextData::default(),
+        visible_tool_names: &NO_FILTER,
+        tool_call_format: ToolCallFormat::PFormat,
+        connected_integrations: &[],
+        connected_identities_md: String::new(),
+        include_profile: false,
+        include_memory_md: false,
+        curated_snapshot: None,
+        user_identity: None,
+    }
+}
+
+#[test]
+fn language_section_is_silent_for_default_locale() {
+    let section = LanguageSection {
+        locale: crate::aura::locale::LocaleContext::default_context(),
+    };
+    let out = section.build(&empty_prompt_context()).unwrap();
+    assert_eq!(out, "", "en-GB is the model's native output language — nothing to say");
+}
+
+#[test]
+fn language_section_instructs_response_language_for_non_default_locale() {
+    let section = LanguageSection {
+        locale: crate::aura::locale::LocaleContext::for_code("it-IT"),
+    };
+    let out = section.build(&empty_prompt_context()).unwrap();
+    assert!(out.contains("## Response Language"));
+    assert!(out.contains("Italian"));
+    assert!(out.contains("it-IT"));
+}
+
+#[test]
+fn with_locale_is_purely_additive() {
+    let ctx = empty_prompt_context();
+    let without = SystemPromptBuilder::with_defaults().build(&ctx).unwrap();
+    let with_default_locale = SystemPromptBuilder::with_defaults()
+        .with_locale(crate::aura::locale::LocaleContext::default_context())
+        .build(&ctx)
+        .unwrap();
+    assert_eq!(
+        without, with_default_locale,
+        "chaining .with_locale(default) must not change the rendered prompt"
+    );
+
+    let with_italian = SystemPromptBuilder::with_defaults()
+        .with_locale(crate::aura::locale::LocaleContext::for_code("it-IT"))
+        .build(&ctx)
+        .unwrap();
+    assert!(with_italian.contains("## Response Language"));
+    assert_ne!(without, with_italian);
+}
