@@ -274,6 +274,13 @@ Order matters for auth and realtime:
 
 Redux Toolkit slices: `accounts`, `channelConnections`, `chatRuntime`, `coreMode`, `deepLinkAuth`, `mascot`, `notification`, `providerSurface`, `socket` (+ `socketSelectors`), `thread`. Plus `userScopedStorage` for per-user persistence keys. Prefer Redux (and redux-persist where configured) over ad hoc `localStorage` for app state. Documented exception: ephemeral UI state like upsell-banner dismiss flags use `localStorage` with the `aura:upsell:` prefix.
 
+### Localization (`app/src/lib/i18n/`)
+
+- `locales.ts` is the single source of truth for supported locales (`en-GB` + 24 EU languages) and the BCP-47 resolution cascade used by `localeSlice`.
+- `en.ts` is the source catalog (~2150 keys). Every other locale has a sibling catalog (`it-IT.ts`, `de-DE.ts`, …) registered **statically** in `I18nContext.tsx` (`CATALOGS`). A key missing from a locale falls back to en-GB, then to the raw key. Never load catalogs with a dynamic `import()` (see the no-dynamic-imports rule).
+- Components read strings via `useT()` → `t(key, params)`; supports `{param}` interpolation and ICU-lite plural blocks rendered with `Intl.PluralRules`. Use `formatNumber(value, locale)` from `lib/i18n/format.ts` for numeric formatting — do not call `Intl.NumberFormat()` / `toLocaleString()` without an explicit locale.
+- Catalogs are generated/refreshed with `node scripts/i18n/translate-catalogs.mjs [locale…]` (preserves hand-written entries, protects placeholders/brands, idempotent re-runs) followed by `prettier --write`. `__tests__/catalogs.test.ts` enforces full key and placeholder parity across every locale.
+
 ### Services (`app/src/services/`)
 
 Singleton-style modules: `apiClient`, `socketService`, `coreRpcClient`, `coreCommandClient`, `chatService`, `analytics`, `notificationService`, `webviewAccountService`, `daemonHealthService`, `meetCallService`, `memorySyncService`, `bootCheckService`, `walletApi`, plus domain `api/*` clients. Always call the in-process core via `invoke('core_rpc_relay', ...)` — never raw `fetch()` (CORS preflight) or `callCoreRpc()` for service-status calls (socket may not be connected yet).

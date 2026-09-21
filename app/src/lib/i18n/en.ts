@@ -318,8 +318,7 @@ const en: TranslationMap = {
   // Onboarding: Custom > Search
   'onboarding.custom.search.title': 'Web Search',
   'onboarding.custom.search.subtitle': 'How Aura searches the web on your behalf.',
-  'onboarding.custom.search.defaultDesc':
-    'Aura uses a managed search backend. No keys needed.',
+  'onboarding.custom.search.defaultDesc': 'Aura uses a managed search backend. No keys needed.',
   'onboarding.custom.search.configureDesc':
     'Bring your own search provider key (Tavily, Brave, etc.). Configure in Settings › Tools.',
 
@@ -500,8 +499,7 @@ const en: TranslationMap = {
     'The browser could not be opened automatically. Use the button above.',
 
   // Settings: Tools
-  'settings.tools.chooseCapabilities':
-    'Choose which capabilities Aura can use on your behalf.',
+  'settings.tools.chooseCapabilities': 'Choose which capabilities Aura can use on your behalf.',
   'settings.tools.saveChanges': 'Save Changes',
   'settings.tools.preferencesSaved': 'Preferences saved',
   'settings.tools.saveFailed': 'Failed to save preferences. Try again.',
@@ -1239,7 +1237,7 @@ const en: TranslationMap = {
   'rewards.referrals.apply_error': 'Could not apply referral code',
   'rewards.referrals.heading': 'Invite friends, earn credits',
   'rewards.referrals.description':
-    "Share your referral code. When a friend subscribes to a monthly plan, you both get $5 in account credit. Self-referrals and duplicate rewards are blocked on the server.",
+    'Share your referral code. When a friend subscribes to a monthly plan, you both get $5 in account credit. Self-referrals and duplicate rewards are blocked on the server.',
   'rewards.referrals.loading': 'Loading referral program…',
   'rewards.referrals.retry': 'Retry',
   'rewards.referrals.your_code_label': 'Your code',
@@ -1380,7 +1378,8 @@ const en: TranslationMap = {
   'skills.autocomplete_setup.subtitle_success': 'Ready to go',
   'skills.autocomplete_setup.description':
     'Text Auto-Complete suggests inline completions as you type across any app. Suggestions appear as an overlay you can accept with Tab.',
-  'skills.autocomplete_setup.platform_unsupported': 'Auto-complete is not supported on this platform.',
+  'skills.autocomplete_setup.platform_unsupported':
+    'Auto-complete is not supported on this platform.',
   'skills.autocomplete_setup.style_preset_label': 'Style preset',
   'skills.autocomplete_setup.style_preset_value': 'Balanced (configurable later)',
   'skills.autocomplete_setup.accept_key_label': 'Accept key',
@@ -1445,7 +1444,7 @@ const en: TranslationMap = {
     'The frontmatter must be valid YAML with non-empty `name` and `description` fields, terminated by `---`.',
   'skills.install_dialog.error_already_installed_title': 'Skill already installed',
   'skills.install_dialog.error_already_installed_hint':
-    "A skill with this slug already exists in the workspace. Remove it first or change the frontmatter `metadata.id` / `name`.",
+    'A skill with this slug already exists in the workspace. Remove it first or change the frontmatter `metadata.id` / `name`.',
   'skills.install_dialog.error_write_failed_title': 'Could not write SKILL.md',
   'skills.install_dialog.error_write_failed_hint':
     'The workspace skills directory was not writable. Check filesystem permissions for `<workspace>/.aura/skills/`.',
@@ -1547,7 +1546,7 @@ const en: TranslationMap = {
   'skills.screen_intelligence_setup.enable_button': 'Enable Screen Intelligence',
   'skills.screen_intelligence_setup.success_title': 'Screen Intelligence is Enabled',
   'skills.screen_intelligence_setup.success_description':
-    "Screen Intelligence is now enabled. Start a session from the settings panel to begin capturing screen context for your agent.",
+    'Screen Intelligence is now enabled. Start a session from the settings panel to begin capturing screen context for your agent.',
   'skills.screen_intelligence_setup.advanced_settings': 'Advanced Settings',
   'skills.screen_intelligence_setup.done': 'Done',
 
@@ -1622,16 +1621,20 @@ const en: TranslationMap = {
   // settings.model_download
   'settings.model_download.capability_assets_title': 'Capability Assets',
   'settings.model_download.quantization_preference': 'Quantization preference: {quantization}',
-  'settings.model_download.manage_in_external_runtime': 'Manage this model in your external runtime.',
+  'settings.model_download.manage_in_external_runtime':
+    'Manage this model in your external runtime.',
   'settings.model_download.downloading': 'Downloading...',
   'settings.model_download.download': 'Download',
   'settings.model_download.test_summarization_title': 'Test Summarization',
-  'settings.model_download.summary_input_placeholder': 'Paste text to summarize with the local model...',
-  'settings.model_download.calls_inference_summarize': 'Calls `aura.inference_summarize` via Rust core',
+  'settings.model_download.summary_input_placeholder':
+    'Paste text to summarize with the local model...',
+  'settings.model_download.calls_inference_summarize':
+    'Calls `aura.inference_summarize` via Rust core',
   'settings.model_download.running': 'Running...',
   'settings.model_download.run_summary_test': 'Run Summary Test',
   'settings.model_download.test_custom_prompt_title': 'Test Custom Prompt',
-  'settings.model_download.prompt_input_placeholder': 'Type any prompt and run it against the local model...',
+  'settings.model_download.prompt_input_placeholder':
+    'Type any prompt and run it against the local model...',
   'settings.model_download.no_think_mode': 'No-think mode',
   'settings.model_download.run_prompt_test': 'Run Prompt Test',
   'settings.model_download.running_prompt': 'Running prompt against local model...',
@@ -1683,7 +1686,8 @@ const en: TranslationMap = {
   'settings.composio_panel.api_key_placeholder_stored':
     '••••••••••••  (key stored — paste a new key to replace)',
   'settings.composio_panel.api_key_placeholder_empty': 'ck_live_xxxxxxxxxxxxxxxx',
-  'settings.composio_panel.api_key_stored_notice': 'A Composio API key is currently stored on this device.',
+  'settings.composio_panel.api_key_stored_notice':
+    'A Composio API key is currently stored on this device.',
   'settings.composio_panel.confirm_title': '⚠️ Switching to Direct mode',
   'settings.composio_panel.confirm_integrations_prefix':
     'Your existing integrations (Gmail, Slack, GitHub, etc. linked through Aura)',
@@ -1693,7 +1697,8 @@ const en: TranslationMap = {
   'settings.composio_panel.confirm_needs_title': "You'll need:",
   'settings.composio_panel.confirm_need_account_prefix': 'An account at',
   'settings.composio_panel.confirm_need_account_suffix': 'with an API key',
-  'settings.composio_panel.confirm_need_relink': 'To re-link each integration through your personal Composio account',
+  'settings.composio_panel.confirm_need_relink':
+    'To re-link each integration through your personal Composio account',
   'settings.composio_panel.confirm_need_triggers_note':
     "Note: Composio triggers (real-time webhooks) don't fire in Direct mode yet — only synchronous tool calls",
   'settings.composio_panel.cancel': 'Cancel',
@@ -1792,7 +1797,8 @@ const en: TranslationMap = {
     'Chat: {chatModel} · Vision: {visionModel} · Target RAM: {targetRam} GB',
   'settings.device_capability.custom_model_ids_notice':
     'You are using custom model IDs that do not match any built-in preset.',
-  'settings.device_capability.local_ai_disabled_notice': 'Local AI disabled — using cloud fallback.',
+  'settings.device_capability.local_ai_disabled_notice':
+    'Local AI disabled — using cloud fallback.',
   'settings.device_capability.applied_tier_with_model': 'Applied {tier} tier: {model}',
   'settings.device_capability.applied_tier': 'Applied {tier} tier',
 
@@ -1883,7 +1889,8 @@ const en: TranslationMap = {
     '{wakeups} wakeups/week; LLM work only when rebuild needs reflection.',
   'settings.background_loop_controls.loop_composio_sync_name': 'Composio sync',
   'settings.background_loop_controls.loop_composio_sync_route': 'Integration APIs',
-  'settings.background_loop_controls.loop_composio_sync_work': 'Polls connected tools when provider sync is due.',
+  'settings.background_loop_controls.loop_composio_sync_work':
+    'Polls connected tools when provider sync is due.',
   'settings.background_loop_controls.loop_composio_sync_risk':
     '{wakeups} wakeups/week; scans {connections} active connection(s).',
   'settings.background_loop_controls.background_loops_title': 'Background loops',
@@ -1909,7 +1916,8 @@ const en: TranslationMap = {
   'settings.background_loop_controls.cron_reminder_checks_label': 'Cron reminder checks',
   'settings.background_loop_controls.cron_reminder_checks_description':
     'Scans enabled cron jobs for reminder-like upcoming items.',
-  'settings.background_loop_controls.relevant_notification_checks_label': 'Relevant notification checks',
+  'settings.background_loop_controls.relevant_notification_checks_label':
+    'Relevant notification checks',
   'settings.background_loop_controls.relevant_notification_checks_description':
     'Promotes urgent local notifications into proactive alerts.',
   'settings.background_loop_controls.external_delivery_label': 'External delivery',
@@ -1921,7 +1929,8 @@ const en: TranslationMap = {
   'settings.background_loop_controls.planner_summary':
     'Planner: {sourceEvents} source events, {deliveriesSent} sent, {deliveriesSkippedDedup} deduped.',
   'settings.background_loop_controls.loading_heartbeat_controls': 'Loading heartbeat controls...',
-  'settings.background_loop_controls.heartbeat_controls_unavailable': 'Heartbeat controls unavailable.',
+  'settings.background_loop_controls.heartbeat_controls_unavailable':
+    'Heartbeat controls unavailable.',
   'settings.background_loop_controls.loop_map_heading': 'Loop map',
   'settings.background_loop_controls.loop_on': 'on',
   'settings.background_loop_controls.loop_off': 'off',
@@ -1944,17 +1953,21 @@ const en: TranslationMap = {
   'settings.background_loop_controls.memory_polls_detail': '{value} memory polls',
   'settings.background_loop_controls.budget_math_heading': 'Budget math',
   'settings.background_loop_controls.rows_left_label': 'Rows left',
-  'settings.background_loop_controls.rows_left_formula': 'remaining / avg row = {remaining} / {avgRow}',
+  'settings.background_loop_controls.rows_left_formula':
+    'remaining / avg row = {remaining} / {avgRow}',
   'settings.background_loop_controls.need_recent_spend_rows': 'Need recent spend rows to estimate.',
   'settings.background_loop_controls.rows_per_budget_label': 'Rows per full week budget',
   'settings.background_loop_controls.rows_per_budget_formula':
     'cycle budget / avg row = {cycleBudget} / {avgRow}',
   'settings.background_loop_controls.sample_burn_rate_label': 'Sample burn rate',
   'settings.background_loop_controls.per_hour': '{amount}/hr',
-  'settings.background_loop_controls.sample_burn_rate_detail': '{rowsPerHour} rows/hr across {sampleHours}h sample',
-  'settings.background_loop_controls.need_two_spend_rows': 'Need timestamps from at least two spend rows.',
+  'settings.background_loop_controls.sample_burn_rate_detail':
+    '{rowsPerHour} rows/hr across {sampleHours}h sample',
+  'settings.background_loop_controls.need_two_spend_rows':
+    'Need timestamps from at least two spend rows.',
   'settings.background_loop_controls.projected_empty_label': 'Projected empty',
-  'settings.background_loop_controls.projected_empty_detail': '{hours}h after latest spend at recent burn rate',
+  'settings.background_loop_controls.projected_empty_detail':
+    '{hours}h after latest spend at recent burn rate',
   'settings.background_loop_controls.no_projection': 'No projection without recent hourly spend.',
   'settings.background_loop_controls.api_reads_per_dollar_label': 'API reads per $ remaining',
   'settings.background_loop_controls.reads_per_dollar': '{value} reads/$',
@@ -1963,7 +1976,8 @@ const en: TranslationMap = {
   'settings.background_loop_controls.need_usage_response': 'Need usage response to estimate.',
   'settings.background_loop_controls.loop_call_budget_heading': 'Loop call budget',
   'settings.background_loop_controls.heartbeat_ticks_label': 'Heartbeat ticks',
-  'settings.background_loop_controls.heartbeat_ticks_detail': '10080 min/week / {intervalMinutes} min interval',
+  'settings.background_loop_controls.heartbeat_ticks_detail':
+    '10080 min/week / {intervalMinutes} min interval',
   'settings.background_loop_controls.calendar_planner_calls_label': 'Calendar planner calls',
   'settings.background_loop_controls.calendar_planner_calls_detail':
     'ticks * (1 list_connections + {calendarConnectionsPolled} GOOGLECALENDAR_EVENTS_LIST)',
@@ -1986,7 +2000,8 @@ const en: TranslationMap = {
   'settings.background_loop_controls.per_week_max': '{value}/week max',
   'settings.background_loop_controls.memory_worker_polls_detail':
     '{workers} workers * {pollSeconds}s poll; LLM calls only for queued jobs',
-  'settings.background_loop_controls.latest_spend': 'Latest spend: {amount} at {dateTime} ({action})',
+  'settings.background_loop_controls.latest_spend':
+    'Latest spend: {amount} at {dateTime} ({action})',
   'settings.background_loop_controls.top_actions_heading': 'Top actions',
   'settings.background_loop_controls.count_over_amount': '{count} / {amount}',
   'settings.background_loop_controls.no_spend_rows_loaded': 'No spend rows loaded.',
@@ -2001,11 +2016,12 @@ const en: TranslationMap = {
     "Params come from your youworker.ai deployment's integration handoff doc — the client secret is encrypted at rest in",
   'settings.you_worker_provider_dialog.display_label_label': 'Display label',
   'settings.you_worker_provider_dialog.transport_label': 'Transport',
-  'settings.you_worker_provider_dialog.transport_webhook_option': 'Webhook (needs a public outbound endpoint)',
+  'settings.you_worker_provider_dialog.transport_webhook_option':
+    'Webhook (needs a public outbound endpoint)',
   'settings.you_worker_provider_dialog.transport_websocket_option':
     'WebSocket (reply on the same connection, no setup)',
   'settings.you_worker_provider_dialog.transport_hint':
-    "WebSocket needs no outbound HMAC secret or public URL — youworker.ai replies on the connection this app opens. Webhook scales better once youworker.ai has your outbound endpoint registered.",
+    'WebSocket needs no outbound HMAC secret or public URL — youworker.ai replies on the connection this app opens. Webhook scales better once youworker.ai has your outbound endpoint registered.',
   'settings.you_worker_provider_dialog.yw_base_label': 'YouWorker base URL (yw_base)',
   'settings.you_worker_provider_dialog.autentika_url_label': 'Autentika URL',
   'settings.you_worker_provider_dialog.persona_label': 'Persona',
@@ -2013,7 +2029,8 @@ const en: TranslationMap = {
   'settings.you_worker_provider_dialog.subject_uuid_label': 'Subject UUID',
   'settings.you_worker_provider_dialog.client_secret_label': 'Client secret',
   'settings.you_worker_provider_dialog.clear_stored_secret': 'Clear stored secret',
-  'settings.you_worker_provider_dialog.client_secret_placeholder_existing': 'Leave blank to keep existing secret',
+  'settings.you_worker_provider_dialog.client_secret_placeholder_existing':
+    'Leave blank to keep existing secret',
   'settings.you_worker_provider_dialog.outbound_hmac_secret_label': 'Outbound webhook HMAC secret',
   'settings.you_worker_provider_dialog.outbound_hmac_hint':
     "Verifies youworker's async reply webhook. Optional to save now, but chat calls will time out without it once youworker.ai can reach this app's outbound endpoint.",
@@ -2032,7 +2049,8 @@ const en: TranslationMap = {
     'Enter the short subdomain only (e.g. "acme"), not the full URL. It should contain only letters, numbers, and hyphens.',
   'composio.connect_modal.atlassian_subdomain_label': 'Atlassian subdomain',
   'composio.connect_modal.atlassian_subdomain_placeholder': 'your-subdomain',
-  'composio.connect_modal.atlassian_subdomain_required': 'Please enter your Atlassian subdomain to continue.',
+  'composio.connect_modal.atlassian_subdomain_required':
+    'Please enter your Atlassian subdomain to continue.',
   'composio.connect_modal.cancel': 'Cancel',
   'composio.connect_modal.close': 'Close',
   'composio.connect_modal.close_button': 'Close',
@@ -2069,15 +2087,18 @@ const en: TranslationMap = {
   'composio.connect_modal.reopen_browser': 'Reopen browser',
   'composio.connect_modal.requesting_connect_url': 'Requesting connect URL…',
   'composio.connect_modal.retry_connection': 'Retry connection',
-  'composio.connect_modal.scope_admin_hint': 'Allow destructive or permission-changing actions (delete, share, etc.).',
+  'composio.connect_modal.scope_admin_hint':
+    'Allow destructive or permission-changing actions (delete, share, etc.).',
   'composio.connect_modal.scope_admin_label': 'Admin',
   'composio.connect_modal.scope_load_failed': "Couldn't load scope preferences: {message}",
-  'composio.connect_modal.scope_read_hint': 'Allow listing, fetching, searching (e.g. read emails / pages).',
+  'composio.connect_modal.scope_read_hint':
+    'Allow listing, fetching, searching (e.g. read emails / pages).',
   'composio.connect_modal.scope_read_label': 'Read',
   'composio.connect_modal.scope_save_failed': "Couldn't save {key} scope: {message}",
   'composio.connect_modal.scope_toggle_aria_disable': 'Disable {label} scope',
   'composio.connect_modal.scope_toggle_aria_enable': 'Enable {label} scope',
-  'composio.connect_modal.scope_write_hint': 'Allow sending, creating, updating (e.g. send emails, create pages).',
+  'composio.connect_modal.scope_write_hint':
+    'Allow sending, creating, updating (e.g. send emails, create pages).',
   'composio.connect_modal.scope_write_label': 'Write',
   'composio.connect_modal.waba_id_hint_middle': 'then',
   'composio.connect_modal.waba_id_hint_prefix': 'Find it via',
@@ -2110,7 +2131,7 @@ const en: TranslationMap = {
   'settings.ai_panel.local_runtime_disconnect_aria': 'Disconnect {label}',
   'settings.ai_panel.providers_heading': 'LLM Providers',
   'settings.ai_panel.providers_subtitle':
-    "Connect the language-model backends you want Aura to use. Toggle a provider on to add its key; toggle off to disconnect.",
+    'Connect the language-model backends you want Aura to use. Toggle a provider on to add its key; toggle off to disconnect.',
   'settings.ai_panel.routing_heading': 'Routing',
   'settings.ai_panel.routing_subtitle':
     'Pick how each workload is served. Default uses Aura; Custom lets you point a workload at a specific provider and model.',
@@ -2135,7 +2156,8 @@ const en: TranslationMap = {
   'settings.auto_recharge.set_default': 'Set default',
   'settings.auto_recharge.threshold_label': 'Recharge when balance drops below',
   'settings.auto_recharge.toggle_aria_label': 'Toggle auto-recharge',
-  'settings.auto_recharge.validation_hint': 'Recharge amount should be greater than the trigger threshold.',
+  'settings.auto_recharge.validation_hint':
+    'Recharge amount should be greater than the trigger threshold.',
   'settings.auto_recharge.weekly_limit_label': 'Weekly spending limit',
   'settings.auto_recharge.weekly_spent': '${spent} of ${limit} used this week',
 
@@ -2328,7 +2350,8 @@ const en: TranslationMap = {
   'aura_link_modal.notifications_permission_off':
     'Notification permission is off. Enable Aura in System Settings → Notifications, then retry.',
   'aura_link_modal.notification_title': 'Aura is good to go',
-  'aura_link_modal.notification_body': 'You will get pings here when something needs your attention.',
+  'aura_link_modal.notification_body':
+    'You will get pings here when something needs your attention.',
   'aura_link_modal.notification_send_failed':
     'Aura could not trigger a system notification. Check OS notification settings and retry.',
   'aura_link_modal.notifications_intro':
@@ -2390,8 +2413,10 @@ const en: TranslationMap = {
   'channels.discord_config.copied': 'Copied!',
   'channels.discord_config.copy': 'Copy',
   'channels.discord_config.link_instructions_prefix': 'In Discord, send ',
-  'channels.discord_config.link_instructions_suffix': 'to the Aura bot. Token expires in 5 minutes.',
-  'channels.discord_config.link_token_warning': 'Save this command — this token is shown only once.',
+  'channels.discord_config.link_instructions_suffix':
+    'to the Aura bot. Token expires in 5 minutes.',
+  'channels.discord_config.link_token_warning':
+    'Save this command — this token is shown only once.',
   'channels.discord_config.account_linked': 'Your Discord account is linked.',
   'channels.discord_config.disconnect': 'Disconnect',
   'channels.discord_config.connect': 'Connect',
@@ -2412,7 +2437,8 @@ const en: TranslationMap = {
   'notifications.center.all_filter': 'All',
   'notifications.center.loading': 'Loading…',
   'notifications.center.empty_title': 'No notifications yet',
-  'notifications.center.empty_subtitle': 'Notifications from your connected accounts will appear here.',
+  'notifications.center.empty_subtitle':
+    'Notifications from your connected accounts will appear here.',
 
   // settings.memory_window_control
   'settings.memory_window_control.minimal_label': 'Minimal',
@@ -2480,11 +2506,13 @@ const en: TranslationMap = {
   'upsell.banner.dismiss': 'Dismiss',
   'chat.runtime_provider.agent_error_message':
     'Something went wrong. Please try again.\nThis error has been reported. You can also report it on Discord.\n<aura-link path="community/discord">Report on Discord</aura-link>',
-  'daemon.service_blocking_gate.retry_failed': 'Retry failed. Download the latest app build and try again.',
+  'daemon.service_blocking_gate.retry_failed':
+    'Retry failed. Download the latest app build and try again.',
   'daemon.service_blocking_gate.title': 'Aura core is unavailable',
   'daemon.service_blocking_gate.description':
     'We could not recover the local core service after multiple attempts. This can happen after a critical crash or binary mismatch.',
-  'daemon.service_blocking_gate.download_hint': 'Download the latest app build to restore a healthy core runtime.',
+  'daemon.service_blocking_gate.download_hint':
+    'Download the latest app build to restore a healthy core runtime.',
   'daemon.service_blocking_gate.retrying': 'Retrying...',
   'daemon.service_blocking_gate.retry_core': 'Retry Core',
   'daemon.service_blocking_gate.download_latest': 'Download Latest Version',
@@ -2504,7 +2532,8 @@ const en: TranslationMap = {
   'accounts.webview_host.loading_account': 'Loading account',
   'accounts.webview_host.loading_provider': 'Loading {providerName}...',
   'accounts.webview_host.webview_load_timeout': 'Webview load timeout',
-  'accounts.webview_host.taking_longer_than_expected': '{providerName} is taking longer than expected.',
+  'accounts.webview_host.taking_longer_than_expected':
+    '{providerName} is taking longer than expected.',
   'accounts.webview_host.timeout_retry_hint':
     'The embedded app may still be starting up. Retry to reload it without signing in again.',
   'accounts.webview_host.retry_loading': 'Retry loading',
@@ -2602,13 +2631,15 @@ const en: TranslationMap = {
   'settings.screen_intelligence_permissions.input_monitoring_label': 'Input Monitoring',
   'settings.screen_intelligence_permissions.grant_restart_hint':
     'After granting in System Settings, click “Restart & Refresh Permissions” so a new core process picks up the grants.',
-  'settings.screen_intelligence_permissions.macos_privacy_prefix': 'macOS applies privacy to this executable:',
+  'settings.screen_intelligence_permissions.macos_privacy_prefix':
+    'macOS applies privacy to this executable:',
   'settings.screen_intelligence_permissions.requesting': 'Requesting…',
   'settings.screen_intelligence_permissions.request_screen_recording': 'Request Screen Recording',
   'settings.screen_intelligence_permissions.request_accessibility': 'Request Accessibility',
   'settings.screen_intelligence_permissions.open_input_monitoring': 'Open Input Monitoring',
   'settings.screen_intelligence_permissions.restarting_core': 'Restarting core…',
-  'settings.screen_intelligence_permissions.restart_and_refresh_permissions': 'Restart & Refresh Permissions',
+  'settings.screen_intelligence_permissions.restart_and_refresh_permissions':
+    'Restart & Refresh Permissions',
   'settings.screen_intelligence_permissions.refreshing': 'Refreshing…',
   'settings.screen_intelligence_permissions.refresh_status': 'Refresh Status',
 
@@ -2632,11 +2663,13 @@ const en: TranslationMap = {
   'upsell.usage_limit_modal.not_now': 'Not Now',
 
   // channels.telegram_config
-  'channels.telegram_config.managed_dm_connecting': 'Open Telegram and message the bot to complete setup.',
+  'channels.telegram_config.managed_dm_connecting':
+    'Open Telegram and message the bot to complete setup.',
   'channels.telegram_config.managed_dm_timeout':
     'Managed DM verification timed out. Try connecting again.',
   'channels.telegram_config.field_required': '{field} is required',
-  'channels.telegram_config.restart_required_error': 'Channel saved. Restart the app to activate it.',
+  'channels.telegram_config.restart_required_error':
+    'Channel saved. Restart the app to activate it.',
   'channels.telegram_config.reconnect_button': 'Reconnect',
   'channels.telegram_config.connect_button': 'Connect',
   'channels.telegram_config.disconnect_button': 'Disconnect',
@@ -2653,7 +2686,8 @@ const en: TranslationMap = {
   // oauth.provider_button
   'oauth.provider_button.twitter_startup_failure':
     'Twitter/X sign-in could not start. Check that the Twitter OAuth app callback URL, client ID/secret, and requested scopes match the Aura backend, then try again.',
-  'oauth.provider_button.generic_startup_failure': '{providerName} sign-in could not start. Please try again.',
+  'oauth.provider_button.generic_startup_failure':
+    '{providerName} sign-in could not start. Please try again.',
   'oauth.provider_button.connecting': 'Connecting...',
 
   // skills.search_bar
@@ -2675,7 +2709,8 @@ const en: TranslationMap = {
   // settings.provider_key_dialog
   'settings.provider_key_dialog.api_key_required': 'Please paste your API key to continue.',
   'settings.provider_key_dialog.connect_title': 'Connect {label}',
-  'settings.provider_key_dialog.subtitle': "Paste your API key. It's stored encrypted on this device only.",
+  'settings.provider_key_dialog.subtitle':
+    "Paste your API key. It's stored encrypted on this device only.",
   'settings.provider_key_dialog.api_key_label': 'API key',
   'settings.provider_key_dialog.cancel_button': 'Cancel',
   'settings.provider_key_dialog.saving': 'Saving…',

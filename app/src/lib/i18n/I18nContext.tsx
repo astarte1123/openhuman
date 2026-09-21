@@ -1,10 +1,34 @@
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo } from 'react';
 
 import { useAppSelector } from '../../store/hooks';
+import bgBG from './bg-BG';
+import csCZ from './cs-CZ';
+import daDK from './da-DK';
+import deDE from './de-DE';
+import elGR from './el-GR';
+import en from './en';
+import esES from './es-ES';
+import etEE from './et-EE';
+import fiFI from './fi-FI';
+import frFR from './fr-FR';
+import gaIE from './ga-IE';
+import hrHR from './hr-HR';
+import huHU from './hu-HU';
+import itIT from './it-IT';
 import { DEFAULT_LOCALE, type SupportedLocale } from './locales';
+import ltLT from './lt-LT';
+import lvLV from './lv-LV';
+import mtMT from './mt-MT';
+import nbNO from './nb-NO';
+import nlNL from './nl-NL';
+import plPL from './pl-PL';
+import ptPT from './pt-PT';
+import roRO from './ro-RO';
+import skSK from './sk-SK';
+import slSI from './sl-SI';
+import svSE from './sv-SE';
 import { renderTranslation } from './translate';
 import type { TranslationMap, TranslationParams } from './types';
-import en from './en';
 
 interface I18nContextValue {
   t: (key: string, params?: TranslationParams) => string;
@@ -24,11 +48,35 @@ function resolveEn(): TranslationMap {
   return {};
 }
 
-// Per-locale catalogs. Only `en-GB` has real content today (the other 24
-// locales fall back to it via `resolveKey` below) — this is where a
-// locale's catalog module gets registered once its translations land.
+// Per-locale catalogs. `en-GB` is resolved lazily via `resolveEn()` so the
+// CJS/ESM interop above still applies; every other supported locale maps to
+// its generated catalog module. Keys missing from a locale fall back to
+// en-GB in `resolveKey` below.
 const CATALOGS: Partial<Record<SupportedLocale, TranslationMap>> = {
-  'en-GB': undefined, // populated lazily via resolveEn() so CJS/ESM interop above still applies
+  'bg-BG': bgBG,
+  'cs-CZ': csCZ,
+  'da-DK': daDK,
+  'de-DE': deDE,
+  'el-GR': elGR,
+  'es-ES': esES,
+  'et-EE': etEE,
+  'fi-FI': fiFI,
+  'fr-FR': frFR,
+  'ga-IE': gaIE,
+  'hr-HR': hrHR,
+  'hu-HU': huHU,
+  'it-IT': itIT,
+  'lt-LT': ltLT,
+  'lv-LV': lvLV,
+  'mt-MT': mtMT,
+  'nb-NO': nbNO,
+  'nl-NL': nlNL,
+  'pl-PL': plPL,
+  'pt-PT': ptPT,
+  'ro-RO': roRO,
+  'sk-SK': skSK,
+  'sl-SI': slSI,
+  'sv-SE': svSE,
 };
 
 function resolveKey(locale: SupportedLocale, key: string): string {

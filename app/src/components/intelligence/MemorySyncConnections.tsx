@@ -9,6 +9,7 @@
  */
 import { useCallback, useEffect, useState } from 'react';
 
+import { formatNumber } from '../../lib/i18n/format';
 import { useT } from '../../lib/i18n/I18nContext';
 import {
   type FreshnessLabel,
@@ -72,7 +73,7 @@ interface SourceCardProps {
 }
 
 function SourceCard({ status }: SourceCardProps) {
-  const { t } = useT();
+  const { t, locale } = useT();
   const label = PROVIDER_LABEL[status.provider] ?? status.provider;
   const lastSync = relativeTimestamp(status.last_chunk_at_ms);
   const lifetime = status.chunks_synced;
@@ -103,7 +104,7 @@ function SourceCard({ status }: SourceCardProps) {
           </div>
           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-stone-500">
             <span data-testid={`memory-sync-chunks-${status.provider}`}>
-              {lifetime.toLocaleString()} {t('sync.chunks')}
+              {formatNumber(lifetime, locale)} {t('sync.chunks')}
             </span>
             {lastSync && (
               <span>
@@ -128,13 +129,13 @@ function SourceCard({ status }: SourceCardProps) {
           </div>
           <div className="mt-1 text-xs text-stone-500">
             <span data-testid={`memory-sync-pending-${status.provider}`}>
-              {batchProcessed.toLocaleString()} / {batchTotal.toLocaleString()}{' '}
+              {formatNumber(batchProcessed, locale)} / {formatNumber(batchTotal, locale)}{' '}
               {t('sync.processed')}
             </span>
             {pending > 0 && (
               <span className="text-stone-400">
                 {' '}
-                · {pending.toLocaleString()} {t('sync.pending')}
+                · {formatNumber(pending, locale)} {t('sync.pending')}
               </span>
             )}
           </div>

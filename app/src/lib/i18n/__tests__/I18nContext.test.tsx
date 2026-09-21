@@ -4,8 +4,8 @@ import { Provider } from 'react-redux';
 import { describe, expect, it } from 'vitest';
 
 import localeReducer, { setLocale } from '../../../store/localeSlice';
-import type { SupportedLocale } from '../locales';
 import { I18nProvider, useT } from '../I18nContext';
+import type { SupportedLocale } from '../locales';
 
 function Probe() {
   const { locale, t } = useT();
@@ -46,12 +46,12 @@ describe('I18nProvider', () => {
     expect(screen.getByTestId('missing-key')).toHaveTextContent('this.key.does.not.exist');
   });
 
-  it('falls back to en-GB content for a locale with no catalog registered yet', () => {
+  it('resolves translated content for a registered non-default locale', () => {
     renderWithLocale('it-IT');
 
     expect(screen.getByTestId('locale')).toHaveTextContent('it-IT');
-    // it-IT has no catalog yet — must render the en-GB string, not the raw key.
-    expect(screen.getByTestId('known-key').textContent).not.toBe('settings.language');
+    // it-IT has a registered catalog — `settings.language` is "Lingua".
+    expect(screen.getByTestId('known-key')).toHaveTextContent('Lingua');
   });
 
   it('syncs document.documentElement.lang to the active locale', () => {

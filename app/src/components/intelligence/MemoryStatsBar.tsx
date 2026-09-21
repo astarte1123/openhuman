@@ -1,3 +1,4 @@
+import { formatNumber } from '../../lib/i18n/format';
 import { useT } from '../../lib/i18n/I18nContext';
 
 interface MemoryStatsBarProps {
@@ -36,12 +37,8 @@ function formatTimeAgo(epochSeconds: number): string {
   return `${(diff / 31536000).toFixed(1)}y ago`;
 }
 
-function formatNumber(value: number): string {
-  return new Intl.NumberFormat().format(value);
-}
-
 export function MemoryStatsBar(props: MemoryStatsBarProps) {
-  const { t } = useT();
+  const { t, locale } = useT();
   const {
     totalDocs,
     totalFiles,
@@ -60,24 +57,24 @@ export function MemoryStatsBar(props: MemoryStatsBarProps) {
     {
       label: t('stats.storage'),
       value: estimatedStorageBytes > 0 ? formatBytes(estimatedStorageBytes) : '--',
-      sub: totalFiles > 0 ? `${formatNumber(totalFiles)} ${t('stats.files')}` : undefined,
+      sub: totalFiles > 0 ? `${formatNumber(totalFiles, locale)} ${t('stats.files')}` : undefined,
       color: 'text-primary-500',
     },
     {
       label: t('stats.documents'),
-      value: formatNumber(totalDocs),
+      value: formatNumber(totalDocs, locale),
       sub: docsToday > 0 ? `+${docsToday} ${t('stats.today')}` : undefined,
       color: 'text-emerald-600',
     },
     {
       label: t('stats.namespaces'),
-      value: formatNumber(totalNamespaces),
+      value: formatNumber(totalNamespaces, locale),
       sub: undefined,
       color: 'text-amber-600',
     },
     {
       label: t('stats.relations'),
-      value: formatNumber(totalRelations),
+      value: formatNumber(totalRelations, locale),
       sub: undefined,
       color: 'text-lavender-600',
     },
@@ -91,8 +88,11 @@ export function MemoryStatsBar(props: MemoryStatsBarProps) {
     },
     {
       label: t('stats.sessions'),
-      value: totalSessions !== null ? formatNumber(totalSessions) : '--',
-      sub: totalTokens !== null ? `${formatNumber(totalTokens)} ${t('stats.tokens')}` : undefined,
+      value: totalSessions !== null ? formatNumber(totalSessions, locale) : '--',
+      sub:
+        totalTokens !== null
+          ? `${formatNumber(totalTokens, locale)} ${t('stats.tokens')}`
+          : undefined,
       color: 'text-rose-600',
     },
   ];

@@ -1,5 +1,6 @@
-export type { SupportedLocale } from './locales';
 import type { SupportedLocale } from './locales';
+
+export type { SupportedLocale } from './locales';
 
 /** @deprecated use `SupportedLocale` — kept as an alias so existing imports keep compiling. */
 export type Locale = SupportedLocale;

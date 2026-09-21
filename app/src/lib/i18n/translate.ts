@@ -11,7 +11,9 @@ import type { TranslationParams } from './types';
 // (e.g. `other{{count} items}`), so the body pattern allows either a
 // non-brace char or a fully-nested single-level brace group.
 const CATEGORY_BODY = '(?:[^{}]|\\{[^{}]*\\})*';
-const PLURAL_BLOCK = new RegExp(`\\{(\\w+),\\s*plural,\\s*((?:\\w+\\{${CATEGORY_BODY}\\}\\s*)+)\\}`);
+const PLURAL_BLOCK = new RegExp(
+  `\\{(\\w+),\\s*plural,\\s*((?:\\w+\\{${CATEGORY_BODY}\\}\\s*)+)\\}`
+);
 const PLURAL_CATEGORY = new RegExp(`(\\w+)\\{(${CATEGORY_BODY})\\}`, 'g');
 
 function interpolate(text: string, params: TranslationParams): string {
@@ -52,7 +54,8 @@ export function renderTranslation(
         selected = 'other';
       }
       const branch = categories.get(selected) ?? categories.get('other') ?? '';
-      text = raw.slice(0, pluralMatch.index) + branch + raw.slice(pluralMatch.index + fullMatch.length);
+      text =
+        raw.slice(0, pluralMatch.index) + branch + raw.slice(pluralMatch.index + fullMatch.length);
     }
   }
 
