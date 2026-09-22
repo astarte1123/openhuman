@@ -931,3 +931,171 @@ async fn meetings_finish_and_delete_tolerate_no_active_capture() {
     let deleted = meetings_delete(&config, &created.id).await.unwrap();
     assert_eq!(deleted.value["deleted"], serde_json::json!(true));
 }
+
+// ── Block 5: knowledge-base indexing ────────────────────────────────────
+
+/// Same override every memory_tree-ingest test in this codebase applies
+/// (see e.g. `memory::tree::ingest::tests::test_config`) — without it,
+/// ingest would try to reach a real embedding endpoint during tests.
+fn knowledge_base_test_config(tmp: &TempDir) -> Config {
+    let mut config = test_config(tmp);
+    config.memory_tree.embedding_endpoint = None;
+    config.memory_tree.embedding_strict = false;
+    config
+}
+
+fn sample_meeting_for_markdown() -> Meeting {
+    Meeting {
+        id: "m1".into(),
+        title: "Sprint planning".into(),
+        source: "google_meet".into(),
+        status: MeetingStatus::Completed,
+        created_at: "2026-01-01T00:00:00+00:00".into(),
+        updated_at: "2026-01-01T00:10:00+00:00".into(),
+        duration_ms: Some(600_000),
+        summary: Some("Plain prose fallback summary.".into()),
+        summary_structured: None,
+    }
+}
+
+#[test]
+fn render_meeting_knowledge_markdown_prefers_structured_summary() {
+    let mut meeting = sample_meeting_for_markdown();
+    meeting.summary_structured = Some(MeetingSummary {
+        overview: "We reviewed the backlog.".into(),
+        decisions: vec!["Ship Friday.".into()],
+        action_items: vec![
+            ActionItem {
+                text: "Update the runbook".into(),
+                owner: Some("alice".into()),
+            },
+            ActionItem {
+                text: "Unowned follow-up".into(),
+                owner: None,
+            },
+        ],
+    });
+
+    let md = render_meeting_knowledge_markdown(&meeting, &[]);
+
+    assert!(md.contains("# Sprint planning"));
+    assert!(md.contains("Platform: google_meet"));
+    assert!(md.contains("## Summary"));
+    assert!(md.contains("We reviewed the backlog."));
+    assert!(md.contains("## Decisions"));
+    assert!(md.contains("- Ship Friday."));
+    assert!(md.contains("## Action Items"));
+    assert!(md.contains("- Update the runbook (alice)"));
+    assert!(md.contains("- Unowned follow-up\n"));
+    // Structured path present — must not also print the flat-prose fallback.
+    assert!(!md.contains("Plain prose fallback summary."));
+}
+
+#[test]
+fn render_meeting_knowledge_markdown_falls_back_to_plain_summary() {
+    let meeting = sample_meeting_for_markdown();
+    let md = render_meeting_knowledge_markdown(&meeting, &[]);
+    assert!(md.contains("## Summary"));
+    assert!(md.contains("Plain prose fallback summary."));
+    assert!(!md.contains("## Decisions"));
+    assert!(!md.contains("## Action Items"));
+}
+
+#[test]
+fn render_meeting_knowledge_markdown_includes_transcript_when_present() {
+    let meeting = sample_meeting_for_markdown();
+    let chunks = vec![TranscriptChunk {
+        id: 1,
+        meeting_id: meeting.id.clone(),
+        start_ms: 0,
+        end_ms: 1_000,
+        speaker: Some("microphone".into()),
+        text: "Let's get started.".into(),
+        created_at: "2026-01-01T00:00:00+00:00".into(),
+    }];
+    let md = render_meeting_knowledge_markdown(&meeting, &chunks);
+    assert!(md.contains("## Transcript"));
+    assert!(md.contains("Let's get started."));
+}
+
+#[test]
+fn render_meeting_knowledge_markdown_omits_empty_sections() {
+    let mut meeting = sample_meeting_for_markdown();
+    meeting.summary = None;
+    let md = render_meeting_knowledge_markdown(&meeting, &[]);
+    assert!(!md.contains("## Summary"));
+    assert!(!md.contains("## Transcript"));
+}
+
+#[tokio::test]
+async fn meetings_index_to_knowledge_base_rejects_blank_id() {
+    let tmp = TempDir::new().unwrap();
+    let config = knowledge_base_test_config(&tmp);
+    let err = meetings_index_to_knowledge_base(&config, "   ")
+        .await
+        .unwrap_err();
+    assert!(err.contains("Missing"));
+}
+
+#[tokio::test]
+async fn meetings_index_to_knowledge_base_errors_for_missing_meeting() {
+    let tmp = TempDir::new().unwrap();
+    let config = knowledge_base_test_config(&tmp);
+    let result = meetings_index_to_knowledge_base(&config, "does-not-exist").await;
+    assert!(result.is_err());
+}
+
+#[tokio::test]
+async fn meetings_index_to_knowledge_base_ingests_a_completed_meeting() {
+    let tmp = TempDir::new().unwrap();
+    let config = knowledge_base_test_config(&tmp);
+    let created = meetings_create(&config, Some("Standup".to_string()), Some("local".to_string()))
+        .await
+        .unwrap()
+        .value;
+    store::append_transcript_chunk(
+        &config,
+        &created.id,
+        0,
+        2_000,
+        Some("microphone"),
+        "We shipped the release.",
+    )
+    .unwrap();
+    meetings_finish(&config, &created.id, 2_000).await.unwrap();
+
+    let outcome = meetings_index_to_knowledge_base(&config, &created.id)
+        .await
+        .unwrap();
+    assert_eq!(outcome.value["already_ingested"], serde_json::json!(false));
+    assert!(outcome.value["chunks_written"].as_u64().unwrap() >= 1);
+}
+
+#[tokio::test]
+async fn meetings_index_to_knowledge_base_is_idempotent() {
+    let tmp = TempDir::new().unwrap();
+    let config = knowledge_base_test_config(&tmp);
+    let created = meetings_create(&config, Some("Standup".to_string()), Some("local".to_string()))
+        .await
+        .unwrap()
+        .value;
+    store::append_transcript_chunk(
+        &config,
+        &created.id,
+        0,
+        2_000,
+        Some("microphone"),
+        "We shipped the release.",
+    )
+    .unwrap();
+    meetings_finish(&config, &created.id, 2_000).await.unwrap();
+
+    meetings_index_to_knowledge_base(&config, &created.id)
+        .await
+        .unwrap();
+    let second = meetings_index_to_knowledge_base(&config, &created.id)
+        .await
+        .unwrap();
+    assert_eq!(second.value["already_ingested"], serde_json::json!(true));
+    assert_eq!(second.value["chunks_written"], serde_json::json!(0));
+}

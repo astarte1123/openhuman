@@ -699,12 +699,153 @@ pub async fn meetings_summarize_structured(
         summary.action_items.len()
     );
 
+    // Best-effort: index this meeting into the memory_tree knowledge base now
+    // that it has real content worth surfacing in cross-source search/recall.
+    // Non-fatal — a knowledge-base indexing hiccup must never fail the
+    // summarize RPC the user is waiting on.
+    match meetings_index_to_knowledge_base(config, meeting_id).await {
+        Ok(outcome) => log::debug!(
+            "{SUMMARY_LOG_PREFIX} meetings_summarize_structured: meeting_id={meeting_id} \
+             indexed into knowledge base ({})",
+            outcome.value
+        ),
+        Err(e) => log::warn!(
+            "{SUMMARY_LOG_PREFIX} meetings_summarize_structured: meeting_id={meeting_id} \
+             knowledge-base indexing failed (non-fatal): {e}"
+        ),
+    }
+
     Ok(RpcOutcome::new(
         summary,
         vec![format!(
             "meeting summarized (structured): {meeting_id}"
         )],
     ))
+}
+
+/// Indexes a meeting's transcript + summary into the memory_tree knowledge
+/// base as a `meeting_notes` document — the same cross-source search/recall/
+/// filter surface (`aura.memory_tree_list_chunks`, `..._list_sources`) that
+/// already covers chat/email/other documents, per
+/// `DocumentInput`'s own doc comment ("one meeting-note file").
+///
+/// Idempotent by design: `source_id` is `"meeting:{meeting_id}"`, and
+/// `ingest_document` treats a document `source_id` as append-only/immutable
+/// (see `memory::tree::ingest::ingest_document`'s doc comment) — a second
+/// call for the same meeting is a harmless no-op (`already_ingested: true`),
+/// it does NOT refresh the indexed content. Re-summarizing a meeting after
+/// it was already indexed will not update the knowledge-base copy in this
+/// MVP; re-indexing on content change is a follow-up, not silently promised
+/// here.
+///
+/// Callable directly via `aura.meetings_index_to_knowledge_base` (e.g. to
+/// index a meeting that only ever got the plain-text `meetings_summarize`,
+/// never the structured one) and called automatically, best-effort, at the
+/// end of [`meetings_summarize_structured`].
+pub async fn meetings_index_to_knowledge_base(
+    config: &Config,
+    meeting_id: &str,
+) -> Result<RpcOutcome<serde_json::Value>, String> {
+    if meeting_id.trim().is_empty() {
+        return Err("Missing 'meeting_id' parameter".to_string());
+    }
+    let meeting_id = meeting_id.trim();
+
+    let meeting = store::get_meeting(config, meeting_id).map_err(|e| e.to_string())?;
+    let chunks = store::list_transcript_chunks(config, meeting_id).map_err(|e| e.to_string())?;
+
+    let body = render_meeting_knowledge_markdown(&meeting, &chunks);
+    let modified_at = chrono::DateTime::parse_from_rfc3339(&meeting.updated_at)
+        .map(|dt| dt.with_timezone(&chrono::Utc))
+        .unwrap_or_else(|_| chrono::Utc::now());
+
+    let doc = crate::aura::memory::tree::canonicalize::document::DocumentInput {
+        provider: "meeting_notes".to_string(),
+        title: meeting.title.clone(),
+        body,
+        modified_at,
+        source_ref: Some(format!("meeting:{}", meeting.id)),
+    };
+
+    // "local" — this is a single-user desktop app; meetings have no
+    // multi-tenant owner concept (see Meeting's doc comment), so every
+    // meeting-notes document ingests under a fixed owner tag, matching how
+    // other single-user-only ingest call sites in this codebase behave.
+    let tags = vec!["meeting".to_string(), format!("platform:{}", meeting.source)];
+
+    let result = crate::aura::memory::tree::ingest::ingest_document(
+        config,
+        &format!("meeting:{meeting_id}"),
+        "local",
+        tags,
+        doc,
+    )
+    .await
+    .map_err(|e| format!("knowledge-base ingest failed: {e}"))?;
+
+    log::debug!(
+        "{SUMMARY_LOG_PREFIX} meetings_index_to_knowledge_base: meeting_id={meeting_id} \
+         chunks_written={} already_ingested={}",
+        result.chunks_written,
+        result.already_ingested
+    );
+
+    Ok(RpcOutcome::new(
+        json!({
+            "chunks_written": result.chunks_written,
+            "already_ingested": result.already_ingested,
+        }),
+        vec![format!(
+            "meeting indexed into knowledge base: {meeting_id}"
+        )],
+    ))
+}
+
+/// Renders a meeting's title, platform, summary (structured if present,
+/// else the flat-prose fallback), and full transcript as a single markdown
+/// document for knowledge-base ingestion. Pure/no I/O — unit-testable.
+fn render_meeting_knowledge_markdown(meeting: &Meeting, chunks: &[TranscriptChunk]) -> String {
+    let mut md = format!("# {}\n\n", meeting.title);
+    md.push_str(&format!("Platform: {}\n\n", meeting.source));
+
+    if let Some(structured) = &meeting.summary_structured {
+        if !structured.overview.trim().is_empty() {
+            md.push_str("## Summary\n\n");
+            md.push_str(structured.overview.trim());
+            md.push_str("\n\n");
+        }
+        if !structured.decisions.is_empty() {
+            md.push_str("## Decisions\n\n");
+            for decision in &structured.decisions {
+                md.push_str(&format!("- {decision}\n"));
+            }
+            md.push('\n');
+        }
+        if !structured.action_items.is_empty() {
+            md.push_str("## Action Items\n\n");
+            for item in &structured.action_items {
+                match &item.owner {
+                    Some(owner) => md.push_str(&format!("- {} ({owner})\n", item.text)),
+                    None => md.push_str(&format!("- {}\n", item.text)),
+                }
+            }
+            md.push('\n');
+        }
+    } else if let Some(summary) = &meeting.summary {
+        if !summary.trim().is_empty() {
+            md.push_str("## Summary\n\n");
+            md.push_str(summary.trim());
+            md.push_str("\n\n");
+        }
+    }
+
+    if !chunks.is_empty() {
+        md.push_str("## Transcript\n\n");
+        md.push_str(&build_transcript_text(chunks));
+        md.push('\n');
+    }
+
+    md
 }
 
 /// Builds the `"[speaker]: text"` transcript blob fed to the summarization

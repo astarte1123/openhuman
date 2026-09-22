@@ -37,6 +37,7 @@ pub fn all_controller_schemas() -> Vec<ControllerSchema> {
         schemas("append_screenshot"),
         schemas("finish"),
         schemas("summarize"),
+        schemas("index_to_knowledge_base"),
         schemas("summarize_structured"),
         schemas("search"),
         schemas("export"),
@@ -89,6 +90,10 @@ pub fn all_registered_controllers() -> Vec<RegisteredController> {
         RegisteredController {
             schema: schemas("summarize"),
             handler: handle_summarize,
+        },
+        RegisteredController {
+            schema: schemas("index_to_knowledge_base"),
+            handler: handle_index_to_knowledge_base,
         },
         RegisteredController {
             schema: schemas("summarize_structured"),
@@ -375,6 +380,36 @@ pub fn schemas(function: &str) -> ControllerSchema {
                 },
             ],
         },
+        "index_to_knowledge_base" => ControllerSchema {
+            namespace: "meetings",
+            function: "index_to_knowledge_base",
+            description:
+                "Index a meeting's transcript + summary into the memory_tree knowledge base as \
+                 a 'meeting_notes' document, so it shows up alongside chat/email/document \
+                 sources in 'aura.memory_tree_list_chunks' / '..._list_sources' \
+                 (filterable by source, date, and free-text query). Idempotent: re-indexing an \
+                 already-indexed meeting is a harmless no-op and does not refresh the content. \
+                 Called automatically, best-effort, at the end of \
+                 'aura.meetings_summarize_structured' — call this directly to index a meeting \
+                 that only ever used the plain-prose 'aura.meetings_summarize'.",
+            inputs: vec![meeting_id_input(
+                "Identifier of the meeting to index.",
+            )],
+            outputs: vec![
+                FieldSchema {
+                    name: "chunks_written",
+                    ty: TypeSchema::U64,
+                    comment: "Number of knowledge-base chunks written by this call.",
+                    required: true,
+                },
+                FieldSchema {
+                    name: "already_ingested",
+                    ty: TypeSchema::Bool,
+                    comment: "True when this meeting was already indexed and this call was a no-op.",
+                    required: true,
+                },
+            ],
+        },
         "search" => ControllerSchema {
             namespace: "meetings",
             function: "search",
@@ -649,6 +684,14 @@ fn handle_summarize(params: Map<String, Value>) -> ControllerFuture {
     })
 }
 
+fn handle_index_to_knowledge_base(params: Map<String, Value>) -> ControllerFuture {
+    Box::pin(async move {
+        let config = config_rpc::load_config_with_timeout().await?;
+        let meeting_id = read_required::<String>(&params, "meeting_id")?;
+        to_json(ops::meetings_index_to_knowledge_base(&config, meeting_id.trim()).await?)
+    })
+}
+
 fn handle_summarize_structured(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let config = config_rpc::load_config_with_timeout().await?;
@@ -748,6 +791,7 @@ mod tests {
             "append_screenshot",
             "finish",
             "summarize",
+            "index_to_knowledge_base",
             "summarize_structured",
             "search",
             "export",
