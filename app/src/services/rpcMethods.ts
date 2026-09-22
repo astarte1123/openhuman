@@ -8,6 +8,7 @@ export const CORE_RPC_METHODS = {
   configUpdateBrowserSettings: 'aura.config_update_browser_settings',
   configUpdateComposioTriggerSettings: 'aura.config_update_composio_trigger_settings',
   configUpdateLocalAiSettings: 'aura.config_update_local_ai_settings',
+  configUpdateLocale: 'aura.config_update_locale',
   configUpdateMemorySettings: 'aura.config_update_memory_settings',
   configUpdateModelSettings: 'aura.config_update_model_settings',
   configUpdateRuntimeSettings: 'aura.config_update_runtime_settings',

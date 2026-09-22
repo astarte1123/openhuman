@@ -585,8 +585,28 @@ fn handle_voice_stt_dispatch(params: Map<String, Value>) -> ControllerFuture {
             .map(str::to_string)
             .unwrap_or_else(|| crate::aura::voice::DEFAULT_WHISPER_MODEL.to_string());
 
+        // Caller may pin a spoken-audio language explicitly (voice/meeting
+        // features that already know it); otherwise fall back to the app's
+        // configured locale rather than letting the provider silently
+        // default to English.
+        let language = p
+            .language
+            .as_deref()
+            .map(str::trim)
+            .filter(|s| !s.is_empty())
+            .map(str::to_string)
+            .or_else(|| {
+                config.locale.as_deref().map(|l| {
+                    crate::aura::locale::resolve_supported_locale(Some(l))
+                        .split(['-', '_'])
+                        .next()
+                        .unwrap_or("en")
+                        .to_string()
+                })
+            });
+
         log::debug!(
-            "[voice-factory] RPC voice_stt_dispatch provider={provider_name} model={model}"
+            "[voice-factory] RPC voice_stt_dispatch provider={provider_name} model={model} language={language:?}"
         );
         let provider =
             crate::aura::voice::create_stt_provider(&provider_name, &model, &config)
@@ -597,7 +617,7 @@ fn handle_voice_stt_dispatch(params: Map<String, Value>) -> ControllerFuture {
                 &p.audio_base64,
                 p.mime_type.as_deref(),
                 p.file_name.as_deref(),
-                p.language.as_deref(),
+                language.as_deref(),
             )
             .await?;
         let value = serde_json::json!({

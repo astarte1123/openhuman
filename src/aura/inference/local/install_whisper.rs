@@ -87,11 +87,16 @@ pub fn model_download_url(size: &str) -> String {
 /// `None` on non-Windows hosts where we skip the binary fetch.
 pub fn binary_download_url() -> Option<String> {
     if cfg!(windows) {
-        // The Windows asset name has been stable across the recent
-        // whisper.cpp releases (`whisper-bin-x64.zip`). The `latest`
-        // alias on GitHub Releases follows the most recent tag.
+        // NOT `releases/latest`: upstream renamed the org to `ggml-org`
+        // and the semver-tagged "latest" release (e.g. `v1.9.4`) no
+        // longer carries prebuilt binaries — only the rolling `bNNNN` CI
+        // builds do, and those are marked pre-release so GitHub's
+        // `latest` alias never resolves to them (confirmed 404 on
+        // `ggerganov/.../releases/latest/download/whisper-bin-x64.zip`
+        // 2026-09-21). Pin to a known-good build tag instead; bump this
+        // periodically since `bNNNN` tags aren't semver-stable.
         Some(
-            "https://github.com/ggerganov/whisper.cpp/releases/latest/download/whisper-bin-x64.zip"
+            "https://github.com/ggml-org/whisper.cpp/releases/download/b5130/whisper-bin-x64.zip"
                 .to_string(),
         )
     } else {
@@ -393,7 +398,7 @@ mod tests {
         if cfg!(windows) {
             let url = binary_download_url().expect("windows must offer a binary url");
             assert!(url.contains("whisper-bin-x64.zip"));
-            assert!(url.contains("github.com/ggerganov/whisper.cpp"));
+            assert!(url.contains("github.com/ggml-org/whisper.cpp"));
         } else {
             assert!(
                 binary_download_url().is_none(),

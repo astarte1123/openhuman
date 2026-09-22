@@ -572,6 +572,7 @@ dependencies = [
  "whatsapp-rust",
  "whatsapp-rust-tokio-transport",
  "whatsapp-rust-ureq-http-client",
+ "whisper-guard",
  "whisper-rs",
  "wiremock",
  "xz2",
@@ -9524,6 +9525,13 @@ dependencies = [
  "tokio",
  "ureq",
  "wacore",
+]
+
+[[package]]
+name = "whisper-guard"
+version = "0.3.1"
+dependencies = [
+ "tracing",
 ]
 
 [[package]]

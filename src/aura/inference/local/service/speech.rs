@@ -84,9 +84,15 @@ impl LocalAiService {
             let handle = self.whisper.clone();
             let path = audio_path.to_string();
             let prompt_owned = initial_prompt.map(String::from);
+            let lang_hint = whisper_language_hint(config);
             let in_process_started = Instant::now();
             let result = tokio::task::spawn_blocking(move || {
-                Self::transcribe_in_process_inner(&handle, &path, prompt_owned.as_deref())
+                Self::transcribe_in_process_inner(
+                    &handle,
+                    &path,
+                    prompt_owned.as_deref(),
+                    lang_hint.as_deref(),
+                )
             })
             .await
             .map_err(|e| format!("whisper task join error: {e}"))?;
@@ -127,6 +133,7 @@ impl LocalAiService {
         handle: &whisper_engine::WhisperEngineHandle,
         audio_path: &str,
         initial_prompt: Option<&str>,
+        language: Option<&str>,
     ) -> Result<String, String> {
         let path = std::path::Path::new(audio_path);
         let ext = path
@@ -136,13 +143,13 @@ impl LocalAiService {
             .to_ascii_lowercase();
 
         let result = if ext == "wav" {
-            whisper_engine::transcribe_wav_file(handle, path, None, initial_prompt)?
+            whisper_engine::transcribe_wav_file(handle, path, language, initial_prompt)?
         } else {
             warn!(
                 "{LOG_PREFIX} non-WAV input ({ext}), attempting WAV decode anyway \
                  (may fail — use ffmpeg conversion for best results)"
             );
-            whisper_engine::transcribe_wav_file(handle, path, None, initial_prompt)?
+            whisper_engine::transcribe_wav_file(handle, path, language, initial_prompt)?
         };
 
         debug!(
@@ -164,8 +171,13 @@ impl LocalAiService {
             "whisper.cpp binary not found. Set WHISPER_BIN or install whisper-cli.".to_string()
         })?;
         let model_path = resolve_stt_model_path(config)?;
+        let mut args = vec!["-m".to_string(), model_path, "-f".to_string(), audio_path.to_string()];
+        if let Some(lang) = whisper_language_hint(config) {
+            args.push("-l".to_string());
+            args.push(lang);
+        }
         let output = tokio::process::Command::new(whisper_bin)
-            .args(["-m", &model_path, "-f", audio_path])
+            .args(&args)
             .output()
             .await
             .map_err(|e| format!("failed to run whisper.cpp: {e}"))?;
@@ -247,4 +259,14 @@ impl LocalAiService {
             voice_id: model_ids::effective_tts_voice_id(config),
         })
     }
+}
+
+/// Derive a whisper.cpp language hint (ISO-639-1, e.g. `"it"`) from the
+/// app's configured locale. Returns `None` when no locale is configured,
+/// letting whisper auto-detect instead of silently defaulting to English —
+/// see `whisper_engine::transcribe_pcm_f32`.
+fn whisper_language_hint(config: &Config) -> Option<String> {
+    let locale = config.locale.as_deref()?;
+    let resolved = crate::aura::locale::resolve_supported_locale(Some(locale));
+    resolved.split(['-', '_']).next().map(str::to_string)
 }

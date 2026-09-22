@@ -325,6 +325,11 @@ pub struct BrowserSettingsPatch {
 }
 
 #[derive(Debug, Clone, Default)]
+pub struct LocaleSettingsPatch {
+    pub locale: Option<String>,
+}
+
+#[derive(Debug, Clone, Default)]
 pub struct ScreenIntelligenceSettingsPatch {
     pub enabled: Option<bool>,
     pub capture_policy: Option<String>,
@@ -725,6 +730,39 @@ pub async fn load_and_apply_browser_settings(
 ) -> Result<RpcOutcome<serde_json::Value>, String> {
     let mut config = load_config_with_timeout().await?;
     apply_browser_settings(&mut config, update).await
+}
+
+/// Loads the configuration, resolves + saves the selected locale, and
+/// returns the updated snapshot. This is the write side of the locale
+/// contract described in `crate::aura::locale`: the frontend's language
+/// selector calls `aura.config_update_locale` here whenever the user
+/// changes locale, so `config.locale` (read by STT language hints, the
+/// AI system prompt's `LanguageSection`, and localized notifications)
+/// never drifts from what the UI actually shows.
+pub async fn load_and_apply_locale_settings(
+    update: LocaleSettingsPatch,
+) -> Result<RpcOutcome<serde_json::Value>, String> {
+    let mut config = load_config_with_timeout().await?;
+    apply_locale_settings(&mut config, update).await
+}
+
+pub async fn apply_locale_settings(
+    config: &mut Config,
+    update: LocaleSettingsPatch,
+) -> Result<RpcOutcome<serde_json::Value>, String> {
+    if let Some(locale) = update.locale {
+        let resolved = crate::aura::locale::resolve_supported_locale(Some(&locale));
+        config.locale = Some(resolved.to_string());
+    }
+    config.save().await.map_err(|e| e.to_string())?;
+    let snapshot = snapshot_config_json(config)?;
+    Ok(RpcOutcome::new(
+        snapshot,
+        vec![format!(
+            "locale settings saved to {}",
+            config.config_path.display()
+        )],
+    ))
 }
 
 /// Updates the local-AI runtime + per-feature usage flags in the configuration.

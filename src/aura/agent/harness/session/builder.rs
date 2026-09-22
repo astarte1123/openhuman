@@ -876,6 +876,13 @@ impl Agent {
             },
             None => SystemPromptBuilder::with_defaults(),
         };
+        // Single choke point for response-language instructions — every
+        // agent variant (orchestrator, sub-agent, dynamic) passes through
+        // here, so wiring it once covers all of them. Silent for en-GB
+        // (see `LanguageSection`), so this is a no-op unless the user has
+        // actually selected a non-default locale.
+        prompt_builder = prompt_builder
+            .with_locale(crate::aura::locale::LocaleContext::resolve(config.locale.as_deref()));
         if config.learning.enabled {
             // Insert the privileged reflection block ahead of the
             // generic `user_memory` section when one is already

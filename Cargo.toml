@@ -25,6 +25,14 @@ crate-type = ["rlib"]
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 serde_yaml = "0.9"
+# Vendored from https://github.com/silverstein/minutes (MIT) — see
+# crates/whisper-guard/LICENSE. Post-processing pass that strips whisper.cpp's
+# well-documented hallucination patterns (repetition loops, foreign-script
+# drift, known training-data-leak phrases) from transcript segments.
+# `default-features = false` avoids pulling its optional `whisper-rs` preset
+# feature, which would double up against the whisper-rs version we already
+# pin for in-process transcription.
+whisper-guard = { path = "crates/whisper-guard", default-features = false }
 # (Removed `html2md` dep. dhat-rs profiling on real Gmail inboxes
 # showed `html2md::walk` and `html2md::tables::handle` allocating
 # ~894 MB peak heap on a 10 KB HTML input from Otter.ai-style emails

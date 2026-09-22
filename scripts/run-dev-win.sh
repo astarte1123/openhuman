@@ -270,7 +270,47 @@ echo "[run-dev-win] linker pinned: $msvc_link_win"
 # the Visual Studio generator, which produces .sln/.vcxproj files; if anything
 # downstream then invokes ninja (because CMAKE_MAKE_PROGRAM is set below),
 # you get the "ninja: error: loading 'build.ninja'" mismatch.
-export CMAKE_GENERATOR=Ninja
+#
+# On a machine with a "Visual Studio 18 Insiders" preview product
+# installed alongside the stable 2022 BuildTools used for vcvars/cl.exe/
+# link.exe above, CMake's own internal MSVC-instance detection — unrelated
+# to anything this script or the `cmake` Rust crate sets; confirmed by
+# testing with an explicit CC/CXX pin and a freshly installed official
+# Kitware CMake, neither had any effect — always resolves to the
+# newer-numbered "18" instance instead of the one actually holding the
+# pinned compiler. Leaving `CMAKE_GENERATOR` unset makes this *worse*, not
+# better: CMake's own default-generator choice also prefers "Visual Studio
+# 18 2026" and fails outright (`CMake Error: Error: generator : Visual
+# Studio 18 2026` — 18 isn't a name this CMake version's generator
+# factories recognize at all). Naming the exact, unambiguous 2022 generator
+# here — there is only one "17 2022"-family instance on this machine, so
+# there's no instance left for CMake to get confused between — sidesteps
+# both failure modes without needing an instance flag at all (VS-family
+# generators like this one accept a generator-instance value; Ninja does
+# not, which is what broke originally). `CMAKE_MAKE_PROGRAM` (set below)
+# is a Ninja-only setting that a VS-family generator simply ignores.
+export CMAKE_GENERATOR="Visual Studio 17 2022"
+
+# Pin CC/CXX by absolute path so CMake never runs its own MSVC-instance
+# auto-detection (`cmVSSetupHelper`, part of cmake.exe itself, unrelated to
+# any Rust build script) to find a compiler. That auto-detection shells out
+# to `vswhere` on its own and, on a machine with more than one Visual
+# Studio product installed, can pick a *different* one than the
+# `vswhere -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64`
+# query above resolved for vcvars — concretely, a "Visual Studio 18
+# Insiders" preview install here outranks the stable "2022 BuildTools" one
+# by version number. CMake then tries to record that instance for the
+# active generator, and Ninja (unlike the Visual Studio generator family)
+# has no concept of a "generator instance" at all, so `project()` fails
+# with "Generator Ninja does not support instance specification". Handing
+# CMake an explicit, already-resolved compiler path sidesteps that
+# detection entirely — matches how a plain `cargo build` (no forced
+# generator, no vcvars import) already builds `whisper-rs-sys` fine on
+# this same machine, since rustc's own linker/compiler detection doesn't
+# go through CMake's instance-selection code at all.
+export CC="$(cygpath -w "$msvc_cl_dir/cl.exe")"
+export CXX="$CC"
+echo "[run-dev-win] CC/CXX pinned: $CC"
 
 # CEF runtime lives under LOCALAPPDATA on Windows.
 # ensure-tauri-cli.sh stages it here; fall back to a default if unset.
@@ -487,6 +527,15 @@ if [[ -z "$PNPM_EXE" ]]; then
   echo "[run-dev-win] pnpm not found. Install pnpm and retry."
   exit 1
 fi
+# `find_pnpm` only *locates* pnpm — it doesn't put its directory on PATH.
+# That's fine for every direct `"$PNPM_EXE" ...` call in *this* script, but
+# `cargo tauri dev`'s `beforeDevCommand` (`pnpm run dev`, see
+# `tauri.conf.json`) is invoked by `cargo-tauri.exe` itself, as a bare
+# `pnpm` lookup on whatever PATH it inherits from this shell — without this
+# export, that lookup fails with `"pnpm" is not recognized` even though
+# pnpm is right there, because its directory was never actually added to
+# PATH, only resolved into this one variable.
+export PATH="$(dirname "$PNPM_EXE"):$PATH"
 echo "[run-dev-win] pnpm resolved to: $PNPM_EXE"
 echo "[run-dev-win] node on bash PATH:    $(command -v node 2>/dev/null || echo '<not found>')"
 echo "[run-dev-win] node.exe on bash PATH: $(command -v node.exe 2>/dev/null || echo '<not found>')"
@@ -496,7 +545,17 @@ if [[ -z "$NINJA_EXE" ]]; then
   echo "[run-dev-win] ninja not found. Install ninja and retry."
   exit 1
 fi
-export CMAKE_MAKE_PROGRAM="$NINJA_EXE"
+# NOT exporting CMAKE_MAKE_PROGRAM globally: with `CMAKE_GENERATOR` now
+# pinned to the "Visual Studio 17 2022" generator (see that export's own
+# doc, above) rather than Ninja, a VS-family generator produces
+# .sln/.vcxproj and drives the build via MSBuild — it never reads
+# CMAKE_MAKE_PROGRAM at all, and CMake's own compiler-check step
+# (`CMakeTestCCompiler.cmake`) tries to literally invoke whatever this is
+# set to as the build tool, which fails with `ninja: error: loading
+# 'build.ninja': The system cannot find the file specified` (there is no
+# build.ninja — this isn't a Ninja build). `$NINJA_EXE` is still resolved
+# above and kept on PATH by `PATH_PREFIX` below for anything that invokes
+# `ninja` by bare name directly (unrelated to this env var).
 
 CEF_RUNTIME_PATH="$(ls -d "$CEF_PATH"/*/cef_windows_x86_64 2>/dev/null | sort -Vr | head -n1 || true)"
 if [[ -n "$CEF_RUNTIME_PATH" ]]; then
@@ -509,8 +568,23 @@ if [[ -n "${CEF_RUNTIME_PATH:-}" ]]; then
 fi
 export PATH="$PATH_PREFIX:$PATH"
 
-"$PNPM_EXE" tauri:ensure
-"$PNPM_EXE" core:stage
+# Call `ensure-tauri-cli.sh` directly rather than through `pnpm tauri:ensure`.
+# pnpm's Windows script runner shells out to `cmd.exe /d /s /c <script>` for
+# every package.json script body, regardless of which shell launched pnpm —
+# and the PATH this bash session has painstakingly reassembled above (MSYS
+# `/c/...` form, patched in from a raw `cmd.exe //c "echo %PATH%"` snapshot
+# plus manually-discovered node/cargo dirs) does not survive that hop: a
+# fresh cmd.exe child does not re-run MSYS's path translation, so it can
+# fail to resolve `node` (or `bash`, if `C:\Windows\System32\bash.exe` — the
+# WSL launcher — wins the PATH race over Git's) even though this bash
+# session itself resolves both fine. Every step below is either a plain
+# bash script (call directly) or a real cargo-installed binary (call
+# directly via `cargo <subcommand>`, which cargo resolves without going
+# through a shell at all) — neither needs pnpm's script runner, so neither
+# needs cmd.exe in the loop.
+bash "$SCRIPT_DIR/ensure-tauri-cli.sh"
+# `pnpm core:stage` is a documented no-op (echoes a message; the sidecar
+# was removed in PR #1061) — nothing to stage, safe to skip entirely.
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Stage the CEF runtime next to the dev Aura.exe.
@@ -576,9 +650,67 @@ else
   DEV_PORT=1420
 fi
 
-if (( DEV_PORT != 1420 )); then
-  echo "[run-dev-win] AURA_DEV_PORT=$DEV_PORT — overriding tauri devUrl"
-  "$PNPM_EXE" tauri dev -c "{\"build\":{\"devUrl\":\"http://localhost:$DEV_PORT\"}}"
-else
-  "$PNPM_EXE" tauri dev
+# Start the Vite dev server ourselves, via `$PNPM_EXE` directly, instead of
+# letting `cargo tauri dev` run `tauri.conf.json`'s `beforeDevCommand`
+# (`pnpm run dev`) for us.
+#
+# `beforeDevCommand` is executed by `cargo-tauri.exe` itself, as a bare
+# `pnpm` lookup on whatever PATH that native child process (and whatever it
+# in turn spawns to run the command — a real `cmd.exe`, confirmed by the
+# Italian "'pnpm' is not recognized" text that only cmd.exe's own resolver
+# produces) is handed. Empirically, on this machine, that PATH comes
+# through empty (`cmd.exe //c "echo %%PATH%%"` printed nothing, not even an
+# unresolved `%PATH%` literal — the literal-vs-empty distinction is what
+# tells them apart) despite this same bash session resolving `pnpm`,
+# `node`, and `cargo` just fine throughout the script — something in the
+# MSYS-to-native environment handoff loses PATH specifically for
+# `cargo-tauri.exe`'s own subprocess spawns, root cause not fully
+# isolated. Running the dev server directly under bash's own (working)
+# PATH sidesteps the whole question, and disabling `beforeDevCommand` via
+# the same inline JSON config override already used for `devUrl` means
+# `cargo tauri dev` never attempts that spawn at all.
+echo "[run-dev-win] starting Vite dev server on port $DEV_PORT"
+# Invoke Vite's JS entrypoint directly via `node` rather than `pnpm run dev`.
+# `pnpm run dev` isolated down to *exactly* this: pnpm's own script runner
+# resolves "vite" to `node_modules/.bin/vite.CMD` and has Windows interpret
+# that `.cmd` wrapper, which requires a fresh `cmd.exe` — and empirically,
+# in this script's own accumulated environment specifically, that hop comes
+# back `"node" is not recognized` even though a direct `node -e "..."` call
+# one line earlier, in the exact same environment, resolves `node` fine and
+# sees a full, correctly-translated ~9KB PATH. Root cause not fully
+# isolated (something about how pnpm.cjs's own child-process spawn builds
+# the `.cmd` interpreter's environment specifically), but calling `node`
+# directly on Vite's own entrypoint sidesteps the whole pnpm-script-runner
+# hop, matching how `node -e` already proved reliable here.
+VITE_BIN="$APP_DIR/node_modules/vite/bin/vite.js"
+if [[ ! -f "$VITE_BIN" ]]; then
+  echo "[run-dev-win] $VITE_BIN not found — run 'pnpm install' first" >&2
+  exit 1
 fi
+AURA_DEV_PORT="$DEV_PORT" node "$VITE_BIN" &
+VITE_PID=$!
+trap 'kill "$VITE_PID" 2>/dev/null || true' EXIT
+
+echo "[run-dev-win] waiting for Vite to come up on http://localhost:$DEV_PORT ..."
+vite_ready=0
+for _ in $(seq 1 60); do
+  if curl -sf "http://localhost:$DEV_PORT" >/dev/null 2>&1; then
+    vite_ready=1
+    break
+  fi
+  if ! kill -0 "$VITE_PID" 2>/dev/null; then
+    echo "[run-dev-win] Vite dev server process exited before becoming ready" >&2
+    exit 1
+  fi
+  sleep 1
+done
+if [[ "$vite_ready" -ne 1 ]]; then
+  echo "[run-dev-win] WARNING: Vite didn't answer within 60s; proceeding anyway (cargo-tauri may retry its own connection)" >&2
+fi
+echo "[run-dev-win] Vite is up, launching cargo tauri dev"
+
+# `cargo tauri dev`, not `"$PNPM_EXE" tauri dev` — see the comment above
+# `ensure-tauri-cli.sh` for why pnpm's script runner is avoided here.
+# `cargo` resolves the `tauri` subcommand via `cargo-tauri` on PATH
+# (installed by `ensure-tauri-cli.sh` above) with no shell hop at all.
+cargo tauri dev -c "{\"build\":{\"beforeDevCommand\":\"\",\"devUrl\":\"http://localhost:$DEV_PORT\"}}"

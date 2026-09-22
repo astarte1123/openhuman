@@ -127,6 +127,10 @@ export interface BrowserSettingsUpdate {
   enabled?: boolean | null;
 }
 
+export interface LocaleSettingsUpdate {
+  locale?: string | null;
+}
+
 export interface ScreenIntelligenceSettingsUpdate {
   enabled?: boolean | null;
   capture_policy?: string | null;
@@ -288,6 +292,18 @@ export async function auraUpdateBrowserSettings(
   });
 }
 
+export async function auraUpdateLocale(
+  update: LocaleSettingsUpdate
+): Promise<CommandResponse<ConfigSnapshot>> {
+  if (!isTauri()) {
+    throw new Error('Not running in Tauri');
+  }
+  return await callCoreRpc<CommandResponse<ConfigSnapshot>>({
+    method: CORE_RPC_METHODS.configUpdateLocale,
+    params: update,
+  });
+}
+
 export async function auraUpdateScreenIntelligenceSettings(
   update: ScreenIntelligenceSettingsUpdate
 ): Promise<CommandResponse<ConfigSnapshot>> {
@@ -438,7 +454,7 @@ export async function aiGetConfig(): Promise<AIPreview> {
   return {
     soul: {
       raw: '',
-      name: 'Aura',
+      name: 'Youma',
       description: 'Agent',
       personalityPreview: [],
       safetyRulesPreview: [],

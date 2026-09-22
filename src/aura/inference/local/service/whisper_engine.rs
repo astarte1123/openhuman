@@ -160,7 +160,11 @@ pub fn transcribe_pcm_f32(
     if let Some(lang) = language {
         params.set_language(Some(lang));
     } else {
-        params.set_language(Some("en"));
+        // No caller-supplied hint: auto-detect from the audio instead of
+        // silently forcing English. Callers should normally pass the
+        // app's configured locale (see `LocalAiService::transcribe_with_prompt`)
+        // so this branch is the fallback for language-agnostic callers only.
+        params.set_language(Some("auto"));
     }
 
     // Pass initial_prompt to bias whisper toward known vocabulary and
@@ -226,7 +230,7 @@ pub fn transcribe_pcm_f32(
     let infer_elapsed = infer_started.elapsed();
 
     let n_segments = state.full_n_segments();
-    let mut text = String::new();
+    let mut accepted_segments: Vec<String> = Vec::new();
     let mut segments_accepted = 0usize;
     let mut logprob_sum = 0.0f32;
 
@@ -267,9 +271,30 @@ pub fn transcribe_pcm_f32(
             logprob_sum += avg_logprob;
         }
 
-        text.push_str(segment_text);
+        accepted_segments.push(segment_text.to_string());
         segments_accepted += 1;
     }
+
+    // Post-process against whisper.cpp's well-documented hallucination
+    // patterns (repetition loops, foreign-script drift on quiet audio,
+    // known training-data-leak phrases like "thank you for watching") —
+    // the per-segment logprob/entropy/no-speech thresholds above catch the
+    // *low-confidence* case, but whisper can hallucinate these with
+    // deceptively high confidence. See `whisper_guard` crate docs.
+    let (cleaned_segments, guard_stats) = whisper_guard::clean_segments_with_options(
+        &accepted_segments,
+        &whisper_guard::CleanOptions {
+            keep_dedup_annotations: false,
+            ..whisper_guard::CleanOptions::default()
+        },
+    );
+    if guard_stats.lines_removed > 0 {
+        debug!(
+            "{LOG_PREFIX} whisper-guard: {}",
+            guard_stats.summary()
+        );
+    }
+    let text: String = cleaned_segments.join("");
 
     let trimmed = text.trim().to_string();
     let avg_logprob = if segments_accepted > 0 {

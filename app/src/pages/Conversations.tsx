@@ -192,6 +192,11 @@ const Conversations = ({ variant = 'page', composer = 'text' }: ConversationsPro
   const socketStatus = useAppSelector(selectSocketStatus);
   const agentProfiles = useAppSelector(selectAgentProfiles);
   const selectedAgentProfileId = useAppSelector(selectActiveAgentProfileId);
+  // ISO 639-1 hint for the mic composer's STT call — derived from the app's
+  // selected locale (e.g. 'it-IT' -> 'it') rather than MicComposer's own
+  // 'en' default, so voice input is transcribed in the language the user
+  // actually configured, not silently forced to English.
+  const sttLanguage = useAppSelector(state => state.locale.current.split('-')[0]);
   const {
     profileDraftOpen,
     setProfileDraftOpen,
@@ -1594,6 +1599,7 @@ const Conversations = ({ variant = 'page', composer = 'text' }: ConversationsPro
               onSubmit={text => handleSendMessage(text)}
               onError={message => setSendError(chatSendError('voice_transcription', message))}
               showDeviceSelector
+              language={sttLanguage}
             />
           ) : inputMode === 'text' ? (
             <div className="flex items-end gap-3">

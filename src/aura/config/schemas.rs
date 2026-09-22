@@ -107,6 +107,15 @@ struct BrowserSettingsUpdate {
 }
 
 #[derive(Debug, Deserialize)]
+struct LocaleSettingsUpdate {
+    /// BCP-47-ish tag, e.g. `"it-IT"`. Resolved against
+    /// [`crate::aura::locale::SUPPORTED_LOCALES`] before being saved — an
+    /// unsupported or empty tag falls back to `en-GB`, mirroring the
+    /// frontend's `resolveSupportedLocale` cascade.
+    locale: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
 struct ScreenIntelligenceSettingsUpdate {
     enabled: Option<bool>,
     capture_policy: Option<String>,
@@ -205,6 +214,7 @@ pub fn all_controller_schemas() -> Vec<ControllerSchema> {
         schemas("update_screen_intelligence_settings"),
         schemas("update_runtime_settings"),
         schemas("update_browser_settings"),
+        schemas("update_locale"),
         schemas("update_local_ai_settings"),
         schemas("resolve_api_url"),
         schemas("get_runtime_flags"),
@@ -258,6 +268,10 @@ pub fn all_registered_controllers() -> Vec<RegisteredController> {
         RegisteredController {
             schema: schemas("update_browser_settings"),
             handler: handle_update_browser_settings,
+        },
+        RegisteredController {
+            schema: schemas("update_locale"),
+            handler: handle_update_locale,
         },
         RegisteredController {
             schema: schemas("update_local_ai_settings"),
@@ -525,6 +539,21 @@ pub fn schemas(function: &str) -> ControllerSchema {
             function: "update_browser_settings",
             description: "Update browser automation settings.",
             inputs: vec![optional_bool("enabled", "Enable browser integration.")],
+            outputs: vec![json_output("snapshot", "Updated config snapshot.")],
+        },
+        "update_locale" => ControllerSchema {
+            namespace: "config",
+            function: "update_locale",
+            description: "Persist the user's selected app locale so it propagates to \
+                AI response language, notifications, and STT/TTS language hints. \
+                The frontend's language selector must call this whenever the user \
+                changes locale — Redux/localStorage alone only affects UI strings, \
+                not the core.",
+            inputs: vec![optional_string(
+                "locale",
+                "BCP-47-ish tag, e.g. 'it-IT'. Resolved against the supported-locale \
+                 registry; unsupported or empty falls back to en-GB.",
+            )],
             outputs: vec![json_output("snapshot", "Updated config snapshot.")],
         },
         "update_local_ai_settings" => ControllerSchema {
@@ -1037,6 +1066,16 @@ fn handle_update_runtime_settings(params: Map<String, Value>) -> ControllerFutur
             reasoning_enabled: update.reasoning_enabled,
         };
         to_json(config_rpc::load_and_apply_runtime_settings(patch).await?)
+    })
+}
+
+fn handle_update_locale(params: Map<String, Value>) -> ControllerFuture {
+    Box::pin(async move {
+        let update = deserialize_params::<LocaleSettingsUpdate>(params)?;
+        let patch = config_rpc::LocaleSettingsPatch {
+            locale: update.locale,
+        };
+        to_json(config_rpc::load_and_apply_locale_settings(patch).await?)
     })
 }
 

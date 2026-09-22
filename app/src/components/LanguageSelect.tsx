@@ -1,6 +1,8 @@
 import { SUPPORTED_LOCALES } from '../lib/i18n/locales';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setLocale } from '../store/localeSlice';
+import { auraUpdateLocale } from '../utils/tauriCommands/config';
+import { isTauri } from '../services/webviewAccountService';
 
 interface LanguageSelectProps {
   /** Accessible label for the underlying <select>. */
@@ -19,16 +21,31 @@ const DEFAULT_CLASS =
  * screen. Each language is shown by its own native name (e.g. "Italiano",
  * "Deutsch") — never translated — and dispatches `setLocale` (an explicit
  * pick, persisted and never auto-overridden) to the redux store on change.
+ *
+ * Also persists the choice to the core via `aura.config_update_locale` —
+ * the redux store only drives UI strings; the core's `config.locale` is
+ * what AI response language, STT/TTS language hints, and localized
+ * notifications actually read. Without this call the two drift and the
+ * app silently keeps responding in English regardless of the UI language.
  */
 const LanguageSelect = ({ ariaLabel = 'Language', id, className }: LanguageSelectProps) => {
   const dispatch = useAppDispatch();
   const current = useAppSelector(state => state.locale.current);
 
+  const handleChange = (code: (typeof SUPPORTED_LOCALES)[number]['code']) => {
+    dispatch(setLocale(code));
+    if (isTauri()) {
+      auraUpdateLocale({ locale: code }).catch(err => {
+        console.error('[LanguageSelect] failed to persist locale to core', err);
+      });
+    }
+  };
+
   return (
     <select
       id={id}
       value={current}
-      onChange={e => dispatch(setLocale(e.target.value as (typeof SUPPORTED_LOCALES)[number]['code']))}
+      onChange={e => handleChange(e.target.value as (typeof SUPPORTED_LOCALES)[number]['code'])}
       aria-label={ariaLabel}
       className={className ?? DEFAULT_CLASS}>
       {SUPPORTED_LOCALES.map(locale => (
