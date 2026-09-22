@@ -406,10 +406,17 @@ pub fn schemas(function: &str) -> ControllerSchema {
             namespace: "meetings",
             function: "start_local_capture",
             description:
-                "Start local live audio capture (microphone + best-effort system-audio loopback) for a recording meeting, streaming transcript chunks in as they're transcribed.",
-            inputs: vec![meeting_id_input(
-                "Identifier of the recording meeting to capture audio for.",
-            )],
+                "Start local live audio capture (microphone + best-effort system-audio loopback) for a recording meeting, streaming transcript chunks in as they're transcribed. Also starts periodic slide-screenshot capture + OCR for the same session unless 'capture_screenshots' is false.",
+            inputs: vec![
+                meeting_id_input("Identifier of the recording meeting to capture audio for."),
+                FieldSchema {
+                    name: "capture_screenshots",
+                    ty: TypeSchema::Option(Box::new(TypeSchema::Bool)),
+                    comment:
+                        "Whether to also periodically capture + OCR slide screenshots for this session; defaults to true.",
+                    required: false,
+                },
+            ],
             outputs: vec![FieldSchema {
                 name: "result",
                 ty: TypeSchema::Object {
@@ -611,7 +618,11 @@ fn handle_start_local_capture(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let config = config_rpc::load_config_with_timeout().await?;
         let meeting_id = read_required::<String>(&params, "meeting_id")?;
-        to_json(ops::meetings_start_local_capture(&config, meeting_id.trim()).await?)
+        let capture_screenshots = read_optional::<bool>(&params, "capture_screenshots")?;
+        to_json(
+            ops::meetings_start_local_capture(&config, meeting_id.trim(), capture_screenshots)
+                .await?,
+        )
     })
 }
 
@@ -748,9 +759,40 @@ mod tests {
     #[test]
     fn schemas_start_local_capture_requires_meeting_id() {
         let s = schemas("start_local_capture");
-        assert!(s.inputs.iter().all(|f| f.required));
         assert_eq!(s.inputs[0].name, "meeting_id");
+        assert!(s.inputs[0].required);
         assert_eq!(s.outputs[0].name, "result");
+    }
+
+    #[test]
+    fn schemas_start_local_capture_capture_screenshots_is_optional() {
+        let s = schemas("start_local_capture");
+        let capture_screenshots = s
+            .inputs
+            .iter()
+            .find(|f| f.name == "capture_screenshots")
+            .expect("capture_screenshots field must be declared");
+        assert!(!capture_screenshots.required);
+    }
+
+    #[test]
+    fn handle_start_local_capture_capture_screenshots_param_rejects_wrong_type() {
+        // `read_optional::<bool>` — used by `handle_start_local_capture` —
+        // must reject a non-boolean `capture_screenshots` value with a clear
+        // error rather than silently coercing it.
+        let mut params = Map::new();
+        params.insert("capture_screenshots".into(), json!("not-a-bool"));
+        let err = read_optional::<bool>(&params, "capture_screenshots").unwrap_err();
+        assert!(err.contains("invalid 'capture_screenshots'"));
+    }
+
+    #[test]
+    fn handle_start_local_capture_capture_screenshots_param_defaults_to_none() {
+        let params = Map::new();
+        assert_eq!(
+            read_optional::<bool>(&params, "capture_screenshots").unwrap(),
+            None
+        );
     }
 
     #[test]

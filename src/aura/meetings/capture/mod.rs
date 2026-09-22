@@ -14,6 +14,14 @@
 //! modules keeps the callback-thread code — which must never block, allocate
 //! unpredictably, or await — clearly separated from the tokio-task code that
 //! does all of that.
+//!
+//! `screenshot` (private; used only by [`pipeline::run_capture_session`])
+//! is Block 3: a sibling periodic task, spawned alongside the audio consumer
+//! loop for the same session, that captures the primary monitor every ~20s,
+//! skips near-duplicate frames, and persists new ones via the existing
+//! [`crate::aura::meetings::ops::meetings_append_screenshot`] — see that
+//! module's doc comment for the full design and for why it isn't
+//! platform-gated to Windows the way audio capture currently is.
 
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
@@ -26,6 +34,10 @@ use tokio::sync::oneshot;
 pub mod pipeline;
 #[cfg(feature = "diarize")]
 pub mod raw_audio_sink;
+/// Periodic slide-screenshot capture (Block 3), wired into
+/// [`pipeline::run_capture_session`] — see that module's doc comment.
+/// Private: nothing outside `capture` needs it directly.
+mod screenshot;
 #[cfg(target_os = "windows")]
 pub mod windows;
 
@@ -95,6 +107,17 @@ pub struct CaptureHandle {
     /// [`CaptureHandle::stop_and_wait_for_drain`]'s doc comment for why this
     /// exists.
     finished_rx: Option<oneshot::Receiver<()>>,
+    /// Sibling tasks spawned for this session whose *task completion*
+    /// [`CaptureHandle::stop_and_wait_for_drain`] must also wait for, beyond
+    /// [`finished_rx`](Self::finished_rx) — currently just
+    /// [`super::screenshot::spawn_capture_task`]'s `JoinHandle`. Its stop
+    /// flag is already registered via [`CaptureHandle::add_track`] (so
+    /// `stop()`/`signal_stop` tells it to exit), but a stop flag only signals
+    /// *intent*; without awaiting the task itself, `stop_and_wait_for_drain`
+    /// could return — and a caller like `ops::meetings_finish` could flip the
+    /// meeting to `Completed` — while that task is still mid-cycle (in-flight
+    /// capture/OCR/write). `label` is used only for logging.
+    extra_join_handles: Vec<(tokio::task::JoinHandle<()>, &'static str)>,
 }
 
 impl CaptureHandle {
@@ -102,6 +125,7 @@ impl CaptureHandle {
         Self {
             tracks: Vec::new(),
             finished_rx: None,
+            extra_join_handles: Vec::new(),
         }
     }
 
@@ -117,6 +141,14 @@ impl CaptureHandle {
     /// consumer task, before the handle is returned to its caller.
     pub(crate) fn set_finished_signal(&mut self, rx: oneshot::Receiver<()>) {
         self.finished_rx = Some(rx);
+    }
+
+    /// Registers a sibling task's `JoinHandle` so
+    /// [`CaptureHandle::stop_and_wait_for_drain`] also waits for it to
+    /// actually finish — see
+    /// [`extra_join_handles`](Self::extra_join_handles)'s doc comment.
+    pub(crate) fn add_join_handle(&mut self, handle: tokio::task::JoinHandle<()>, label: &'static str) {
+        self.extra_join_handles.push((handle, label));
     }
 
     /// True when this handle has at least one live track — used by backends
@@ -155,37 +187,57 @@ impl CaptureHandle {
     /// here `meetings_diarize` could open the file before its header was
     /// ever rewritten and silently read zero/truncated samples.
     ///
+    /// Also awaits every sibling task registered via
+    /// [`CaptureHandle::add_join_handle`] (currently just the screenshot
+    /// capture task, when the session has one) to actually finish — not just
+    /// observe its stop flag — so a caller like `ops::meetings_finish` never
+    /// marks the meeting `Completed` while a sibling task is still mid-cycle
+    /// (e.g. mid capture/OCR/write). Both the audio-drain wait and the
+    /// sibling-task waits share the single `timeout` budget below.
+    ///
     /// Best-effort: a missing signal (handle built without one, e.g. a unit
-    /// test), a dropped sender (consumer task panicked before sending), or a
-    /// timeout are all logged and treated as "stopped, drain outcome
-    /// unknown" rather than propagated as a hard error — every track's stop
-    /// flag is signalled unconditionally before any of that is checked, so
-    /// the capture threads are never left running regardless of how this
-    /// returns.
+    /// test), a dropped sender (consumer task panicked before sending), a
+    /// sibling task join error, or an overall timeout are all logged and
+    /// treated as "stopped, drain outcome unknown" rather than propagated as
+    /// a hard error — every track's stop flag is signalled unconditionally
+    /// before any of that is checked, so the capture threads are never left
+    /// running regardless of how this returns.
     pub async fn stop_and_wait_for_drain(self, timeout: Duration) -> Result<(), String> {
         self.signal_stop();
-        let Some(finished_rx) = self.finished_rx else {
-            debug!(
-                "{LOG_PREFIX} stop_and_wait_for_drain: no finished-signal attached, cannot wait \
-                 for drain"
-            );
-            return Ok(());
+        let extra_join_handles = self.extra_join_handles;
+        let drain = async move {
+            match self.finished_rx {
+                Some(finished_rx) => match finished_rx.await {
+                    Ok(()) => debug!(
+                        "{LOG_PREFIX} stop_and_wait_for_drain: consumer loop drained and finalized"
+                    ),
+                    Err(_) => warn!(
+                        "{LOG_PREFIX} stop_and_wait_for_drain: finished-signal sender dropped \
+                         without completing (consumer task may have panicked) — proceeding \
+                         without drain confirmation"
+                    ),
+                },
+                None => debug!(
+                    "{LOG_PREFIX} stop_and_wait_for_drain: no finished-signal attached, cannot \
+                     wait for drain"
+                ),
+            }
+
+            for (handle, label) in extra_join_handles {
+                match handle.await {
+                    Ok(()) => debug!(
+                        "{LOG_PREFIX} stop_and_wait_for_drain: sibling task '{label}' finished"
+                    ),
+                    Err(e) => warn!(
+                        "{LOG_PREFIX} stop_and_wait_for_drain: sibling task '{label}' join \
+                         error: {e} — proceeding without its completion confirmed"
+                    ),
+                }
+            }
         };
-        match tokio::time::timeout(timeout, finished_rx).await {
-            Ok(Ok(())) => {
-                debug!(
-                    "{LOG_PREFIX} stop_and_wait_for_drain: consumer loop drained and finalized"
-                );
-                Ok(())
-            }
-            Ok(Err(_)) => {
-                warn!(
-                    "{LOG_PREFIX} stop_and_wait_for_drain: finished-signal sender dropped \
-                     without completing (consumer task may have panicked) — proceeding without \
-                     drain confirmation"
-                );
-                Ok(())
-            }
+
+        match tokio::time::timeout(timeout, drain).await {
+            Ok(()) => Ok(()),
             Err(_) => {
                 warn!(
                     "{LOG_PREFIX} stop_and_wait_for_drain: timed out after {timeout:?} waiting \

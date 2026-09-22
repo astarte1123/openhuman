@@ -415,6 +415,12 @@ pub async fn meetings_append_transcript_chunk(
 ///
 /// Mirrors [`meetings_append_transcript_chunk`]'s validation: the meeting
 /// must exist and be `recording`.
+///
+/// The PNG is written to disk before the (fallible) OCR + store steps run —
+/// if any of those fail, the just-written file is removed (best-effort) so a
+/// persistent failure (e.g. no network for a first-time OCR model download)
+/// doesn't leak one orphaned full-resolution screenshot per capture tick for
+/// the rest of the meeting.
 pub async fn meetings_append_screenshot(
     config: &Config,
     meeting_id: &str,
@@ -455,6 +461,41 @@ pub async fn meetings_append_screenshot(
         .await
         .map_err(|e| format!("failed to write {}: {e}", image_path.display()))?;
 
+    // Everything from here on (OCR model download, OCR itself, the store
+    // insert) can fail, and none of it should leave the PNG just written
+    // above behind as an orphan — a persistent failure (e.g. no network for
+    // a first-time OCR model download) would otherwise leak one full-res
+    // screenshot per capture tick for the rest of the meeting. `result`
+    // captures the outcome so the cleanup-on-failure block below can run
+    // unconditionally before this function returns, whichever way it went.
+    let result = append_screenshot_after_write(config, meeting_id, captured_at_ms, &image_path, png_bytes).await;
+    if let Err(ref e) = result {
+        match tokio::fs::remove_file(&image_path).await {
+            Ok(()) => log::debug!(
+                "[meetings] meetings_append_screenshot: cleaned up orphaned screenshot \
+                 {} after failure: {e}",
+                image_path.display()
+            ),
+            Err(remove_err) => log::warn!(
+                "[meetings] meetings_append_screenshot: failed to clean up orphaned \
+                 screenshot {} after failure (original error: {e}): {remove_err}",
+                image_path.display()
+            ),
+        }
+    }
+    result
+}
+
+/// OCR + persist steps of [`meetings_append_screenshot`], split out so the
+/// caller can run one cleanup path (remove the just-written PNG) over every
+/// failure mode below without duplicating it at each `?`.
+async fn append_screenshot_after_write(
+    config: &Config,
+    meeting_id: &str,
+    captured_at_ms: i64,
+    image_path: &std::path::Path,
+    png_bytes: Vec<u8>,
+) -> Result<RpcOutcome<MeetingScreenshot>, String> {
     let models_dir = config.workspace_dir.join("meetings").join("models");
     ocr::ensure_models_downloaded(&models_dir)
         .await
@@ -685,18 +726,36 @@ async fn summarize_transcript(config: &Config, transcript: &str) -> Result<Strin
 /// on Windows) for a `recording` meeting, streaming transcript chunks in as
 /// they're transcribed via [`capture::pipeline::run_capture_session`].
 ///
+/// `capture_screenshots` (default `true` when `None`) additionally starts
+/// [`capture::pipeline`]'s sibling periodic slide-screenshot-capture task
+/// (Block 3 — see `capture::screenshot`'s doc comment) for the same session,
+/// persisting new slides via the existing
+/// [`meetings_append_screenshot`]. Pass `Some(false)` to opt a session out
+/// (e.g. a privacy-sensitive meeting, or a headless/test invocation with no
+/// real display to capture from) without disabling audio transcription.
+///
 /// Mirrors [`meetings_append_transcript_chunk`]'s validation: the meeting
 /// must exist and be `recording`. Rejects a second concurrent capture for
 /// the same meeting rather than silently replacing it — call
-/// [`meetings_stop_local_capture`] first.
+/// [`meetings_stop_local_capture`] first. Also rejects a meeting whose
+/// `source` is `"meeting_recorder"` — that means the Tauri shell's own
+/// independent `meeting_recorder` capture pipeline already owns this
+/// meeting's audio + screenshot capture; running this core-native path for
+/// it too would double both.
 pub async fn meetings_start_local_capture(
     config: &Config,
     meeting_id: &str,
+    capture_screenshots: Option<bool>,
 ) -> Result<RpcOutcome<serde_json::Value>, String> {
     if meeting_id.trim().is_empty() {
         return Err("Missing 'meeting_id' parameter".to_string());
     }
     let meeting_id = meeting_id.trim();
+    let capture_screenshots = capture_screenshots.unwrap_or(true);
+    log::debug!(
+        "{LOG_PREFIX} [meetings-slides] meetings_start_local_capture: meeting_id={meeting_id} \
+         capture_screenshots={capture_screenshots}"
+    );
 
     register_shutdown_hook_once();
 
@@ -708,6 +767,26 @@ pub async fn meetings_start_local_capture(
         log::warn!(
             "{LOG_PREFIX} meetings_start_local_capture: rejected meeting_id={meeting_id} reason={msg}"
         );
+        return Err(msg);
+    }
+
+    // The Tauri shell's own `meeting_recorder` (app/src-tauri/src/
+    // meeting_recorder/) runs a fully independent mic/system-audio +
+    // screenshot capture pipeline for meetings it creates itself, tagging
+    // them `source: "meeting_recorder"` (see `meetings_create`). It has no
+    // visibility into `ACTIVE_CAPTURES` below (that registry is
+    // process-local to this core-native path), so without this check a
+    // second, core-native capture session could be started for the same
+    // meeting_id — doubling screenshot writes and OCR compute, with the two
+    // loops' dedup baselines never seeing each other's frames. Reject
+    // up front instead: this path is for meetings recorded via the
+    // core-native flow only.
+    if meeting.source == "meeting_recorder" {
+        let msg = format!(
+            "meeting {meeting_id} is already being captured by the desktop app's own meeting \
+             recorder (source=meeting_recorder); core-native local capture is not applicable to it"
+        );
+        log::warn!("{LOG_PREFIX} meetings_start_local_capture: rejected meeting_id={meeting_id} reason={msg}");
         return Err(msg);
     }
 
@@ -748,6 +827,7 @@ pub async fn meetings_start_local_capture(
         config.clone(),
         whisper,
         backend,
+        capture_screenshots,
     )
     .await;
 

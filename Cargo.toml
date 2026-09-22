@@ -164,6 +164,18 @@ docx-rs = "0.4"
 ocrs = "0.12"
 rten = "0.24"
 
+# Periodic meeting-slide screenshot capture (Block 3: feeds `ocrs` above via
+# the existing `ops::meetings_append_screenshot`) for the core-native local
+# capture lifecycle (`aura::meetings::capture`). Same crate + version app's
+# Tauri shell already depends on for its own (separate, HTTP-RPC-based)
+# `meeting_recorder::screenshot` capture loop — see that crate's Cargo.toml
+# comment: unlike WASAPI mic/loopback audio (Windows-only for now, see the
+# `wasapi` target dependency below), `xcap::Monitor::all()` works on Windows,
+# macOS, and Linux, so this is deliberately NOT platform-gated even though
+# `aura::meetings::capture::default_backend()` currently only returns a real
+# backend on Windows.
+xcap = "0.9"
+
 # Real per-speaker diarization for meeting `system_audio` (splitting
 # "system_audio" into "system_audio:speaker_N"). Gated behind the optional
 # `diarize` Cargo feature (off by default, `dep:`-only below) — this is

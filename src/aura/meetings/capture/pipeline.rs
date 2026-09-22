@@ -36,6 +36,8 @@
 //! it isn't attempted here.
 
 use std::collections::HashMap;
+use std::sync::atomic::AtomicBool;
+use std::sync::Arc;
 use std::time::Duration;
 
 use log::{debug, warn};
@@ -117,11 +119,20 @@ const MIN_VOICED_PREFIX_SAMPLES: usize = (WHISPER_SAMPLE_RATE / 4) as usize;
 /// scheduled to run for the duration of device setup, so it's offloaded to
 /// `spawn_blocking`, mirroring [`flush_and_transcribe`]'s use of
 /// `spawn_blocking` for its own blocking whisper call.
+///
+/// `capture_screenshots` (see `ops::meetings_start_local_capture`'s doc
+/// comment) additionally spawns [`super::screenshot::spawn_capture_task`] as
+/// a sibling task for the same session when `true`, and registers its stop
+/// flag on the returned [`CaptureHandle`] via `add_track` — so
+/// `CaptureHandle::stop()` / `stop_and_wait_for_drain()` shut it down
+/// exactly the same way they shut down every audio capture thread, with no
+/// separate lifecycle to track.
 pub async fn run_capture_session(
     meeting_id: String,
     config: Config,
     whisper: WhisperEngineHandle,
     backend: Box<dyn AudioCaptureBackend>,
+    capture_screenshots: bool,
 ) -> Result<CaptureHandle, String> {
     let (tx, rx) = tokio::sync::mpsc::unbounded_channel::<AudioChunk>();
 
@@ -148,6 +159,32 @@ pub async fn run_capture_session(
     // `CaptureHandle::stop_and_wait_for_drain`'s doc comment.
     let (finished_tx, finished_rx) = tokio::sync::oneshot::channel();
     capture_handle.set_finished_signal(finished_rx);
+
+    if capture_screenshots {
+        let screenshot_stop_flag = Arc::new(AtomicBool::new(false));
+        capture_handle.add_track(screenshot_stop_flag.clone(), "screenshot");
+        debug!(
+            "{LOG_PREFIX} [meetings-slides] starting periodic slide capture meeting_id={meeting_id}"
+        );
+        let screenshot_join_handle = super::screenshot::spawn_capture_task(
+            meeting_id.clone(),
+            config.clone(),
+            screenshot_stop_flag,
+        );
+        // Registered so `CaptureHandle::stop_and_wait_for_drain` (used by
+        // `ops::meetings_finish`) actually waits for this task to finish —
+        // not just for its stop flag to be observed — before the caller can
+        // proceed to finalize the meeting. Without this, the task's
+        // `JoinHandle` would be silently discarded and a slide capture still
+        // mid-cycle (capture/OCR/write) when the meeting finishes could be
+        // dropped once the meeting is no longer `Recording`.
+        capture_handle.add_join_handle(screenshot_join_handle, "screenshot");
+    } else {
+        debug!(
+            "{LOG_PREFIX} [meetings-slides] periodic slide capture disabled for this session \
+             meeting_id={meeting_id}"
+        );
+    }
 
     tokio::spawn(run_consumer_loop(meeting_id, config, whisper, rx, finished_tx));
 

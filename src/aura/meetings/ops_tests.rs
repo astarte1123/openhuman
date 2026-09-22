@@ -472,7 +472,7 @@ async fn meetings_start_local_capture_rejects_empty_meeting_id() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
 
-    let err = meetings_start_local_capture(&config, "   ")
+    let err = meetings_start_local_capture(&config, "   ", None)
         .await
         .unwrap_err();
     assert!(err.contains("Missing 'meeting_id'"));
@@ -483,7 +483,7 @@ async fn meetings_start_local_capture_errors_when_meeting_missing() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
 
-    let err = meetings_start_local_capture(&config, "does-not-exist")
+    let err = meetings_start_local_capture(&config, "does-not-exist", None)
         .await
         .unwrap_err();
     assert!(err.contains("not found"));
@@ -496,10 +496,64 @@ async fn meetings_start_local_capture_errors_when_meeting_not_recording() {
     let created = meetings_create(&config, None, None).await.unwrap().value;
     meetings_finish(&config, &created.id, 1_000).await.unwrap();
 
-    let err = meetings_start_local_capture(&config, &created.id)
+    let err = meetings_start_local_capture(&config, &created.id, None)
         .await
         .unwrap_err();
     assert!(err.contains("meeting is not recording"));
+}
+
+#[tokio::test]
+async fn meetings_start_local_capture_rejects_meeting_recorder_source() {
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+    let created = meetings_create(&config, None, Some("meeting_recorder".to_string()))
+        .await
+        .unwrap()
+        .value;
+    assert_eq!(created.status, MeetingStatus::Recording);
+
+    let err = meetings_start_local_capture(&config, &created.id, None)
+        .await
+        .unwrap_err();
+    assert!(err.contains("meeting_recorder"));
+
+    // Confirm this really is a rejection, not a registry side effect: a
+    // meeting the shell already owns must never occupy an `ACTIVE_CAPTURES`
+    // slot as a result of this call.
+    assert!(!ACTIVE_CAPTURES.lock().unwrap().contains_key(&created.id));
+}
+
+// `capture_screenshots` reaches the same "meeting is not recording" /
+// "meeting not found" validation regardless of its value — these two cases
+// confirm `Some(true)` / `Some(false)` are both accepted params that don't
+// change (or skip) that validation. Whether a `capture_screenshots=false`
+// session actually skips spawning the screenshot task can't be asserted
+// here without real audio hardware to reach `capture::default_backend()`
+// (see this file's "local capture" section doc comment) — that behavior is
+// covered by `capture::screenshot`'s own unit tests plus manual
+// verification.
+#[tokio::test]
+async fn meetings_start_local_capture_accepts_explicit_capture_screenshots_true() {
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+    let created = meetings_create(&config, None, None).await.unwrap().value;
+    meetings_finish(&config, &created.id, 1_000).await.unwrap();
+
+    let err = meetings_start_local_capture(&config, &created.id, Some(true))
+        .await
+        .unwrap_err();
+    assert!(err.contains("meeting is not recording"));
+}
+
+#[tokio::test]
+async fn meetings_start_local_capture_accepts_explicit_capture_screenshots_false() {
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+
+    let err = meetings_start_local_capture(&config, "does-not-exist", Some(false))
+        .await
+        .unwrap_err();
+    assert!(err.contains("not found"));
 }
 
 #[tokio::test]
@@ -567,7 +621,7 @@ async fn meetings_start_local_capture_rejects_when_reservation_already_starting(
         registry.insert(created.id.clone(), CaptureSlot::Starting);
     }
 
-    let err = meetings_start_local_capture(&config, &created.id)
+    let err = meetings_start_local_capture(&config, &created.id, None)
         .await
         .unwrap_err();
     assert!(err.contains("already has an active local capture session"));

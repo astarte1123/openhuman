@@ -23,6 +23,14 @@
 //! the pure-Rust `ocrs` engine — see its module doc for why OCR was chosen
 //! over a vision LLM, and for the pretrained model download URLs.
 //!
+//! Block 3 wires that periodic capture into the core-native local capture
+//! lifecycle: [`ops::meetings_start_local_capture`] optionally starts
+//! [`capture::pipeline`]'s sibling `capture::screenshot` task (private,
+//! see `capture::mod`'s doc comment), which grabs the primary monitor every
+//! ~20s, skips near-duplicate frames, and persists new ones via the
+//! existing [`ops::meetings_append_screenshot`] — no new screenshot storage
+//! or OCR path, just a new trigger for the one that already exists.
+//!
 //! `diarize` (private; used only by [`ops::meetings_diarize`], gated behind
 //! the optional, off-by-default `diarize` Cargo feature) runs real
 //! per-speaker diarization over a completed meeting's recorded
