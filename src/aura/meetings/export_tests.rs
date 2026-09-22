@@ -11,6 +11,7 @@ fn sample_meeting() -> Meeting {
         updated_at: "2026-01-01T00:10:00+00:00".into(),
         duration_ms: Some(9_000),
         summary: Some("We reviewed the backlog and assigned tickets.".into()),
+        summary_structured: None,
     }
 }
 

@@ -37,6 +37,7 @@ pub fn all_controller_schemas() -> Vec<ControllerSchema> {
         schemas("append_screenshot"),
         schemas("finish"),
         schemas("summarize"),
+        schemas("summarize_structured"),
         schemas("search"),
         schemas("export"),
         schemas("start_local_capture"),
@@ -88,6 +89,10 @@ pub fn all_registered_controllers() -> Vec<RegisteredController> {
         RegisteredController {
             schema: schemas("summarize"),
             handler: handle_summarize,
+        },
+        RegisteredController {
+            schema: schemas("summarize_structured"),
+            handler: handle_summarize_structured,
         },
         RegisteredController {
             schema: schemas("search"),
@@ -322,6 +327,53 @@ pub fn schemas(function: &str) -> ControllerSchema {
                 comment: "Summarization result payload.",
                 required: true,
             }],
+        },
+        "summarize_structured" => ControllerSchema {
+            namespace: "meetings",
+            function: "summarize_structured",
+            description:
+                "Summarize a meeting's transcript into a structured decisions + action items \
+                 payload via the configured LLM, and persist it alongside a rendered flat-prose \
+                 summary (so existing 'summary'-only readers keep working). See \
+                 'aura.meetings_summarize' for the plain-prose-only variant.",
+            inputs: vec![meeting_id_input(
+                "Identifier of the meeting to summarize.",
+            )],
+            outputs: vec![
+                FieldSchema {
+                    name: "overview",
+                    ty: TypeSchema::String,
+                    comment: "Short prose recap of the discussion.",
+                    required: true,
+                },
+                FieldSchema {
+                    name: "decisions",
+                    ty: TypeSchema::Array(Box::new(TypeSchema::String)),
+                    comment: "Concrete decisions made during the meeting.",
+                    required: true,
+                },
+                FieldSchema {
+                    name: "action_items",
+                    ty: TypeSchema::Array(Box::new(TypeSchema::Object {
+                        fields: vec![
+                            FieldSchema {
+                                name: "text",
+                                ty: TypeSchema::String,
+                                comment: "What needs doing.",
+                                required: true,
+                            },
+                            FieldSchema {
+                                name: "owner",
+                                ty: TypeSchema::Option(Box::new(TypeSchema::String)),
+                                comment: "Owner named in the transcript, if the model could tell.",
+                                required: false,
+                            },
+                        ],
+                    })),
+                    comment: "Action items called out during the meeting.",
+                    required: true,
+                },
+            ],
         },
         "search" => ControllerSchema {
             namespace: "meetings",
@@ -597,6 +649,14 @@ fn handle_summarize(params: Map<String, Value>) -> ControllerFuture {
     })
 }
 
+fn handle_summarize_structured(params: Map<String, Value>) -> ControllerFuture {
+    Box::pin(async move {
+        let config = config_rpc::load_config_with_timeout().await?;
+        let meeting_id = read_required::<String>(&params, "meeting_id")?;
+        to_json(ops::meetings_summarize_structured(&config, meeting_id.trim()).await?)
+    })
+}
+
 fn handle_search(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let config = config_rpc::load_config_with_timeout().await?;
@@ -688,6 +748,7 @@ mod tests {
             "append_screenshot",
             "finish",
             "summarize",
+            "summarize_structured",
             "search",
             "export",
             "start_local_capture",
@@ -745,6 +806,17 @@ mod tests {
         let s = schemas("append_transcript_chunk");
         let speaker = s.inputs.iter().find(|f| f.name == "speaker").unwrap();
         assert!(!speaker.required);
+    }
+
+    #[test]
+    fn schemas_summarize_structured_requires_meeting_id_and_documents_outputs() {
+        let s = schemas("summarize_structured");
+        assert!(s.inputs.iter().all(|f| f.required));
+        assert_eq!(s.inputs[0].name, "meeting_id");
+        let names: Vec<_> = s.outputs.iter().map(|f| f.name).collect();
+        assert!(names.contains(&"overview"));
+        assert!(names.contains(&"decisions"));
+        assert!(names.contains(&"action_items"));
     }
 
     #[test]

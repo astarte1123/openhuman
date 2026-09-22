@@ -14,7 +14,7 @@ use crate::aura::meetings::ocr;
 use crate::aura::meetings::store;
 use crate::aura::meetings::store::SearchResult;
 use crate::aura::meetings::types::{
-    Meeting, MeetingScreenshot, MeetingStatus, TranscriptChunk,
+    Meeting, MeetingScreenshot, MeetingStatus, MeetingSummary, TranscriptChunk,
 };
 use crate::rpc::RpcOutcome;
 use base64::{engine::general_purpose::STANDARD as BASE64, Engine as _};
@@ -25,6 +25,11 @@ use std::collections::HashMap;
 use std::sync::{Mutex, OnceLock};
 
 const LOG_PREFIX: &str = "[meetings-capture]";
+/// Log prefix for structured-summary (Block 4) work specifically, per this
+/// domain's `[meetings-*]` grep-prefix convention — distinct from the plain
+/// `"[meetings]"` prefix `meetings_summarize` already uses, so decisions /
+/// action-item extraction is easy to isolate in logs.
+const SUMMARY_LOG_PREFIX: &str = "[meetings-summary]";
 
 /// One slot in [`ACTIVE_CAPTURES`]: either a reservation for a session
 /// that's still starting, or a fully started, running session.
@@ -565,6 +570,16 @@ pub async fn meetings_finish(
     ))
 }
 
+/// Summarizes a meeting's transcript into flat prose only (pre-Block-4
+/// behavior, unchanged). Kept alongside [`meetings_summarize_structured`]
+/// for backward compatibility with existing callers that just want
+/// [`Meeting::summary`] text — note it only ever writes that column via
+/// [`store::update_summary`], never touching `summary_structured`, so
+/// calling this *after* [`meetings_summarize_structured`] leaves a
+/// previously-generated structured summary in place even though the flat
+/// `summary` text has now moved on from it (the two go stale together only
+/// in that direction; re-running `meetings_summarize_structured` always
+/// refreshes both in lockstep — see `store::update_summary_structured`).
 pub async fn meetings_summarize(
     config: &Config,
     meeting_id: &str,
@@ -582,17 +597,7 @@ pub async fn meetings_summarize(
         return Err("no transcript to summarize".to_string());
     }
 
-    let transcript = chunks
-        .iter()
-        .map(|c| {
-            format!(
-                "[{}]: {}",
-                c.speaker.as_deref().unwrap_or("unknown"),
-                c.text
-            )
-        })
-        .collect::<Vec<_>>()
-        .join("\n");
+    let transcript = build_transcript_text(&chunks);
 
     log::debug!(
         "[meetings] summarizing meeting_id={meeting_id} chunk_count={} transcript_chars={}",
@@ -608,6 +613,254 @@ pub async fn meetings_summarize(
         json!({ "summary": summary }),
         vec![format!("meeting summarized: {meeting_id}")],
     ))
+}
+
+/// Summarizes a meeting's transcript into a structured [`MeetingSummary`]
+/// (prose overview + explicit decisions + action items, Block 4) via the
+/// configured LLM, and persists it alongside a rendered flat-prose summary
+/// for backward compatibility with anything that only reads
+/// [`Meeting::summary`] (older frontend builds, `export::render_pdf` /
+/// `render_docx`, the plain `aura.meetings_summarize` RPC's own callers).
+///
+/// Shares [`meetings_summarize`]'s validation (meeting must exist, must have
+/// a non-empty transcript) and transcript-building step exactly, so both
+/// summarization flows see the identical input.
+///
+/// The LLM is asked to return JSON only; [`parse_structured_summary_response`]
+/// tolerates a markdown code fence around it or stray prose around the JSON
+/// object (a real, non-deterministic LLM does not always follow "JSON only"
+/// literally). If parsing still fails after both fallbacks, this does not
+/// error the whole RPC — it degrades to a [`MeetingSummary`] with the raw
+/// model response as `overview` and empty `decisions`/`action_items`, logs a
+/// warning, and persists that. A meeting always ends up with *some* readable
+/// summary from a successful LLM call, even one that returned malformed
+/// JSON; only a failed LLM call (network/provider error) errors this RPC.
+pub async fn meetings_summarize_structured(
+    config: &Config,
+    meeting_id: &str,
+) -> Result<RpcOutcome<MeetingSummary>, String> {
+    if meeting_id.trim().is_empty() {
+        return Err("Missing 'meeting_id' parameter".to_string());
+    }
+    let meeting_id = meeting_id.trim();
+
+    // Surface a clear "not found" error before doing any transcript work.
+    store::get_meeting(config, meeting_id).map_err(|e| e.to_string())?;
+
+    let chunks = store::list_transcript_chunks(config, meeting_id).map_err(|e| e.to_string())?;
+    if chunks.is_empty() {
+        return Err("no transcript to summarize".to_string());
+    }
+
+    let transcript = build_transcript_text(&chunks);
+
+    log::debug!(
+        "{SUMMARY_LOG_PREFIX} meetings_summarize_structured: start meeting_id={meeting_id} \
+         chunk_count={} transcript_chars={}",
+        chunks.len(),
+        transcript.len()
+    );
+
+    let raw_response = summarize_transcript_structured(config, &transcript).await?;
+
+    let summary = match parse_structured_summary_response(&raw_response) {
+        Ok(summary) => {
+            log::debug!(
+                "{SUMMARY_LOG_PREFIX} meetings_summarize_structured: meeting_id={meeting_id} \
+                 parsed structured response: decisions={} action_items={}",
+                summary.decisions.len(),
+                summary.action_items.len()
+            );
+            summary
+        }
+        Err(parse_err) => {
+            log::warn!(
+                "{SUMMARY_LOG_PREFIX} meetings_summarize_structured: meeting_id={meeting_id} \
+                 failed to parse LLM response as structured JSON ({parse_err}); falling back to \
+                 an overview-only summary built from the raw response. raw_response_chars={}",
+                raw_response.len()
+            );
+            MeetingSummary {
+                overview: raw_response.trim().to_string(),
+                decisions: Vec::new(),
+                action_items: Vec::new(),
+            }
+        }
+    };
+
+    let plain_summary = render_structured_summary_prose(&summary);
+    store::update_summary_structured(config, meeting_id, &plain_summary, &summary)
+        .map_err(|e| e.to_string())?;
+
+    log::debug!(
+        "{SUMMARY_LOG_PREFIX} meetings_summarize_structured: done meeting_id={meeting_id} \
+         decisions={} action_items={}",
+        summary.decisions.len(),
+        summary.action_items.len()
+    );
+
+    Ok(RpcOutcome::new(
+        summary,
+        vec![format!(
+            "meeting summarized (structured): {meeting_id}"
+        )],
+    ))
+}
+
+/// Builds the `"[speaker]: text"` transcript blob fed to the summarization
+/// LLM — shared verbatim by [`meetings_summarize`] and
+/// [`meetings_summarize_structured`] so both flows see identical input, and
+/// by `export::transcript_line` for the exported-document rendering (see
+/// that function's doc comment).
+fn build_transcript_text(chunks: &[TranscriptChunk]) -> String {
+    chunks
+        .iter()
+        .map(|c| {
+            format!(
+                "[{}]: {}",
+                c.speaker.as_deref().unwrap_or("unknown"),
+                c.text
+            )
+        })
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
+/// Renders a [`MeetingSummary`] to flat prose for [`Meeting::summary`] —
+/// the same field, and same rough shape (prose, then labeled sections), that
+/// [`meetings_summarize`]'s LLM prompt already asks for directly. Used so a
+/// meeting summarized via the structured flow still has a sensible
+/// `Meeting::summary` for anything that only reads that field (see
+/// `store::update_summary_structured`'s doc comment).
+///
+/// Never empty: falls back to a placeholder string if the structured summary
+/// itself is completely empty (e.g. the LLM found no decisions, no action
+/// items, and returned a blank overview) rather than persisting an empty
+/// `summary` that would render as nothing in the UI.
+fn render_structured_summary_prose(summary: &MeetingSummary) -> String {
+    let mut sections: Vec<String> = Vec::new();
+
+    let overview = summary.overview.trim();
+    if !overview.is_empty() {
+        sections.push(overview.to_string());
+    }
+
+    if !summary.decisions.is_empty() {
+        let bullets = summary
+            .decisions
+            .iter()
+            .map(|d| format!("- {}", d.trim()))
+            .collect::<Vec<_>>()
+            .join("\n");
+        sections.push(format!("Decisions:\n{bullets}"));
+    }
+
+    if !summary.action_items.is_empty() {
+        let bullets = summary
+            .action_items
+            .iter()
+            .map(|item| match item.owner.as_deref().map(str::trim) {
+                Some(owner) if !owner.is_empty() => format!("- {} ({owner})", item.text.trim()),
+                _ => format!("- {}", item.text.trim()),
+            })
+            .collect::<Vec<_>>()
+            .join("\n");
+        sections.push(format!("Action items:\n{bullets}"));
+    }
+
+    if sections.is_empty() {
+        "(no summary content)".to_string()
+    } else {
+        sections.join("\n\n")
+    }
+}
+
+/// Parses the LLM's structured-summary response into a [`MeetingSummary`].
+///
+/// Tries, in order: (1) the trimmed response as-is; (2) with a surrounding
+/// markdown code fence (`` ```json ... ``` `` or `` ``` ... ``` ``) stripped,
+/// since models frequently wrap JSON in one despite a "JSON only" system
+/// prompt; (3) the first balanced `{...}` object found anywhere in the
+/// response, in case the model added stray prose before/after the JSON.
+/// Returns the last, most specific error if every attempt fails.
+fn parse_structured_summary_response(raw: &str) -> Result<MeetingSummary, String> {
+    let trimmed = raw.trim();
+
+    if let Ok(summary) = serde_json::from_str::<MeetingSummary>(trimmed) {
+        return Ok(summary);
+    }
+
+    let unfenced = strip_markdown_json_fence(trimmed);
+    if unfenced != trimmed {
+        if let Ok(summary) = serde_json::from_str::<MeetingSummary>(unfenced) {
+            return Ok(summary);
+        }
+    }
+
+    match extract_first_json_object(unfenced) {
+        Some(candidate) => serde_json::from_str::<MeetingSummary>(&candidate).map_err(|e| {
+            format!("embedded JSON object did not match the expected MeetingSummary shape: {e}")
+        }),
+        None => Err("response contained no JSON object".to_string()),
+    }
+}
+
+/// Strips a single surrounding markdown code fence (with an optional
+/// language tag on the opening line, e.g. `` ```json ``) if present;
+/// otherwise returns the input unchanged.
+fn strip_markdown_json_fence(s: &str) -> &str {
+    let Some(stripped) = s.strip_prefix("```") else {
+        return s;
+    };
+    let after_opening_line = match stripped.find('\n') {
+        Some(i) => &stripped[i + 1..],
+        None => stripped,
+    };
+    after_opening_line.trim().trim_end_matches("```").trim()
+}
+
+/// Extracts the substring from the first `{` to the last `}` in `s`, as a
+/// best-effort way to recover a JSON object embedded in surrounding prose.
+/// Not a real JSON parser — a mismatched/unbalanced result is simply left for
+/// `serde_json::from_str` to reject on the following parse attempt.
+fn extract_first_json_object(s: &str) -> Option<String> {
+    let start = s.find('{')?;
+    let end = s.rfind('}')?;
+    if end < start {
+        return None;
+    }
+    Some(s[start..=end].to_string())
+}
+
+/// Calls the existing LLM chat-completion infrastructure to extract a
+/// structured summary (decisions + action items) from a meeting transcript,
+/// returning the model's raw text response for [`parse_structured_summary_response`]
+/// to parse. Mirrors [`summarize_transcript`]'s provider-resolution pattern
+/// exactly; only the system prompt (asking for JSON) differs.
+async fn summarize_transcript_structured(config: &Config, transcript: &str) -> Result<String, String> {
+    let (provider, model) =
+        crate::aura::inference::provider::create_chat_provider("summarization", config)
+            .map_err(|e| format!("failed to resolve summarization provider: {e}"))?;
+
+    let system_prompt = "You are an assistant that extracts structured information from meeting \
+        transcripts. Given the transcript, respond with ONLY a single JSON object (no markdown \
+        code fences, no commentary before or after it) matching exactly this shape:\n\
+        {\"overview\": \"<2-4 sentence prose summary of the discussion>\", \"decisions\": \
+        [\"<concrete decision that was made>\", ...], \"action_items\": [{\"text\": \"<what needs \
+        doing>\", \"owner\": \"<name mentioned in the transcript, or null if unclear>\"}, ...]}\n\
+        Use an empty array for \"decisions\" or \"action_items\" when the transcript has none. Do \
+        not invent decisions, action items, or owners that are not clearly supported by the \
+        transcript text.";
+
+    // Lower temperature than `summarize_transcript`'s prose summary (0.3):
+    // structured extraction benefits more from determinism than the free-form
+    // prose case does, and a lower temperature also reduces (does not
+    // eliminate — see `parse_structured_summary_response`) the chance of the
+    // model wandering outside the requested JSON shape.
+    provider
+        .chat_with_system(Some(system_prompt), transcript, &model, 0.2)
+        .await
+        .map_err(|e| format!("LLM structured summarization failed: {e}"))
 }
 
 /// Fixed result cap for [`meetings_search`]. Full-text search is meant for a

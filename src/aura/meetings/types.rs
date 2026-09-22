@@ -46,7 +46,51 @@ pub struct Meeting {
     /// RFC3339 timestamp.
     pub updated_at: String,
     pub duration_ms: Option<i64>,
+    /// Free-form prose summary. Predates [`MeetingSummary`] (Block 4) — every
+    /// meeting summarized before that still has *only* this field populated,
+    /// and every meeting summarized after it still gets this field populated
+    /// too (rendered from `summary_structured` by
+    /// `ops::render_structured_summary_prose`), so old and new clients alike
+    /// can always display a sensible flat summary without knowing about
+    /// `summary_structured`. See `store::update_summary_structured`'s doc
+    /// comment.
     pub summary: Option<String>,
+    /// Structured decisions + action items extracted alongside `summary` by
+    /// `aura.meetings_summarize_structured` (Block 4). `None` for a meeting
+    /// that was never (re-)summarized after this field was introduced, or
+    /// whose stored JSON failed to parse (see
+    /// `store::parse_summary_structured_column`) — both cases fall back to
+    /// treating the meeting as if it only ever had a plain-text `summary`.
+    pub summary_structured: Option<MeetingSummary>,
+}
+
+/// One action item extracted from a meeting's structured summary: what needs
+/// doing, plus who's on the hook for it, if the transcript made that clear.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct ActionItem {
+    pub text: String,
+    /// Owner name/handle as mentioned in the transcript, if the model could
+    /// attribute the action item to someone. `None` when unclear rather than
+    /// guessing — an incorrectly-attributed action item is worse than an
+    /// unattributed one.
+    pub owner: Option<String>,
+}
+
+/// Structured meeting summary: a prose overview plus explicit decisions and
+/// action items, as opposed to [`Meeting::summary`]'s flat prose. Produced by
+/// `ops::meetings_summarize_structured` (Block 4) and persisted (as JSON) in
+/// the `meetings.summary_structured` column via
+/// `store::update_summary_structured`.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Default)]
+pub struct MeetingSummary {
+    /// Short prose recap of the discussion, same register as the old
+    /// LLM-generated `Meeting::summary` prose.
+    pub overview: String,
+    /// Concrete decisions made during the meeting, one per entry.
+    pub decisions: Vec<String>,
+    /// Action items called out during the meeting, with an owner when the
+    /// transcript made one clear.
+    pub action_items: Vec<ActionItem>,
 }
 
 /// One ordered slice of a meeting's transcript.
@@ -129,12 +173,62 @@ mod tests {
             updated_at: "2026-01-01T00:00:00+00:00".into(),
             duration_ms: None,
             summary: None,
+            summary_structured: None,
         };
         let v = serde_json::to_value(&meeting).unwrap();
         assert_eq!(v["status"], "recording");
         let back: Meeting = serde_json::from_value(v).unwrap();
         assert_eq!(back.id, meeting.id);
         assert_eq!(back.status, meeting.status);
+        assert_eq!(back.summary_structured, None);
+    }
+
+    #[test]
+    fn meeting_with_structured_summary_roundtrips_through_json() {
+        let meeting = Meeting {
+            id: "meeting_2".into(),
+            title: "Planning".into(),
+            source: "manual".into(),
+            status: MeetingStatus::Completed,
+            created_at: "2026-01-01T00:00:00+00:00".into(),
+            updated_at: "2026-01-01T00:00:00+00:00".into(),
+            duration_ms: Some(60_000),
+            summary: Some("We discussed the roadmap.".into()),
+            summary_structured: Some(MeetingSummary {
+                overview: "We discussed the roadmap.".into(),
+                decisions: vec!["Ship v2 next sprint".into()],
+                action_items: vec![ActionItem {
+                    text: "Write the migration guide".into(),
+                    owner: Some("Alex".into()),
+                }],
+            }),
+        };
+        let v = serde_json::to_value(&meeting).unwrap();
+        let back: Meeting = serde_json::from_value(v).unwrap();
+        assert_eq!(back.summary_structured, meeting.summary_structured);
+        let structured = back.summary_structured.unwrap();
+        assert_eq!(structured.decisions, vec!["Ship v2 next sprint"]);
+        assert_eq!(structured.action_items[0].owner.as_deref(), Some("Alex"));
+    }
+
+    #[test]
+    fn meeting_summary_default_is_empty() {
+        let summary = MeetingSummary::default();
+        assert_eq!(summary.overview, "");
+        assert!(summary.decisions.is_empty());
+        assert!(summary.action_items.is_empty());
+    }
+
+    #[test]
+    fn action_item_without_owner_roundtrips_as_null() {
+        let item = ActionItem {
+            text: "Follow up with legal".into(),
+            owner: None,
+        };
+        let v = serde_json::to_value(&item).unwrap();
+        assert_eq!(v["owner"], serde_json::Value::Null);
+        let back: ActionItem = serde_json::from_value(v).unwrap();
+        assert_eq!(back, item);
     }
 
     #[test]

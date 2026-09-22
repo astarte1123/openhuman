@@ -1,5 +1,6 @@
 use super::*;
 use crate::aura::config::Config;
+use crate::aura::meetings::types::ActionItem;
 use tempfile::TempDir;
 
 fn test_config(tmp: &TempDir) -> Config {
@@ -193,6 +194,229 @@ async fn meetings_summarize_errors_when_meeting_missing() {
         .await
         .unwrap_err();
     assert!(err.contains("not found"));
+}
+
+// ── meetings_summarize_structured (Block 4) — validation only, no LLM ──
+//
+// `summarize_transcript_structured` calls out to a real LLM provider, so the
+// only branches exercisable here without a live LLM call are the same
+// pre-LLM validation ones `meetings_summarize`'s tests already cover
+// (missing meeting_id, missing meeting, empty transcript). Parsing,
+// rendering, and prompt-shape logic are covered directly below as pure
+// functions instead.
+
+#[tokio::test]
+async fn meetings_summarize_structured_rejects_empty_meeting_id() {
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+
+    let err = meetings_summarize_structured(&config, "  ").await.unwrap_err();
+    assert!(err.contains("Missing 'meeting_id'"));
+}
+
+#[tokio::test]
+async fn meetings_summarize_structured_errors_when_meeting_missing() {
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+
+    let err = meetings_summarize_structured(&config, "does-not-exist")
+        .await
+        .unwrap_err();
+    assert!(err.contains("not found"));
+}
+
+#[tokio::test]
+async fn meetings_summarize_structured_errors_when_no_transcript() {
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+    let created = meetings_create(&config, None, None).await.unwrap().value;
+
+    let err = meetings_summarize_structured(&config, &created.id)
+        .await
+        .unwrap_err();
+    assert!(err.contains("no transcript to summarize"));
+}
+
+// ── build_transcript_text ────────────────────────────────────────────
+
+#[test]
+fn build_transcript_text_formats_speaker_and_falls_back_to_unknown() {
+    let chunks = vec![
+        TranscriptChunk {
+            id: 1,
+            meeting_id: "m1".into(),
+            start_ms: 0,
+            end_ms: 1_000,
+            speaker: Some("alice".into()),
+            text: "hello".into(),
+            created_at: "2026-01-01T00:00:00+00:00".into(),
+        },
+        TranscriptChunk {
+            id: 2,
+            meeting_id: "m1".into(),
+            start_ms: 1_000,
+            end_ms: 2_000,
+            speaker: None,
+            text: "world".into(),
+            created_at: "2026-01-01T00:00:00+00:00".into(),
+        },
+    ];
+    let text = build_transcript_text(&chunks);
+    assert_eq!(text, "[alice]: hello\n[unknown]: world");
+}
+
+// ── render_structured_summary_prose ──────────────────────────────────
+
+#[test]
+fn render_structured_summary_prose_includes_overview_decisions_and_action_items() {
+    let summary = MeetingSummary {
+        overview: "We discussed the roadmap.".into(),
+        decisions: vec!["Ship v2 next sprint".into()],
+        action_items: vec![
+            ActionItem {
+                text: "Write the migration guide".into(),
+                owner: Some("Alex".into()),
+            },
+            ActionItem {
+                text: "Follow up with legal".into(),
+                owner: None,
+            },
+        ],
+    };
+
+    let prose = render_structured_summary_prose(&summary);
+    assert!(prose.contains("We discussed the roadmap."));
+    assert!(prose.contains("Decisions:"));
+    assert!(prose.contains("- Ship v2 next sprint"));
+    assert!(prose.contains("Action items:"));
+    assert!(prose.contains("- Write the migration guide (Alex)"));
+    assert!(prose.contains("- Follow up with legal"));
+    assert!(
+        !prose.contains("Follow up with legal ("),
+        "an owner-less action item must not get a dangling '(' suffix"
+    );
+}
+
+#[test]
+fn render_structured_summary_prose_omits_empty_sections() {
+    let summary = MeetingSummary {
+        overview: "Just a quick sync.".into(),
+        decisions: vec![],
+        action_items: vec![],
+    };
+    let prose = render_structured_summary_prose(&summary);
+    assert_eq!(prose, "Just a quick sync.");
+    assert!(!prose.contains("Decisions:"));
+    assert!(!prose.contains("Action items:"));
+}
+
+#[test]
+fn render_structured_summary_prose_never_empty() {
+    let prose = render_structured_summary_prose(&MeetingSummary::default());
+    assert_eq!(prose, "(no summary content)");
+}
+
+#[test]
+fn render_structured_summary_prose_trims_whitespace_in_fields() {
+    let summary = MeetingSummary {
+        overview: "  padded overview  ".into(),
+        decisions: vec!["  padded decision  ".into()],
+        action_items: vec![ActionItem {
+            text: "  padded task  ".into(),
+            owner: Some("  padded owner  ".into()),
+        }],
+    };
+    let prose = render_structured_summary_prose(&summary);
+    assert!(prose.contains("padded overview"));
+    assert!(!prose.contains("  padded overview  "));
+    assert!(prose.contains("- padded decision"));
+    assert!(prose.contains("- padded task (padded owner)"));
+}
+
+// ── parse_structured_summary_response ────────────────────────────────
+
+#[test]
+fn parse_structured_summary_response_parses_plain_json() {
+    let raw = r#"{"overview": "hi", "decisions": ["d1"], "action_items": []}"#;
+    let summary = parse_structured_summary_response(raw).unwrap();
+    assert_eq!(summary.overview, "hi");
+    assert_eq!(summary.decisions, vec!["d1"]);
+}
+
+#[test]
+fn parse_structured_summary_response_strips_markdown_json_fence_with_language_tag() {
+    let raw = "```json\n{\"overview\": \"hi\", \"decisions\": [], \"action_items\": []}\n```";
+    let summary = parse_structured_summary_response(raw).unwrap();
+    assert_eq!(summary.overview, "hi");
+}
+
+#[test]
+fn parse_structured_summary_response_strips_markdown_json_fence_without_language_tag() {
+    let raw = "```\n{\"overview\": \"hi\", \"decisions\": [], \"action_items\": []}\n```";
+    let summary = parse_structured_summary_response(raw).unwrap();
+    assert_eq!(summary.overview, "hi");
+}
+
+#[test]
+fn parse_structured_summary_response_extracts_json_embedded_in_prose() {
+    let raw = "Sure, here is the summary:\n\
+        {\"overview\": \"hi\", \"decisions\": [\"d1\"], \"action_items\": []}\n\
+        Let me know if you need anything else!";
+    let summary = parse_structured_summary_response(raw).unwrap();
+    assert_eq!(summary.overview, "hi");
+    assert_eq!(summary.decisions, vec!["d1"]);
+}
+
+#[test]
+fn parse_structured_summary_response_parses_action_items_with_and_without_owner() {
+    let raw = r#"{"overview": "hi", "decisions": [], "action_items": [
+        {"text": "task a", "owner": "Alex"},
+        {"text": "task b", "owner": null}
+    ]}"#;
+    let summary = parse_structured_summary_response(raw).unwrap();
+    assert_eq!(summary.action_items[0].owner.as_deref(), Some("Alex"));
+    assert_eq!(summary.action_items[1].owner, None);
+}
+
+#[test]
+fn parse_structured_summary_response_errors_on_non_json_text() {
+    let err = parse_structured_summary_response("I couldn't find any decisions.").unwrap_err();
+    assert!(err.contains("no JSON object"));
+}
+
+#[test]
+fn parse_structured_summary_response_errors_on_json_with_wrong_shape() {
+    // Valid JSON, but missing the required fields entirely — must not
+    // silently coerce into a default-valued MeetingSummary.
+    let err = parse_structured_summary_response(r#"{"foo": "bar"}"#).unwrap_err();
+    assert!(!err.is_empty());
+}
+
+#[test]
+fn parse_structured_summary_response_errors_on_empty_input() {
+    let err = parse_structured_summary_response("").unwrap_err();
+    assert!(!err.is_empty());
+}
+
+// ── strip_markdown_json_fence / extract_first_json_object ───────────
+
+#[test]
+fn strip_markdown_json_fence_returns_input_unchanged_without_fence() {
+    let s = "{\"a\": 1}";
+    assert_eq!(strip_markdown_json_fence(s), s);
+}
+
+#[test]
+fn extract_first_json_object_returns_none_without_braces() {
+    assert_eq!(extract_first_json_object("no braces here"), None);
+}
+
+#[test]
+fn extract_first_json_object_returns_none_when_unbalanced() {
+    // A stray trailing '{' after the real closing '}' would otherwise make
+    // `rfind('}')` land before `find('{')` — must be rejected, not sliced
+    // into a garbage range.
+    assert_eq!(extract_first_json_object("} ... {"), None);
 }
 
 #[tokio::test]

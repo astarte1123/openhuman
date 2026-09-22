@@ -10,14 +10,16 @@
 //! `meeting_transcript_chunks` by triggers rather than duplicating the text —
 //! see [`search_transcripts`] and [`backfill_missing_fts_rows`].
 
-use crate::aura::config::Config;
 use crate::aura::meetings::types::{
-    Meeting, MeetingScreenshot, MeetingStatus, TranscriptChunk,
+    Meeting, MeetingScreenshot, MeetingStatus, MeetingSummary, TranscriptChunk,
 };
+use crate::aura::config::Config;
 use anyhow::{Context, Result};
 use chrono::Utc;
 use rusqlite::{params, Connection};
 use uuid::Uuid;
+
+const LOG_PREFIX: &str = "[meetings-summary]";
 
 /// Creates a new meeting row in `recording` status and returns it.
 pub fn create_meeting(config: &Config, title: &str, source: &str) -> Result<Meeting> {
@@ -28,8 +30,8 @@ pub fn create_meeting(config: &Config, title: &str, source: &str) -> Result<Meet
 
     with_connection(config, |conn| {
         conn.execute(
-            "INSERT INTO meetings (id, title, source, status, created_at, updated_at, duration_ms, summary)
-             VALUES (?1, ?2, ?3, 'recording', ?4, ?4, NULL, NULL)",
+            "INSERT INTO meetings (id, title, source, status, created_at, updated_at, duration_ms, summary, summary_structured)
+             VALUES (?1, ?2, ?3, 'recording', ?4, ?4, NULL, NULL, NULL)",
             params![id, title, source, now],
         )
         .context("Failed to insert meeting")?;
@@ -43,7 +45,7 @@ pub fn create_meeting(config: &Config, title: &str, source: &str) -> Result<Meet
 pub fn list_meetings(config: &Config) -> Result<Vec<Meeting>> {
     with_connection(config, |conn| {
         let mut stmt = conn.prepare(
-            "SELECT id, title, source, status, created_at, updated_at, duration_ms, summary
+            "SELECT id, title, source, status, created_at, updated_at, duration_ms, summary, summary_structured
              FROM meetings ORDER BY created_at DESC",
         )?;
 
@@ -60,7 +62,7 @@ pub fn list_meetings(config: &Config) -> Result<Vec<Meeting>> {
 pub fn get_meeting(config: &Config, meeting_id: &str) -> Result<Meeting> {
     with_connection(config, |conn| {
         let mut stmt = conn.prepare(
-            "SELECT id, title, source, status, created_at, updated_at, duration_ms, summary
+            "SELECT id, title, source, status, created_at, updated_at, duration_ms, summary, summary_structured
              FROM meetings WHERE id = ?1",
         )?;
 
@@ -369,6 +371,78 @@ pub fn update_summary(config: &Config, meeting_id: &str, summary: &str) -> Resul
     Ok(())
 }
 
+/// Persists a structured summary (decisions + action items, Block 4)
+/// alongside a rendered flat-prose `summary`, in a single `UPDATE` so the two
+/// columns never drift out of sync.
+///
+/// `plain_summary` is written into the same `summary` column
+/// [`update_summary`] writes — the one pre-Block-4 clients (and `export.rs`'s
+/// PDF/DOCX rendering, which only ever reads `Meeting::summary`) already
+/// know how to read — while `structured` is serialized to JSON and stored in
+/// `summary_structured`. Callers get this by rendering `structured` with
+/// `ops::render_structured_summary_prose` before calling this, rather than
+/// this function doing the rendering itself, so `store` stays free of any
+/// prose-formatting decisions (that belongs in `ops`, same separation as
+/// every other function in this module).
+pub fn update_summary_structured(
+    config: &Config,
+    meeting_id: &str,
+    plain_summary: &str,
+    structured: &MeetingSummary,
+) -> Result<()> {
+    let structured_json = serde_json::to_string(structured)
+        .context("Failed to serialize structured meeting summary")?;
+    let now = Utc::now().to_rfc3339();
+
+    log::debug!(
+        "{LOG_PREFIX} update_summary_structured: meeting_id={meeting_id} decisions={} \
+         action_items={} plain_summary_chars={}",
+        structured.decisions.len(),
+        structured.action_items.len(),
+        plain_summary.len()
+    );
+
+    let changed = with_connection(config, |conn| {
+        conn.execute(
+            "UPDATE meetings SET summary = ?1, summary_structured = ?2, updated_at = ?3 WHERE id = ?4",
+            params![plain_summary, structured_json, now, meeting_id],
+        )
+        .context("Failed to save structured meeting summary")
+    })?;
+
+    if changed == 0 {
+        anyhow::bail!("Meeting '{meeting_id}' not found");
+    }
+    Ok(())
+}
+
+/// Parses the raw `meetings.summary_structured` column value into a
+/// [`MeetingSummary`], tolerating every form of "nothing structured here
+/// yet": `NULL`/absent (pre-Block-4 rows, or rows never re-summarized since),
+/// an empty string, and — defensively — a value that fails to parse as the
+/// expected JSON shape (e.g. hand-edited DB, or a future format change).
+/// The last case logs a warning rather than failing the read: a meeting's
+/// existing plain-text `summary` must stay readable even if its structured
+/// sidecar is corrupt, matching this module's backward-compatibility
+/// contract (see `Meeting::summary_structured`'s doc comment).
+fn parse_summary_structured_column(meeting_id: &str, raw: Option<String>) -> Option<MeetingSummary> {
+    let raw = raw?;
+    let trimmed = raw.trim();
+    if trimmed.is_empty() {
+        return None;
+    }
+    match serde_json::from_str::<MeetingSummary>(trimmed) {
+        Ok(summary) => Some(summary),
+        Err(e) => {
+            log::warn!(
+                "{LOG_PREFIX} parse_summary_structured_column: meeting_id={meeting_id} failed to \
+                 parse stored summary_structured JSON, falling back to no structured summary: {e}"
+            );
+            None
+        }
+    }
+}
+
 /// Batch-persists diarization-assigned speaker labels onto existing
 /// transcript chunk rows, one transaction per call — matching this module's
 /// `with_connection` idiom. `updates` is `(chunk_id, new_speaker_label)`
@@ -418,8 +492,9 @@ pub fn update_transcript_chunk_speakers(
 }
 
 fn map_meeting_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<Meeting> {
+    let id: String = row.get(0)?;
+    let summary_structured_raw: Option<String> = row.get(8)?;
     Ok(Meeting {
-        id: row.get(0)?,
         title: row.get(1)?,
         source: row.get(2)?,
         status: MeetingStatus::parse(&row.get::<_, String>(3)?),
@@ -427,6 +502,8 @@ fn map_meeting_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<Meeting> {
         updated_at: row.get(5)?,
         duration_ms: row.get(6)?,
         summary: row.get(7)?,
+        summary_structured: parse_summary_structured_column(&id, summary_structured_raw),
+        id,
     })
 }
 
@@ -474,7 +551,8 @@ fn with_connection<T>(config: &Config, f: impl FnOnce(&Connection) -> Result<T>)
             created_at  TEXT NOT NULL,
             updated_at  TEXT NOT NULL,
             duration_ms INTEGER,
-            summary     TEXT
+            summary     TEXT,
+            summary_structured TEXT
         );
         CREATE INDEX IF NOT EXISTS idx_meetings_created_at ON meetings(created_at);
 
@@ -524,9 +602,45 @@ fn with_connection<T>(config: &Config, f: impl FnOnce(&Connection) -> Result<T>)
     )
     .context("Failed to initialize meetings schema")?;
 
+    // Migration for databases created before Block 4 (structured
+    // decisions/action-item summaries): `CREATE TABLE IF NOT EXISTS` above is
+    // a no-op once the `meetings` table already exists, so a pre-Block-4
+    // workspace's table never gets this column from the batch alone. Mirrors
+    // `cron::store::add_column_if_missing` / `memory::tree::store`'s same
+    // idiom — tried unconditionally on every connection open and treats an
+    // already-existing column as success, so it's safe to run on both a
+    // freshly created table (column already present, no-op) and an old one
+    // (column added once, then a no-op forever after).
+    add_column_if_missing(&conn, "meetings", "summary_structured", "TEXT")?;
+
     backfill_missing_fts_rows(&conn)?;
 
     f(&conn)
+}
+
+/// Idempotent `ALTER TABLE ADD COLUMN` — treats an already-existing column as
+/// success rather than erroring, and tolerates the race where a concurrent
+/// process/connection adds the same column first (SQLite reports that as a
+/// "duplicate column name" failure, not a distinguishable error code — same
+/// caveat `cron::store::add_column_if_missing` documents).
+fn add_column_if_missing(
+    conn: &Connection,
+    table: &str,
+    name: &str,
+    sql_type: &str,
+) -> Result<()> {
+    match conn.execute(&format!("ALTER TABLE {table} ADD COLUMN {name} {sql_type}"), []) {
+        Ok(_) => {
+            log::info!("{LOG_PREFIX} migration: added column {table}.{name} ({sql_type})");
+            Ok(())
+        }
+        Err(rusqlite::Error::SqliteFailure(_, Some(ref msg)))
+            if msg.contains("duplicate column name") =>
+        {
+            Ok(())
+        }
+        Err(e) => Err(e).with_context(|| format!("Failed to add column {table}.{name}")),
+    }
 }
 
 /// Idempotent migration step for databases that already had rows in

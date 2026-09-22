@@ -1,5 +1,6 @@
 use super::*;
 use crate::aura::config::Config;
+use crate::aura::meetings::types::ActionItem;
 use tempfile::TempDir;
 
 fn test_config(tmp: &TempDir) -> Config {
@@ -286,6 +287,190 @@ fn update_summary_missing_meeting_errors() {
 
     let err = update_summary(&config, "does-not-exist", "summary").unwrap_err();
     assert!(err.to_string().contains("not found"));
+}
+
+// ── update_summary_structured (Block 4) ─────────────────────────────
+
+#[test]
+fn update_summary_structured_persists_both_plain_and_structured_summary() {
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+    let meeting = create_meeting(&config, "Planning", "manual").unwrap();
+
+    let structured = MeetingSummary {
+        overview: "We planned the release.".into(),
+        decisions: vec!["Ship v2 next sprint".into()],
+        action_items: vec![ActionItem {
+            text: "Write the migration guide".into(),
+            owner: Some("Alex".into()),
+        }],
+    };
+    update_summary_structured(&config, &meeting.id, "We planned the release.", &structured)
+        .unwrap();
+
+    let fetched = get_meeting(&config, &meeting.id).unwrap();
+    assert_eq!(fetched.summary.as_deref(), Some("We planned the release."));
+    let fetched_structured = fetched
+        .summary_structured
+        .expect("structured summary must round-trip");
+    assert_eq!(fetched_structured, structured);
+}
+
+#[test]
+fn update_summary_structured_missing_meeting_errors() {
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+
+    let err = update_summary_structured(
+        &config,
+        "does-not-exist",
+        "summary",
+        &MeetingSummary::default(),
+    )
+    .unwrap_err();
+    assert!(err.to_string().contains("not found"));
+}
+
+#[test]
+fn update_summary_structured_overwrites_a_prior_plain_summary() {
+    // A meeting summarized via the old `meetings_summarize` flow, then
+    // re-summarized via the new structured flow, must end up with both
+    // columns reflecting the new summary — not a stale plain-text summary
+    // left over from before.
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+    let meeting = create_meeting(&config, "Retro", "manual").unwrap();
+    update_summary(&config, &meeting.id, "old plain summary").unwrap();
+
+    let structured = MeetingSummary {
+        overview: "new overview".into(),
+        decisions: vec![],
+        action_items: vec![],
+    };
+    update_summary_structured(&config, &meeting.id, "new overview", &structured).unwrap();
+
+    let fetched = get_meeting(&config, &meeting.id).unwrap();
+    assert_eq!(fetched.summary.as_deref(), Some("new overview"));
+    assert_eq!(fetched.summary_structured, Some(structured));
+}
+
+#[test]
+fn parse_summary_structured_column_returns_none_for_absent_and_empty() {
+    assert_eq!(parse_summary_structured_column("m1", None), None);
+    assert_eq!(
+        parse_summary_structured_column("m1", Some("".into())),
+        None
+    );
+    assert_eq!(
+        parse_summary_structured_column("m1", Some("   ".into())),
+        None
+    );
+}
+
+#[test]
+fn parse_summary_structured_column_falls_back_to_none_on_invalid_json() {
+    // Corrupt/unexpected content must degrade to "no structured summary"
+    // rather than propagating a parse error up through `get_meeting` /
+    // `list_meetings` and breaking the whole row read.
+    assert_eq!(
+        parse_summary_structured_column("m1", Some("not json".into())),
+        None
+    );
+    assert_eq!(
+        parse_summary_structured_column("m1", Some("{\"unexpected\": true}".into())),
+        None
+    );
+}
+
+#[test]
+fn parse_summary_structured_column_parses_valid_json() {
+    let json = serde_json::to_string(&MeetingSummary {
+        overview: "hi".into(),
+        decisions: vec!["d1".into()],
+        action_items: vec![],
+    })
+    .unwrap();
+    let parsed = parse_summary_structured_column("m1", Some(json)).unwrap();
+    assert_eq!(parsed.overview, "hi");
+    assert_eq!(parsed.decisions, vec!["d1"]);
+}
+
+// ── backward compatibility: pre-Block-4 rows / DBs ──────────────────
+
+#[test]
+fn get_meeting_reads_pre_block4_row_with_only_plain_summary() {
+    // Simulates a meeting summarized before `summary_structured` existed:
+    // the column is present (post-migration) but NULL, and only the flat
+    // `summary` column is populated.
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+    let meeting = create_meeting(&config, "Legacy meeting", "manual").unwrap();
+    update_summary(&config, &meeting.id, "legacy prose summary").unwrap();
+
+    let fetched = get_meeting(&config, &meeting.id).unwrap();
+    assert_eq!(fetched.summary.as_deref(), Some("legacy prose summary"));
+    assert_eq!(
+        fetched.summary_structured, None,
+        "a meeting never re-summarized under Block 4 must read back with no structured summary"
+    );
+}
+
+#[test]
+fn with_connection_migrates_a_pre_block4_database_missing_the_column() {
+    // Simulates opening a *database file* created before Block 4 shipped —
+    // i.e. the `meetings` table itself predates the `summary_structured`
+    // column, not just a row within an already-migrated table. Writes the
+    // legacy schema + a legacy row directly, bypassing this module's store
+    // functions entirely, then verifies the very next `with_connection` call
+    // (via `get_meeting`) both migrates the table and reads the legacy row
+    // back sensibly.
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+    let db_dir = config.workspace_dir.join("meetings");
+    std::fs::create_dir_all(&db_dir).unwrap();
+    let db_path = db_dir.join("meetings.db");
+
+    {
+        let conn = Connection::open(&db_path).unwrap();
+        conn.execute_batch(
+            "CREATE TABLE meetings (
+                id          TEXT PRIMARY KEY,
+                title       TEXT NOT NULL,
+                source      TEXT NOT NULL DEFAULT 'manual',
+                status      TEXT NOT NULL DEFAULT 'recording',
+                created_at  TEXT NOT NULL,
+                updated_at  TEXT NOT NULL,
+                duration_ms INTEGER,
+                summary     TEXT
+            );",
+        )
+        .unwrap();
+        conn.execute(
+            "INSERT INTO meetings (id, title, source, status, created_at, updated_at, duration_ms, summary)
+             VALUES ('meeting_legacy', 'Old meeting', 'manual', 'completed', '2025-01-01T00:00:00+00:00', '2025-01-01T00:00:00+00:00', 1000, 'pre-existing prose summary')",
+            [],
+        )
+        .unwrap();
+    }
+
+    let fetched = get_meeting(&config, "meeting_legacy").unwrap();
+    assert_eq!(fetched.title, "Old meeting");
+    assert_eq!(
+        fetched.summary.as_deref(),
+        Some("pre-existing prose summary")
+    );
+    assert_eq!(fetched.summary_structured, None);
+
+    // And the migrated column now supports the new write path too.
+    let structured = MeetingSummary {
+        overview: "updated overview".into(),
+        decisions: vec![],
+        action_items: vec![],
+    };
+    update_summary_structured(&config, "meeting_legacy", "updated overview", &structured)
+        .unwrap();
+    let refetched = get_meeting(&config, "meeting_legacy").unwrap();
+    assert_eq!(refetched.summary_structured, Some(structured));
 }
 
 // ── search_transcripts ──────────────────────────────────────────
