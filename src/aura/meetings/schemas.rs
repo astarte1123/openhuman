@@ -26,7 +26,8 @@ fn meeting_id_input(comment: &'static str) -> FieldSchema {
 }
 
 pub fn all_controller_schemas() -> Vec<ControllerSchema> {
-    vec![
+    #[allow(unused_mut)]
+    let mut schemas = vec![
         schemas("create"),
         schemas("list"),
         schemas("get"),
@@ -40,11 +41,18 @@ pub fn all_controller_schemas() -> Vec<ControllerSchema> {
         schemas("export"),
         schemas("start_local_capture"),
         schemas("stop_local_capture"),
-    ]
+    ];
+    // Off by default: only registered at all when the `diarize` Cargo
+    // feature is compiled in — see `Cargo.toml`'s `[features]` section and
+    // `crate::aura::meetings::diarize`'s module doc.
+    #[cfg(feature = "diarize")]
+    schemas.push(self::schemas("diarize"));
+    schemas
 }
 
 pub fn all_registered_controllers() -> Vec<RegisteredController> {
-    vec![
+    #[allow(unused_mut)]
+    let mut controllers = vec![
         RegisteredController {
             schema: schemas("create"),
             handler: handle_create,
@@ -97,7 +105,13 @@ pub fn all_registered_controllers() -> Vec<RegisteredController> {
             schema: schemas("stop_local_capture"),
             handler: handle_stop_local_capture,
         },
-    ]
+    ];
+    #[cfg(feature = "diarize")]
+    controllers.push(RegisteredController {
+        schema: schemas("diarize"),
+        handler: handle_diarize,
+    });
+    controllers
 }
 
 pub fn schemas(function: &str) -> ControllerSchema {
@@ -431,6 +445,33 @@ pub fn schemas(function: &str) -> ControllerSchema {
                 required: true,
             }],
         },
+        #[cfg(feature = "diarize")]
+        "diarize" => ControllerSchema {
+            namespace: "meetings",
+            function: "diarize",
+            description:
+                "Run real per-speaker diarization over a completed meeting's recorded system-audio \
+                 track, splitting the 'system_audio' speaker label into 'system_audio:speaker_N' \
+                 per distinct remote voice. Requires the optional 'diarize' build feature; only \
+                 available for meetings recorded while that feature was compiled in.",
+            inputs: vec![meeting_id_input(
+                "Identifier of the completed meeting to diarize.",
+            )],
+            outputs: vec![
+                FieldSchema {
+                    name: "speakers_found",
+                    ty: TypeSchema::U64,
+                    comment: "Number of distinct speakers identified in the system-audio track.",
+                    required: true,
+                },
+                FieldSchema {
+                    name: "chunks_updated",
+                    ty: TypeSchema::U64,
+                    comment: "Number of transcript chunks whose speaker label was rewritten.",
+                    required: true,
+                },
+            ],
+        },
         _other => ControllerSchema {
             namespace: "meetings",
             function: "unknown",
@@ -582,6 +623,15 @@ fn handle_stop_local_capture(params: Map<String, Value>) -> ControllerFuture {
     })
 }
 
+#[cfg(feature = "diarize")]
+fn handle_diarize(params: Map<String, Value>) -> ControllerFuture {
+    Box::pin(async move {
+        let config = config_rpc::load_config_with_timeout().await?;
+        let meeting_id = read_required::<String>(&params, "meeting_id")?;
+        to_json(ops::meetings_diarize(&config, meeting_id.trim()).await?)
+    })
+}
+
 fn read_required<T: DeserializeOwned>(params: &Map<String, Value>, key: &str) -> Result<T, String> {
     let value = params
         .get(key)
@@ -611,55 +661,47 @@ mod tests {
     use super::*;
     use serde_json::json;
 
+    /// Base function list shared by both schema-coverage tests below.
+    /// `#[cfg(feature = "diarize")]` appends `"diarize"` when that optional
+    /// feature is compiled in, so these tests stay accurate under both the
+    /// default build and `cargo test --features diarize`.
+    fn expected_function_names() -> Vec<&'static str> {
+        #[allow(unused_mut)]
+        let mut names = vec![
+            "create",
+            "list",
+            "get",
+            "update_title",
+            "delete",
+            "append_transcript_chunk",
+            "append_screenshot",
+            "finish",
+            "summarize",
+            "search",
+            "export",
+            "start_local_capture",
+            "stop_local_capture",
+        ];
+        #[cfg(feature = "diarize")]
+        names.push("diarize");
+        names
+    }
+
     #[test]
     fn all_controller_schemas_covers_every_supported_function() {
         let names: Vec<_> = all_controller_schemas()
             .into_iter()
             .map(|s| s.function)
             .collect();
-        assert_eq!(
-            names,
-            vec![
-                "create",
-                "list",
-                "get",
-                "update_title",
-                "delete",
-                "append_transcript_chunk",
-                "append_screenshot",
-                "finish",
-                "summarize",
-                "search",
-                "export",
-                "start_local_capture",
-                "stop_local_capture",
-            ]
-        );
+        assert_eq!(names, expected_function_names());
     }
 
     #[test]
     fn all_registered_controllers_has_handler_per_schema() {
         let controllers = all_registered_controllers();
-        assert_eq!(controllers.len(), 13);
+        assert_eq!(controllers.len(), expected_function_names().len());
         let names: Vec<_> = controllers.iter().map(|c| c.schema.function).collect();
-        assert_eq!(
-            names,
-            vec![
-                "create",
-                "list",
-                "get",
-                "update_title",
-                "delete",
-                "append_transcript_chunk",
-                "append_screenshot",
-                "finish",
-                "summarize",
-                "search",
-                "export",
-                "start_local_capture",
-                "stop_local_capture",
-            ]
-        );
+        assert_eq!(names, expected_function_names());
     }
 
     #[test]
@@ -717,6 +759,18 @@ mod tests {
         assert!(s.inputs.iter().all(|f| f.required));
         assert_eq!(s.inputs[0].name, "meeting_id");
         assert_eq!(s.outputs[0].name, "result");
+    }
+
+    #[cfg(feature = "diarize")]
+    #[test]
+    fn schemas_diarize_requires_meeting_id_and_documents_outputs() {
+        let s = schemas("diarize");
+        assert_eq!(s.function, "diarize");
+        assert!(s.inputs.iter().all(|f| f.required));
+        assert_eq!(s.inputs[0].name, "meeting_id");
+        let names: Vec<_> = s.outputs.iter().map(|f| f.name).collect();
+        assert!(names.contains(&"speakers_found"));
+        assert!(names.contains(&"chunks_updated"));
     }
 
     #[test]

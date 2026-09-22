@@ -56,6 +56,13 @@ pub struct TranscriptChunk {
     pub meeting_id: String,
     pub start_ms: i64,
     pub end_ms: i64,
+    /// `"microphone"` or `"system_audio"` from live capture (see
+    /// `capture::AudioTrack::as_str`). Under the optional `diarize` build
+    /// feature, a completed meeting's `"system_audio"` chunks can be
+    /// rewritten to `"system_audio:speaker_N"` (one label per distinct
+    /// remote voice identified) by the `aura.meetings_diarize` RPC — see
+    /// `crate::aura::meetings::diarize`. `"microphone"` chunks are never
+    /// diarized (there is exactly one local speaker on that track).
     pub speaker: Option<String>,
     pub text: String,
     /// RFC3339 timestamp.

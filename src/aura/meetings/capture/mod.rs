@@ -17,11 +17,15 @@
 
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
+use std::time::Duration;
 
-use log::debug;
+use log::{debug, warn};
 use tokio::sync::mpsc::UnboundedSender;
+use tokio::sync::oneshot;
 
 pub mod pipeline;
+#[cfg(feature = "diarize")]
+pub mod raw_audio_sink;
 #[cfg(target_os = "windows")]
 pub mod windows;
 
@@ -73,24 +77,46 @@ pub struct AudioChunk {
 /// threads to actually exit (they poll their stop flag and tear down their
 /// OS stream on their own dedicated thread, mirroring
 /// [`crate::aura::voice::audio_capture`]'s recording lifecycle).
+/// [`CaptureHandle::stop_and_wait_for_drain`] additionally waits for the
+/// consumer loop to actually finish flushing/finalizing before returning —
+/// see its own doc comment for when that matters.
 ///
 /// Dropping a `CaptureHandle` without calling `stop()` leaks the running
 /// capture threads — callers (`ops::meetings_stop_local_capture`, and
 /// `meetings_finish`/`meetings_delete` force-stopping an active session) must
-/// always call `stop()` explicitly.
+/// always call `stop()` (or `stop_and_wait_for_drain()`) explicitly.
 pub struct CaptureHandle {
     tracks: Vec<(Arc<AtomicBool>, &'static str)>,
+    /// Resolves once [`super::pipeline`]'s consumer loop has drained every
+    /// buffered chunk and — under the `diarize` feature — finalized the raw
+    /// `system_audio` WAV, after every track's stop flag has been observed.
+    /// `None` for a handle nothing has wired this signal into yet (e.g. a
+    /// bare `CaptureHandle::new()` built directly in a unit test) — see
+    /// [`CaptureHandle::stop_and_wait_for_drain`]'s doc comment for why this
+    /// exists.
+    finished_rx: Option<oneshot::Receiver<()>>,
 }
 
 impl CaptureHandle {
     fn new() -> Self {
-        Self { tracks: Vec::new() }
+        Self {
+            tracks: Vec::new(),
+            finished_rx: None,
+        }
     }
 
     /// Registers one track's stop flag so [`CaptureHandle::stop`] can signal
     /// it. `label` is used only for logging.
     fn add_track(&mut self, stop_flag: Arc<AtomicBool>, label: &'static str) {
         self.tracks.push((stop_flag, label));
+    }
+
+    /// Attaches the consumer loop's drain-completion signal — see
+    /// [`finished_rx`](Self::finished_rx)'s doc comment. Called once by
+    /// [`super::pipeline::run_capture_session`] right after spawning the
+    /// consumer task, before the handle is returned to its caller.
+    pub(crate) fn set_finished_signal(&mut self, rx: oneshot::Receiver<()>) {
+        self.finished_rx = Some(rx);
     }
 
     /// True when this handle has at least one live track — used by backends
@@ -100,7 +126,7 @@ impl CaptureHandle {
         !self.tracks.is_empty()
     }
 
-    pub fn stop(self) -> Result<(), String> {
+    fn signal_stop(&self) {
         debug!(
             "{LOG_PREFIX} stop requested for {} track(s)",
             self.tracks.len()
@@ -109,7 +135,66 @@ impl CaptureHandle {
             debug!("{LOG_PREFIX} signalling stop for track={label}");
             flag.store(true, Ordering::SeqCst);
         }
+    }
+
+    pub fn stop(self) -> Result<(), String> {
+        self.signal_stop();
         Ok(())
+    }
+
+    /// Same as [`stop`](Self::stop) but also waits, up to `timeout`, for the
+    /// consumer loop to actually finish draining its buffers — and, under
+    /// the `diarize` feature, finalizing the raw `system_audio` WAV (`hound`
+    /// rewriting its header with the final sample count) — before returning.
+    ///
+    /// [`crate::aura::meetings::ops::meetings_finish`] uses this instead of
+    /// plain [`stop`](Self::stop) specifically because a client's natural
+    /// next call is `aura.meetings_diarize` against that same WAV file: the
+    /// WAV finalize happens asynchronously, well after `stop()` merely flips
+    /// a flag (see [`super::pipeline`]'s consumer loop), so without waiting
+    /// here `meetings_diarize` could open the file before its header was
+    /// ever rewritten and silently read zero/truncated samples.
+    ///
+    /// Best-effort: a missing signal (handle built without one, e.g. a unit
+    /// test), a dropped sender (consumer task panicked before sending), or a
+    /// timeout are all logged and treated as "stopped, drain outcome
+    /// unknown" rather than propagated as a hard error — every track's stop
+    /// flag is signalled unconditionally before any of that is checked, so
+    /// the capture threads are never left running regardless of how this
+    /// returns.
+    pub async fn stop_and_wait_for_drain(self, timeout: Duration) -> Result<(), String> {
+        self.signal_stop();
+        let Some(finished_rx) = self.finished_rx else {
+            debug!(
+                "{LOG_PREFIX} stop_and_wait_for_drain: no finished-signal attached, cannot wait \
+                 for drain"
+            );
+            return Ok(());
+        };
+        match tokio::time::timeout(timeout, finished_rx).await {
+            Ok(Ok(())) => {
+                debug!(
+                    "{LOG_PREFIX} stop_and_wait_for_drain: consumer loop drained and finalized"
+                );
+                Ok(())
+            }
+            Ok(Err(_)) => {
+                warn!(
+                    "{LOG_PREFIX} stop_and_wait_for_drain: finished-signal sender dropped \
+                     without completing (consumer task may have panicked) — proceeding without \
+                     drain confirmation"
+                );
+                Ok(())
+            }
+            Err(_) => {
+                warn!(
+                    "{LOG_PREFIX} stop_and_wait_for_drain: timed out after {timeout:?} waiting \
+                     for the capture session to drain/finalize — proceeding without drain \
+                     confirmation"
+                );
+                Ok(())
+            }
+        }
     }
 }
 
@@ -189,5 +274,86 @@ mod tests {
         let backend = UnsupportedPlatformBackend;
         let err = backend.start(tx).unwrap_err();
         assert!(err.contains("not implemented on this platform"));
+    }
+
+    // ── stop_and_wait_for_drain (meetings_finish / meetings_diarize race) ──
+
+    #[tokio::test]
+    async fn stop_and_wait_for_drain_without_signal_returns_immediately() {
+        let mut handle = CaptureHandle::new();
+        let flag = Arc::new(AtomicBool::new(false));
+        handle.add_track(flag.clone(), "microphone");
+
+        // No `set_finished_signal` call — mirrors a bare handle in a test
+        // that never wired up `pipeline::run_capture_session`.
+        handle
+            .stop_and_wait_for_drain(Duration::from_millis(50))
+            .await
+            .expect("must not error when no signal is attached");
+
+        assert!(flag.load(Ordering::SeqCst), "stop flags must still be signalled");
+    }
+
+    #[tokio::test]
+    async fn stop_and_wait_for_drain_resolves_once_finished_signal_fires() {
+        let mut handle = CaptureHandle::new();
+        let flag = Arc::new(AtomicBool::new(false));
+        handle.add_track(flag.clone(), "system_audio");
+
+        let (tx, rx) = oneshot::channel();
+        handle.set_finished_signal(rx);
+
+        // Simulate the consumer loop finishing its drain/finalize shortly
+        // after observing the stop flag.
+        tokio::spawn(async move {
+            tokio::time::sleep(Duration::from_millis(20)).await;
+            let _ = tx.send(());
+        });
+
+        handle
+            .stop_and_wait_for_drain(Duration::from_secs(5))
+            .await
+            .expect("must resolve once the finished signal fires");
+
+        assert!(flag.load(Ordering::SeqCst));
+    }
+
+    #[tokio::test]
+    async fn stop_and_wait_for_drain_times_out_without_hanging_forever() {
+        let mut handle = CaptureHandle::new();
+        let flag = Arc::new(AtomicBool::new(false));
+        handle.add_track(flag.clone(), "system_audio");
+
+        let (tx, rx) = oneshot::channel::<()>();
+        handle.set_finished_signal(rx);
+        // Sender deliberately never fires and is kept alive for the whole
+        // call — this exercises the timeout branch, not the dropped-sender
+        // branch.
+        let _keep_alive = tx;
+
+        handle
+            .stop_and_wait_for_drain(Duration::from_millis(20))
+            .await
+            .expect("a timeout must be swallowed, not propagated as an error");
+
+        assert!(flag.load(Ordering::SeqCst), "stop flags must still be signalled");
+    }
+
+    #[tokio::test]
+    async fn stop_and_wait_for_drain_tolerates_dropped_sender() {
+        let mut handle = CaptureHandle::new();
+        let flag = Arc::new(AtomicBool::new(false));
+        handle.add_track(flag.clone(), "system_audio");
+
+        let (tx, rx) = oneshot::channel::<()>();
+        handle.set_finished_signal(rx);
+        drop(tx); // Simulates the consumer task panicking before signalling.
+
+        handle
+            .stop_and_wait_for_drain(Duration::from_secs(5))
+            .await
+            .expect("a dropped sender must be swallowed, not propagated as an error");
+
+        assert!(flag.load(Ordering::SeqCst));
     }
 }

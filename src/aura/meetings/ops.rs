@@ -92,6 +92,61 @@ fn force_stop_capture(meeting_id: &str) -> Result<bool, String> {
     }
 }
 
+/// How long [`meetings_finish`] waits for an active local capture session's
+/// consumer loop to fully drain its buffers and finalize the raw
+/// `system_audio` WAV (see [`capture::CaptureHandle::stop_and_wait_for_drain`])
+/// before marking the meeting `Completed`. Generous — the final flush
+/// includes a synchronous whisper transcription call over whatever was still
+/// buffered, which can itself take a few seconds — but bounded, so a stuck
+/// consumer task can never hang the RPC caller indefinitely; see
+/// [`force_stop_capture_and_wait_for_drain`] for what happens if it's
+/// exceeded (the wait is best-effort, never a hard failure).
+const CAPTURE_DRAIN_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(30);
+
+/// Same as [`force_stop_capture`], but for a capture session that was
+/// actually running (`CaptureSlot::Active`), also waits up to
+/// [`CAPTURE_DRAIN_TIMEOUT`] for its consumer loop to finish draining
+/// buffered audio and finalizing the raw `system_audio` WAV before returning
+/// — see [`capture::CaptureHandle::stop_and_wait_for_drain`]'s doc comment.
+///
+/// [`meetings_finish`] uses this instead of [`force_stop_capture`]
+/// specifically because a client's natural next call is
+/// `aura.meetings_diarize` against that same WAV file (see that RPC's doc
+/// comment): without waiting here, `meetings_diarize` could open the WAV
+/// before `RawAudioWriter::finish` had rewritten its header, read zero or
+/// truncated samples, and silently report zero speakers for a meeting that
+/// actually has a full recording on disk.
+async fn force_stop_capture_and_wait_for_drain(meeting_id: &str) -> Result<bool, String> {
+    let handle = {
+        let mut registry = ACTIVE_CAPTURES
+            .lock()
+            .map_err(|e| format!("capture registry lock poisoned: {e}"))?;
+        match registry.get(meeting_id) {
+            Some(CaptureSlot::Starting) => {
+                log::warn!(
+                    "{LOG_PREFIX} force_stop_capture_and_wait_for_drain: meeting_id={meeting_id} \
+                     capture is still starting, nothing to stop yet"
+                );
+                return Ok(false);
+            }
+            Some(CaptureSlot::Active(_)) => match registry.remove(meeting_id) {
+                Some(CaptureSlot::Active(h)) => h,
+                _ => unreachable!("checked Active above under the same lock guard"),
+            },
+            None => return Ok(false),
+        }
+    };
+
+    log::debug!(
+        "{LOG_PREFIX} force_stop_capture_and_wait_for_drain: stopping and draining active \
+         session meeting_id={meeting_id}"
+    );
+    handle
+        .stop_and_wait_for_drain(CAPTURE_DRAIN_TIMEOUT)
+        .await?;
+    Ok(true)
+}
+
 /// Removes this meeting's `Starting` reservation after a failed start
 /// attempt (whisper load failure or backend start failure), so a retried
 /// [`meetings_start_local_capture`] call isn't permanently blocked by a
@@ -272,6 +327,40 @@ pub async fn meetings_delete(
         ),
     }
 
+    // Best-effort cleanup of the raw `system_audio` WAV, if the `diarize`
+    // feature ever captured one for this meeting — `store::delete_meeting`
+    // below only removes the DB row (and cascades transcript_chunks /
+    // screenshots via SQLite FK); nothing else on disk knows this meeting_id
+    // once the row is gone, so this is the only chance to reclaim a
+    // potentially multi-hundred-MB uncompressed PCM file. A missing file (the
+    // common case — most meetings never captured system_audio, or already
+    // had it removed by a prior `meetings_diarize` call) and any other
+    // removal failure are both logged and swallowed rather than failing the
+    // delete: the DB row is the source of truth for "does this meeting
+    // exist", and an orphaned WAV is a leak, not a correctness bug, for a
+    // meeting that's about to have its row deleted anyway.
+    #[cfg(feature = "diarize")]
+    {
+        let wav_path = system_audio_wav_path(config, meeting_id);
+        match tokio::fs::remove_file(&wav_path).await {
+            Ok(()) => log::debug!(
+                "{LOG_PREFIX} meetings_delete: removed raw system_audio wav meeting_id={meeting_id} \
+                 path={}",
+                wav_path.display()
+            ),
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => log::debug!(
+                "{LOG_PREFIX} meetings_delete: no raw system_audio wav to remove meeting_id={meeting_id} \
+                 path={}",
+                wav_path.display()
+            ),
+            Err(e) => log::warn!(
+                "{LOG_PREFIX} meetings_delete: failed to remove raw system_audio wav \
+                 meeting_id={meeting_id} path={} error={e}",
+                wav_path.display()
+            ),
+        }
+    }
+
     let deleted = store::delete_meeting(config, meeting_id).map_err(|e| e.to_string())?;
     Ok(RpcOutcome::new(
         json!({ "deleted": deleted }),
@@ -415,9 +504,10 @@ pub async fn meetings_finish(
         return Err("meeting is not recording".to_string());
     }
 
-    match force_stop_capture(meeting_id) {
+    match force_stop_capture_and_wait_for_drain(meeting_id).await {
         Ok(true) => log::debug!(
-            "{LOG_PREFIX} meetings_finish: force-stopped active local capture meeting_id={meeting_id}"
+            "{LOG_PREFIX} meetings_finish: force-stopped and drained active local capture \
+             meeting_id={meeting_id}"
         ),
         Ok(false) => {}
         Err(e) => log::warn!(
@@ -732,6 +822,133 @@ pub async fn meetings_stop_local_capture(
         json!({ "stopped": stopped }),
         vec![format!(
             "local capture stop requested for meeting: {meeting_id} (stopped={stopped})"
+        )],
+    ))
+}
+
+/// Fixed on-disk path for a meeting's raw `system_audio` WAV recording:
+/// `{workspace_dir}/meetings/audio/{meeting_id}.system.wav`. Deterministic
+/// from `meeting_id` alone — no DB column needed, since
+/// [`capture::pipeline`](crate::aura::meetings::capture::pipeline)'s writer
+/// and [`meetings_diarize`] both compute the same path independently. Only
+/// compiled under the `diarize` feature, the only thing that ever creates or
+/// reads this file — see `capture::raw_audio_sink` and
+/// [`crate::aura::meetings::diarize`].
+#[cfg(feature = "diarize")]
+pub(crate) fn system_audio_wav_path(config: &Config, meeting_id: &str) -> std::path::PathBuf {
+    config
+        .workspace_dir
+        .join("meetings")
+        .join("audio")
+        .join(format!("{meeting_id}.system.wav"))
+}
+
+/// Result summary for [`meetings_diarize`].
+#[cfg(feature = "diarize")]
+#[derive(Debug, Clone, Serialize)]
+pub struct DiarizeSummary {
+    pub speakers_found: usize,
+    pub chunks_updated: usize,
+}
+
+/// Runs real per-speaker diarization over a *completed* meeting's recorded
+/// `system_audio` track and persists the resulting `"system_audio:speaker_N"`
+/// labels onto its transcript chunks.
+///
+/// Only reachable via the explicit `aura.meetings_diarize` RPC — never
+/// auto-triggered from capture or [`meetings_finish`]. Requires
+/// `meeting.status == Completed` (diarization is an offline batch pass over
+/// a finished recording, mirroring Minutes' own contract) and that the raw
+/// `system_audio` WAV was actually captured — only true if the `diarize`
+/// feature was compiled in *during* that meeting's recording (see
+/// [`capture::pipeline`](crate::aura::meetings::capture::pipeline)'s doc
+/// comment). A meeting recorded before this feature was enabled, or with the
+/// feature off, has no WAV to diarize and this returns a clear error rather
+/// than silently doing nothing.
+#[cfg(feature = "diarize")]
+pub async fn meetings_diarize(
+    config: &Config,
+    meeting_id: &str,
+) -> Result<RpcOutcome<DiarizeSummary>, String> {
+    if meeting_id.trim().is_empty() {
+        return Err("Missing 'meeting_id' parameter".to_string());
+    }
+    let meeting_id = meeting_id.trim();
+
+    log::debug!("{LOG_PREFIX} meetings_diarize: start meeting_id={meeting_id}");
+
+    let meeting = store::get_meeting(config, meeting_id).map_err(|e| e.to_string())?;
+    if meeting.status != MeetingStatus::Completed {
+        let msg = "meeting must be completed before it can be diarized".to_string();
+        log::warn!("{LOG_PREFIX} meetings_diarize: rejected meeting_id={meeting_id} reason={msg}");
+        return Err(msg);
+    }
+
+    let wav_path = system_audio_wav_path(config, meeting_id);
+    if !wav_path.is_file() {
+        let msg = format!(
+            "no recorded system_audio to diarize for meeting {meeting_id} (expected {}); this \
+             meeting may predate the diarize feature being enabled, or captured no system audio",
+            wav_path.display()
+        );
+        log::warn!("{LOG_PREFIX} meetings_diarize: {msg}");
+        return Err(msg);
+    }
+
+    let segments = crate::aura::meetings::diarize::diarize_meeting_system_audio(
+        config, meeting_id, &wav_path,
+    )
+    .await?;
+    // Excludes `engine::UNKNOWN_SPEAKER_LABEL` — a segment gets that
+    // placeholder when every speech segment in the meeting was too short to
+    // embed reliably (see `engine::cluster_segments`'s doc comment), meaning
+    // diarization identified zero real speaker templates. Counting the
+    // repeated placeholder string as a distinct speaker would fabricate a
+    // single-speaker identity for audio where none was ever detected — see
+    // `engine::count_real_speakers`'s doc comment.
+    let speakers_found = crate::aura::meetings::diarize::engine::count_real_speakers(
+        segments.iter().map(|s| s.speaker.as_str()),
+    );
+
+    let chunks = store::list_transcript_chunks(config, meeting_id).map_err(|e| e.to_string())?;
+    let updates =
+        crate::aura::meetings::diarize::mapping::map_segments_to_chunks(&chunks, &segments);
+    let chunks_updated =
+        store::update_transcript_chunk_speakers(config, &updates).map_err(|e| e.to_string())?;
+
+    // Diarization is a one-shot offline batch pass — see this module's doc
+    // comment ("no cross-meeting speaker enrollment... every meeting is
+    // diarized independently") — so nothing ever reads the raw WAV again
+    // after this point. Remove it now rather than leaving a permanent
+    // multi-hundred-MB uncompressed-PCM file behind for every diarized
+    // meeting; best-effort, since a removal failure here must not undo the
+    // speaker labels that were just successfully persisted above.
+    match tokio::fs::remove_file(&wav_path).await {
+        Ok(()) => log::debug!(
+            "{LOG_PREFIX} meetings_diarize: removed raw system_audio wav after successful \
+             diarization meeting_id={meeting_id} path={}",
+            wav_path.display()
+        ),
+        Err(e) => log::warn!(
+            "{LOG_PREFIX} meetings_diarize: failed to remove raw system_audio wav after \
+             diarization meeting_id={meeting_id} path={} error={e}",
+            wav_path.display()
+        ),
+    }
+
+    log::debug!(
+        "{LOG_PREFIX} meetings_diarize: done meeting_id={meeting_id} segments={} \
+         speakers_found={speakers_found} chunks_updated={chunks_updated}",
+        segments.len()
+    );
+
+    Ok(RpcOutcome::new(
+        DiarizeSummary {
+            speakers_found,
+            chunks_updated,
+        },
+        vec![format!(
+            "meeting diarized: {meeting_id} ({speakers_found} speaker(s), {chunks_updated} chunk(s) updated)"
         )],
     ))
 }

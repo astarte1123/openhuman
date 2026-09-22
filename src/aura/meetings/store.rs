@@ -369,6 +369,54 @@ pub fn update_summary(config: &Config, meeting_id: &str, summary: &str) -> Resul
     Ok(())
 }
 
+/// Batch-persists diarization-assigned speaker labels onto existing
+/// transcript chunk rows, one transaction per call — matching this module's
+/// `with_connection` idiom. `updates` is `(chunk_id, new_speaker_label)`
+/// pairs, as produced by
+/// [`crate::aura::meetings::diarize::mapping::map_segments_to_chunks`].
+/// Returns how many rows were actually changed (a chunk id from a stale/
+/// deleted meeting is silently skipped rather than erroring the whole
+/// batch — diarization runs well after capture, so a chunk could in theory
+/// have been deleted in between).
+///
+/// Only compiled under the `diarize` feature — nothing else in this domain
+/// rewrites an already-persisted chunk's `speaker`.
+#[cfg(feature = "diarize")]
+pub fn update_transcript_chunk_speakers(
+    config: &Config,
+    updates: &[(i64, String)],
+) -> Result<usize> {
+    if updates.is_empty() {
+        return Ok(0);
+    }
+
+    let changed = with_connection(config, |conn| {
+        let tx = conn
+            .unchecked_transaction()
+            .context("Failed to open transaction for diarization speaker update")?;
+        let mut total = 0usize;
+        {
+            let mut stmt = tx
+                .prepare("UPDATE meeting_transcript_chunks SET speaker = ?1 WHERE id = ?2")
+                .context("Failed to prepare diarization speaker update statement")?;
+            for (chunk_id, speaker) in updates {
+                total += stmt
+                    .execute(params![speaker, chunk_id])
+                    .context("Failed to update transcript chunk speaker")?;
+            }
+        }
+        tx.commit()
+            .context("Failed to commit diarization speaker update transaction")?;
+        Ok(total)
+    })?;
+
+    log::debug!(
+        "[meetings] update_transcript_chunk_speakers: {changed} of {} row(s) updated",
+        updates.len()
+    );
+    Ok(changed)
+}
+
 fn map_meeting_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<Meeting> {
     Ok(Meeting {
         id: row.get(0)?,

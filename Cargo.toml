@@ -164,6 +164,38 @@ docx-rs = "0.4"
 ocrs = "0.12"
 rten = "0.24"
 
+# Real per-speaker diarization for meeting `system_audio` (splitting
+# "system_audio" into "system_audio:speaker_N"). Gated behind the optional
+# `diarize` Cargo feature (off by default, `dep:`-only below) — this is
+# deliberately the ONE place in this codebase that reaches for actual
+# onnxruntime (via `ort`), which every other native-dep-avoidance comment on
+# this page (ocrs/rten above, whisper-rs-sys's CRT patch below) exists to
+# route around. There is no pure-Rust alternative for pyannote's
+# segmentation + speaker-embedding ONNX models, so unlike OCR this can't be
+# swapped to `rten`. `ort`/`ndarray` versions pinned to match
+# `thewh1teagle/pyannote-rs`'s own reference usage exactly (confirmed against
+# that crate's published API on docs.rs), since that's the only
+# verified-working combination against the model files in
+# `meetings::diarize::models`. `pyannote-rs` itself is used only for its
+# `EmbeddingExtractor` — its own `get_segments` has a confirmed upstream bug
+# (casts i16 samples to f32 without normalizing by 32768, so the
+# segmentation model sees values wildly outside its trained [-1.0, 1.0]
+# range and reports no speech at all) — `meetings::diarize::engine` reimplements
+# segmentation directly against `ort` instead, so `knf-rs` (only needed to
+# hand-roll the embedding model's fbank features, which `EmbeddingExtractor`
+# already does internally) is deliberately NOT a direct dependency here.
+pyannote-rs = { version = "0.3.4", optional = true }
+# Pinned exactly (`=`), not a caret range: Cargo's default resolver happily
+# picks a newer pre-release like 2.0.0-rc.13 to satisfy a bare
+# "2.0.0-rc.10" requirement, and `pyannote-rs` 0.3.4's own `session.rs`
+# fails to compile against that newer `ort` (its `?`-based error conversion
+# needs `ort::Error<SessionBuilder>: Send + Sync`, which rc.13's `Error<R>`
+# no longer satisfies for a generic `R` — a breaking change between rc.10
+# and rc.13). The exact pin forces the one version this combination is
+# actually known to build against.
+ort = { version = "=2.0.0-rc.10", features = ["ndarray"], optional = true }
+ndarray = { version = "0.16", optional = true }
+
 matrix-sdk = { version = "0.16", optional = true, default-features = false, features = ["e2e-encryption", "rustls-tls", "markdown"] }
 fantoccini = { version = "0.22.0", optional = true, default-features = false, features = ["rustls-tls"] }
 serde-big-array = { version = "0.5", optional = true }
@@ -233,6 +265,17 @@ whatsapp-web = ["dep:whatsapp-rust", "dep:whatsapp-rust-tokio-transport", "dep:w
 # build (app/scripts/e2e-build.sh) flips it on. Shipped binaries never have
 # this feature so the wipe RPC isn't even registered, let alone reachable.
 e2e-test-support = []
+
+# Real per-speaker diarization for meeting `system_audio` transcript chunks
+# (`aura.meetings_diarize`). Off by default — pulls in `ort` (onnxruntime),
+# which every other meetings-domain dependency (ocrs/rten for slide OCR,
+# printpdf/docx-rs for export) was deliberately chosen to avoid, per the
+# native-dep history documented next to `ocrs` above. See
+# `src/aura/meetings/diarize/mod.rs` for the module-level honesty note on
+# scope (single meeting, no cross-meeting speaker enrollment, no stem/source
+# separation — Minutes' `diarize.rs` feature this ports a slice of has all of
+# that; this doesn't).
+diarize = ["dep:pyannote-rs", "dep:ort", "dep:ndarray"]
 
 # Fix whisper-rs-sys CRT mismatch on Windows MSVC (LNK2038).
 # Upstream cmake build defaults to /MD but Rust uses /MT.

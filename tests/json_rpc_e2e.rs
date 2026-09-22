@@ -1388,6 +1388,118 @@ async fn json_rpc_meetings_create_transcript_and_finish_lifecycle() {
     rpc_join.abort();
 }
 
+/// Covers the `aura.meetings_diarize` RPC's *validation* paths only — it
+/// never runs real ONNX inference (no model download, no onnxruntime
+/// session), so it is safe to run under `cargo test --features diarize`
+/// without network access or a working `ort`/onnxruntime link on the test
+/// machine. The happy path (real segmentation + embedding + clustering over
+/// a real recorded WAV) needs a genuine two-speaker audio fixture and the
+/// downloaded ONNX models — verifying that end-to-end is flagged as a
+/// hardware/model-file follow-up rather than faked here. Only compiled
+/// under the optional `diarize` feature; the default build has no
+/// `aura.meetings_diarize` RPC to test.
+#[cfg(feature = "diarize")]
+#[tokio::test]
+async fn json_rpc_meetings_diarize_rejects_recording_meeting_and_missing_audio() {
+    let _env_lock = json_rpc_e2e_env_lock();
+    let tmp = tempdir().expect("tempdir");
+    let home = tmp.path();
+    let aura_home = home.join(".aura");
+
+    let _home_guard = EnvVarGuard::set_to_path("HOME", home);
+    let _workspace_guard = EnvVarGuard::set_to_path("AURA_WORKSPACE", aura_home.as_path());
+    let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
+    let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
+    let _api_url_guard = EnvVarGuard::unset("AURA_API_URL");
+
+    let (api_addr, api_join) = serve_on_ephemeral(mock_upstream_router()).await;
+    let api_origin = format!("http://{api_addr}");
+    write_min_config(aura_home.as_path(), &api_origin);
+
+    let (rpc_addr, rpc_join) = serve_on_ephemeral(build_core_http_router(false)).await;
+    let rpc_base = format!("http://{rpc_addr}");
+
+    // 1. A still-recording meeting is rejected before any audio/model work.
+    let create = post_json_rpc(
+        &rpc_base,
+        9201,
+        "aura.meetings_create",
+        json!({ "title": "Diarize test", "source": "manual" }),
+    )
+    .await;
+    let create_outer = assert_no_jsonrpc_error(&create, "meetings_create (diarize test)");
+    let meeting_id = create_outer
+        .get("result")
+        .and_then(|r| r.get("id"))
+        .and_then(Value::as_str)
+        .expect("id in created meeting")
+        .to_string();
+
+    let diarize_while_recording = post_json_rpc(
+        &rpc_base,
+        9202,
+        "aura.meetings_diarize",
+        json!({ "meeting_id": meeting_id }),
+    )
+    .await;
+    let recording_err = assert_jsonrpc_error(
+        &diarize_while_recording,
+        "meetings_diarize on a still-recording meeting",
+    );
+    assert!(
+        recording_err["message"]
+            .as_str()
+            .unwrap_or_default()
+            .to_lowercase()
+            .contains("completed"),
+        "expected a 'must be completed' error, got: {recording_err}"
+    );
+
+    // 2. A completed meeting with no recorded system_audio WAV (nothing in
+    //    this test ever actually captured audio) is rejected with a clear
+    //    error instead of silently doing nothing or panicking.
+    let finish = post_json_rpc(
+        &rpc_base,
+        9203,
+        "aura.meetings_finish",
+        json!({ "meeting_id": meeting_id, "duration_ms": 1000 }),
+    )
+    .await;
+    assert_no_jsonrpc_error(&finish, "meetings_finish (diarize test)");
+
+    let diarize_without_audio = post_json_rpc(
+        &rpc_base,
+        9204,
+        "aura.meetings_diarize",
+        json!({ "meeting_id": meeting_id }),
+    )
+    .await;
+    let no_audio_err = assert_jsonrpc_error(
+        &diarize_without_audio,
+        "meetings_diarize with no recorded system_audio",
+    );
+    assert!(
+        no_audio_err["message"]
+            .as_str()
+            .unwrap_or_default()
+            .contains("system_audio"),
+        "expected a 'no recorded system_audio' error, got: {no_audio_err}"
+    );
+
+    // 3. An unknown meeting_id is rejected clearly too.
+    let diarize_unknown = post_json_rpc(
+        &rpc_base,
+        9205,
+        "aura.meetings_diarize",
+        json!({ "meeting_id": "meeting_does_not_exist" }),
+    )
+    .await;
+    assert_jsonrpc_error(&diarize_unknown, "meetings_diarize with unknown meeting_id");
+
+    api_join.abort();
+    rpc_join.abort();
+}
+
 #[tokio::test]
 async fn json_rpc_meetings_search_finds_matching_chunk() {
     let _env_lock = json_rpc_e2e_env_lock();

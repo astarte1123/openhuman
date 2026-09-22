@@ -22,9 +22,20 @@
 //! text extraction over periodically-captured meeting-slide screenshots via
 //! the pure-Rust `ocrs` engine — see its module doc for why OCR was chosen
 //! over a vision LLM, and for the pretrained model download URLs.
+//!
+//! `diarize` (private; used only by [`ops::meetings_diarize`], gated behind
+//! the optional, off-by-default `diarize` Cargo feature) runs real
+//! per-speaker diarization over a completed meeting's recorded
+//! `system_audio` track, splitting the single `"system_audio"` speaker
+//! label into `"system_audio:speaker_N"` per distinct remote voice — see
+//! its module doc for what's ported from Minutes' `diarize.rs`, what's
+//! deliberately left out, and why it needs real onnxruntime (via `ort`)
+//! unlike every other meetings-domain ML dependency.
 
 mod bus;
 pub mod capture;
+#[cfg(feature = "diarize")]
+mod diarize;
 mod export;
 mod ocr;
 pub mod ops;

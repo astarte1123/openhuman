@@ -47,6 +47,8 @@ use crate::aura::meetings::bus;
 use crate::aura::meetings::ops;
 use crate::aura::voice::audio_capture::resample;
 
+#[cfg(feature = "diarize")]
+use super::raw_audio_sink::RawAudioWriter;
 use super::{AudioCaptureBackend, AudioChunk, AudioTrack, CaptureHandle, LOG_PREFIX};
 
 /// Whisper requires 16kHz mono input — see `whisper_engine::transcribe_pcm_f32`.
@@ -125,7 +127,7 @@ pub async fn run_capture_session(
 
     debug!("{LOG_PREFIX} starting capture session meeting_id={meeting_id}");
     let start_meeting_id = meeting_id.clone();
-    let capture_handle = tokio::task::spawn_blocking(move || backend.start(tx))
+    let mut capture_handle = tokio::task::spawn_blocking(move || backend.start(tx))
         .await
         .map_err(|e| {
             debug!(
@@ -138,7 +140,16 @@ pub async fn run_capture_session(
             e
         })?;
 
-    tokio::spawn(run_consumer_loop(meeting_id, config, whisper, rx));
+    // Lets a caller that force-stops this session (`CaptureHandle::
+    // stop_and_wait_for_drain`, used by `ops::meetings_finish`) actually wait
+    // for `run_consumer_loop` below to drain its buffers and finalize the raw
+    // system_audio WAV, instead of racing a follow-up `meetings_diarize` call
+    // against an in-flight `hound::WavWriter::finalize()` — see
+    // `CaptureHandle::stop_and_wait_for_drain`'s doc comment.
+    let (finished_tx, finished_rx) = tokio::sync::oneshot::channel();
+    capture_handle.set_finished_signal(finished_rx);
+
+    tokio::spawn(run_consumer_loop(meeting_id, config, whisper, rx, finished_tx));
 
     Ok(capture_handle)
 }
@@ -148,8 +159,37 @@ async fn run_consumer_loop(
     config: Config,
     whisper: WhisperEngineHandle,
     mut rx: UnboundedReceiver<AudioChunk>,
+    finished_tx: tokio::sync::oneshot::Sender<()>,
 ) {
     let mut session = CaptureSession::new(meeting_id.clone());
+
+    // Only under the opt-in `diarize` feature: start buffering the raw
+    // system_audio waveform to disk so an offline `meetings.diarize` call can
+    // run real per-speaker clustering over it later — see
+    // `crate::aura::meetings::diarize` and `raw_audio_sink`'s doc comments.
+    // Best-effort: a writer-creation failure (e.g. unwritable workspace dir)
+    // only disables diarization for this session, it must never abort
+    // capture/transcription, which has nothing to do with this path.
+    #[cfg(feature = "diarize")]
+    {
+        let wav_path = ops::system_audio_wav_path(&config, &meeting_id);
+        match RawAudioWriter::create(&wav_path) {
+            Ok(writer) => {
+                debug!(
+                    "{DIARIZATION_LOG_PREFIX} raw system_audio capture enabled meeting_id={meeting_id} \
+                     path={}",
+                    wav_path.display()
+                );
+                session.attach_raw_audio_writer(writer);
+            }
+            Err(e) => warn!(
+                "{DIARIZATION_LOG_PREFIX} failed to open raw audio sink meeting_id={meeting_id} \
+                 path={} error={e} — this meeting will not be diarizable",
+                wav_path.display()
+            ),
+        }
+    }
+
     let mut ticker = tokio::time::interval(FLUSH_INTERVAL);
     ticker.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Delay);
     // `interval()`'s first tick fires immediately — consume it so the first
@@ -181,6 +221,19 @@ async fn run_consumer_loop(
                              flushing remaining buffers"
                         );
                         flush_batch(&meeting_id, &config, &whisper, session.drain_all()).await;
+                        #[cfg(feature = "diarize")]
+                        match session.finish_raw_audio() {
+                            Some(Ok(path)) => debug!(
+                                "{DIARIZATION_LOG_PREFIX} raw system_audio capture finalized \
+                                 meeting_id={meeting_id} path={}",
+                                path.display()
+                            ),
+                            Some(Err(e)) => warn!(
+                                "{DIARIZATION_LOG_PREFIX} failed to finalize raw audio sink \
+                                 meeting_id={meeting_id} error={e}"
+                            ),
+                            None => {}
+                        }
                         break;
                     }
                 }
@@ -191,6 +244,14 @@ async fn run_consumer_loop(
         }
     }
     debug!("{LOG_PREFIX} capture session consumer exiting meeting_id={meeting_id}");
+    // Signals `CaptureHandle::stop_and_wait_for_drain` (if a caller is
+    // awaiting it) that every buffer has been drained and — under the
+    // `diarize` feature — the raw system_audio WAV has been finalized. Sent
+    // unconditionally on every exit from the loop above (there is only one:
+    // the `None` branch after flushing/finalizing, immediately above the
+    // `break`); a dropped receiver (no caller waiting) is a normal, silent
+    // no-op for `oneshot::Sender::send`.
+    let _ = finished_tx.send(());
 }
 
 async fn flush_batch(
@@ -303,6 +364,11 @@ struct TrackBuffer {
 pub struct CaptureSession {
     meeting_id: String,
     buffers: HashMap<AudioTrack, TrackBuffer>,
+    /// Raw `system_audio` waveform sink for the opt-in `diarize` feature —
+    /// `None` whenever the feature is off, or on (best-effort) writer-open
+    /// failure. See [`RawAudioWriter`] and this module's doc comment.
+    #[cfg(feature = "diarize")]
+    raw_audio: Option<RawAudioWriter>,
 }
 
 impl CaptureSession {
@@ -310,7 +376,27 @@ impl CaptureSession {
         Self {
             meeting_id,
             buffers: HashMap::new(),
+            #[cfg(feature = "diarize")]
+            raw_audio: None,
         }
+    }
+
+    /// Attaches a raw-audio writer that [`CaptureSession::push`] forwards
+    /// every resampled `system_audio` chunk to, for later offline
+    /// diarization. Only compiled under the `diarize` feature.
+    #[cfg(feature = "diarize")]
+    pub fn attach_raw_audio_writer(&mut self, writer: RawAudioWriter) {
+        self.raw_audio = Some(writer);
+    }
+
+    /// Takes and finalizes the raw-audio writer, if one was attached and is
+    /// still present. Returns `None` when no writer was ever attached (or it
+    /// was already finalized), `Some(Ok(path))` on a successful finalize, and
+    /// `Some(Err(_))` if finalizing failed. Only compiled under the
+    /// `diarize` feature; idempotent — a second call always returns `None`.
+    #[cfg(feature = "diarize")]
+    pub fn finish_raw_audio(&mut self) -> Option<Result<std::path::PathBuf, String>> {
+        self.raw_audio.take().map(RawAudioWriter::finish)
     }
 
     pub fn meeting_id(&self) -> &str {
@@ -350,6 +436,23 @@ impl CaptureSession {
                     buf.trailing_silence_samples += 1;
                 } else {
                     buf.trailing_silence_samples = 0;
+                }
+            }
+
+            // Opt-in `diarize` feature only: mirror every resampled
+            // system_audio sample into the raw-audio sink (independent of,
+            // and never interfering with, the whisper-chunk buffer above).
+            // Best-effort — a write failure here disables diarization for
+            // the rest of the session but must never affect transcription.
+            #[cfg(feature = "diarize")]
+            if let Some(writer) = self.raw_audio.as_mut() {
+                if let Err(e) = writer.append_f32(&resampled) {
+                    warn!(
+                        "{DIARIZATION_LOG_PREFIX} raw audio sink write failed meeting_id={} \
+                         error={e} — disabling diarization for the rest of this session",
+                        self.meeting_id
+                    );
+                    self.raw_audio = None;
                 }
             }
         }
