@@ -6,14 +6,14 @@
 /// A call platform the shell knows how to open a CEF window for and (for
 /// some platforms) drive a CDP-based join automation against.
 ///
-/// `GoogleMeet` and `MicrosoftTeams` are both recognised by
-/// [`detect_platform`] and accepted by [`validate_meet_url`]. Zoom and
-/// other providers remain unrecognised (`None`) until a later block adds
-/// them.
+/// `GoogleMeet`, `MicrosoftTeams`, and `Zoom` are all recognised by
+/// [`detect_platform`] and accepted by [`validate_meet_url`]. Other
+/// providers remain unrecognised (`None`) until a later block adds them.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CallPlatform {
     GoogleMeet,
     MicrosoftTeams,
+    Zoom,
 }
 
 /// Detect which [`CallPlatform`] a call URL belongs to, purely from its
@@ -22,12 +22,13 @@ pub fn detect_platform(url: &url::Url) -> Option<CallPlatform> {
     match url.host_str() {
         Some("meet.google.com") => Some(CallPlatform::GoogleMeet),
         Some("teams.microsoft.com") | Some("teams.live.com") => Some(CallPlatform::MicrosoftTeams),
+        Some("zoom.us") | Some("app.zoom.us") | Some("zoomgov.com") => Some(CallPlatform::Zoom),
         _ => None,
     }
 }
 
-/// Validate that a string is a Google Meet or Microsoft Teams call URL
-/// we're willing to hand to the embedded webview.
+/// Validate that a string is a Google Meet, Microsoft Teams, or Zoom call
+/// URL we're willing to hand to the embedded webview.
 ///
 /// Google Meet — we accept:
 ///  - `https://meet.google.com/<code>` where `<code>` looks like a Meet
@@ -38,6 +39,15 @@ pub fn detect_platform(url: &url::Url) -> Option<CallPlatform> {
 ///  - `https://teams.microsoft.com/l/meetup-join/<...>` (work/school
 ///    tenant meeting links).
 ///  - `https://teams.live.com/meet/<id>` (personal Teams meeting links).
+///
+/// Zoom — we accept:
+///  - `https://zoom.us/j/<id>`, `https://app.zoom.us/j/<id>`, or
+///    `https://zoomgov.com/j/<id>` (classic join links).
+///  - `https://zoom.us/wc/join/<id>`, `https://app.zoom.us/wc/join/<id>`,
+///    or `https://zoomgov.com/wc/join/<id>` (explicit web-client join
+///    links — `wc/join` is the "join from your browser" path Zoom's web
+///    client itself deep-links to, as opposed to the native-app-launch
+///    interstitial most `zoom.us/j/<id>` links land on first).
 ///
 /// We reject any other host, scheme, or path shape to keep the surface
 /// small — this RPC is *not* a generic "open any URL in CEF" entrypoint.
@@ -60,10 +70,11 @@ pub fn validate_meet_url(raw: &str) -> Result<url::Url, String> {
         "meet.google.com" => is_meet_code(path) || is_lookup_path(path),
         "teams.microsoft.com" => is_teams_meetup_join_path(path),
         "teams.live.com" => is_teams_live_meet_path(path),
+        "zoom.us" | "app.zoom.us" | "zoomgov.com" => is_zoom_join_path(path),
         _ => {
             return Err(format!(
                 "invalid meet_url: host `{host}` not allowed (only meet.google.com, \
-                 teams.microsoft.com, teams.live.com)"
+                 teams.microsoft.com, teams.live.com, zoom.us, app.zoom.us, zoomgov.com)"
             ));
         }
     };
@@ -95,6 +106,20 @@ fn is_teams_live_meet_path(path: &str) -> bool {
         (parts.next(), parts.next(), parts.next()),
         (Some("meet"), Some(id), None) if !id.is_empty()
     )
+}
+
+/// Accept `j/<id>` (Zoom's classic join link) or `wc/join/<id>` (Zoom's
+/// explicit web-client join link). We don't shape-validate `<id>` beyond
+/// "non-empty" — Zoom meeting IDs are numeric today but that's not a
+/// contract we want to hard-code here, mirroring how the Teams/Meet
+/// helpers treat their opaque id segments.
+fn is_zoom_join_path(path: &str) -> bool {
+    let mut parts = path.split('/');
+    match (parts.next(), parts.next(), parts.next(), parts.next()) {
+        (Some("j"), Some(id), None, None) => !id.is_empty(),
+        (Some("wc"), Some("join"), Some(id), None) => !id.is_empty(),
+        _ => false,
+    }
 }
 
 /// Accept exactly `lookup/<id>` with a single non-empty segment. Permitting
@@ -154,8 +179,11 @@ mod tests {
     #[test]
     fn detect_platform_returns_none_for_other_hosts() {
         for raw in [
-            "https://zoom.us/j/123456789",
+            "https://webex.com/j/123456789",
             "https://example.com/abc-defg-hij",
+            // A lookalike suffix must not match via substring/suffix
+            // confusion with the real `zoom.us` host.
+            "https://zoom.us.evil.com/j/123456789",
         ] {
             let url = url::Url::parse(raw).unwrap();
             assert_eq!(
@@ -177,6 +205,23 @@ mod tests {
                 detect_platform(&url),
                 Some(CallPlatform::MicrosoftTeams),
                 "expected MicrosoftTeams match for {raw}"
+            );
+        }
+    }
+
+    #[test]
+    fn detect_platform_recognizes_zoom() {
+        for raw in [
+            "https://zoom.us/j/123456789",
+            "https://app.zoom.us/j/123456789",
+            "https://zoomgov.com/j/123456789",
+            "https://zoom.us/wc/join/123456789",
+        ] {
+            let url = url::Url::parse(raw).unwrap();
+            assert_eq!(
+                detect_platform(&url),
+                Some(CallPlatform::Zoom),
+                "expected Zoom match for {raw}"
             );
         }
     }
@@ -205,6 +250,33 @@ mod tests {
     fn accepts_teams_live_meet_url() {
         let u = validate_meet_url("https://teams.live.com/meet/1234567890").unwrap();
         assert_eq!(u.host_str(), Some("teams.live.com"));
+    }
+
+    #[test]
+    fn accepts_zoom_classic_join_url() {
+        for host in ["zoom.us", "app.zoom.us", "zoomgov.com"] {
+            let raw = format!("https://{host}/j/123456789");
+            let u = validate_meet_url(&raw).unwrap();
+            assert_eq!(u.host_str(), Some(host));
+        }
+    }
+
+    #[test]
+    fn accepts_zoom_web_client_join_url() {
+        let u = validate_meet_url("https://app.zoom.us/wc/join/123456789").unwrap();
+        assert_eq!(u.host_str(), Some("app.zoom.us"));
+    }
+
+    #[test]
+    fn rejects_malformed_zoom_urls() {
+        // Missing the id segment.
+        assert!(validate_meet_url("https://zoom.us/j/").is_err());
+        assert!(validate_meet_url("https://zoom.us/j").is_err());
+        // wc/join without an id.
+        assert!(validate_meet_url("https://zoom.us/wc/join/").is_err());
+        // Unrecognised path shape entirely.
+        assert!(validate_meet_url("https://zoom.us/").is_err());
+        assert!(validate_meet_url("https://zoom.us/my/room").is_err());
     }
 
     #[test]

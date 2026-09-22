@@ -54,15 +54,17 @@ fn schema_join_call() -> ControllerSchema {
     ControllerSchema {
         namespace: "meet",
         function: "join_call",
-        description: "Validate a Google Meet URL and mint a request_id so the desktop \
-                          shell can open a dedicated CEF webview that joins the call as an \
-                          anonymous guest. Returns immediately — actual webview lifecycle \
-                          is handled by the Tauri shell, not the core.",
+        description: "Validate a Google Meet, Microsoft Teams, or Zoom call URL and mint a \
+                          request_id so the desktop shell can open a dedicated CEF webview \
+                          that joins the call as an anonymous guest. Returns immediately — \
+                          actual webview lifecycle is handled by the Tauri shell, not the \
+                          core.",
         inputs: vec![
             FieldSchema {
                 name: "meet_url",
                 ty: TypeSchema::String,
-                comment: "Full https://meet.google.com/<code> or /lookup/<id> URL.",
+                comment: "Full meet.google.com, teams.microsoft.com/teams.live.com, or \
+                              zoom.us/app.zoom.us/zoomgov.com call URL.",
                 required: true,
             },
             FieldSchema {

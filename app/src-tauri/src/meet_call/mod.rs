@@ -111,8 +111,9 @@ pub async fn meet_call_open_window<R: Runtime>(
     if parsed.scheme() != "https" || aura_core::aura::meet::ops::detect_platform(&parsed).is_none()
     {
         return Err(
-            "[meet-call] only https://meet.google.com, https://teams.microsoft.com, or \
-             https://teams.live.com URLs are accepted"
+            "[meet-call] only https://meet.google.com, https://teams.microsoft.com, \
+             https://teams.live.com, https://zoom.us, https://app.zoom.us, or \
+             https://zoomgov.com URLs are accepted"
                 .into(),
         );
     }

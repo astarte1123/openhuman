@@ -6,11 +6,12 @@
 //! it: connects to CEF's browser-level WebSocket, attaches to the new
 //! call target, and walks through that platform's join page.
 //!
-//! Two implementations exist today: [`google_meet::GoogleMeetScanner`] and
-//! [`teams::TeamsScanner`]. Meet's three phases (dismiss device-check,
-//! type display name, click join) live entirely inside its impl; Teams
-//! adds an extra phase 0 (dismiss the "continue on this browser"
-//! interstitial) ahead of the same device-check/name/join shape — the
+//! Three implementations exist today: [`google_meet::GoogleMeetScanner`],
+//! [`teams::TeamsScanner`], and [`zoom::ZoomScanner`]. Meet's three
+//! phases (dismiss device-check, type display name, click join) live
+//! entirely inside its impl; Teams and Zoom each add an extra phase 0
+//! (dismiss a platform-specific "stay in the browser" interstitial)
+//! ahead of the same device-check/name/join shape — the
 //! [`CallJoinScanner`] trait intentionally does not impose a fixed phase
 //! shape, since each platform may need a different number/order of steps.
 //!
@@ -40,6 +41,7 @@
 mod common;
 mod google_meet;
 mod teams;
+mod zoom;
 
 use tauri::{AppHandle, Runtime};
 
@@ -85,10 +87,12 @@ pub trait CallJoinScanner: Send + Sync {
 /// Platform selection goes through
 /// [`aura_core::aura::meet::ops::detect_platform`]. `meet_call`'s caller
 /// rejects any URL that isn't `meet.google.com`, `teams.microsoft.com`,
-/// or `teams.live.com` before calling `spawn`, so this resolves to either
-/// [`google_meet::GoogleMeetScanner`] or [`teams::TeamsScanner`] in
-/// practice — the `None` fallback exists so future blocks can add match
-/// arms for new platforms without touching this function's shape.
+/// `teams.live.com`, `zoom.us`, `app.zoom.us`, or `zoomgov.com` before
+/// calling `spawn`, so this resolves to
+/// [`google_meet::GoogleMeetScanner`], [`teams::TeamsScanner`], or
+/// [`zoom::ZoomScanner`] in practice — the `None` fallback exists so
+/// future blocks can add match arms for new platforms without touching
+/// this function's shape.
 pub fn spawn<R: Runtime>(
     _app: AppHandle<R>,
     request_id: String,
@@ -123,9 +127,10 @@ pub fn spawn<R: Runtime>(
 /// so URL-shape knowledge lives in the domain, not the shell. Falls back
 /// to [`google_meet::GoogleMeetScanner`] for an unrecognised URL rather
 /// than panicking — `meet_call::meet_call_open_window` already rejects
-/// non-`meet.google.com` URLs before `spawn` is ever called, so this
-/// fallback is unreachable in practice today, but keeps `spawn` infallible
-/// (no `Option`/`Result` in its signature) for future callers.
+/// any URL `detect_platform` doesn't recognise before `spawn` is ever
+/// called, so this fallback is unreachable in practice today, but keeps
+/// `spawn` infallible (no `Option`/`Result` in its signature) for future
+/// callers.
 fn select_scanner(call_url: &str) -> Box<dyn CallJoinScanner> {
     let platform = url::Url::parse(call_url)
         .ok()
@@ -134,6 +139,7 @@ fn select_scanner(call_url: &str) -> Box<dyn CallJoinScanner> {
         Some(aura_core::aura::meet::ops::CallPlatform::MicrosoftTeams) => {
             Box::new(teams::TeamsScanner)
         }
+        Some(aura_core::aura::meet::ops::CallPlatform::Zoom) => Box::new(zoom::ZoomScanner),
         Some(aura_core::aura::meet::ops::CallPlatform::GoogleMeet) | None => {
             Box::new(google_meet::GoogleMeetScanner)
         }
@@ -163,10 +169,24 @@ mod tests {
     }
 
     #[test]
+    fn select_scanner_resolves_zoom() {
+        for url in [
+            "https://zoom.us/j/123456789",
+            "https://app.zoom.us/j/123456789",
+            "https://zoomgov.com/j/123456789",
+            "https://app.zoom.us/wc/join/123456789",
+        ] {
+            let scanner = select_scanner(url);
+            assert_eq!(scanner.provider_name(), "zoom", "for url={url}");
+        }
+    }
+
+    #[test]
     fn select_scanner_falls_back_to_google_meet_for_unrecognised_url() {
-        // meet_call rejects non-meet.google.com URLs before spawn() is
-        // ever called, so this path is unreachable today — but spawn()
-        // must stay infallible, so the fallback must not panic.
+        // meet_call rejects any URL detect_platform doesn't recognise
+        // before spawn() is ever called, so this path is unreachable
+        // today — but spawn() must stay infallible, so the fallback must
+        // not panic.
         let scanner = select_scanner("https://example.com/whatever");
         assert_eq!(scanner.provider_name(), "google-meet");
     }
