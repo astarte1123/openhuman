@@ -713,4 +713,16 @@ echo "[run-dev-win] Vite is up, launching cargo tauri dev"
 # `ensure-tauri-cli.sh` for why pnpm's script runner is avoided here.
 # `cargo` resolves the `tauri` subcommand via `cargo-tauri` on PATH
 # (installed by `ensure-tauri-cli.sh` above) with no shell hop at all.
-cargo tauri dev -c "{\"build\":{\"beforeDevCommand\":\"\",\"devUrl\":\"http://localhost:$DEV_PORT\"}}"
+#
+# AURA_DEV_NO_WATCH=1 passes --no-watch: the vendored submodules under
+# `app/src-tauri/vendor/` sit inside the watched tree, and background git
+# activity there (fetch updating FETCH_HEAD/refs/remotes/origin, even with
+# no actual code change) trips the watcher into a full app restart. That's
+# a real interruption mid-manual-testing, not just log noise — opt in when
+# you need a stable running window instead of live-reload-on-save.
+tauri_dev_args=(-c "{\"build\":{\"beforeDevCommand\":\"\",\"devUrl\":\"http://localhost:$DEV_PORT\"}}")
+if [[ "${AURA_DEV_NO_WATCH:-0}" == "1" ]]; then
+  echo "[run-dev-win] AURA_DEV_NO_WATCH=1 — starting with --no-watch (no live-reload on file changes)"
+  tauri_dev_args+=(--no-watch)
+fi
+cargo tauri dev "${tauri_dev_args[@]}"
