@@ -130,7 +130,7 @@ const elGR: TranslationMap = {
   'clearData.failed': 'Αποτυχία εκκαθάρισης δεδομένων και αποσύνδεσης. Δοκιμάστε ξανά.',
   'clearData.failedLogout': 'Αποτυχία αποσύνδεσης. Δοκιμάστε ξανά.',
   'clearData.failedPersist': 'Απέτυχε η εκκαθάριση της κατάστασης της εφαρμογής. Δοκιμάστε ξανά.',
-  'welcome.title': 'Καλώς ήρθατε στο Aura',
+  'welcome.title': 'Καλώς ήρθατε στο Youma',
   'welcome.subtitle': 'Η προσωπική σου σούπερ νοημοσύνη AI. Ιδιωτικό, απλό και εξαιρετικά ισχυρό.',
   'welcome.connectPrompt': 'Διαμόρφωση RPC URL (Για προχωρημένους)',
   'welcome.selectRuntime': 'Επιλέξτε έναν χρόνο εκτέλεσης',
@@ -147,7 +147,7 @@ const elGR: TranslationMap = {
   'home.statusBackendOnly':
     'Επανασύνδεση στο backend… ο αντιπρόσωπός σας θα είναι ξανά διαθέσιμος σύντομα.',
   'home.statusCoreUnreachable':
-    'Το τοπικό πλαϊνό καρότσι δεν ανταποκρίνεται. Η διαδικασία παρασκηνίου Aura μπορεί να έχει διακοπεί ή να μην έχει ξεκινήσει.',
+    'Το τοπικό πλαϊνό καρότσι δεν ανταποκρίνεται. Η διαδικασία παρασκηνίου Youma μπορεί να έχει διακοπεί ή να μην έχει ξεκινήσει.',
   'home.statusInternetOffline':
     'Η συσκευή σας είναι εκτός σύνδεσης αυτήν τη στιγμή. Ελέγξτε το δίκτυό σας ή επανεκκινήστε την εφαρμογή για να συνδεθείτε ξανά.',
   'home.restartCore': 'Επανεκκινήστε το Core',
@@ -198,7 +198,7 @@ const elGR: TranslationMap = {
   'rewards.referralCode': 'Ο κωδικός παραπομπής σας',
   'rewards.copyCode': 'Αντιγραφή κωδικού',
   'rewards.share': 'Μερίδιο',
-  'onboarding.welcome': 'Γεια. Είμαι Aura.',
+  'onboarding.welcome': 'Γεια. Είμαι Youma.',
   'onboarding.welcomeDesc':
     'Ο υπερ-έξυπνος βοηθός σας AI που τρέχει στον υπολογιστή σας. Ιδιωτικό, απλό και εξαιρετικά ισχυρό.',
   'onboarding.context': 'Συγκέντρωση πλαισίου',
@@ -211,14 +211,14 @@ const elGR: TranslationMap = {
   'onboarding.referral': 'Παραπομπή',
   'onboarding.referralDesc': 'Εφαρμόστε έναν κωδικό παραπομπής εάν έχετε.',
   'onboarding.finish': 'Ολοκληρώστε τη ρύθμιση',
-  'onboarding.finishDesc': 'Είστε έτοιμοι! Ξεκινήστε να χρησιμοποιείτε το Aura.',
+  'onboarding.finishDesc': 'Είστε έτοιμοι! Ξεκινήστε να χρησιμοποιείτε το Youma.',
   'onboarding.skip': 'Παραλείπω',
   'onboarding.getStarted': 'Ξεκινήστε',
-  'onboarding.runtimeChoice.title': 'Πώς θα θέλατε να τρέξετε το Aura;',
+  'onboarding.runtimeChoice.title': 'Πώς θα θέλατε να τρέξετε το Youma;',
   'onboarding.runtimeChoice.subtitle':
     'Επιλέξτε τη ρύθμιση που σας ταιριάζει καλύτερα. Μπορείτε να το αλλάξετε αργότερα στις Ρυθμίσεις.',
   'onboarding.runtimeChoice.cloud.title': 'Απλός',
-  'onboarding.runtimeChoice.cloud.tagline': 'Αφήστε το Aura να διαχειριστεί τα πάντα για εσάς.',
+  'onboarding.runtimeChoice.cloud.tagline': 'Αφήστε το Youma να διαχειριστεί τα πάντα για εσάς.',
   'onboarding.runtimeChoice.cloud.f1': 'Ενσωματωμένη ασφάλεια',
   'onboarding.runtimeChoice.cloud.f2': 'Συμπίεση διακριτικού για περαιτέρω επέκταση της χρήσης σας',
   'onboarding.runtimeChoice.cloud.f3': 'Μία συνδρομή, περιλαμβάνεται κάθε μοντέλο',
@@ -255,7 +255,7 @@ const elGR: TranslationMap = {
   'onboarding.custom.stepperMemory': 'Μνήμη',
   'onboarding.custom.stepCounter': 'Βήμα {n} από {total}',
   'onboarding.custom.defaultTitle': 'Αθέτηση',
-  'onboarding.custom.defaultSubtitle': 'Αφήστε το Aura να το διαχειριστεί για εσάς.',
+  'onboarding.custom.defaultSubtitle': 'Αφήστε το Youma να το διαχειριστεί για εσάς.',
   'onboarding.custom.configureTitle': 'Διαμόρφωση',
   'onboarding.custom.configureSubtitle': 'Θα διαλέξω τι να χρησιμοποιήσω.',
   'onboarding.custom.progressAriaLabel': 'Πρόοδος ενσωμάτωσης',
@@ -269,34 +269,34 @@ const elGR: TranslationMap = {
   'onboarding.custom.inference.subtitle':
     'Ποιο μοντέλο γλώσσας θα πρέπει να απαντά στις ερωτήσεις σας και να διευθύνει τους πράκτορες σας;',
   'onboarding.custom.inference.defaultDesc':
-    'Το Aura δρομολογεί κάθε φόρτο εργασίας σε ένα λογικό προεπιλεγμένο μοντέλο. Χωρίς κλειδιά, χωρίς ρύθμιση.',
+    'Το Youma δρομολογεί κάθε φόρτο εργασίας σε ένα λογικό προεπιλεγμένο μοντέλο. Χωρίς κλειδιά, χωρίς ρύθμιση.',
   'onboarding.custom.inference.configureDesc':
     'Φέρτε το δικό σας κλειδί OpenAI ή Anthropic. Το χρησιμοποιούμε για κάθε φόρτο εργασίας που βασίζεται σε κείμενο.',
   'onboarding.custom.voice.title': 'Φωνή',
   'onboarding.custom.voice.subtitle':
     'Ομιλία σε κείμενο και κείμενο σε ομιλία για λειτουργία φωνής.',
   'onboarding.custom.voice.defaultDesc':
-    'Το Aura αποστέλλεται με διαχειριζόμενο STT/TTS που απλώς λειτουργεί. Δεν υπάρχει τίποτα για καλωδίωση.',
+    'Το Youma αποστέλλεται με διαχειριζόμενο STT/TTS που απλώς λειτουργεί. Δεν υπάρχει τίποτα για καλωδίωση.',
   'onboarding.custom.voice.configureDesc':
     'Χρησιμοποιήστε τα δικά σας ElevenLabs / OpenAI Whisper / κ.λπ. Διαμορφώστε τις παραμέτρους στις Ρυθμίσεις › Voice.',
   'onboarding.custom.oauth.title': 'Συνδέσεις (OAuth)',
   'onboarding.custom.oauth.subtitle':
     'Gmail, Slack, Notion και άλλες συνδεδεμένες υπηρεσίες που χρειάζονται OAuth.',
   'onboarding.custom.oauth.defaultDesc':
-    'Το Aura εκτελεί έναν διαχειριζόμενο χώρο εργασίας Composio. Ένα κλικ για να συνδέσετε κάθε υπηρεσία αργότερα.',
+    'Το Youma εκτελεί έναν διαχειριζόμενο χώρο εργασίας Composio. Ένα κλικ για να συνδέσετε κάθε υπηρεσία αργότερα.',
   'onboarding.custom.oauth.configureDesc':
     'Φέρτε τον δικό σας λογαριασμό Composio / κλειδί API. Διαμόρφωση στις Ρυθμίσεις › Συνδέσεις.',
   'onboarding.custom.search.title': 'Αναζήτηση στον Ιστό',
-  'onboarding.custom.search.subtitle': 'Πώς το Aura αναζητά στον ιστό για λογαριασμό σας.',
+  'onboarding.custom.search.subtitle': 'Πώς το Youma αναζητά στον ιστό για λογαριασμό σας.',
   'onboarding.custom.search.defaultDesc':
-    'Το Aura χρησιμοποιεί ένα backend διαχειριζόμενης αναζήτησης. Δεν χρειάζονται κλειδιά.',
+    'Το Youma χρησιμοποιεί ένα backend διαχειριζόμενης αναζήτησης. Δεν χρειάζονται κλειδιά.',
   'onboarding.custom.search.configureDesc':
     'Φέρτε το δικό σας κλειδί παρόχου αναζήτησης (Tavily, Brave, κ.λπ.). Διαμόρφωση στις Ρυθμίσεις › Εργαλεία.',
   'onboarding.custom.memory.title': 'Μνήμη',
   'onboarding.custom.memory.subtitle':
-    'Πώς το Aura θυμάται το περιβάλλον, τις προτιμήσεις και τις προηγούμενες συνομιλίες σας.',
+    'Πώς το Youma θυμάται το περιβάλλον, τις προτιμήσεις και τις προηγούμενες συνομιλίες σας.',
   'onboarding.custom.memory.defaultDesc':
-    'Το Aura διαχειρίζεται αυτόματα την αποθήκευση και την ανάκτηση μνήμης. Δεν υπάρχει τίποτα για ρύθμιση.',
+    'Το Youma διαχειρίζεται αυτόματα την αποθήκευση και την ανάκτηση μνήμης. Δεν υπάρχει τίποτα για ρύθμιση.',
   'onboarding.custom.memory.configureDesc':
     'Επιθεωρήστε, εξάγετε ή σκουπίστε τη μνήμη μόνοι σας. Διαμόρφωση στις Ρυθμίσεις › Μνήμη.',
   'accounts.addAccount': 'Προσθήκη λογαριασμού',
@@ -358,7 +358,7 @@ const elGR: TranslationMap = {
   'misc.downloading': 'Λήψη...',
   'misc.installing': 'Εγκατάσταση...',
   'misc.beta':
-    'Το Aura βρίσκεται σε πρώιμη beta. Μη διστάσετε να μοιραστείτε τα σχόλιά σας ή να αναφέρετε τυχόν σφάλματα που αντιμετωπίζετε — κάθε αναφορά μας βοηθά να αποστέλλουμε πιο γρήγορα.',
+    'Το Youma βρίσκεται σε πρώιμη beta. Μη διστάσετε να μοιραστείτε τα σχόλιά σας ή να αναφέρετε τυχόν σφάλματα που αντιμετωπίζετε — κάθε αναφορά μας βοηθά να αποστέλλουμε πιο γρήγορα.',
   'misc.betaFeedback': 'Αποστολή σχολίων',
   'mnemonic.title': 'Φράση ανάκτησης',
   'mnemonic.warning': 'Γράψτε αυτές τις λέξεις με τη σειρά και αποθηκεύστε τις σε ασφαλές μέρος.',
@@ -381,11 +381,11 @@ const elGR: TranslationMap = {
   'privacy.anonymizedAnalytics': 'Ανώνυμα Analytics',
   'privacy.shareAnonymizedData': 'Μοιραστείτε ανώνυμα δεδομένα χρήσης',
   'privacy.shareAnonymizedDataDesc':
-    'Βοηθήστε στη βελτίωση του Aura κοινοποιώντας ανώνυμες αναφορές σφαλμάτων και αναλυτικά στοιχεία χρήσης. Όλα τα δεδομένα είναι πλήρως ανώνυμα — δεν συλλέγονται ποτέ προσωπικά δεδομένα, μηνύματα, κλειδιά πορτοφολιού ή πληροφορίες συνεδρίας.',
+    'Βοηθήστε στη βελτίωση του Youma κοινοποιώντας ανώνυμες αναφορές σφαλμάτων και αναλυτικά στοιχεία χρήσης. Όλα τα δεδομένα είναι πλήρως ανώνυμα — δεν συλλέγονται ποτέ προσωπικά δεδομένα, μηνύματα, κλειδιά πορτοφολιού ή πληροφορίες συνεδρίας.',
   'privacy.meetingFollowUps': 'Συνέχεια συνάντησης',
   'privacy.autoHandoffMeet': 'Auto-handoff Google Meet μεταγραφές στον ενορχηστρωτή',
   'privacy.autoHandoffMeetDesc':
-    'Όταν τελειώσει μια κλήση Google Meet, ο ενορχηστρωτής του Aura μπορεί να διαβάσει τη μεταγραφή και μπορεί να προβεί σε ενέργειες όπως η σύνταξη μηνυμάτων, ο προγραμματισμός παρακολούθησης ή η ανάρτηση περιλήψεων στον συνδεδεμένο χώρο εργασίας σας Slack. Απενεργοποίηση από προεπιλογή.',
+    'Όταν τελειώσει μια κλήση Google Meet, ο ενορχηστρωτής του Youma μπορεί να διαβάσει τη μεταγραφή και μπορεί να προβεί σε ενέργειες όπως η σύνταξη μηνυμάτων, ο προγραμματισμός παρακολούθησης ή η ανάρτηση περιλήψεων στον συνδεδεμένο χώρο εργασίας σας Slack. Απενεργοποίηση από προεπιλογή.',
   'privacy.analyticsDisclaimer':
     'Όλα τα αναλυτικά στοιχεία και οι αναφορές σφαλμάτων είναι πλήρως ανώνυμα. Όταν είναι ενεργοποιημένο, συλλέγουμε μόνο πληροφορίες σφαλμάτων, τύπο συσκευής και τη θέση του αρχείου των σφαλμάτων. Ποτέ δεν έχουμε πρόσβαση στα μηνύματά σας, στα δεδομένα συνεδρίας, στα κλειδιά πορτοφολιού, στα κλειδιά API ή σε οποιεσδήποτε προσωπικές πληροφορίες. Μπορείτε να αλλάξετε αυτήν τη ρύθμιση ανά πάσα στιγμή.',
   'settings.about.version': 'Εκδοχή',
@@ -446,7 +446,7 @@ const elGR: TranslationMap = {
   'settings.billing.browserOpenFailed':
     'Το πρόγραμμα περιήγησης δεν ήταν δυνατό να ανοίξει αυτόματα. Χρησιμοποιήστε το κουμπί παραπάνω.',
   'settings.tools.chooseCapabilities':
-    'Επιλέξτε ποιες δυνατότητες μπορεί να χρησιμοποιήσει το Aura για λογαριασμό σας.',
+    'Επιλέξτε ποιες δυνατότητες μπορεί να χρησιμοποιήσει το Youma για λογαριασμό σας.',
   'settings.tools.saveChanges': 'Αποθήκευση αλλαγών',
   'settings.tools.preferencesSaved': 'Οι προτιμήσεις αποθηκεύτηκαν',
   'settings.tools.saveFailed': 'Αποτυχία αποθήκευσης προτιμήσεων. Προσπαθήστε ξανά.',
@@ -916,9 +916,9 @@ const elGR: TranslationMap = {
   'bootCheck.chooseCoreMode': 'Επιλέξτε έναν χρόνο εκτέλεσης',
   'bootCheck.connectToCore': 'Συνδεθείτε στο χρόνο εκτέλεσης σας',
   'bootCheck.desktopDescription':
-    'Το Aura χρειάζεται χρόνο εκτέλεσης για να σκεφτεί. Διάλεξε πού πρέπει να μένει.',
+    'Το Youma χρειάζεται χρόνο εκτέλεσης για να σκεφτεί. Διάλεξε πού πρέπει να μένει.',
   'bootCheck.webDescription':
-    'Στο διαδίκτυο, το Aura συνδέεται με ένα χρόνο εκτέλεσης που ελέγχετε. Αποθέστε το URL και το διακριτικό ελέγχου ταυτότητας παρακάτω ή πιάστε την εφαρμογή επιφάνειας εργασίας για να εκτελέσετε μία απευθείας στον υπολογιστή σας.',
+    'Στο διαδίκτυο, το Youma συνδέεται με ένα χρόνο εκτέλεσης που ελέγχετε. Αποθέστε το URL και το διακριτικό ελέγχου ταυτότητας παρακάτω ή πιάστε την εφαρμογή επιφάνειας εργασίας για να εκτελέσετε μία απευθείας στον υπολογιστή σας.',
   'bootCheck.preferDesktop': 'Μάλλον να κρατάτε τα πάντα στη δική σας συσκευή;',
   'bootCheck.downloadDesktop': 'Αποκτήστε την εφαρμογή Desktop',
   'bootCheck.localRecommended': 'Εκτέλεση τοπικά (Συνιστάται)',
@@ -945,7 +945,7 @@ const elGR: TranslationMap = {
   'bootCheck.quit': 'Εγκαταλείπω',
   'bootCheck.legacyDetected': 'Εντοπίστηκε χρόνος εκτέλεσης παλαιού τύπου',
   'bootCheck.legacyDescription':
-    'Ένας ξεχωριστά εγκατεστημένος δαίμονας Aura εκτελείται ήδη σε αυτήν τη συσκευή. Πρέπει να το ξεκαθαρίσουμε προτού μπορέσει να αναλάβει ο ενσωματωμένος χρόνος εκτέλεσης.',
+    'Ένας ξεχωριστά εγκατεστημένος δαίμονας Youma εκτελείται ήδη σε αυτήν τη συσκευή. Πρέπει να το ξεκαθαρίσουμε προτού μπορέσει να αναλάβει ο ενσωματωμένος χρόνος εκτέλεσης.',
   'bootCheck.removing': 'Αφαίρεση…',
   'bootCheck.removeContinue': 'Αφαίρεση και Συνέχεια',
   'bootCheck.localNeedsRestart': 'Ο τοπικός χρόνος εκτέλεσης χρειάζεται επανεκκίνηση',
@@ -1083,9 +1083,9 @@ const elGR: TranslationMap = {
   'rewards.referrals.load_stats_error': 'Δεν ήταν δυνατή η φόρτωση των στατιστικών παραπομπών',
   'rewards.referrals.copied': 'Αντιγράφηκε',
   'rewards.referrals.copy_failed': 'Η αντιγραφή απέτυχε',
-  'rewards.referrals.share_intro': 'Ελάτε μαζί μου στο Aura.',
+  'rewards.referrals.share_intro': 'Ελάτε μαζί μου στο Youma.',
   'rewards.referrals.share_code_line': 'Κωδικός παραπομπής: {code}',
-  'rewards.referrals.share_download_line': 'Λήψη Aura: {url}',
+  'rewards.referrals.share_download_line': 'Λήψη Youma: {url}',
   'rewards.referrals.apply_error': 'Δεν ήταν δυνατή η εφαρμογή του κωδικού παραπομπής',
   'rewards.referrals.heading': 'Προσκαλέστε φίλους, κερδίστε πιστώσεις',
   'rewards.referrals.description':
@@ -1322,22 +1322,22 @@ const elGR: TranslationMap = {
   'skills.meeting_bots_card.platform_gmeet': 'Google Meet',
   'skills.meeting_bots_card.platform_zoom': 'Zoom',
   'skills.meeting_bots_card.platform_teams': 'Ομάδες της Microsoft',
-  'skills.meeting_bots_card.banner_title': 'Στείλτε το Aura σε μια συνάντηση',
+  'skills.meeting_bots_card.banner_title': 'Στείλτε το Youma σε μια συνάντηση',
   'skills.meeting_bots_card.new_badge': 'Νέος',
   'skills.meeting_bots_card.banner_description':
-    'Ρίξτε έναν σύνδεσμο Google Meet και ο Aura συμμετέχει ως καλεσμένος, μιλάει, ακούει και ανταποκρίνεται.',
+    'Ρίξτε έναν σύνδεσμο Google Meet και ο Youma συμμετέχει ως καλεσμένος, μιλάει, ακούει και ανταποκρίνεται.',
   'skills.meeting_bots_card.coming_soon_error': 'Η υποστήριξη {platform} έρχεται σύντομα.',
-  'skills.meeting_bots_card.toast_joining_title': 'Ο Aura συμμετέχει στη συνάντηση',
+  'skills.meeting_bots_card.toast_joining_title': 'Ο Youma συμμετέχει στη συνάντηση',
   'skills.meeting_bots_card.toast_joining_message':
     'Θα πρέπει να εμφανίζεται ως συμμετέχων σε λίγα δευτερόλεπτα.',
-  'skills.meeting_bots_card.toast_busy_title': 'Το Aura είναι απασχολημένο',
-  'skills.meeting_bots_card.toast_failed_title': 'Δεν ήταν δυνατή η εκκίνηση Aura',
-  'skills.meeting_bots_card.default_error_message': 'Αποτυχία εκκίνησης Aura.',
-  'skills.meeting_bots_card.modal_aria_label': 'Στείλτε το Aura σε μια συνάντηση',
+  'skills.meeting_bots_card.toast_busy_title': 'Το Youma είναι απασχολημένο',
+  'skills.meeting_bots_card.toast_failed_title': 'Δεν ήταν δυνατή η εκκίνηση Youma',
+  'skills.meeting_bots_card.default_error_message': 'Αποτυχία εκκίνησης Youma.',
+  'skills.meeting_bots_card.modal_aria_label': 'Στείλτε το Youma σε μια συνάντηση',
   'skills.meeting_bots_card.close_aria': 'Κοντά',
-  'skills.meeting_bots_card.modal_title': 'Στείλτε το Aura σε μια συνάντηση',
+  'skills.meeting_bots_card.modal_title': 'Στείλτε το Youma σε μια συνάντηση',
   'skills.meeting_bots_card.modal_description':
-    'Ο Aura συμμετέχει ως ανώνυμος επισκέπτης, μεταδίδει το βίντεό του στην κλήση και απαντά μέσω του πράκτορα.',
+    'Ο Youma συμμετέχει ως ανώνυμος επισκέπτης, μεταδίδει το βίντεό του στην κλήση και απαντά μέσω του πράκτορα.',
   'skills.meeting_bots_card.soon_suffix': '· σύντομα',
   'skills.meeting_bots_card.meeting_link_label': 'Σύνδεσμος συνάντησης',
   'skills.meeting_bots_card.display_name_label': 'Εμφανιζόμενο όνομα',
@@ -1485,14 +1485,14 @@ const elGR: TranslationMap = {
   'settings.composio_panel.title': 'Composio',
   'settings.composio_panel.loading': 'Φόρτωση…',
   'settings.composio_panel.intro_prefix':
-    'Το Composio παρέχει ενσωματώσεις με Gmail, Notion, Slack, GitHub και 1000+ άλλες εφαρμογές. Από προεπιλογή το Aura το διαχειρίζεται για εσάς, επομένως δεν χρειάζεται να φέρετε ένα κλειδί API. Εάν προτιμάτε να χρησιμοποιήσετε απευθείας τον δικό σας λογαριασμό Composio, μεταβείτε σε',
+    'Το Composio παρέχει ενσωματώσεις με Gmail, Notion, Slack, GitHub και 1000+ άλλες εφαρμογές. Από προεπιλογή το Youma το διαχειρίζεται για εσάς, επομένως δεν χρειάζεται να φέρετε ένα κλειδί API. Εάν προτιμάτε να χρησιμοποιήσετε απευθείας τον δικό σας λογαριασμό Composio, μεταβείτε σε',
   'settings.composio_panel.direct_word': 'Απευθείας',
   'settings.composio_panel.intro_suffix': 'λειτουργία και επικολλήστε το κλειδί σας παρακάτω.',
   'settings.composio_panel.routing_mode_legend': 'Λειτουργία δρομολόγησης',
-  'settings.composio_panel.managed_aria_label': 'Διαχειριζόμενο (Aura το χειρίζεται για εσάς)',
-  'settings.composio_panel.managed_title': 'Διαχειριζόμενο (Aura το χειρίζεται για εσάς)',
+  'settings.composio_panel.managed_aria_label': 'Διαχειριζόμενο (Youma το χειρίζεται για εσάς)',
+  'settings.composio_panel.managed_title': 'Διαχειριζόμενο (Youma το χειρίζεται για εσάς)',
   'settings.composio_panel.managed_description':
-    'Αθέτηση. Το Aura διαχειρίζεται τη σύνδεση Composio για εσάς. Ενεργοποιήστε τα webhook (Gmail σε πραγματικό χρόνο / συμβάντα Slack) λειτουργούν απροσδόκητα.',
+    'Αθέτηση. Το Youma διαχειρίζεται τη σύνδεση Composio για εσάς. Ενεργοποιήστε τα webhook (Gmail σε πραγματικό χρόνο / συμβάντα Slack) λειτουργούν απροσδόκητα.',
   'settings.composio_panel.direct_aria_label': 'Απευθείας (φέρτε το δικό σας κλειδί API)',
   'settings.composio_panel.direct_title': 'Απευθείας (φέρτε το δικό σας κλειδί API)',
   'settings.composio_panel.direct_description_prefix': 'Οι κλήσεις πηγαίνουν στο',
@@ -1504,7 +1504,7 @@ const elGR: TranslationMap = {
   'settings.composio_panel.api_key_label': 'Composio API key',
   'settings.composio_panel.api_key_help_prefix': 'Βρείτε το κλειδί σας στο',
   'settings.composio_panel.api_key_help_suffix':
-    'Το κλειδί αποθηκεύεται κρυπτογραφημένο σε αυτή τη συσκευή και δεν αποστέλλεται ποτέ στο Aura.',
+    'Το κλειδί αποθηκεύεται κρυπτογραφημένο σε αυτή τη συσκευή και δεν αποστέλλεται ποτέ στο Youma.',
   'settings.composio_panel.api_key_placeholder_stored':
     '••••••••••••• (αποθηκευμένο κλειδί — επικολλήστε ένα νέο κλειδί για αντικατάσταση)',
   'settings.composio_panel.api_key_placeholder_empty': 'ck_live_xxxxxxxxxxxxxxxx',
@@ -1512,10 +1512,10 @@ const elGR: TranslationMap = {
     'Ένα κλειδί Composio API είναι αποθηκευμένο αυτήν τη στιγμή σε αυτή τη συσκευή.',
   'settings.composio_panel.confirm_title': '⚠️ Μετάβαση σε λειτουργία Direct',
   'settings.composio_panel.confirm_integrations_prefix':
-    'Οι υπάρχουσες ενσωματώσεις σας (Gmail, Slack, GitHub, κ.λπ. που συνδέονται μέσω του Aura)',
+    'Οι υπάρχουσες ενσωματώσεις σας (Gmail, Slack, GitHub, κ.λπ. που συνδέονται μέσω του Youma)',
   'settings.composio_panel.wont_be_visible': 'δεν θα είναι ορατό',
   'settings.composio_panel.confirm_integrations_suffix':
-    '— ζουν στον Aura-διαχειριζόμενο Composio ενοικιαστή.',
+    '— ζουν στον Youma-διαχειριζόμενο Composio ενοικιαστή.',
   'settings.composio_panel.confirm_needs_title': 'Θα χρειαστείτε:',
   'settings.composio_panel.confirm_need_account_prefix': 'Ένας λογαριασμός στο',
   'settings.composio_panel.confirm_need_account_suffix': 'με ένα πλήκτρο API',
@@ -1535,7 +1535,7 @@ const elGR: TranslationMap = {
   'settings.model_status.ollama_unavailable_title':
     'Ο χρόνος εκτέλεσης Ollama δεν είναι διαθέσιμος',
   'settings.model_status.ollama_unavailable_description':
-    'Το Aura αντιμετωπίζει πλέον το Ollama ως εξωτερικό χρόνο εκτέλεσης συμπερασμάτων. Ξεκινήστε τον δικό σας διακομιστή Ollama, τραβήξτε τα μοντέλα που θέλετε και κατευθύνετε τον φόρτο εργασίας σε αυτόν.',
+    'Το Youma αντιμετωπίζει πλέον το Ollama ως εξωτερικό χρόνο εκτέλεσης συμπερασμάτων. Ξεκινήστε τον δικό σας διακομιστή Ollama, τραβήξτε τα μοντέλα που θέλετε και κατευθύνετε τον φόρτο εργασίας σε αυτόν.',
   'settings.model_status.ollama_docs_link': 'Έγγραφα Ollama',
   'settings.model_status.runtime_status_title': 'Κατάσταση χρόνου εκτέλεσης',
   'settings.model_status.refresh': 'Φρεσκάρω',
@@ -1554,7 +1554,7 @@ const elGR: TranslationMap = {
   'settings.model_status.hide_error_details': 'Απόκρυψη λεπτομερειών σφάλματος',
   'settings.model_status.show_error_details': 'Εμφάνιση λεπτομερειών σφάλματος',
   'settings.model_status.connect_only_prefix':
-    'Το Aura συνδέεται μόνο με ένα τελικό σημείο συμβατό με το Ollama που ήδη εκτελείται. Βλέπω',
+    'Το Youma συνδέεται μόνο με ένα τελικό σημείο συμβατό με το Ollama που ήδη εκτελείται. Βλέπω',
   'settings.model_status.connect_only_suffix':
     'για οδηγίες ρύθμισης και, στη συνέχεια, δοκιμάστε ξανά αφού είναι προσβάσιμος ο χρόνος εκτέλεσης.',
   'settings.model_status.ollama_diagnostics_title': 'Ollama Diagnostics',
@@ -1580,7 +1580,7 @@ const elGR: TranslationMap = {
   'settings.model_status.vision_model_line': 'Όραμα: {model}',
   'settings.model_status.issues_heading': 'Θέματα',
   'settings.model_status.manage_ollama_footer':
-    'Διαχειριστείτε τη διαδικασία Ollama και τις έλξεις μοντέλου έξω από το Aura και, στη συνέχεια, εκτελέστε ξανά τα διαγνωστικά.',
+    'Διαχειριστείτε τη διαδικασία Ollama και τις έλξεις μοντέλου έξω από το Youma και, στη συνέχεια, εκτελέστε ξανά τα διαγνωστικά.',
   'settings.device_capability.model_tier_title': 'Μοντέλο Επίπεδο',
   'settings.device_capability.loading_device_info': 'Φόρτωση πληροφοριών συσκευής και προεπιλογών…',
   'settings.device_capability.could_not_load_presets':
@@ -1892,7 +1892,7 @@ const elGR: TranslationMap = {
   'composio.connect_modal.disconnecting': 'Αποσύνδεση…',
   'composio.connect_modal.dismiss': 'Απολύω',
   'composio.connect_modal.expired_body':
-    'Επανασυνδεθείτε για να ενεργοποιήσετε ξανά τα εργαλεία {name}. Το Aura θα διατηρήσει αυτήν την ενσωμάτωση μη διαθέσιμη μέχρι να ανανεώσετε την πρόσβαση OAuth.',
+    'Επανασυνδεθείτε για να ενεργοποιήσετε ξανά τα εργαλεία {name}. Το Youma θα διατηρήσει αυτήν την ενσωμάτωση μη διαθέσιμη μέχρι να ανανεώσετε την πρόσβαση OAuth.',
   'composio.connect_modal.expired_title': '{name} η εξουσιοδότηση έληξε',
   'composio.connect_modal.generic_error': 'Κάτι πήγε στραβά.',
   'composio.connect_modal.header_connect': 'Συνδέστε το {name}',
@@ -1908,7 +1908,7 @@ const elGR: TranslationMap = {
   'composio.connect_modal.needs_subdomain_intro_suffix': ') και προσπαθήστε ξανά.',
   'composio.connect_modal.permission_intro_prefix': '{name} μπορεί να εκθέσει',
   'composio.connect_modal.permission_intro_suffix':
-    '. Αφού συνδεθείτε, τα δικαιώματα αντιπροσώπου του Aura ελέγχονται παρακάτω ως εναλλαγή ανάγνωσης, εγγραφής και διαχείρισης.',
+    '. Αφού συνδεθείτε, τα δικαιώματα αντιπροσώπου του Youma ελέγχονται παρακάτω ως εναλλαγή ανάγνωσης, εγγραφής και διαχείρισης.',
   'composio.connect_modal.permissions_default_hint':
     'Η ανάγνωση + εγγραφή είναι ενεργοποιημένη από προεπιλογή',
   'composio.connect_modal.permissions_heading': 'Άδειες',
@@ -1961,10 +1961,10 @@ const elGR: TranslationMap = {
   'settings.ai_panel.local_runtime_disconnect_aria': 'Αποσυνδέστε το {label}',
   'settings.ai_panel.providers_heading': 'LLM Πάροχοι',
   'settings.ai_panel.providers_subtitle':
-    'Συνδέστε τα backend του μοντέλου γλώσσας που θέλετε να χρησιμοποιήσετε το Aura. Ενεργοποιήστε έναν πάροχο για να προσθέσετε το κλειδί του. απενεργοποιήστε για να αποσυνδεθείτε.',
+    'Συνδέστε τα backend του μοντέλου γλώσσας που θέλετε να χρησιμοποιήσετε το Youma. Ενεργοποιήστε έναν πάροχο για να προσθέσετε το κλειδί του. απενεργοποιήστε για να αποσυνδεθείτε.',
   'settings.ai_panel.routing_heading': 'Δρομολόγηση',
   'settings.ai_panel.routing_subtitle':
-    'Επιλέξτε πώς εξυπηρετείται κάθε φόρτος εργασίας. Προεπιλεγμένες χρήσεις Aura; Το Custom σάς επιτρέπει να κατευθύνετε έναν φόρτο εργασίας σε έναν συγκεκριμένο πάροχο και μοντέλο.',
+    'Επιλέξτε πώς εξυπηρετείται κάθε φόρτος εργασίας. Προεπιλεγμένες χρήσεις Youma; Το Custom σάς επιτρέπει να κατευθύνετε έναν φόρτο εργασίας σε έναν συγκεκριμένο πάροχο και μοντέλο.',
   'settings.auto_recharge.add_card': '+ Προσθήκη κάρτας στο Stripe',
   'settings.auto_recharge.amount_label': 'Προσθέστε αυτό το ποσό',
   'settings.auto_recharge.cancel': 'Ματαίωση',
@@ -2028,22 +2028,22 @@ const elGR: TranslationMap = {
   'settings.mascot_panel.color_black': 'Μαύρος',
   'settings.mascot_panel.color_burgundy': 'Βουργουνδία',
   'settings.mascot_panel.color_footer_hint':
-    'Το επιλεγμένο χρώμα εφαρμόζεται παντού όπου εμφανίζεται το Aura και απομνημονεύεται κατά την επανεκκίνηση.',
+    'Το επιλεγμένο χρώμα εφαρμόζεται παντού όπου εμφανίζεται το Youma και απομνημονεύεται κατά την επανεκκίνηση.',
   'settings.mascot_panel.color_green': 'Πράσινος',
   'settings.mascot_panel.color_heading': 'Χρώμα',
   'settings.mascot_panel.color_navy': 'Ναυτικό',
-  'settings.mascot_panel.color_radiogroup_aria': 'Aura χρώμα',
+  'settings.mascot_panel.color_radiogroup_aria': 'Youma χρώμα',
   'settings.mascot_panel.color_yellow': 'Κίτρινος',
-  'settings.mascot_panel.header_title': 'Aura',
-  'settings.mascot_panel.library_unavailable': 'Μη διαθέσιμη βιβλιοθήκη Aura: {error}',
+  'settings.mascot_panel.header_title': 'Youma',
+  'settings.mascot_panel.library_unavailable': 'Μη διαθέσιμη βιβλιοθήκη Youma: {error}',
   'settings.mascot_panel.load_library_error': 'Δεν ήταν δυνατή η φόρτωση της βιβλιοθήκης μασκότ.',
   'settings.mascot_panel.load_mascot_error': 'Δεν ήταν δυνατή η φόρτωση της μασκότ.',
-  'settings.mascot_panel.loading_library': 'Φόρτωση Aura βιβλιοθήκης…',
-  'settings.mascot_panel.local_aura_default': 'Τοπικό Aura (προεπιλογή)',
+  'settings.mascot_panel.loading_library': 'Φόρτωση Youma βιβλιοθήκης…',
+  'settings.mascot_panel.local_aura_default': 'Τοπικό Youma (προεπιλογή)',
   'settings.mascot_panel.no_characters':
-    'Δεν υπάρχουν ακόμη διαθέσιμοι Aura χαρακτήρες. Οι παραπάνω τοπικές παραλλαγές χρωμάτων εξακολουθούν να είναι ενεργές.',
+    'Δεν υπάρχουν ακόμη διαθέσιμοι Youma χαρακτήρες. Οι παραπάνω τοπικές παραλλαγές χρωμάτων εξακολουθούν να είναι ενεργές.',
   'settings.mascot_panel.no_color_variants':
-    'Δεν διατίθενται Aura χρωματικές παραλλαγές σε αυτήν την έκδοση.',
+    'Δεν διατίθενται Youma χρωματικές παραλλαγές σε αυτήν την έκδοση.',
   'settings.mascot_panel.preview_label': 'Προεπισκόπηση · {name}',
   'settings.mascot_panel.version_states': 'v{version} · {states} καταστάσεις',
   'settings.mascot_panel.visemes_suffix': '· μίζες',
@@ -2088,7 +2088,7 @@ const elGR: TranslationMap = {
   'local_ai.download_snackbar.preparing': 'Προετοιμασία...',
   'settings.cron_job_list.heading': 'Core Cron Jobs',
   'settings.cron_job_list.subheading':
-    'Οι εργασίες παρέμειναν στη βάση δεδομένων προγραμματιστή πυρήνων Aura.',
+    'Οι εργασίες παρέμειναν στη βάση δεδομένων προγραμματιστή πυρήνων Youma.',
   'settings.cron_job_list.loading': 'Φόρτωση εργασιών cron...',
   'settings.cron_job_list.empty': 'Δεν βρέθηκαν βασικές θέσεις εργασίας cron.',
   'settings.cron_job_list.status_enabled': 'Ενεργοποιημένο',
@@ -2161,17 +2161,17 @@ const elGR: TranslationMap = {
   'aura_link_modal.notifications_desktop_only':
     'Οι εγγενείς ειδοποιήσεις είναι διαθέσιμες μόνο στην εφαρμογή για υπολογιστές (εκτελέστε «pnpm dev:app»).',
   'aura_link_modal.notifications_permission_off':
-    'Η άδεια ειδοποίησης είναι απενεργοποιημένη. Ενεργοποιήστε το Aura στις Ρυθμίσεις συστήματος → Ειδοποιήσεις και, στη συνέχεια, δοκιμάστε ξανά.',
-  'aura_link_modal.notification_title': 'Το Aura είναι καλό',
+    'Η άδεια ειδοποίησης είναι απενεργοποιημένη. Ενεργοποιήστε το Youma στις Ρυθμίσεις συστήματος → Ειδοποιήσεις και, στη συνέχεια, δοκιμάστε ξανά.',
+  'aura_link_modal.notification_title': 'Το Youma είναι καλό',
   'aura_link_modal.notification_body': 'Θα λάβετε ping εδώ όταν κάτι χρειάζεται την προσοχή σας.',
   'aura_link_modal.notification_send_failed':
-    'Το Aura δεν μπόρεσε να ενεργοποιήσει μια ειδοποίηση συστήματος. Ελέγξτε τις ρυθμίσεις ειδοποιήσεων του λειτουργικού συστήματος και δοκιμάστε ξανά.',
+    'Το Youma δεν μπόρεσε να ενεργοποιήσει μια ειδοποίηση συστήματος. Ελέγξτε τις ρυθμίσεις ειδοποιήσεων του λειτουργικού συστήματος και δοκιμάστε ξανά.',
   'aura_link_modal.notifications_intro':
-    'Το Aura χρησιμοποιεί εγγενείς ειδοποιήσεις ώστε να μπορεί να σας κάνει ping όταν κάτι χρειάζεται την προσοχή σας, ακόμα και όταν το παράθυρο συνομιλίας είναι κρυφό.',
+    'Το Youma χρησιμοποιεί εγγενείς ειδοποιήσεις ώστε να μπορεί να σας κάνει ping όταν κάτι χρειάζεται την προσοχή σας, ακόμα και όταν το παράθυρο συνομιλίας είναι κρυφό.',
   'aura_link_modal.notifications_blocked_line1':
     'Οι ειδοποιήσεις είναι προς το παρόν αποκλεισμένες.',
   'aura_link_modal.notifications_blocked_line2':
-    '1. Ανοίξτε τις Ρυθμίσεις συστήματος → Ειδοποιήσεις → Aura',
+    '1. Ανοίξτε τις Ρυθμίσεις συστήματος → Ειδοποιήσεις → Youma',
   'aura_link_modal.notifications_blocked_line3': '2. Ενεργοποιήστε το Allow Notifications',
   'aura_link_modal.notifications_blocked_line4':
     '3. Επιστρέψτε εδώ και πατήστε Επανάληψη δοκιμής ειδοποίησης',
@@ -2181,7 +2181,7 @@ const elGR: TranslationMap = {
   'aura_link_modal.retry_test_notification': 'Δοκιμάστε ξανά την ειδοποίηση δοκιμής',
   'aura_link_modal.send_test_notification': 'Αποστολή ειδοποίησης δοκιμής',
   'aura_link_modal.notification_sent_success':
-    'Στάλθηκε ειδοποίηση δοκιμής. Εάν δεν το λάβατε, μεταβείτε στις Ρυθμίσεις συστήματος → Ειδοποιήσεις → Aura, ενεργοποιήστε το Να επιτρέπονται ειδοποιήσεις και ορίστε το Στυλ Banner σε Μόνιμη.',
+    'Στάλθηκε ειδοποίηση δοκιμής. Εάν δεν το λάβατε, μεταβείτε στις Ρυθμίσεις συστήματος → Ειδοποιήσεις → Youma, ενεργοποιήστε το Να επιτρέπονται ειδοποιήσεις και ορίστε το Στυλ Banner σε Μόνιμη.',
   'aura_link_modal.notification_send_error': 'Δεν ήταν δυνατή η αποστολή: {error}',
   'aura_link_modal.trial_credit_label': 'Δοκιμαστική πίστωση',
   'aura_link_modal.trial_credit_amount': '1,00 $',
@@ -2190,7 +2190,7 @@ const elGR: TranslationMap = {
   'aura_link_modal.open_dashboard': 'Άνοιγμα πίνακα ελέγχου στο πρόγραμμα περιήγησης',
   'aura_link_modal.stay_on_trial': 'Μείνε σε δίκη',
   'aura_link_modal.discord_intro':
-    'Μπείτε στο Discord μας και συνδέστε τον λογαριασμό σας Aura. Θα λάβετε αποκλειστική πρώιμη πρόσβαση σε λειτουργίες, δωρεάν πιστώσεις για να παίξετε, μια εξαιρετική κοινότητα για να ξεγελαστείτε και ναι, δωρεάν εμπορικά προϊόντα.',
+    'Μπείτε στο Discord μας και συνδέστε τον λογαριασμό σας Youma. Θα λάβετε αποκλειστική πρώιμη πρόσβαση σε λειτουργίες, δωρεάν πιστώσεις για να παίξετε, μια εξαιρετική κοινότητα για να ξεγελαστείτε και ναι, δωρεάν εμπορικά προϊόντα.',
   'aura_link_modal.discord_perk_feature_access': 'Αποκλειστική πρόσβαση σε χαρακτηριστικά',
   'aura_link_modal.discord_perk_free_credits': 'Δωρεάν πιστώσεις για ενεργά μέλη',
   'aura_link_modal.discord_perk_community': 'Κοινότητα κατασκευαστών και χειριστών',
@@ -2226,7 +2226,7 @@ const elGR: TranslationMap = {
   'channels.discord_config.copied': 'Αντιγράφηκε!',
   'channels.discord_config.copy': 'Αντίγραφο',
   'channels.discord_config.link_instructions_prefix': 'Στο Discord, στείλτε',
-  'channels.discord_config.link_instructions_suffix': 'στο bot Aura. Το Token λήγει σε 5 λεπτά.',
+  'channels.discord_config.link_instructions_suffix': 'στο bot Youma. Το Token λήγει σε 5 λεπτά.',
   'channels.discord_config.link_token_warning':
     'Αποθήκευση αυτής της εντολής — αυτό το διακριτικό εμφανίζεται μόνο μία φορά.',
   'channels.discord_config.account_linked': 'Ο λογαριασμός σας Discord είναι συνδεδεμένος.',
@@ -2267,10 +2267,10 @@ const elGR: TranslationMap = {
   'settings.memory_window_control.save_failed': 'Αποτυχία αποθήκευσης παραθύρου μνήμης',
   'settings.memory_window_control.heading': 'Παράθυρο μακροπρόθεσμης μνήμης',
   'settings.memory_window_control.description':
-    'Πόση ποσότητα απομνημονευμένου περιβάλλοντος εισάγει το Aura σε κάθε εκτέλεση νέου πράκτορα. Τα μεγαλύτερα παράθυρα έχουν μεγαλύτερη επίγνωση των προηγούμενων συνομιλιών, αλλά χρησιμοποιούν περισσότερα διακριτικά - και κοστίζουν περισσότερο - σε κάθε εκτέλεση.',
+    'Πόση ποσότητα απομνημονευμένου περιβάλλοντος εισάγει το Youma σε κάθε εκτέλεση νέου πράκτορα. Τα μεγαλύτερα παράθυρα έχουν μεγαλύτερη επίγνωση των προηγούμενων συνομιλιών, αλλά χρησιμοποιούν περισσότερα διακριτικά - και κοστίζουν περισσότερο - σε κάθε εκτέλεση.',
   'home.banners.promo_credits': 'Έχετε {amount} διαφημιστικές πιστώσεις.',
   'home.banners.promo_credits_prefix':
-    'Κάντε ένα γύρισμα στο Aura και όταν είστε έτοιμοι για περισσότερα,',
+    'Κάντε ένα γύρισμα στο Youma και όταν είστε έτοιμοι για περισσότερα,',
   'home.banners.get_subscription': 'λάβετε μια συνδρομή',
   'home.banners.promo_credits_suffix': 'και λάβετε 10 φορές περισσότερη χρήση.',
   'home.banners.dismiss_early_bird': 'Παράβλεψη πανό πρώιμου πουλιού',
@@ -2280,7 +2280,7 @@ const elGR: TranslationMap = {
   'home.banners.first_subscription': 'πρώτη συνδρομή.',
   'home.banners.join_discord': 'Εγγραφείτε στο Discord μας',
   'home.banners.discord_description':
-    'Λάβετε ενημερώσεις, δωρεάν εμπορεύματα, πιστώσεις, αναφέρετε σφάλματα και γίνετε μέλος της κοινότητας Aura.',
+    'Λάβετε ενημερώσεις, δωρεάν εμπορεύματα, πιστώσεις, αναφέρετε σφάλματα και γίνετε μέλος της κοινότητας Youma.',
   'intelligence.memory_chunk_detail.copy_chunk_id': 'Αντιγράψτε το αναγνωριστικό τμήματος',
   'intelligence.memory_chunk_detail.chunk_label': 'τεμάχιο {id}',
   'intelligence.memory_chunk_detail.copied': 'αντιγράφηκε',
@@ -2305,7 +2305,7 @@ const elGR: TranslationMap = {
     'Κάτι πήγε στραβά. Δοκιμάστε ξανά.\nΑυτό το σφάλμα έχει αναφερθεί. Μπορείτε επίσης να το αναφέρετε στο Discord.\n<aura-link path="community/discord">Αναφορά στο Discord</aura-link>',
   'daemon.service_blocking_gate.retry_failed':
     'Η επανάληψη απέτυχε. Κατεβάστε την πιο πρόσφατη έκδοση εφαρμογής και δοκιμάστε ξανά.',
-  'daemon.service_blocking_gate.title': 'Ο πυρήνας Aura δεν είναι διαθέσιμος',
+  'daemon.service_blocking_gate.title': 'Ο πυρήνας Youma δεν είναι διαθέσιμος',
   'daemon.service_blocking_gate.description':
     'Δεν ήταν δυνατή η ανάκτηση της τοπικής βασικής υπηρεσίας μετά από πολλές προσπάθειες. Αυτό μπορεί να συμβεί μετά από ένα κρίσιμο σφάλμα ή δυαδική αναντιστοιχία.',
   'daemon.service_blocking_gate.download_hint':
@@ -2465,18 +2465,18 @@ const elGR: TranslationMap = {
   'chat.unsubscribe_approval_card.success_message': '✓ Επιτυχής κατάργηση εγγραφής.',
   'chat.unsubscribe_approval_card.denied_message': '✕ Το αίτημα απορρίφθηκε.',
   'oauth.provider_button.twitter_startup_failure':
-    'Δεν ήταν δυνατή η έναρξη της σύνδεσης στο Twitter/X. Βεβαιωθείτε ότι τα πεδία επανάκλησης της εφαρμογής Twitter OAuth URL, το αναγνωριστικό/μυστικό πελάτη και τα ζητούμενα πεδία ταιριάζουν με το backend Aura και, στη συνέχεια, δοκιμάστε ξανά.',
+    'Δεν ήταν δυνατή η έναρξη της σύνδεσης στο Twitter/X. Βεβαιωθείτε ότι τα πεδία επανάκλησης της εφαρμογής Twitter OAuth URL, το αναγνωριστικό/μυστικό πελάτη και τα ζητούμενα πεδία ταιριάζουν με το backend Youma και, στη συνέχεια, δοκιμάστε ξανά.',
   'oauth.provider_button.generic_startup_failure':
     '{providerName} η σύνδεση δεν μπόρεσε να ξεκινήσει. Δοκιμάστε ξανά.',
   'oauth.provider_button.connecting': 'Συνδετικός...',
   'skills.search_bar.placeholder': 'Δεξιότητες αναζήτησης...',
   'common.persist_rehydration_screen.title':
-    'Η φόρτωση του Aura διαρκεί περισσότερο από το συνηθισμένο.',
+    'Η φόρτωση του Youma διαρκεί περισσότερο από το συνηθισμένο.',
   'common.persist_rehydration_screen.description':
     'Η κατάσταση της τοπικής εφαρμογής ενδέχεται να είναι κατεστραμμένη. Η επαναφορά θα αποσυνδεθεί και θα διαγραφεί τα δεδομένα προσωρινής αποθήκευσης σε αυτήν τη συσκευή. θα επανασυνδέσετε τους λογαριασμούς σας στην επόμενη κυκλοφορία. Τα δεδομένα σας στον διακομιστή δεν επηρεάζονται.',
   'common.persist_rehydration_screen.resetting': 'Επαναφορά…',
   'common.persist_rehydration_screen.reset_button': 'Επαναφορά τοπικής κατάστασης',
-  'common.route_loading_screen.initializing': 'Αρχικοποίηση Aura...',
+  'common.route_loading_screen.initializing': 'Αρχικοποίηση Youma...',
   'privacy.what_leaves_link.label': 'Τι αφήνει ο υπολογιστής μου;',
   'settings.provider_key_dialog.api_key_required': 'Επικολλήστε το κλειδί API για να συνεχίσετε.',
   'settings.provider_key_dialog.connect_title': 'Συνδέστε το {label}',
@@ -2486,7 +2486,7 @@ const elGR: TranslationMap = {
   'settings.provider_key_dialog.cancel_button': 'Ματαίωση',
   'settings.provider_key_dialog.saving': 'Οικονομία…',
   'settings.provider_key_dialog.save_button': 'Εκτός',
-  'settings.workload_row.aura_default': 'Aura (προεπιλογή)',
+  'settings.workload_row.aura_default': 'Youma (προεπιλογή)',
   'settings.workload_row.default_button': 'Αθέτηση',
   'settings.workload_row.custom_button': 'Εθιμο',
 };

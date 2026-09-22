@@ -315,7 +315,7 @@ const AIPanel = ({ embedded = false }: AIPanelProps = {}) => {
 
             <div className="text-[11px] text-stone-500">
               {t('settings.ai_panel.default_resolves_prefix')}{' '}
-              <span className="font-mono text-stone-700">Aura</span>
+              <span className="font-mono text-stone-700">Youma</span>
               {t('settings.ai_panel.default_resolves_suffix')}
             </div>
           </section>

@@ -127,7 +127,7 @@ const gaIE: TranslationMap = {
   'clearData.failed': 'Theip ar shonraí agus logáil amach a ghlanadh. Bain triail eile as.',
   'clearData.failedLogout': 'Theip ar logáil amach. Bain triail eile as.',
   'clearData.failedPersist': 'Theip ar staid na haipe marthanach a ghlanadh. Bain triail eile as.',
-  'welcome.title': 'Welcome to Aura',
+  'welcome.title': 'Welcome to Youma',
   'welcome.subtitle':
     'Do chuid faisnéise pearsanta AI Super. Príobháideach, simplí agus thar a bheith cumhachtach.',
   'welcome.connectPrompt': 'Cumraigh RPC URL (Ard)',
@@ -145,7 +145,7 @@ const gaIE: TranslationMap = {
   'home.statusBackendOnly':
     'Ag athcheangal leis an inneall… beidh do ghníomhaire ar fáil arís go luath.',
   'home.statusCoreUnreachable':
-    "Local core sidecar isn't responding. The Aura background process may have crashed or failed to start.",
+    "Local core sidecar isn't responding. The Youma background process may have crashed or failed to start.",
   'home.statusInternetOffline':
     'Tá do ghléas as líne faoi láthair. Seiceáil do líonra nó atosaigh an aip chun athcheangal.',
   'home.restartCore': 'Atosaigh Core',
@@ -196,7 +196,7 @@ const gaIE: TranslationMap = {
   'rewards.referralCode': 'Do chód atreoraithe',
   'rewards.copyCode': 'Cóipeáil cód',
   'rewards.share': 'Comhroinn',
-  'onboarding.welcome': "Hi. I'm Aura.",
+  'onboarding.welcome': "Hi. I'm Youma.",
   'onboarding.welcomeDesc':
     'Do chúntóir AI sár-Chliste a ritheann ar do ríomhaire. Príobháideach, simplí, agus thar a bheith cumhachtach.',
   'onboarding.context': 'Comhthéacs Cruinniú',
@@ -208,14 +208,14 @@ const gaIE: TranslationMap = {
   'onboarding.referral': 'Atreorú',
   'onboarding.referralDesc': 'Cuir cód atreoraithe i bhfeidhm má tá ceann agat.',
   'onboarding.finish': 'Críochnaigh Socrú',
-  'onboarding.finishDesc': "You're all set! Start using Aura.",
+  'onboarding.finishDesc': "You're all set! Start using Youma.",
   'onboarding.skip': 'Scipeáil',
   'onboarding.getStarted': 'Faigh Tosaigh',
-  'onboarding.runtimeChoice.title': 'Conas ar mhaith leat Aura a rith?',
+  'onboarding.runtimeChoice.title': 'Conas ar mhaith leat Youma a rith?',
   'onboarding.runtimeChoice.subtitle':
     'Roghnaigh an socrú is fearr a oireann duit. Is féidir leat é seo a athrú níos déanaí sna Socruithe.',
   'onboarding.runtimeChoice.cloud.title': 'Simplí',
-  'onboarding.runtimeChoice.cloud.tagline': 'Let Aura manage everything for you.',
+  'onboarding.runtimeChoice.cloud.tagline': 'Let Youma manage everything for you.',
   'onboarding.runtimeChoice.cloud.f1': 'Slándáil ionsuite',
   'onboarding.runtimeChoice.cloud.f2': "Comhbhrú comhartha chun d'úsáid a shíneadh tuilleadh",
   'onboarding.runtimeChoice.cloud.f3': 'Síntiús amháin, gach samhail san áireamh',
@@ -254,7 +254,7 @@ const gaIE: TranslationMap = {
   'onboarding.custom.stepperMemory': 'Cuimhne',
   'onboarding.custom.stepCounter': 'Step {n} of {total}',
   'onboarding.custom.defaultTitle': 'Réamhshocrú',
-  'onboarding.custom.defaultSubtitle': 'Let Aura manage it for you.',
+  'onboarding.custom.defaultSubtitle': 'Let Youma manage it for you.',
   'onboarding.custom.configureTitle': 'Cumraigh',
   'onboarding.custom.configureSubtitle': 'Piocfaidh mé cad atá le húsáid.',
   'onboarding.custom.progressAriaLabel': 'Dul chun cinn a chur ar bord',
@@ -268,33 +268,33 @@ const gaIE: TranslationMap = {
   'onboarding.custom.inference.subtitle':
     'Cén múnla teanga ar chóir do cheisteanna a fhreagairt agus do ghníomhairí a reáchtáil?',
   'onboarding.custom.inference.defaultDesc':
-    'Aistríonn Aura gach ualach oibre chuig múnla réamhshocraithe ciallmhar. Gan eochracha, gan socrú.',
+    'Aistríonn Youma gach ualach oibre chuig múnla réamhshocraithe ciallmhar. Gan eochracha, gan socrú.',
   'onboarding.custom.inference.configureDesc':
     "Beir leat d'eochair OpenAI nó Anthropic. Bainimid úsáid as le haghaidh gach ualach oibre téacs-bhunaithe.",
   'onboarding.custom.voice.title': 'Guth',
   'onboarding.custom.voice.subtitle': 'Urlabhra go téacs agus téacs-go-hurlabhra do mhodh gutha.',
   'onboarding.custom.voice.defaultDesc':
-    'Aura longa le STT/TTS a oibríonn go díreach. Ní dhéanfaidh aon ní a sreang suas.',
+    'Youma longa le STT/TTS a oibríonn go díreach. Ní dhéanfaidh aon ní a sreang suas.',
   'onboarding.custom.voice.configureDesc':
     'Use your own ElevenLabs / OpenAI Whisper / etc. Configure in Settings › Voice.',
   'onboarding.custom.oauth.title': 'Connections (OAuth)',
   'onboarding.custom.oauth.subtitle':
     'Gmail, Slack, Notion, and other connected services that need OAuth.',
   'onboarding.custom.oauth.defaultDesc':
-    'Aura runs a managed Composio workspace. One click to connect each service later.',
+    'Youma runs a managed Composio workspace. One click to connect each service later.',
   'onboarding.custom.oauth.configureDesc':
     'Bring your own Composio account / API key. Configure in Settings › Connections.',
   'onboarding.custom.search.title': 'Cuardach Gréasáin',
-  'onboarding.custom.search.subtitle': 'How Aura searches the web on your behalf.',
+  'onboarding.custom.search.subtitle': 'How Youma searches the web on your behalf.',
   'onboarding.custom.search.defaultDesc':
-    'Úsáideann Aura inneall cuardaigh bainistithe. Níl gá le heochracha.',
+    'Úsáideann Youma inneall cuardaigh bainistithe. Níl gá le heochracha.',
   'onboarding.custom.search.configureDesc':
     'Beir leat eochair do sholáthraí cuardaigh féin (Tavily, Brave, etc.). Cumraigh i Socruithe › Uirlisí.',
   'onboarding.custom.memory.title': 'Cuimhne',
   'onboarding.custom.memory.subtitle':
-    'How Aura remembers your context, preferences, and prior conversations.',
+    'How Youma remembers your context, preferences, and prior conversations.',
   'onboarding.custom.memory.defaultDesc':
-    'Bainistíonn Aura stóráil chuimhne agus aisghabháil go huathoibríoch. Ní dhéanfaidh aon ní a chur ar bun.',
+    'Bainistíonn Youma stóráil chuimhne agus aisghabháil go huathoibríoch. Ní dhéanfaidh aon ní a chur ar bun.',
   'onboarding.custom.memory.configureDesc':
     'Déan iniúchadh, easpórtáil, nó scrios an chuimhne tú féin. Cumraigh i Socruithe › Cuimhne.',
   'accounts.addAccount': 'Cuir Cuntas leis',
@@ -354,7 +354,7 @@ const gaIE: TranslationMap = {
   'misc.downloading': 'Ag íosluchtú...',
   'misc.installing': 'Suiteáil...',
   'misc.beta':
-    'Tá Aura i béite luath. Ná bíodh drogall ort aiseolas a roinnt nó tuairisc a thabhairt ar aon fhabhtanna a bhfuil tú ag dul isteach iontu - cabhraíonn gach tuairisc linn dul ar aghaidh níos tapúla.',
+    'Tá Youma i béite luath. Ná bíodh drogall ort aiseolas a roinnt nó tuairisc a thabhairt ar aon fhabhtanna a bhfuil tú ag dul isteach iontu - cabhraíonn gach tuairisc linn dul ar aghaidh níos tapúla.',
   'misc.betaFeedback': 'Seol aiseolas',
   'mnemonic.title': 'Frása Aisghabhála',
   'mnemonic.warning': 'Scríobh síos na focail seo in ord agus stóráil iad áit éigin sábháilte.',
@@ -377,11 +377,11 @@ const gaIE: TranslationMap = {
   'privacy.anonymizedAnalytics': 'Anailísíocht gan ainm',
   'privacy.shareAnonymizedData': 'Comhroinn Sonraí Úsáide Anaithnid',
   'privacy.shareAnonymizedDataDesc':
-    'Help improve Aura by sharing anonymous crash reports and usage analytics. All data is fully anonymized — no personal data, messages, wallet keys, or session information is ever collected.',
+    'Help improve Youma by sharing anonymous crash reports and usage analytics. All data is fully anonymized — no personal data, messages, wallet keys, or session information is ever collected.',
   'privacy.meetingFollowUps': 'Cruinnithe leantacha',
   'privacy.autoHandoffMeet': 'Tras-scríbhinní uathoibríocha GoogleMeet chuig an gceolfhoireann',
   'privacy.autoHandoffMeetDesc':
-    "When a Google Meet call ends, Aura's orchestrator can read the transcript and may take actions like drafting messages, scheduling follow-ups, or posting summaries to your connected Slack workspace. Off by default.",
+    "When a Google Meet call ends, Youma's orchestrator can read the transcript and may take actions like drafting messages, scheduling follow-ups, or posting summaries to your connected Slack workspace. Off by default.",
   'privacy.analyticsDisclaimer':
     'Tá gach tuairisc anailíse agus fabht anaithnid go hiomlán. Nuair atá sé cumasaithe, ní bhailímid ach faisnéis tuairteála, cineál gléis, agus suíomh comhaid earráidí. Ní fhaighimid rochtain choíche ar do theachtaireachtaí, ar shonraí seisiúin, ar eochracha sparán, ar eochracha API, ná ar aon fhaisnéis inaitheanta phearsanta. Is féidir leat an socrú seo a athrú am ar bith.',
   'settings.about.version': 'Leagan',
@@ -439,7 +439,7 @@ const gaIE: TranslationMap = {
   'settings.billing.browserNotOpen': 'Murar oscail do bhrabhsálaí, úsáid an cnaipe thuas.',
   'settings.billing.browserOpenFailed':
     'Níorbh fhéidir an brabhsálaí a oscailt go huathoibríoch. Bain úsáid as an gcnaipe thuas.',
-  'settings.tools.chooseCapabilities': 'Choose which capabilities Aura can use on your behalf.',
+  'settings.tools.chooseCapabilities': 'Choose which capabilities Youma can use on your behalf.',
   'settings.tools.saveChanges': 'Sábháil Athruithe',
   'settings.tools.preferencesSaved': 'Sainroghanna a shábháil',
   'settings.tools.saveFailed': 'Theip ar shábháil na sainroghanna. Bain triail eile as.',
@@ -903,9 +903,9 @@ const gaIE: TranslationMap = {
   'bootCheck.tokenRequired': 'Beidh comhartha údar uainn le nascadh.',
   'bootCheck.chooseCoreMode': 'Roghnaigh Am Rite',
   'bootCheck.connectToCore': "Ceangail le d'Am Rite",
-  'bootCheck.desktopDescription': 'Aura needs a runtime to think. Pick where it should live.',
+  'bootCheck.desktopDescription': 'Youma needs a runtime to think. Pick where it should live.',
   'bootCheck.webDescription':
-    'On the web, Aura connects to a runtime you control. Drop in its URL and auth token below, or grab the desktop app to run one right on your machine.',
+    'On the web, Youma connects to a runtime you control. Drop in its URL and auth token below, or grab the desktop app to run one right on your machine.',
   'bootCheck.preferDesktop': 'Ina ionad sin a choinneáil ar gach rud ar do gléas féin?',
   'bootCheck.downloadDesktop': 'Faigh an App Deasc',
   'bootCheck.localRecommended': 'Rith go hÁitiúil (Molta)',
@@ -933,7 +933,7 @@ const gaIE: TranslationMap = {
   'bootCheck.quit': 'Scoir',
   'bootCheck.legacyDetected': 'Am Rite Cúlra Oidhreacht Braitheadh',
   'bootCheck.legacyDescription':
-    'Tá deamhan Aura atá suiteáilte go leithleach ag rith ar an ngléas seo cheana. Ní mór dúinn é a ghlanadh sula bhféadfaidh an t-am rite ionsuite dul i bhfeidhm.',
+    'Tá deamhan Youma atá suiteáilte go leithleach ag rith ar an ngléas seo cheana. Ní mór dúinn é a ghlanadh sula bhféadfaidh an t-am rite ionsuite dul i bhfeidhm.',
   'bootCheck.removing': 'Ag baint…',
   'bootCheck.removeContinue': 'Bain agus Lean ar aghaidh',
   'bootCheck.localNeedsRestart': 'Teastaíonn Atosú Am Rite Áitiúil',
@@ -1071,9 +1071,9 @@ const gaIE: TranslationMap = {
   'rewards.referrals.load_stats_error': 'Níorbh fhéidir na staitisticí atreoraithe a lódáil',
   'rewards.referrals.copied': 'Cóipeáladh',
   'rewards.referrals.copy_failed': 'Theip ar an gcóipeáil',
-  'rewards.referrals.share_intro': 'Join me on Aura.',
+  'rewards.referrals.share_intro': 'Join me on Youma.',
   'rewards.referrals.share_code_line': 'Cód atreoraithe: {code}',
-  'rewards.referrals.share_download_line': 'Download Aura: {url}',
+  'rewards.referrals.share_download_line': 'Download Youma: {url}',
   'rewards.referrals.apply_error': 'Níorbh fhéidir an cód atreoraithe a chur i bhfeidhm',
   'rewards.referrals.heading': 'Tabhair cuireadh do chairde, creidmheasanna a thuilleamh',
   'rewards.referrals.description':
@@ -1307,22 +1307,22 @@ const gaIE: TranslationMap = {
   'skills.meeting_bots_card.platform_gmeet': 'Google Meet',
   'skills.meeting_bots_card.platform_zoom': 'Zoom',
   'skills.meeting_bots_card.platform_teams': 'Foirne Microsoft',
-  'skills.meeting_bots_card.banner_title': 'Send Aura to a meeting',
+  'skills.meeting_bots_card.banner_title': 'Send Youma to a meeting',
   'skills.meeting_bots_card.new_badge': 'Nua',
   'skills.meeting_bots_card.banner_description':
-    'Drop a Google Meet link and Aura joins as a guest, talks, listens, and waves back.',
+    'Drop a Google Meet link and Youma joins as a guest, talks, listens, and waves back.',
   'skills.meeting_bots_card.coming_soon_error': '{platform} tacaíocht ag teacht go luath.',
-  'skills.meeting_bots_card.toast_joining_title': 'Tá Aura ag teacht isteach sa chruinniú',
+  'skills.meeting_bots_card.toast_joining_title': 'Tá Youma ag teacht isteach sa chruinniú',
   'skills.meeting_bots_card.toast_joining_message':
     'Ba chóir go mbeadh sé le feiceáil mar rannpháirtí i gceann cúpla soicind.',
-  'skills.meeting_bots_card.toast_busy_title': 'Tá Aura gnóthach',
-  'skills.meeting_bots_card.toast_failed_title': 'Could not start Aura',
-  'skills.meeting_bots_card.default_error_message': 'Theip ar thosú Aura.',
-  'skills.meeting_bots_card.modal_aria_label': 'Send Aura to a meeting',
+  'skills.meeting_bots_card.toast_busy_title': 'Tá Youma gnóthach',
+  'skills.meeting_bots_card.toast_failed_title': 'Could not start Youma',
+  'skills.meeting_bots_card.default_error_message': 'Theip ar thosú Youma.',
+  'skills.meeting_bots_card.modal_aria_label': 'Send Youma to a meeting',
   'skills.meeting_bots_card.close_aria': 'Dún',
-  'skills.meeting_bots_card.modal_title': 'Send Aura to a meeting',
+  'skills.meeting_bots_card.modal_title': 'Send Youma to a meeting',
   'skills.meeting_bots_card.modal_description':
-    'Tagann Aura isteach mar aoi gan ainm, sruthaíonn sé a fhíseán isteach sa ghlao, agus freagraíonn sé tríd an ngníomhaire.',
+    'Tagann Youma isteach mar aoi gan ainm, sruthaíonn sé a fhíseán isteach sa ghlao, agus freagraíonn sé tríd an ngníomhaire.',
   'skills.meeting_bots_card.soon_suffix': '· go luath',
   'skills.meeting_bots_card.meeting_link_label': 'Nasc cruinnithe',
   'skills.meeting_bots_card.display_name_label': 'Ainm taispeána',
@@ -1468,14 +1468,14 @@ const gaIE: TranslationMap = {
   'settings.composio_panel.title': 'Composio',
   'settings.composio_panel.loading': 'Á lódáil…',
   'settings.composio_panel.intro_prefix':
-    "Composio powers integrations with Gmail, Notion, Slack, GitHub, and 1000+ other apps. By default Aura manages it for you, so you don't need to bring an API key. If you prefer to use your own Composio account directly, switch to",
+    "Composio powers integrations with Gmail, Notion, Slack, GitHub, and 1000+ other apps. By default Youma manages it for you, so you don't need to bring an API key. If you prefer to use your own Composio account directly, switch to",
   'settings.composio_panel.direct_word': 'Díreach',
   'settings.composio_panel.intro_suffix': "mód agus greamaigh d'eochair thíos.",
   'settings.composio_panel.routing_mode_legend': 'Modh ródaithe',
-  'settings.composio_panel.managed_aria_label': 'Managed (Aura handles it for you)',
-  'settings.composio_panel.managed_title': 'Managed (Aura handles it for you)',
+  'settings.composio_panel.managed_aria_label': 'Managed (Youma handles it for you)',
+  'settings.composio_panel.managed_title': 'Managed (Youma handles it for you)',
   'settings.composio_panel.managed_description':
-    'Réamhshocrú. Bainistíonn Aura an nasc Composio duit. Feidhmíonn cuacha gréasáin truicear (imeachtaí Gmail / Slack fíor-ama) as an mbosca.',
+    'Réamhshocrú. Bainistíonn Youma an nasc Composio duit. Feidhmíonn cuacha gréasáin truicear (imeachtaí Gmail / Slack fíor-ama) as an mbosca.',
   'settings.composio_panel.direct_aria_label': "Díreach (tabhair leat d'eochair API féin)",
   'settings.composio_panel.direct_title': "Díreach (tabhair leat d'eochair API féin)",
   'settings.composio_panel.direct_description_prefix': 'Téann glaonna chuig',
@@ -1486,7 +1486,7 @@ const gaIE: TranslationMap = {
   'settings.composio_panel.api_key_label': 'Composio API key',
   'settings.composio_panel.api_key_help_prefix': "Aimsigh d'eochair ag",
   'settings.composio_panel.api_key_help_suffix':
-    'Stóráiltear an eochair criptithe ar an ngléas seo agus ní sheoltar chuig Aura í choíche.',
+    'Stóráiltear an eochair criptithe ar an ngléas seo agus ní sheoltar chuig Youma í choíche.',
   'settings.composio_panel.api_key_placeholder_stored':
     '••••••••••• (stóráil eochair - greamaigh eochair nua le hathrú)',
   'settings.composio_panel.api_key_placeholder_empty': 'ck_beo_xxxxxxxxxxxxxxxx',
@@ -1494,10 +1494,10 @@ const gaIE: TranslationMap = {
     'A Composio API key is currently stored on this device.',
   'settings.composio_panel.confirm_title': '⚠️ Ag aistriú go mód Díreach',
   'settings.composio_panel.confirm_integrations_prefix':
-    'Your existing integrations (Gmail, Slack, GitHub, etc. linked through Aura)',
+    'Your existing integrations (Gmail, Slack, GitHub, etc. linked through Youma)',
   'settings.composio_panel.wont_be_visible': 'ní bheidh sé le feiceáil',
   'settings.composio_panel.confirm_integrations_suffix':
-    '— they live in the Aura-managed Composio tenant.',
+    '— they live in the Youma-managed Composio tenant.',
   'settings.composio_panel.confirm_needs_title': 'Beidh ort:',
   'settings.composio_panel.confirm_need_account_prefix': 'Cuntas ag',
   'settings.composio_panel.confirm_need_account_suffix': 'with an API key',
@@ -1515,7 +1515,7 @@ const gaIE: TranslationMap = {
   'settings.composio_panel.save_error': 'Failed to save. Direct mode requires a non-empty API key.',
   'settings.model_status.ollama_unavailable_title': 'Níl am rite Olama ar fáil',
   'settings.model_status.ollama_unavailable_description':
-    'Déileálann Aura anois le hOllama mar am rite tátail sheachtraigh. Tosaigh do fhreastalaí Ollama féin, tarraing na múnlaí atá uait, agus pointeáil ródú ualaigh oibre air.',
+    'Déileálann Youma anois le hOllama mar am rite tátail sheachtraigh. Tosaigh do fhreastalaí Ollama féin, tarraing na múnlaí atá uait, agus pointeáil ródú ualaigh oibre air.',
   'settings.model_status.ollama_docs_link': 'doiciméid Olama',
   'settings.model_status.runtime_status_title': 'Stádas Am Rite',
   'settings.model_status.refresh': 'Athnuaigh',
@@ -1534,7 +1534,7 @@ const gaIE: TranslationMap = {
   'settings.model_status.hide_error_details': 'Folaigh sonraí earráide',
   'settings.model_status.show_error_details': 'Taispeáin sonraí earráide',
   'settings.model_status.connect_only_prefix':
-    'Ní nascann Aura ach le críochphointe atá ag luí le hOllama atá ar siúl cheana féin. Féach',
+    'Ní nascann Youma ach le críochphointe atá ag luí le hOllama atá ar siúl cheana féin. Féach',
   'settings.model_status.connect_only_suffix':
     "le haghaidh treoracha socraithe, ansin bain triail eile as nuair a bheidh d'am rite insroichte.",
   'settings.model_status.ollama_diagnostics_title': 'Diagnóisic Olama',
@@ -1560,7 +1560,7 @@ const gaIE: TranslationMap = {
   'settings.model_status.vision_model_line': 'Vision: {model}',
   'settings.model_status.issues_heading': 'Saincheisteanna',
   'settings.model_status.manage_ollama_footer':
-    'Manage the Ollama process and model pulls outside Aura, then rerun diagnostics.',
+    'Manage the Ollama process and model pulls outside Youma, then rerun diagnostics.',
   'settings.device_capability.model_tier_title': 'Samhail Samhail',
   'settings.device_capability.loading_device_info':
     'Faisnéis ghléis agus réamhshocruithe á lódáil…',
@@ -1871,7 +1871,7 @@ const gaIE: TranslationMap = {
   'composio.connect_modal.disconnecting': 'Ag dínascadh…',
   'composio.connect_modal.dismiss': 'Díbhe',
   'composio.connect_modal.expired_body':
-    'Athcheangail chun uirlisí {name} a athchumasú. Coinneoidh Aura an comhtháthú seo gan fáil go dtí go ndéanfaidh tú rochtain OAuth a athnuachan.',
+    'Athcheangail chun uirlisí {name} a athchumasú. Coinneoidh Youma an comhtháthú seo gan fáil go dtí go ndéanfaidh tú rochtain OAuth a athnuachan.',
   'composio.connect_modal.expired_title': '{name} údarú in éag',
   'composio.connect_modal.generic_error': 'Chuaigh rud éigin mícheart.',
   'composio.connect_modal.header_connect': 'Ceangail {name}',
@@ -1887,7 +1887,7 @@ const gaIE: TranslationMap = {
   'composio.connect_modal.needs_subdomain_intro_suffix': ') agus bain triail eile as.',
   'composio.connect_modal.permission_intro_prefix': 'Is féidir le {name} nochtadh',
   'composio.connect_modal.permission_intro_suffix':
-    '. Tar éis duit nascadh, rialaítear ceadanna gníomhaire Aura féin thíos de réir mar a scoránaigh léite, scríobh agus riaracháin.',
+    '. Tar éis duit nascadh, rialaítear ceadanna gníomhaire Youma féin thíos de réir mar a scoránaigh léite, scríobh agus riaracháin.',
   'composio.connect_modal.permissions_default_hint':
     'Cumasaíodh Léigh + Scríobh de réir réamhshocraithe',
   'composio.connect_modal.permissions_heading': 'Ceadanna',
@@ -1937,10 +1937,10 @@ const gaIE: TranslationMap = {
   'settings.ai_panel.local_runtime_disconnect_aria': 'Dícheangail {label}',
   'settings.ai_panel.providers_heading': 'LLM Soláthraithe',
   'settings.ai_panel.providers_subtitle':
-    'Connect the language-model backends you want Aura to use. Toggle a provider on to add its key; toggle off to disconnect.',
+    'Connect the language-model backends you want Youma to use. Toggle a provider on to add its key; toggle off to disconnect.',
   'settings.ai_panel.routing_heading': 'Ródú',
   'settings.ai_panel.routing_subtitle':
-    'Pick how each workload is served. Default uses Aura; Custom lets you point a workload at a specific provider and model.',
+    'Pick how each workload is served. Default uses Youma; Custom lets you point a workload at a specific provider and model.',
   'settings.auto_recharge.add_card': '+ Cuir cárta ar Stripe',
   'settings.auto_recharge.amount_label': 'Cuir an méid seo leis',
   'settings.auto_recharge.cancel': 'Cealaigh',
@@ -2005,21 +2005,21 @@ const gaIE: TranslationMap = {
   'settings.mascot_panel.color_black': 'Dubh',
   'settings.mascot_panel.color_burgundy': 'Burgúine',
   'settings.mascot_panel.color_footer_hint':
-    'Cuirtear an dath roghnaithe i bhfeidhm i ngach áit a bhfeictear Aura agus cuimhnítear air thar atosuithe.',
+    'Cuirtear an dath roghnaithe i bhfeidhm i ngach áit a bhfeictear Youma agus cuimhnítear air thar atosuithe.',
   'settings.mascot_panel.color_green': 'Glas',
   'settings.mascot_panel.color_heading': 'Dath',
   'settings.mascot_panel.color_navy': 'Cabhlach',
-  'settings.mascot_panel.color_radiogroup_aria': 'dath Aura',
+  'settings.mascot_panel.color_radiogroup_aria': 'dath Youma',
   'settings.mascot_panel.color_yellow': 'Buí',
-  'settings.mascot_panel.header_title': 'Aura',
-  'settings.mascot_panel.library_unavailable': 'Aura library unavailable: {error}',
+  'settings.mascot_panel.header_title': 'Youma',
+  'settings.mascot_panel.library_unavailable': 'Youma library unavailable: {error}',
   'settings.mascot_panel.load_library_error': 'Níorbh fhéidir leabharlann na mascot a lódáil.',
   'settings.mascot_panel.load_mascot_error': 'Níorbh fhéidir mascot a luchtú.',
-  'settings.mascot_panel.loading_library': 'Loading Aura library…',
-  'settings.mascot_panel.local_aura_default': 'Local Aura (default)',
+  'settings.mascot_panel.loading_library': 'Loading Youma library…',
+  'settings.mascot_panel.local_aura_default': 'Local Youma (default)',
   'settings.mascot_panel.no_characters':
-    'No Aura characters are available yet. Local color variants above are still active.',
-  'settings.mascot_panel.no_color_variants': 'No Aura color variants are available in this build.',
+    'No Youma characters are available yet. Local color variants above are still active.',
+  'settings.mascot_panel.no_color_variants': 'No Youma color variants are available in this build.',
   'settings.mascot_panel.preview_label': 'Réamhamharc · {name}',
   'settings.mascot_panel.version_states': 'v{version} · {states} stáit',
   'settings.mascot_panel.visemes_suffix': '· visemes',
@@ -2066,7 +2066,7 @@ const gaIE: TranslationMap = {
   'local_ai.download_snackbar.preparing': 'Ag ullmhú...',
   'settings.cron_job_list.heading': 'Croí Cron Jobs',
   'settings.cron_job_list.subheading':
-    'Leanadh le jabanna sa bhunachar sonraí Aura croí-sceidealaithe.',
+    'Leanadh le jabanna sa bhunachar sonraí Youma croí-sceidealaithe.',
   'settings.cron_job_list.loading': 'jabanna cron á lódáil...',
   'settings.cron_job_list.empty': 'Níor aimsíodh croíphoist cron.',
   'settings.cron_job_list.status_enabled': 'Cumasaithe',
@@ -2138,16 +2138,16 @@ const gaIE: TranslationMap = {
   'aura_link_modal.notifications_desktop_only':
     'Níl fógraí dúchasacha ar fáil ach san aip deisce (rith `pnpm dev:app`).',
   'aura_link_modal.notifications_permission_off':
-    'Notification permission is off. Enable Aura in System Settings → Notifications, then retry.',
-  'aura_link_modal.notification_title': 'Is maith Aura dul',
+    'Notification permission is off. Enable Youma in System Settings → Notifications, then retry.',
+  'aura_link_modal.notification_title': 'Is maith Youma dul',
   'aura_link_modal.notification_body':
     "Gheobhaidh tú pings anseo nuair a theastaíonn d'aird ar rud éigin.",
   'aura_link_modal.notification_send_failed':
-    'Níorbh fhéidir le Aura fógra córais a spreagadh. Seiceáil socruithe fógra OS agus bain triail eile as.',
+    'Níorbh fhéidir le Youma fógra córais a spreagadh. Seiceáil socruithe fógra OS agus bain triail eile as.',
   'aura_link_modal.notifications_intro':
-    'Úsáideann Aura fógraí dúchasacha ionas gur féidir leis tú a phingeáil nuair a bhíonn d’aird de dhíth ar rud éigin, fiú nuair atá an fhuinneog comhrá i bhfolach.',
+    'Úsáideann Youma fógraí dúchasacha ionas gur féidir leis tú a phingeáil nuair a bhíonn d’aird de dhíth ar rud éigin, fiú nuair atá an fhuinneog comhrá i bhfolach.',
   'aura_link_modal.notifications_blocked_line1': 'Tá cosc ​​ar fhógraí faoi láthair.',
-  'aura_link_modal.notifications_blocked_line2': '1. Oscail Socruithe an Chórais → Fógraí → Aura',
+  'aura_link_modal.notifications_blocked_line2': '1. Oscail Socruithe an Chórais → Fógraí → Youma',
   'aura_link_modal.notifications_blocked_line3': '2. Cas ar Ceadaigh Fógraí',
   'aura_link_modal.notifications_blocked_line4':
     '3. Fill anseo agus sconna ar Atriail fógra tástála',
@@ -2157,7 +2157,7 @@ const gaIE: TranslationMap = {
   'aura_link_modal.retry_test_notification': 'Bain triail eile as fógra tástála',
   'aura_link_modal.send_test_notification': 'Seol fógra tástála',
   'aura_link_modal.notification_sent_success':
-    'Fógra tástála seolta. Mura bhfuair tú é, téigh go Socruithe an Chórais → Fógraí → Aura, cas air Ceadaigh Fógraí, agus socraigh Stíl Meirge go Marthanach.',
+    'Fógra tástála seolta. Mura bhfuair tú é, téigh go Socruithe an Chórais → Fógraí → Youma, cas air Ceadaigh Fógraí, agus socraigh Stíl Meirge go Marthanach.',
   'aura_link_modal.notification_send_error': 'Níorbh fhéidir a sheoladh: {error}',
   'aura_link_modal.trial_credit_label': 'Creidmheas trialach',
   'aura_link_modal.trial_credit_amount': '$1.00',
@@ -2166,7 +2166,7 @@ const gaIE: TranslationMap = {
   'aura_link_modal.open_dashboard': 'Oscail painéal sa bhrabhsálaí',
   'aura_link_modal.stay_on_trial': 'Fan ar triail',
   'aura_link_modal.discord_intro':
-    'Léim isteach inár Discord agus nasc do chuntas Aura. Gheobhaidh tú rochtain luath eisiach ar ghnéithe, creidmheasanna saor in aisce le himirt leo, pobal iontach chun nerd a bhaint as, agus sea, earraí saor in aisce.',
+    'Léim isteach inár Discord agus nasc do chuntas Youma. Gheobhaidh tú rochtain luath eisiach ar ghnéithe, creidmheasanna saor in aisce le himirt leo, pobal iontach chun nerd a bhaint as, agus sea, earraí saor in aisce.',
   'aura_link_modal.discord_perk_feature_access': 'Rochtain eisiach gné',
   'aura_link_modal.discord_perk_free_credits':
     'Creidmheasanna saor in aisce do chomhaltaí gníomhacha',
@@ -2205,7 +2205,7 @@ const gaIE: TranslationMap = {
   'channels.discord_config.copy': 'Cóip',
   'channels.discord_config.link_instructions_prefix': 'In Discord, send ',
   'channels.discord_config.link_instructions_suffix':
-    'to the Aura bot. Token expires in 5 minutes.',
+    'to the Youma bot. Token expires in 5 minutes.',
   'channels.discord_config.link_token_warning':
     'Sábháil an t-ordú seo - ní thaispeántar an comhartha seo ach uair amháin.',
   'channels.discord_config.account_linked': 'Tá do chuntas Discord nasctha.',
@@ -2245,9 +2245,9 @@ const gaIE: TranslationMap = {
   'settings.memory_window_control.save_failed': 'Theip ar shábháil an fhuinneog chuimhne',
   'settings.memory_window_control.heading': 'Fuinneog cuimhne fadtéarmach',
   'settings.memory_window_control.description':
-    'Cé mhéad comhthéacs a chuimhnítear a chuireann Aura isteach i ngach rith gníomhaire nua. Mothaíonn fuinneoga níos mó níos mó feasachta ar chomhráite san am atá caite ach úsáideann siad níos mó comharthaí - agus cosnaíonn siad níos mó - ar gach rith.',
+    'Cé mhéad comhthéacs a chuimhnítear a chuireann Youma isteach i ngach rith gníomhaire nua. Mothaíonn fuinneoga níos mó níos mó feasachta ar chomhráite san am atá caite ach úsáideann siad níos mó comharthaí - agus cosnaíonn siad níos mó - ar gach rith.',
   'home.banners.promo_credits': 'You have {amount} of promotional credits.',
-  'home.banners.promo_credits_prefix': "Give Aura a spin, and when you're ready for more,",
+  'home.banners.promo_credits_prefix': "Give Youma a spin, and when you're ready for more,",
   'home.banners.get_subscription': 'síntiús a fháil',
   'home.banners.promo_credits_suffix': 'agus 10x níos mó úsáide a fháil.',
   'home.banners.dismiss_early_bird': 'Ruaig bratach na n-éan go luath',
@@ -2257,7 +2257,7 @@ const gaIE: TranslationMap = {
   'home.banners.first_subscription': 'an chéad síntiús.',
   'home.banners.join_discord': 'Join Our Discord',
   'home.banners.discord_description':
-    'Faigh nuashonruithe, earraí in aisce, creidmheasanna, tuairiscigh fabhtanna, agus bí mar chuid den phobal Aura.',
+    'Faigh nuashonruithe, earraí in aisce, creidmheasanna, tuairiscigh fabhtanna, agus bí mar chuid den phobal Youma.',
   'intelligence.memory_chunk_detail.copy_chunk_id': 'Cóipeáil aitheantais smután',
   'intelligence.memory_chunk_detail.chunk_label': 'chunk {id}',
   'intelligence.memory_chunk_detail.copied': 'chóipeáil',
@@ -2282,7 +2282,7 @@ const gaIE: TranslationMap = {
     'Chuaigh rud éigin mícheart. Bain triail eile as.\nTuairiscíodh an earráid seo. Is féidir leat é a thuairisciú freisin ar Discord.\n<aura-link path="community/discord">Tuairisc ar Discord</aura-link>',
   'daemon.service_blocking_gate.retry_failed':
     'Theip ar atriail. Íoslódáil an leagan is déanaí den app agus bain triail eile as.',
-  'daemon.service_blocking_gate.title': 'Níl Aura core ar fáil',
+  'daemon.service_blocking_gate.title': 'Níl Youma core ar fáil',
   'daemon.service_blocking_gate.description':
     'Níorbh fhéidir linn an croísheirbhís áitiúil a aisghabháil tar éis iarrachtaí iolracha. Is féidir leis seo tarlú tar éis timpiste criticiúil nó neamhréir dhénártha.',
   'daemon.service_blocking_gate.download_hint':
@@ -2441,17 +2441,17 @@ const gaIE: TranslationMap = {
   'chat.unsubscribe_approval_card.success_message': "✓ D'éirigh le díliostáil.",
   'chat.unsubscribe_approval_card.denied_message': '✕ Iarratas diúltaithe.',
   'oauth.provider_button.twitter_startup_failure':
-    'Twitter/X sign-in could not start. Check that the Twitter OAuth app callback URL, client ID/secret, and requested scopes match the Aura backend, then try again.',
+    'Twitter/X sign-in could not start. Check that the Twitter OAuth app callback URL, client ID/secret, and requested scopes match the Youma backend, then try again.',
   'oauth.provider_button.generic_startup_failure':
     '{providerName} níorbh fhéidir an síniú isteach a thosú. Bain triail eile as.',
   'oauth.provider_button.connecting': 'Ag nascadh...',
   'skills.search_bar.placeholder': 'Scileanna cuardaigh...',
-  'common.persist_rehydration_screen.title': 'Tógann sé níos faide ná mar is gnách Aura a luchtú.',
+  'common.persist_rehydration_screen.title': 'Tógann sé níos faide ná mar is gnách Youma a luchtú.',
   'common.persist_rehydration_screen.description':
     'Seans go mbeidh staid aipe áitiúil truaillithe. Déanfaidh athshocrú tú a shíniú amach agus sonraí i dtaisce a ghlanadh ar an ngléas seo; Déanfaidh tú do chuntais a athcheangal ar an gcéad seoladh eile. Níl aon tionchar ar do shonraí ar an bhfreastalaí.',
   'common.persist_rehydration_screen.resetting': 'Á athshocrú…',
   'common.persist_rehydration_screen.reset_button': 'Athshocraigh staid áitiúil',
-  'common.route_loading_screen.initializing': 'Initializing Aura...',
+  'common.route_loading_screen.initializing': 'Initializing Youma...',
   'privacy.what_leaves_link.label': 'Cad a fhágann mo ríomhaire?',
   'settings.provider_key_dialog.api_key_required':
     "Greamaigh d'eochair API chun leanúint ar aghaidh.",
@@ -2462,7 +2462,7 @@ const gaIE: TranslationMap = {
   'settings.provider_key_dialog.cancel_button': 'Cealaigh',
   'settings.provider_key_dialog.saving': 'Ag sábháil…',
   'settings.provider_key_dialog.save_button': 'Sábháil',
-  'settings.workload_row.aura_default': 'Aura (réamhshocraithe)',
+  'settings.workload_row.aura_default': 'Youma (réamhshocraithe)',
   'settings.workload_row.default_button': 'Réamhshocrú',
   'settings.workload_row.custom_button': 'Saincheaptha',
 };

@@ -1,7 +1,7 @@
 import type { Step } from 'react-joyride';
 import type { NavigateFunction } from 'react-router-dom';
 
-import { TOUR_WELCOME_MESSAGE } from '../../constants/onboardingChat';
+import { translateForLocale } from '../../lib/i18n/I18nContext';
 import { store } from '../../store';
 import { addMessageLocal, createNewThread, setSelectedThread } from '../../store/threadSlice';
 import type { ThreadMessage } from '../../types/thread';
@@ -177,7 +177,10 @@ export function createWalkthroughSteps(navigate: NavigateFunction): Step[] {
           const thread = await store.dispatch(createNewThread()).unwrap();
           const welcomeMessage: ThreadMessage = {
             id: `msg_${crypto.randomUUID()}`,
-            content: TOUR_WELCOME_MESSAGE,
+            content: translateForLocale(
+              store.getState().locale.current,
+              'onboarding.tourWelcomeMessage'
+            ),
             type: 'text',
             sender: 'agent',
             createdAt: new Date().toISOString(),

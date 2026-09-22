@@ -132,7 +132,7 @@ const frFR: TranslationMap = {
   'clearData.failedLogout': 'Échec de la déconnexion. Veuillez réessayer.',
   'clearData.failedPersist':
     'Échec de l’effacement de l’état persistant de l’application. Veuillez réessayer.',
-  'welcome.title': 'Bienvenue sur Aura',
+  'welcome.title': 'Bienvenue sur Youma',
   'welcome.subtitle':
     'Votre super-intelligence artificielle personnelle. Privée, simple et extrêmement puissante.',
   'welcome.connectPrompt': 'Configurer l’URL RPC (avancé)',
@@ -150,7 +150,7 @@ const frFR: TranslationMap = {
   'home.statusBackendOnly':
     'Reconnexion au serveur en cours… votre agent sera bientôt de nouveau disponible.',
   'home.statusCoreUnreachable':
-    'Le processus local du core ne répond pas. Le processus d’arrière-plan d’Aura a peut-être planté ou n’a pas pu démarrer.',
+    'Le processus local du core ne répond pas. Le processus d’arrière-plan d’Youma a peut-être planté ou n’a pas pu démarrer.',
   'home.statusInternetOffline':
     'Votre appareil est actuellement hors ligne. Vérifiez votre réseau ou redémarrez l’application pour vous reconnecter.',
   'home.restartCore': 'Redémarrer le core',
@@ -201,7 +201,7 @@ const frFR: TranslationMap = {
   'rewards.referralCode': 'Votre code de parrainage',
   'rewards.copyCode': 'Copier le code',
   'rewards.share': 'Partager',
-  'onboarding.welcome': 'Bonjour. Je suis Aura.',
+  'onboarding.welcome': 'Bonjour. Je suis Youma.',
   'onboarding.welcomeDesc':
     'Votre assistant IA super-intelligent qui fonctionne sur votre ordinateur. Privé, simple et extrêmement puissant.',
   'onboarding.context': 'Collecte du contexte',
@@ -213,14 +213,14 @@ const frFR: TranslationMap = {
   'onboarding.referral': 'Parrainage',
   'onboarding.referralDesc': 'Appliquez un code de parrainage si vous en avez un.',
   'onboarding.finish': 'Terminer la configuration',
-  'onboarding.finishDesc': 'Tout est prêt ! Commencez à utiliser Aura.',
+  'onboarding.finishDesc': 'Tout est prêt ! Commencez à utiliser Youma.',
   'onboarding.skip': 'Ignorer',
   'onboarding.getStarted': 'Commencer',
-  'onboarding.runtimeChoice.title': 'Comment souhaitez-vous exécuter Aura ?',
+  'onboarding.runtimeChoice.title': 'Comment souhaitez-vous exécuter Youma ?',
   'onboarding.runtimeChoice.subtitle':
     'Choisissez la configuration qui vous convient le mieux. Vous pourrez la changer plus tard dans les paramètres.',
   'onboarding.runtimeChoice.cloud.title': 'Simple',
-  'onboarding.runtimeChoice.cloud.tagline': 'Laissez Aura tout gérer pour vous.',
+  'onboarding.runtimeChoice.cloud.tagline': 'Laissez Youma tout gérer pour vous.',
   'onboarding.runtimeChoice.cloud.f1': 'Sécurité intégrée',
   'onboarding.runtimeChoice.cloud.f2': 'Compression des tokens pour prolonger votre utilisation',
   'onboarding.runtimeChoice.cloud.f3': 'Un seul abonnement, tous les modèles inclus',
@@ -256,7 +256,7 @@ const frFR: TranslationMap = {
   'onboarding.custom.stepperMemory': 'Mémoire',
   'onboarding.custom.stepCounter': 'Étape {n} sur {total}',
   'onboarding.custom.defaultTitle': 'Par défaut',
-  'onboarding.custom.defaultSubtitle': 'Laissez Aura le gérer pour vous.',
+  'onboarding.custom.defaultSubtitle': 'Laissez Youma le gérer pour vous.',
   'onboarding.custom.configureTitle': 'Configurer',
   'onboarding.custom.configureSubtitle': 'Je choisirai ce qu’il faut utiliser.',
   'onboarding.custom.progressAriaLabel': 'Progression de la configuration',
@@ -270,33 +270,33 @@ const frFR: TranslationMap = {
   'onboarding.custom.inference.subtitle':
     'Quel modèle de langage doit répondre à vos questions et exécuter vos agents ?',
   'onboarding.custom.inference.defaultDesc':
-    'Aura oriente chaque tâche vers un modèle par défaut adapté. Aucune clé, aucune configuration.',
+    'Youma oriente chaque tâche vers un modèle par défaut adapté. Aucune clé, aucune configuration.',
   'onboarding.custom.inference.configureDesc':
     'Utilisez votre propre clé OpenAI ou Anthropic. Nous l’utilisons pour toutes les tâches textuelles.',
   'onboarding.custom.voice.title': 'Voix',
   'onboarding.custom.voice.subtitle': 'Reconnaissance et synthèse vocale pour le mode vocal.',
   'onboarding.custom.voice.defaultDesc':
-    'Aura est livré avec une solution STT/TTS gérée qui fonctionne dès l’installation. Rien à configurer.',
+    'Youma est livré avec une solution STT/TTS gérée qui fonctionne dès l’installation. Rien à configurer.',
   'onboarding.custom.voice.configureDesc':
     'Utilisez votre propre ElevenLabs / OpenAI Whisper / etc. Configurez dans Paramètres › Voix.',
   'onboarding.custom.oauth.title': 'Connexions (OAuth)',
   'onboarding.custom.oauth.subtitle':
     'Gmail, Slack, Notion et autres services connectés nécessitant OAuth.',
   'onboarding.custom.oauth.defaultDesc':
-    'Aura gère un espace Composio pour vous. Un clic suffit pour connecter chaque service plus tard.',
+    'Youma gère un espace Composio pour vous. Un clic suffit pour connecter chaque service plus tard.',
   'onboarding.custom.oauth.configureDesc':
     'Utilisez votre propre compte / clé API Composio. Configurez dans Paramètres › Connexions.',
   'onboarding.custom.search.title': 'Recherche web',
-  'onboarding.custom.search.subtitle': 'Comment Aura effectue des recherches web en votre nom.',
+  'onboarding.custom.search.subtitle': 'Comment Youma effectue des recherches web en votre nom.',
   'onboarding.custom.search.defaultDesc':
-    'Aura utilise un moteur de recherche géré. Aucune clé nécessaire.',
+    'Youma utilise un moteur de recherche géré. Aucune clé nécessaire.',
   'onboarding.custom.search.configureDesc':
     'Utilisez votre propre clé de fournisseur de recherche (Tavily, Brave, etc.). Configurez dans Paramètres › Outils.',
   'onboarding.custom.memory.title': 'Mémoire',
   'onboarding.custom.memory.subtitle':
-    'Comment Aura mémorise votre contexte, vos préférences et vos conversations précédentes.',
+    'Comment Youma mémorise votre contexte, vos préférences et vos conversations précédentes.',
   'onboarding.custom.memory.defaultDesc':
-    'Aura gère automatiquement le stockage et la récupération de la mémoire. Rien à configurer.',
+    'Youma gère automatiquement le stockage et la récupération de la mémoire. Rien à configurer.',
   'onboarding.custom.memory.configureDesc':
     'Inspectez, exportez ou effacez la mémoire vous-même. Configurez dans Paramètres › Mémoire.',
   'accounts.addAccount': 'Ajouter un compte',
@@ -357,7 +357,7 @@ const frFR: TranslationMap = {
   'misc.downloading': 'Téléchargement…',
   'misc.installing': 'Installation…',
   'misc.beta':
-    'Aura est en bêta précoce. N’hésitez pas à partager vos retours ou à signaler tout bug rencontré — chaque retour nous aide à avancer plus vite.',
+    'Youma est en bêta précoce. N’hésitez pas à partager vos retours ou à signaler tout bug rencontré — chaque retour nous aide à avancer plus vite.',
   'misc.betaFeedback': 'Envoyer un retour',
   'mnemonic.title': 'Phrase de récupération',
   'mnemonic.warning': 'Notez ces mots dans l’ordre et conservez-les en lieu sûr.',
@@ -382,12 +382,12 @@ const frFR: TranslationMap = {
   'privacy.anonymizedAnalytics': 'Analyses anonymisées',
   'privacy.shareAnonymizedData': 'Partager les données d’utilisation anonymisées',
   'privacy.shareAnonymizedDataDesc':
-    'Aidez à améliorer Aura en partageant des rapports de plantage et des analyses d’utilisation anonymes. Toutes les données sont entièrement anonymisées — aucune donnée personnelle, message, clé de portefeuille ou information de session n’est jamais collecté.',
+    'Aidez à améliorer Youma en partageant des rapports de plantage et des analyses d’utilisation anonymes. Toutes les données sont entièrement anonymisées — aucune donnée personnelle, message, clé de portefeuille ou information de session n’est jamais collecté.',
   'privacy.meetingFollowUps': 'Suivis de réunion',
   'privacy.autoHandoffMeet':
     'Transmettre automatiquement les transcriptions Google Meet à l’orchestrateur',
   'privacy.autoHandoffMeetDesc':
-    'À la fin d’un appel Google Meet, l’orchestrateur d’Aura peut lire la transcription et effectuer des actions comme rédiger des messages, planifier des suivis ou publier des résumés sur votre espace de travail Slack connecté. Désactivé par défaut.',
+    'À la fin d’un appel Google Meet, l’orchestrateur d’Youma peut lire la transcription et effectuer des actions comme rédiger des messages, planifier des suivis ou publier des résumés sur votre espace de travail Slack connecté. Désactivé par défaut.',
   'privacy.analyticsDisclaimer':
     'Toutes les analyses et rapports de bugs sont entièrement anonymisés. Une fois activés, nous collectons uniquement les informations de plantage, le type d’appareil et l’emplacement du fichier en erreur. Nous n’accédons jamais à vos messages, données de session, clés de portefeuille, clés API ou toute information personnellement identifiable. Vous pouvez modifier ce paramètre à tout moment.',
   'settings.about.version': 'Version',
@@ -448,7 +448,7 @@ const frFR: TranslationMap = {
   'settings.billing.browserOpenFailed':
     "Le navigateur n'a pas pu être ouvert automatiquement. Utilisez le bouton ci-dessus.",
   'settings.tools.chooseCapabilities':
-    'Choisissez les fonctionnalités que Aura peut utiliser en votre nom.',
+    'Choisissez les fonctionnalités que Youma peut utiliser en votre nom.',
   'settings.tools.saveChanges': 'Enregistrer les modifications',
   'settings.tools.preferencesSaved': 'Préférences enregistrées',
   'settings.tools.saveFailed': "Échec de l'enregistrement des préférences. Essayer à nouveau.",
@@ -923,9 +923,9 @@ const frFR: TranslationMap = {
   'bootCheck.chooseCoreMode': "Sélectionnez un environnement d'exécution",
   'bootCheck.connectToCore': "Connectez-vous à votre environnement d'exécution",
   'bootCheck.desktopDescription':
-    "Aura a besoin d'un environnement d'exécution pour réfléchir. Choisissez où il devrait vivre.",
+    "Youma a besoin d'un environnement d'exécution pour réfléchir. Choisissez où il devrait vivre.",
   'bootCheck.webDescription':
-    "Sur le Web, Aura se connecte à un environnement d'exécution que vous contrôlez. Déposez son URL et son jeton d'authentification ci-dessous, ou récupérez l'application de bureau pour en exécuter une directement sur votre ordinateur.",
+    "Sur le Web, Youma se connecte à un environnement d'exécution que vous contrôlez. Déposez son URL et son jeton d'authentification ci-dessous, ou récupérez l'application de bureau pour en exécuter une directement sur votre ordinateur.",
   'bootCheck.preferDesktop': 'Vous préférez tout garder sur votre propre appareil ?',
   'bootCheck.downloadDesktop': "Obtenez l'application de bureau",
   'bootCheck.localRecommended': 'Exécuter localement (recommandé)',
@@ -953,7 +953,7 @@ const frFR: TranslationMap = {
   'bootCheck.quit': 'Quitter',
   'bootCheck.legacyDetected': 'Ancienne exécution en arrière-plan détectée',
   'bootCheck.legacyDescription':
-    "Un démon Aura installé séparément est déjà en cours d'exécution sur cet appareil. Nous devons l'effacer avant que le runtime intégré puisse prendre le relais.",
+    "Un démon Youma installé séparément est déjà en cours d'exécution sur cet appareil. Nous devons l'effacer avant que le runtime intégré puisse prendre le relais.",
   'bootCheck.removing': 'Suppression…',
   'bootCheck.removeContinue': 'Supprimer et continuer',
   'bootCheck.localNeedsRestart': "L'exécution locale a besoin d'un redémarrage",
@@ -1091,9 +1091,9 @@ const frFR: TranslationMap = {
   'rewards.referrals.load_stats_error': 'Impossible de charger les statistiques de parrainage',
   'rewards.referrals.copied': 'Copié',
   'rewards.referrals.copy_failed': 'Échec de la copie',
-  'rewards.referrals.share_intro': 'Rejoignez-moi au Aura.',
+  'rewards.referrals.share_intro': 'Rejoignez-moi au Youma.',
   'rewards.referrals.share_code_line': 'Code de parrainage : {code}',
-  'rewards.referrals.share_download_line': 'Télécharger Aura : {url}',
+  'rewards.referrals.share_download_line': 'Télécharger Youma : {url}',
   'rewards.referrals.apply_error': "Impossible d'appliquer le code de parrainage",
   'rewards.referrals.heading': 'Invitez des amis, gagnez des crédits',
   'rewards.referrals.description':
@@ -1329,22 +1329,22 @@ const frFR: TranslationMap = {
   'skills.meeting_bots_card.platform_gmeet': 'Google Meet',
   'skills.meeting_bots_card.platform_zoom': 'Zoom',
   'skills.meeting_bots_card.platform_teams': 'Équipes Microsoft',
-  'skills.meeting_bots_card.banner_title': 'Envoyer Aura à une réunion',
+  'skills.meeting_bots_card.banner_title': 'Envoyer Youma à une réunion',
   'skills.meeting_bots_card.new_badge': 'Nouveau',
   'skills.meeting_bots_card.banner_description':
-    "Déposez un lien Google Meet et Aura se joint en tant qu'invité, parle, écoute et répond.",
+    "Déposez un lien Google Meet et Youma se joint en tant qu'invité, parle, écoute et répond.",
   'skills.meeting_bots_card.coming_soon_error': 'Le support {platform} arrive bientôt.',
-  'skills.meeting_bots_card.toast_joining_title': 'Aura rejoint la réunion',
+  'skills.meeting_bots_card.toast_joining_title': 'Youma rejoint la réunion',
   'skills.meeting_bots_card.toast_joining_message':
     'Il devrait apparaître comme participant dans quelques secondes.',
-  'skills.meeting_bots_card.toast_busy_title': 'Aura est occupé',
-  'skills.meeting_bots_card.toast_failed_title': 'Impossible de démarrer Aura',
-  'skills.meeting_bots_card.default_error_message': 'Échec du démarrage de Aura.',
-  'skills.meeting_bots_card.modal_aria_label': 'Envoyer Aura à une réunion',
+  'skills.meeting_bots_card.toast_busy_title': 'Youma est occupé',
+  'skills.meeting_bots_card.toast_failed_title': 'Impossible de démarrer Youma',
+  'skills.meeting_bots_card.default_error_message': 'Échec du démarrage de Youma.',
+  'skills.meeting_bots_card.modal_aria_label': 'Envoyer Youma à une réunion',
   'skills.meeting_bots_card.close_aria': 'Fermer',
-  'skills.meeting_bots_card.modal_title': 'Envoyer Aura à une réunion',
+  'skills.meeting_bots_card.modal_title': 'Envoyer Youma à une réunion',
   'skills.meeting_bots_card.modal_description':
-    "Aura se joint en tant qu'invité anonyme, diffuse sa vidéo dans l'appel et répond via l'agent.",
+    "Youma se joint en tant qu'invité anonyme, diffuse sa vidéo dans l'appel et répond via l'agent.",
   'skills.meeting_bots_card.soon_suffix': '· bientôt',
   'skills.meeting_bots_card.meeting_link_label': 'Lien de la réunion',
   'skills.meeting_bots_card.display_name_label': "Nom d'affichage",
@@ -1492,14 +1492,14 @@ const frFR: TranslationMap = {
   'settings.composio_panel.title': 'Composio',
   'settings.composio_panel.loading': 'Chargement…',
   'settings.composio_panel.intro_prefix':
-    "Composio permet les intégrations avec Gmail, Notion, Slack, GitHub et plus de 1 000 autres applications. Par défaut, Aura le gère pour vous, vous n'avez donc pas besoin d'apporter une touche API. Si vous préférez utiliser directement votre propre compte Composio, passez à",
+    "Composio permet les intégrations avec Gmail, Notion, Slack, GitHub et plus de 1 000 autres applications. Par défaut, Youma le gère pour vous, vous n'avez donc pas besoin d'apporter une touche API. Si vous préférez utiliser directement votre propre compte Composio, passez à",
   'settings.composio_panel.direct_word': 'Direct',
   'settings.composio_panel.intro_suffix': 'mode et collez votre clé ci-dessous.',
   'settings.composio_panel.routing_mode_legend': 'Mode de routage',
-  'settings.composio_panel.managed_aria_label': "Géré (Aura s'en charge pour vous)",
-  'settings.composio_panel.managed_title': "Géré (Aura s'en charge pour vous)",
+  'settings.composio_panel.managed_aria_label': "Géré (Youma s'en charge pour vous)",
+  'settings.composio_panel.managed_title': "Géré (Youma s'en charge pour vous)",
   'settings.composio_panel.managed_description':
-    'Défaut. Aura gère la connexion Composio pour vous. Les webhooks déclencheurs (événements Gmail / Slack en temps réel) fonctionnent immédiatement.',
+    'Défaut. Youma gère la connexion Composio pour vous. Les webhooks déclencheurs (événements Gmail / Slack en temps réel) fonctionnent immédiatement.',
   'settings.composio_panel.direct_aria_label': 'Direct (apportez votre propre clé API)',
   'settings.composio_panel.direct_title': 'Direct (apportez votre propre clé API)',
   'settings.composio_panel.direct_description_prefix': 'Les appels vont à',
@@ -1510,7 +1510,7 @@ const frFR: TranslationMap = {
   'settings.composio_panel.api_key_label': 'Touche Composio API',
   'settings.composio_panel.api_key_help_prefix': 'Trouvez votre clé sur',
   'settings.composio_panel.api_key_help_suffix':
-    "La clé est stockée cryptée sur cet appareil et n'est jamais envoyée à Aura.",
+    "La clé est stockée cryptée sur cet appareil et n'est jamais envoyée à Youma.",
   'settings.composio_panel.api_key_placeholder_stored':
     '•••••••••••• (clé stockée — collez une nouvelle clé à remplacer)',
   'settings.composio_panel.api_key_placeholder_empty': 'ck_live_xxxxxxxxxxxxxxxxxx',
@@ -1518,10 +1518,10 @@ const frFR: TranslationMap = {
     'Une clé Composio API est actuellement stockée sur cet appareil.',
   'settings.composio_panel.confirm_title': '⚠️ Passage en mode Direct',
   'settings.composio_panel.confirm_integrations_prefix':
-    'Vos intégrations existantes (Gmail, Slack, GitHub, etc. liées via Aura)',
+    'Vos intégrations existantes (Gmail, Slack, GitHub, etc. liées via Youma)',
   'settings.composio_panel.wont_be_visible': 'ne sera pas visible',
   'settings.composio_panel.confirm_integrations_suffix':
-    '— ils vivent dans le locataire Composio géré par Aura.',
+    '— ils vivent dans le locataire Composio géré par Youma.',
   'settings.composio_panel.confirm_needs_title': 'Vous aurez besoin de :',
   'settings.composio_panel.confirm_need_account_prefix': 'Un compte sur',
   'settings.composio_panel.confirm_need_account_suffix': 'avec une touche API',
@@ -1541,7 +1541,7 @@ const frFR: TranslationMap = {
   'settings.model_status.ollama_unavailable_title':
     "L'environnement d'exécution Ollama n'est pas disponible",
   'settings.model_status.ollama_unavailable_description':
-    "Aura traite désormais Ollama comme un runtime d'inférence externe. Démarrez votre propre serveur Ollama, extrayez les modèles souhaités et pointez le routage de la charge de travail vers celui-ci.",
+    "Youma traite désormais Ollama comme un runtime d'inférence externe. Démarrez votre propre serveur Ollama, extrayez les modèles souhaités et pointez le routage de la charge de travail vers celui-ci.",
   'settings.model_status.ollama_docs_link': 'Documents Ollama',
   'settings.model_status.runtime_status_title': "Statut d'exécution",
   'settings.model_status.refresh': 'Rafraîchir',
@@ -1560,7 +1560,7 @@ const frFR: TranslationMap = {
   'settings.model_status.hide_error_details': "Masquer les détails de l'erreur",
   'settings.model_status.show_error_details': "Afficher les détails de l'erreur",
   'settings.model_status.connect_only_prefix':
-    "Aura se connecte uniquement à un point de terminaison compatible Ollama déjà en cours d'exécution. Voir",
+    "Youma se connecte uniquement à un point de terminaison compatible Ollama déjà en cours d'exécution. Voir",
   'settings.model_status.connect_only_suffix':
     "pour obtenir des instructions de configuration, puis réessayez une fois que votre environnement d'exécution est accessible.",
   'settings.model_status.ollama_diagnostics_title': 'Diagnostic Ollama',
@@ -1586,7 +1586,7 @@ const frFR: TranslationMap = {
   'settings.model_status.vision_model_line': 'Vision : {model}',
   'settings.model_status.issues_heading': 'Problèmes',
   'settings.model_status.manage_ollama_footer':
-    'Gérez le processus Ollama et les extractions de modèles en dehors de Aura, puis réexécutez les diagnostics.',
+    'Gérez le processus Ollama et les extractions de modèles en dehors de Youma, puis réexécutez les diagnostics.',
   'settings.device_capability.model_tier_title': 'Niveau de modèle',
   'settings.device_capability.loading_device_info':
     "Chargement des informations sur l'appareil et des préréglages…",
@@ -1905,7 +1905,7 @@ const frFR: TranslationMap = {
   'composio.connect_modal.disconnecting': 'Déconnexion…',
   'composio.connect_modal.dismiss': 'Rejeter',
   'composio.connect_modal.expired_body':
-    "Reconnectez-vous pour réactiver les outils {name}. Aura gardera cette intégration indisponible jusqu'à ce que vous actualisiez l'accès OAuth.",
+    "Reconnectez-vous pour réactiver les outils {name}. Youma gardera cette intégration indisponible jusqu'à ce que vous actualisiez l'accès OAuth.",
   'composio.connect_modal.expired_title': '{name} autorisation expirée',
   'composio.connect_modal.generic_error': "Quelque chose s'est mal passé.",
   'composio.connect_modal.header_connect': 'Connectez {name}',
@@ -1921,7 +1921,7 @@ const frFR: TranslationMap = {
   'composio.connect_modal.needs_subdomain_intro_suffix': ') et réessayez.',
   'composio.connect_modal.permission_intro_prefix': '{name} peut exposer',
   'composio.connect_modal.permission_intro_suffix':
-    ". Une fois connecté, les autorisations de l'agent de Aura sont contrôlées ci-dessous en tant que bascules de lecture, d'écriture et d'administration.",
+    ". Une fois connecté, les autorisations de l'agent de Youma sont contrôlées ci-dessous en tant que bascules de lecture, d'écriture et d'administration.",
   'composio.connect_modal.permissions_default_hint': 'Lecture + écriture activées par défaut',
   'composio.connect_modal.permissions_heading': 'Autorisations',
   'composio.connect_modal.poll_timeout':
@@ -1972,10 +1972,10 @@ const frFR: TranslationMap = {
   'settings.ai_panel.local_runtime_disconnect_aria': 'Déconnecter {label}',
   'settings.ai_panel.providers_heading': 'LLM Fournisseurs',
   'settings.ai_panel.providers_subtitle':
-    'Connectez les backends de modèle de langage que vous souhaitez que Aura utilise. Activez un fournisseur pour ajouter sa clé ; désactiver pour se déconnecter.',
+    'Connectez les backends de modèle de langage que vous souhaitez que Youma utilise. Activez un fournisseur pour ajouter sa clé ; désactiver pour se déconnecter.',
   'settings.ai_panel.routing_heading': 'Routage',
   'settings.ai_panel.routing_subtitle':
-    'Choisissez comment chaque charge de travail est servie. La valeur par défaut utilise Aura ; Personnalisé vous permet de diriger une charge de travail vers un fournisseur et un modèle spécifiques.',
+    'Choisissez comment chaque charge de travail est servie. La valeur par défaut utilise Youma ; Personnalisé vous permet de diriger une charge de travail vers un fournisseur et un modèle spécifiques.',
   'settings.auto_recharge.add_card': '+ Ajouter une carte sur Stripe',
   'settings.auto_recharge.amount_label': 'Ajoutez ce montant',
   'settings.auto_recharge.cancel': 'Annuler',
@@ -2039,22 +2039,22 @@ const frFR: TranslationMap = {
   'settings.mascot_panel.color_black': 'Noir',
   'settings.mascot_panel.color_burgundy': 'Bourgogne',
   'settings.mascot_panel.color_footer_hint':
-    'La couleur sélectionnée est appliquée partout où Aura apparaît et est mémorisée lors des redémarrages.',
+    'La couleur sélectionnée est appliquée partout où Youma apparaît et est mémorisée lors des redémarrages.',
   'settings.mascot_panel.color_green': 'Vert',
   'settings.mascot_panel.color_heading': 'Couleur',
   'settings.mascot_panel.color_navy': 'Marine',
-  'settings.mascot_panel.color_radiogroup_aria': 'Aura couleur',
+  'settings.mascot_panel.color_radiogroup_aria': 'Youma couleur',
   'settings.mascot_panel.color_yellow': 'Jaune',
-  'settings.mascot_panel.header_title': 'Aura',
-  'settings.mascot_panel.library_unavailable': 'Aura bibliothèque indisponible : {error}',
+  'settings.mascot_panel.header_title': 'Youma',
+  'settings.mascot_panel.library_unavailable': 'Youma bibliothèque indisponible : {error}',
   'settings.mascot_panel.load_library_error': 'Impossible de charger la bibliothèque de mascottes.',
   'settings.mascot_panel.load_mascot_error': 'Impossible de charger la mascotte.',
-  'settings.mascot_panel.loading_library': 'Chargement de la bibliothèque Aura…',
-  'settings.mascot_panel.local_aura_default': 'Local Aura (par défaut)',
+  'settings.mascot_panel.loading_library': 'Chargement de la bibliothèque Youma…',
+  'settings.mascot_panel.local_aura_default': 'Local Youma (par défaut)',
   'settings.mascot_panel.no_characters':
-    "Aucun Aura caractère n'est encore disponible. Les variantes de couleurs locales ci-dessus sont toujours actives.",
+    "Aucun Youma caractère n'est encore disponible. Les variantes de couleurs locales ci-dessus sont toujours actives.",
   'settings.mascot_panel.no_color_variants':
-    "Aucune variante de couleur Aura n'est disponible dans cette version.",
+    "Aucune variante de couleur Youma n'est disponible dans cette version.",
   'settings.mascot_panel.preview_label': 'Aperçu · {name}',
   'settings.mascot_panel.version_states': 'v{version} · {states} états',
   'settings.mascot_panel.visemes_suffix': '· visèmes',
@@ -2101,7 +2101,7 @@ const frFR: TranslationMap = {
   'local_ai.download_snackbar.preparing': 'Préparation...',
   'settings.cron_job_list.heading': 'Tâches Cron principales',
   'settings.cron_job_list.subheading':
-    'Les tâches ont persisté dans la base de données principale du planificateur Aura.',
+    'Les tâches ont persisté dans la base de données principale du planificateur Youma.',
   'settings.cron_job_list.loading': 'Chargement des tâches cron...',
   'settings.cron_job_list.empty': 'Aucune tâche cron principale trouvée.',
   'settings.cron_job_list.status_enabled': 'Activé',
@@ -2173,17 +2173,17 @@ const frFR: TranslationMap = {
   'aura_link_modal.notifications_desktop_only':
     "Les notifications natives ne sont disponibles que dans l'application de bureau (exécutez `pnpm dev:app`).",
   'aura_link_modal.notifications_permission_off':
-    "L'autorisation de notification est désactivée. Activez Aura dans Paramètres système → Notifications, puis réessayez.",
-  'aura_link_modal.notification_title': "Aura c'est prêt à partir",
+    "L'autorisation de notification est désactivée. Activez Youma dans Paramètres système → Notifications, puis réessayez.",
+  'aura_link_modal.notification_title': "Youma c'est prêt à partir",
   'aura_link_modal.notification_body':
     'Vous recevrez des pings ici lorsque quelque chose nécessite votre attention.',
   'aura_link_modal.notification_send_failed':
-    "Aura n'a pas pu déclencher une notification système. Vérifiez les paramètres de notification du système d'exploitation et réessayez.",
+    "Youma n'a pas pu déclencher une notification système. Vérifiez les paramètres de notification du système d'exploitation et réessayez.",
   'aura_link_modal.notifications_intro':
-    'Aura utilise des notifications natives pour pouvoir vous envoyer une requête ping lorsque quelque chose nécessite votre attention, même lorsque la fenêtre de discussion est masquée.',
+    'Youma utilise des notifications natives pour pouvoir vous envoyer une requête ping lorsque quelque chose nécessite votre attention, même lorsque la fenêtre de discussion est masquée.',
   'aura_link_modal.notifications_blocked_line1': 'Les notifications sont actuellement bloquées.',
   'aura_link_modal.notifications_blocked_line2':
-    '1. Ouvrez Paramètres système → Notifications → Aura',
+    '1. Ouvrez Paramètres système → Notifications → Youma',
   'aura_link_modal.notifications_blocked_line3': '2. Activez Autoriser les notifications',
   'aura_link_modal.notifications_blocked_line4':
     '3. Revenez ici et appuyez sur Réessayer la notification de test',
@@ -2193,7 +2193,7 @@ const frFR: TranslationMap = {
   'aura_link_modal.retry_test_notification': 'Notification de nouvelle tentative de test',
   'aura_link_modal.send_test_notification': 'Envoyer une notification de test',
   'aura_link_modal.notification_sent_success':
-    "Notification de test envoyée. Si vous ne l'avez pas reçu, accédez à Paramètres système → Notifications → Aura, activez Autoriser les notifications et définissez le style de bannière sur Persistant.",
+    "Notification de test envoyée. Si vous ne l'avez pas reçu, accédez à Paramètres système → Notifications → Youma, activez Autoriser les notifications et définissez le style de bannière sur Persistant.",
   'aura_link_modal.notification_send_error': "Impossible d'envoyer : {error}",
   'aura_link_modal.trial_credit_label': "Crédit d'essai",
   'aura_link_modal.trial_credit_amount': '1,00 $',
@@ -2202,7 +2202,7 @@ const frFR: TranslationMap = {
   'aura_link_modal.open_dashboard': 'Ouvrir le tableau de bord dans le navigateur',
   'aura_link_modal.stay_on_trial': "Restez à l'essai",
   'aura_link_modal.discord_intro':
-    "Accédez à notre Discord et associez votre compte Aura. Vous bénéficierez d'un accès anticipé exclusif aux fonctionnalités, de crédits gratuits pour jouer, d'une grande communauté avec laquelle vous amuser et, bien sûr, de produits dérivés gratuits.",
+    "Accédez à notre Discord et associez votre compte Youma. Vous bénéficierez d'un accès anticipé exclusif aux fonctionnalités, de crédits gratuits pour jouer, d'une grande communauté avec laquelle vous amuser et, bien sûr, de produits dérivés gratuits.",
   'aura_link_modal.discord_perk_feature_access': 'Accès aux fonctionnalités exclusives',
   'aura_link_modal.discord_perk_free_credits': 'Crédits gratuits pour les membres actifs',
   'aura_link_modal.discord_perk_community': "Communauté de constructeurs et d'exploitants",
@@ -2240,7 +2240,7 @@ const frFR: TranslationMap = {
   'channels.discord_config.copy': 'Copie',
   'channels.discord_config.link_instructions_prefix': 'En Discord, envoyez',
   'channels.discord_config.link_instructions_suffix':
-    'au robot Aura. Le jeton expire dans 5 minutes.',
+    'au robot Youma. Le jeton expire dans 5 minutes.',
   'channels.discord_config.link_token_warning':
     "Enregistrez cette commande : ce jeton n'est affiché qu'une seule fois.",
   'channels.discord_config.account_linked': 'Votre compte Discord est lié.',
@@ -2282,9 +2282,9 @@ const frFR: TranslationMap = {
     "Échec de l'enregistrement de la fenêtre de mémoire",
   'settings.memory_window_control.heading': 'Fenêtre de mémoire à long terme',
   'settings.memory_window_control.description':
-    "Quelle quantité de contexte mémorisé Aura injecte dans chaque nouvelle exécution d'agent. Les fenêtres plus grandes donnent l'impression d'être plus conscientes des conversations passées, mais utilisent plus de jetons (et coûtent plus cher) à chaque exécution.",
+    "Quelle quantité de contexte mémorisé Youma injecte dans chaque nouvelle exécution d'agent. Les fenêtres plus grandes donnent l'impression d'être plus conscientes des conversations passées, mais utilisent plus de jetons (et coûtent plus cher) à chaque exécution.",
   'home.banners.promo_credits': 'Vous disposez de {amount} de crédits promotionnels.',
-  'home.banners.promo_credits_prefix': 'Essayez Aura et lorsque vous en aurez envie,',
+  'home.banners.promo_credits_prefix': 'Essayez Youma et lorsque vous en aurez envie,',
   'home.banners.get_subscription': 'prendre un abonnement',
   'home.banners.promo_credits_suffix': "et obtenez 10 fois plus d'utilisation.",
   'home.banners.dismiss_early_bird': 'Ignorer la bannière de lève-tôt',
@@ -2295,7 +2295,7 @@ const frFR: TranslationMap = {
   'home.banners.first_subscription': 'premier abonnement.',
   'home.banners.join_discord': 'Rejoignez notre Discord',
   'home.banners.discord_description':
-    'Recevez des mises à jour, des produits dérivés gratuits, des crédits, signalez des bugs et faites partie de la communauté Aura.',
+    'Recevez des mises à jour, des produits dérivés gratuits, des crédits, signalez des bugs et faites partie de la communauté Youma.',
   'intelligence.memory_chunk_detail.copy_chunk_id': "Copier l'identifiant du bloc",
   'intelligence.memory_chunk_detail.chunk_label': 'morceau {id}',
   'intelligence.memory_chunk_detail.copied': 'copié',
@@ -2322,7 +2322,7 @@ const frFR: TranslationMap = {
     'Quelque chose s\'est mal passé. Veuillez réessayer.\nCette erreur a été signalée. Vous pouvez également le signaler au Discord.\n<aura-link path="community/discord">Rapport sur Discord</aura-link>',
   'daemon.service_blocking_gate.retry_failed':
     "La nouvelle tentative a échoué. Téléchargez la dernière version de l'application et réessayez.",
-  'daemon.service_blocking_gate.title': "Le noyau Aura n'est pas disponible",
+  'daemon.service_blocking_gate.title': "Le noyau Youma n'est pas disponible",
   'daemon.service_blocking_gate.description':
     "Nous n'avons pas pu récupérer le service principal local après plusieurs tentatives. Cela peut se produire après un crash critique ou une incompatibilité binaire.",
   'daemon.service_blocking_gate.download_hint':
@@ -2482,18 +2482,18 @@ const frFR: TranslationMap = {
   'chat.unsubscribe_approval_card.success_message': '✓ Désabonnement réussi.',
   'chat.unsubscribe_approval_card.denied_message': '✕ Demande refusée.',
   'oauth.provider_button.twitter_startup_failure':
-    "La connexion à Twitter/X n'a ​​pas pu démarrer. Vérifiez que le rappel de l'application Twitter OAuth URL, l'ID client/le secret et les étendues demandées correspondent au backend Aura, puis réessayez.",
+    "La connexion à Twitter/X n'a ​​pas pu démarrer. Vérifiez que le rappel de l'application Twitter OAuth URL, l'ID client/le secret et les étendues demandées correspondent au backend Youma, puis réessayez.",
   'oauth.provider_button.generic_startup_failure':
     "La connexion {providerName} n'a pas pu démarrer. Veuillez réessayer.",
   'oauth.provider_button.connecting': 'De liaison...',
   'skills.search_bar.placeholder': 'Compétences de recherche...',
   'common.persist_rehydration_screen.title':
-    "Le chargement de Aura prend plus de temps que d'habitude.",
+    "Le chargement de Youma prend plus de temps que d'habitude.",
   'common.persist_rehydration_screen.description':
     "L'état de l'application locale est peut-être corrompu. La réinitialisation vous déconnectera et effacera les données mises en cache sur cet appareil ; vous reconnecterez vos comptes au prochain lancement. Vos données sur le serveur ne sont pas affectées.",
   'common.persist_rehydration_screen.resetting': 'Réinitialisation…',
   'common.persist_rehydration_screen.reset_button': "Réinitialiser l'état local",
-  'common.route_loading_screen.initializing': 'Initialisation de Aura...',
+  'common.route_loading_screen.initializing': 'Initialisation de Youma...',
   'privacy.what_leaves_link.label': "Qu'est-ce qui quitte mon ordinateur ?",
   'settings.provider_key_dialog.api_key_required': 'Veuillez coller votre clé API pour continuer.',
   'settings.provider_key_dialog.connect_title': 'Connectez {label}',
@@ -2503,7 +2503,7 @@ const frFR: TranslationMap = {
   'settings.provider_key_dialog.cancel_button': 'Annuler',
   'settings.provider_key_dialog.saving': 'Économie…',
   'settings.provider_key_dialog.save_button': 'Sauvegarder',
-  'settings.workload_row.aura_default': 'Aura (par défaut)',
+  'settings.workload_row.aura_default': 'Youma (par défaut)',
   'settings.workload_row.default_button': 'Défaut',
   'settings.workload_row.custom_button': 'Coutume',
 };

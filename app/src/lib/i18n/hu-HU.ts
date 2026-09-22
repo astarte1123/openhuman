@@ -133,7 +133,7 @@ const huHU: TranslationMap = {
   'clearData.failedLogout': 'Nem sikerült kijelentkezni. Kérjük, próbálja újra.',
   'clearData.failedPersist':
     'Nem sikerült törölni a megmaradt alkalmazásállapotot. Kérjük, próbálja újra.',
-  'welcome.title': 'Üdvözöljük a Aura oldalon',
+  'welcome.title': 'Üdvözöljük a Youma oldalon',
   'welcome.subtitle':
     'Az Ön személyes AI szuper intelligenciája. Privát, egyszerű és rendkívül erős.',
   'welcome.connectPrompt': 'RPC konfigurálása URL (Speciális)',
@@ -151,7 +151,7 @@ const huHU: TranslationMap = {
   'home.statusBackendOnly':
     'Újracsatlakozás a háttérrendszerhez… ügynöke hamarosan újra elérhető lesz.',
   'home.statusCoreUnreachable':
-    'A helyi oldalkocsi nem válaszol. Lehet, hogy a Aura háttérfolyamat összeomlott vagy nem indult el.',
+    'A helyi oldalkocsi nem válaszol. Lehet, hogy a Youma háttérfolyamat összeomlott vagy nem indult el.',
   'home.statusInternetOffline':
     'Eszköze jelenleg offline állapotban van. Ellenőrizze a hálózatot, vagy indítsa újra az alkalmazást az újracsatlakozáshoz.',
   'home.restartCore': 'Indítsa újra a Core-t',
@@ -202,7 +202,7 @@ const huHU: TranslationMap = {
   'rewards.referralCode': 'Az Ön ajánlókódja',
   'rewards.copyCode': 'Kód másolása',
   'rewards.share': 'Részesedés',
-  'onboarding.welcome': 'Szia. Aura vagyok.',
+  'onboarding.welcome': 'Szia. Youma vagyok.',
   'onboarding.welcomeDesc':
     'Szuperintelligens AI-asszisztense, amely a számítógépén fut. Privát, egyszerű és rendkívül erős.',
   'onboarding.context': 'Kontextus összegyűjtése',
@@ -215,14 +215,14 @@ const huHU: TranslationMap = {
   'onboarding.referral': 'Beutaló',
   'onboarding.referralDesc': 'Alkalmazzon ajánlókódot, ha van.',
   'onboarding.finish': 'Beállítás befejezése',
-  'onboarding.finishDesc': 'Minden készen áll! Kezdje el a Aura használatát.',
+  'onboarding.finishDesc': 'Minden készen áll! Kezdje el a Youma használatát.',
   'onboarding.skip': 'Kihagyás',
   'onboarding.getStarted': 'Kezdje el',
-  'onboarding.runtimeChoice.title': 'Hogyan szeretnéd futni Aura?',
+  'onboarding.runtimeChoice.title': 'Hogyan szeretnéd futni Youma?',
   'onboarding.runtimeChoice.subtitle':
     'Válassza ki az Önnek legmegfelelőbb beállítást. Ezt később módosíthatja a Beállításokban.',
   'onboarding.runtimeChoice.cloud.title': 'Egyszerű',
-  'onboarding.runtimeChoice.cloud.tagline': 'Hagyja, hogy Aura intézzen mindent Ön helyett.',
+  'onboarding.runtimeChoice.cloud.tagline': 'Hagyja, hogy Youma intézzen mindent Ön helyett.',
   'onboarding.runtimeChoice.cloud.f1': 'Beépített biztonság',
   'onboarding.runtimeChoice.cloud.f2': 'Token tömörítés a használat további kiterjesztéséhez',
   'onboarding.runtimeChoice.cloud.f3': 'Egy előfizetés, minden modellt tartalmaz',
@@ -260,7 +260,7 @@ const huHU: TranslationMap = {
   'onboarding.custom.stepperMemory': 'Memória',
   'onboarding.custom.stepCounter': '{total} {n} lépése',
   'onboarding.custom.defaultTitle': 'Alapértelmezett',
-  'onboarding.custom.defaultSubtitle': 'Hagyja, hogy Aura kezelje Ön helyett.',
+  'onboarding.custom.defaultSubtitle': 'Hagyja, hogy Youma kezelje Ön helyett.',
   'onboarding.custom.configureTitle': 'Konfigurálás',
   'onboarding.custom.configureSubtitle': 'Kiválasztom, hogy mit használok.',
   'onboarding.custom.progressAriaLabel': 'Bevezetés folyamata',
@@ -274,33 +274,33 @@ const huHU: TranslationMap = {
   'onboarding.custom.inference.subtitle':
     'Melyik nyelvi modellnek kell válaszolnia a kérdéseire és irányítania az ügynökeit?',
   'onboarding.custom.inference.defaultDesc':
-    'Aura minden munkaterhelést egy ésszerű alapértelmezett modellhez irányít. Nincsenek kulcsok, nincs beállítás.',
+    'Youma minden munkaterhelést egy ésszerű alapértelmezett modellhez irányít. Nincsenek kulcsok, nincs beállítás.',
   'onboarding.custom.inference.configureDesc':
     'Hozd magaddal a saját OpenAI vagy Anthropic kulcsodat. Minden szöveg alapú feladathoz használjuk.',
   'onboarding.custom.voice.title': 'Hang',
   'onboarding.custom.voice.subtitle': 'Beszéd-szöveg és szöveg-beszéd hangmódhoz.',
   'onboarding.custom.voice.defaultDesc':
-    'Aura felügyelt STT/TTS-vel szállítjuk, ami csak működik. Nincs mit bekötni.',
+    'Youma felügyelt STT/TTS-vel szállítjuk, ami csak működik. Nincs mit bekötni.',
   'onboarding.custom.voice.configureDesc':
     'Használja saját ElevenLabs / OpenAI Whisper / stb. készülékét. Konfigurálja a Beállítások › Hang menüpontban.',
   'onboarding.custom.oauth.title': 'Csatlakozások (OAuth)',
   'onboarding.custom.oauth.subtitle':
     'Gmail, Slack, Notion és egyéb kapcsolódó szolgáltatások, amelyekhez OAuth szükséges.',
   'onboarding.custom.oauth.defaultDesc':
-    'A Aura kezelt Composio munkaterületet futtat. Egy kattintás az egyes szolgáltatások későbbi csatlakoztatásához.',
+    'A Youma kezelt Composio munkaterületet futtat. Egy kattintás az egyes szolgáltatások későbbi csatlakoztatásához.',
   'onboarding.custom.oauth.configureDesc':
     'Hozd el a saját Composio fiókodat / API kulcsodat. Konfigurálja a Beállítások › Kapcsolatok menüpontban.',
   'onboarding.custom.search.title': 'Webes keresés',
-  'onboarding.custom.search.subtitle': 'Hogyan keres a Aura az interneten az Ön nevében.',
+  'onboarding.custom.search.subtitle': 'Hogyan keres a Youma az interneten az Ön nevében.',
   'onboarding.custom.search.defaultDesc':
-    'Aura felügyelt keresési háttérrendszert használ. Nincs szükség kulcsra.',
+    'Youma felügyelt keresési háttérrendszert használ. Nincs szükség kulcsra.',
   'onboarding.custom.search.configureDesc':
     'Hozd el a saját keresőszolgáltató kulcsát (Tavily, Brave stb.). Konfigurálás a Beállítások › Eszközök menüpontban.',
   'onboarding.custom.memory.title': 'Memória',
   'onboarding.custom.memory.subtitle':
-    'Hogyan Aura emlékszik az Ön kontextusára, preferenciáira és korábbi beszélgetéseire.',
+    'Hogyan Youma emlékszik az Ön kontextusára, preferenciáira és korábbi beszélgetéseire.',
   'onboarding.custom.memory.defaultDesc':
-    'Aura automatikusan kezeli a memória tárolását és visszakeresését. Nincs mit beállítani.',
+    'Youma automatikusan kezeli a memória tárolását és visszakeresését. Nincs mit beállítani.',
   'onboarding.custom.memory.configureDesc':
     'Vizsgálja meg, exportálja vagy törölje a memóriát saját maga. Konfigurálás a Beállítások › Memória menüpontban.',
   'accounts.addAccount': 'Fiók hozzáadása lehetőségre',
@@ -360,7 +360,7 @@ const huHU: TranslationMap = {
   'misc.downloading': 'Letöltés...',
   'misc.installing': 'Telepítés...',
   'misc.beta':
-    'A Aura korai bétaverzióban van. Nyugodtan ossza meg visszajelzését, vagy jelentse az esetleges hibákat – minden jelentés segít gyorsabban szállítani.',
+    'A Youma korai bétaverzióban van. Nyugodtan ossza meg visszajelzését, vagy jelentse az esetleges hibákat – minden jelentés segít gyorsabban szállítani.',
   'misc.betaFeedback': 'Visszajelzés küldése',
   'mnemonic.title': 'Helyreállítási kifejezés',
   'mnemonic.warning': 'Írja le ezeket a szavakat sorrendben, és tárolja őket biztonságos helyen.',
@@ -383,11 +383,11 @@ const huHU: TranslationMap = {
   'privacy.anonymizedAnalytics': 'Anonimizált Analytics',
   'privacy.shareAnonymizedData': 'Névtelen használati adatok megosztása',
   'privacy.shareAnonymizedDataDesc':
-    'Segítsen a Aura fejlesztésében névtelen hibajelentések és használati elemzések megosztásával. Minden adat teljesen anonimizált – soha nem gyűjtenek személyes adatokat, üzeneteket, pénztárcakulcsokat vagy munkamenet-információkat.',
+    'Segítsen a Youma fejlesztésében névtelen hibajelentések és használati elemzések megosztásával. Minden adat teljesen anonimizált – soha nem gyűjtenek személyes adatokat, üzeneteket, pénztárcakulcsokat vagy munkamenet-információkat.',
   'privacy.meetingFollowUps': 'A találkozó nyomon követése',
   'privacy.autoHandoffMeet': 'Google Meet átiratok automatikus átadása a hangszerelőnek',
   'privacy.autoHandoffMeetDesc':
-    'Amikor egy Google Meet hívás véget ér, a Aura hangszerelője el tudja olvasni az átiratot, és olyan műveleteket hajthat végre, mint például üzenetek megfogalmazása, nyomon követések ütemezése vagy összefoglalók közzététele a csatlakoztatott Slack munkaterületen. Alapértelmezés szerint ki.',
+    'Amikor egy Google Meet hívás véget ér, a Youma hangszerelője el tudja olvasni az átiratot, és olyan műveleteket hajthat végre, mint például üzenetek megfogalmazása, nyomon követések ütemezése vagy összefoglalók közzététele a csatlakoztatott Slack munkaterületen. Alapértelmezés szerint ki.',
   'privacy.analyticsDisclaimer':
     'Minden elemzés és hibajelentés teljesen anonimizált. Ha engedélyezve van, csak az összeomlási információkat, az eszköztípust és a hibák fájlhelyét gyűjtjük. Soha nem férünk hozzá üzeneteihez, munkamenet-adataihoz, pénztárca-kulcsaihoz, API-kulcsaihoz vagy bármely személyazonosításra alkalmas információhoz. Ezt a beállítást bármikor módosíthatja.',
   'settings.about.version': 'Változat',
@@ -447,7 +447,7 @@ const huHU: TranslationMap = {
   'settings.billing.browserOpenFailed':
     'A böngészőt nem lehetett automatikusan megnyitni. Használja a fenti gombot.',
   'settings.tools.chooseCapabilities':
-    'Válassza ki, hogy a Aura mely képességeket használhatja az Ön nevében.',
+    'Válassza ki, hogy a Youma mely képességeket használhatja az Ön nevében.',
   'settings.tools.saveChanges': 'Módosítások mentése',
   'settings.tools.preferencesSaved': 'A beállítások mentve',
   'settings.tools.saveFailed': 'Nem sikerült menteni a beállításokat. Próbáld újra.',
@@ -916,9 +916,9 @@ const huHU: TranslationMap = {
   'bootCheck.chooseCoreMode': 'Válasszon ki egy futási környezetet',
   'bootCheck.connectToCore': 'Csatlakozzon a Runtime-hoz',
   'bootCheck.desktopDescription':
-    'Aura futási időre van szüksége a gondolkodáshoz. Válassza ki, hol éljen.',
+    'Youma futási időre van szüksége a gondolkodáshoz. Válassza ki, hol éljen.',
   'bootCheck.webDescription':
-    'Az interneten a Aura egy Ön által irányított futási környezethez csatlakozik. Dobja be a URL és a hitelesítési tokent alább, vagy ragadja meg az asztali alkalmazást, hogy közvetlenül a gépén futtasson egyet.',
+    'Az interneten a Youma egy Ön által irányított futási környezethez csatlakozik. Dobja be a URL és a hitelesítési tokent alább, vagy ragadja meg az asztali alkalmazást, hogy közvetlenül a gépén futtasson egyet.',
   'bootCheck.preferDesktop': 'Inkább mindent a saját eszközén tartson?',
   'bootCheck.downloadDesktop': 'Szerezze be az asztali alkalmazást',
   'bootCheck.localRecommended': 'Helyi futtatás (ajánlott)',
@@ -945,7 +945,7 @@ const huHU: TranslationMap = {
   'bootCheck.quit': 'Kilép',
   'bootCheck.legacyDetected': 'Örökös háttérfutási idő észlelve',
   'bootCheck.legacyDescription':
-    'Egy külön telepített Aura démon már fut ezen az eszközön. Törölnünk kell, mielőtt a beépített futási környezet átvehetné az irányítást.',
+    'Egy külön telepített Youma démon már fut ezen az eszközön. Törölnünk kell, mielőtt a beépített futási környezet átvehetné az irányítást.',
   'bootCheck.removing': 'Eltávolítás…',
   'bootCheck.removeContinue': 'Eltávolítás és folytatás',
   'bootCheck.localNeedsRestart': 'A helyi futási környezet újraindítást igényel',
@@ -1083,9 +1083,9 @@ const huHU: TranslationMap = {
   'rewards.referrals.load_stats_error': 'Nem sikerült betölteni a hivatkozási statisztikákat',
   'rewards.referrals.copied': 'Másolva',
   'rewards.referrals.copy_failed': 'A másolás nem sikerült',
-  'rewards.referrals.share_intro': 'Csatlakozz hozzám a Aura számon.',
+  'rewards.referrals.share_intro': 'Csatlakozz hozzám a Youma számon.',
   'rewards.referrals.share_code_line': 'Ajánlói kód: {code}',
-  'rewards.referrals.share_download_line': 'Letöltés Aura: {url}',
+  'rewards.referrals.share_download_line': 'Letöltés Youma: {url}',
   'rewards.referrals.apply_error': 'Nem sikerült alkalmazni az ajánlókódot',
   'rewards.referrals.heading': 'Hívj meg barátokat, szerezz krediteket',
   'rewards.referrals.description':
@@ -1318,22 +1318,22 @@ const huHU: TranslationMap = {
   'skills.meeting_bots_card.platform_gmeet': 'Google Meet',
   'skills.meeting_bots_card.platform_zoom': 'Zoom',
   'skills.meeting_bots_card.platform_teams': 'Microsoft Teams',
-  'skills.meeting_bots_card.banner_title': 'Aura küldése megbeszélésre',
+  'skills.meeting_bots_card.banner_title': 'Youma küldése megbeszélésre',
   'skills.meeting_bots_card.new_badge': 'Új',
   'skills.meeting_bots_card.banner_description':
-    'Dobj el egy Google Meet linket, és Aura vendégként csatlakozik, beszélget, hallgat és visszainteget.',
+    'Dobj el egy Google Meet linket, és Youma vendégként csatlakozik, beszélget, hallgat és visszainteget.',
   'skills.meeting_bots_card.coming_soon_error': '{platform} támogatás hamarosan érkezik.',
-  'skills.meeting_bots_card.toast_joining_title': 'Aura csatlakozik a találkozóhoz',
+  'skills.meeting_bots_card.toast_joining_title': 'Youma csatlakozik a találkozóhoz',
   'skills.meeting_bots_card.toast_joining_message':
     'Néhány másodpercen belül résztvevőként kell megjelennie.',
-  'skills.meeting_bots_card.toast_busy_title': 'Aura foglalt',
-  'skills.meeting_bots_card.toast_failed_title': 'Nem sikerült elindítani Aura',
-  'skills.meeting_bots_card.default_error_message': 'Nem sikerült elindítani Aura.',
-  'skills.meeting_bots_card.modal_aria_label': 'Aura küldése megbeszélésre',
+  'skills.meeting_bots_card.toast_busy_title': 'Youma foglalt',
+  'skills.meeting_bots_card.toast_failed_title': 'Nem sikerült elindítani Youma',
+  'skills.meeting_bots_card.default_error_message': 'Nem sikerült elindítani Youma.',
+  'skills.meeting_bots_card.modal_aria_label': 'Youma küldése megbeszélésre',
   'skills.meeting_bots_card.close_aria': 'Közeli',
-  'skills.meeting_bots_card.modal_title': 'Aura küldése megbeszélésre',
+  'skills.meeting_bots_card.modal_title': 'Youma küldése megbeszélésre',
   'skills.meeting_bots_card.modal_description':
-    'Aura névtelen vendégként csatlakozik, videóját streameli a hívásba, és az ügyintézőn keresztül válaszol.',
+    'Youma névtelen vendégként csatlakozik, videóját streameli a hívásba, és az ügyintézőn keresztül válaszol.',
   'skills.meeting_bots_card.soon_suffix': '· hamarosan',
   'skills.meeting_bots_card.meeting_link_label': 'Találkozó link',
   'skills.meeting_bots_card.display_name_label': 'Megjelenítési név',
@@ -1480,14 +1480,14 @@ const huHU: TranslationMap = {
   'settings.composio_panel.title': 'Composio',
   'settings.composio_panel.loading': 'Terhelés…',
   'settings.composio_panel.intro_prefix':
-    'A Composio támogatja a Gmail, a Notion, a Slack, GitHub és több mint 1000 egyéb alkalmazás integrációját. Alapértelmezés szerint a Aura kezeli helyetted, így nem kell API kulcsot vinned. Ha inkább saját Composio fiókját szeretné közvetlenül használni, váltson ide',
+    'A Composio támogatja a Gmail, a Notion, a Slack, GitHub és több mint 1000 egyéb alkalmazás integrációját. Alapértelmezés szerint a Youma kezeli helyetted, így nem kell API kulcsot vinned. Ha inkább saját Composio fiókját szeretné közvetlenül használni, váltson ide',
   'settings.composio_panel.direct_word': 'Közvetlen',
   'settings.composio_panel.intro_suffix': 'módban, és illessze be a kulcsot alább.',
   'settings.composio_panel.routing_mode_legend': 'Útválasztási mód',
-  'settings.composio_panel.managed_aria_label': 'Kezelt (Aura kezeli Ön helyett)',
-  'settings.composio_panel.managed_title': 'Kezelt (Aura kezeli Ön helyett)',
+  'settings.composio_panel.managed_aria_label': 'Kezelt (Youma kezeli Ön helyett)',
+  'settings.composio_panel.managed_title': 'Kezelt (Youma kezeli Ön helyett)',
   'settings.composio_panel.managed_description':
-    'Alapértelmezett. A Aura kezeli helyetted a Composio kapcsolatot. A webhookok aktiválása (valós idejű Gmail / Slack események) a dobozból kivehetően működnek.',
+    'Alapértelmezett. A Youma kezeli helyetted a Composio kapcsolatot. A webhookok aktiválása (valós idejű Gmail / Slack események) a dobozból kivehetően működnek.',
   'settings.composio_panel.direct_aria_label': 'Közvetlen (hozzon saját API kulcsot)',
   'settings.composio_panel.direct_title': 'Közvetlen (hozzon saját API kulcsot)',
   'settings.composio_panel.direct_description_prefix': 'A hívások ide mennek',
@@ -1498,7 +1498,7 @@ const huHU: TranslationMap = {
   'settings.composio_panel.api_key_label': 'Composio API gomb',
   'settings.composio_panel.api_key_help_prefix': 'Keresse meg kulcsát a címen',
   'settings.composio_panel.api_key_help_suffix':
-    'A kulcs titkosítva tárolódik ezen az eszközön, és soha nem küldi el a Aura címre.',
+    'A kulcs titkosítva tárolódik ezen az eszközön, és soha nem küldi el a Youma címre.',
   'settings.composio_panel.api_key_placeholder_stored':
     '•••••••••••• (kulcs tárolva – illesszen be egy új kulcsot a cseréhez)',
   'settings.composio_panel.api_key_placeholder_empty': 'ck_live_xxxxxxxxxxxxxxxxx',
@@ -1506,10 +1506,10 @@ const huHU: TranslationMap = {
     'Jelenleg egy Composio API gomb van tárolva ezen a készüléken.',
   'settings.composio_panel.confirm_title': '⚠️ Váltás Közvetlen módra',
   'settings.composio_panel.confirm_integrations_prefix':
-    'Meglévő integrációi (Gmail, Slack, GitHub stb. Aura-en keresztül linkelve)',
+    'Meglévő integrációi (Gmail, Slack, GitHub stb. Youma-en keresztül linkelve)',
   'settings.composio_panel.wont_be_visible': 'nem lesz látható',
   'settings.composio_panel.confirm_integrations_suffix':
-    '— a Aura kezelésű Composio bérlőben laknak.',
+    '— a Youma kezelésű Composio bérlőben laknak.',
   'settings.composio_panel.confirm_needs_title': 'Szükséged lesz:',
   'settings.composio_panel.confirm_need_account_prefix': 'Számla a címen',
   'settings.composio_panel.confirm_need_account_suffix': 'API billentyűvel',
@@ -1528,7 +1528,7 @@ const huHU: TranslationMap = {
     'Nem sikerült menteni. A közvetlen módhoz egy nem üres API billentyű szükséges.',
   'settings.model_status.ollama_unavailable_title': 'Az Ollama futtatókörnyezete nem érhető el',
   'settings.model_status.ollama_unavailable_description':
-    'Aura mostantól az Ollamát külső következtetési futási környezetként kezeli. Indítsa el saját Ollama szerverét, húzza ki a kívánt modelleket, és irányítsa rá a munkaterhelés-útválasztást.',
+    'Youma mostantól az Ollamát külső következtetési futási környezetként kezeli. Indítsa el saját Ollama szerverét, húzza ki a kívánt modelleket, és irányítsa rá a munkaterhelés-útválasztást.',
   'settings.model_status.ollama_docs_link': 'Ollama doksi',
   'settings.model_status.runtime_status_title': 'Futásidejű állapot',
   'settings.model_status.refresh': 'Frissítés',
@@ -1547,7 +1547,7 @@ const huHU: TranslationMap = {
   'settings.model_status.hide_error_details': 'Hiba részleteinek elrejtése',
   'settings.model_status.show_error_details': 'Hiba részleteinek megjelenítése',
   'settings.model_status.connect_only_prefix':
-    'Aura csak egy már futó Ollama-kompatibilis végponthoz csatlakozik. Lásd',
+    'Youma csak egy már futó Ollama-kompatibilis végponthoz csatlakozik. Lásd',
   'settings.model_status.connect_only_suffix':
     'a beállítási utasításokért, majd próbálja újra, miután elérte a futási környezetet.',
   'settings.model_status.ollama_diagnostics_title': 'Ollama Diagnosztika',
@@ -1572,7 +1572,7 @@ const huHU: TranslationMap = {
   'settings.model_status.vision_model_line': 'Látás: {model}',
   'settings.model_status.issues_heading': 'Kérdések',
   'settings.model_status.manage_ollama_footer':
-    'Kezelje az Ollama folyamatot és a modell lehívásait a Aura értéken kívül, majd futtassa újra a diagnosztikát.',
+    'Kezelje az Ollama folyamatot és a modell lehívásait a Youma értéken kívül, majd futtassa újra a diagnosztikát.',
   'settings.device_capability.model_tier_title': 'Model Tier',
   'settings.device_capability.loading_device_info': 'Eszközadatok és előbeállítások betöltése…',
   'settings.device_capability.could_not_load_presets':
@@ -1878,7 +1878,7 @@ const huHU: TranslationMap = {
   'composio.connect_modal.disconnecting': 'Leválasztás…',
   'composio.connect_modal.dismiss': 'Elvetés',
   'composio.connect_modal.expired_body':
-    'Csatlakoztassa újra a {name} eszközök újraengedélyezéséhez. A Aura elérhetetlenné teszi ezt az integrációt, amíg nem frissíti a OAuth hozzáférést.',
+    'Csatlakoztassa újra a {name} eszközök újraengedélyezéséhez. A Youma elérhetetlenné teszi ezt az integrációt, amíg nem frissíti a OAuth hozzáférést.',
   'composio.connect_modal.expired_title': '{name} jogosultság lejárt',
   'composio.connect_modal.generic_error': 'Valami elromlott.',
   'composio.connect_modal.header_connect': 'Csatlakoztassa {name}',
@@ -1894,7 +1894,7 @@ const huHU: TranslationMap = {
   'composio.connect_modal.needs_subdomain_intro_suffix': '), és próbálja újra.',
   'composio.connect_modal.permission_intro_prefix': '{name} kiteheti',
   'composio.connect_modal.permission_intro_suffix':
-    '. Csatlakozás után a Aura saját ügynöki jogosultságait alább az olvasási, írási és adminisztrátori kapcsolók szabályozzák.',
+    '. Csatlakozás után a Youma saját ügynöki jogosultságait alább az olvasási, írási és adminisztrátori kapcsolók szabályozzák.',
   'composio.connect_modal.permissions_default_hint':
     'Az olvasás + írás alapértelmezés szerint engedélyezve van',
   'composio.connect_modal.permissions_heading': 'Engedélyek',
@@ -1945,10 +1945,10 @@ const huHU: TranslationMap = {
   'settings.ai_panel.local_runtime_disconnect_aria': 'Válassza le a {label} csatlakozást',
   'settings.ai_panel.providers_heading': 'LLM Szolgáltatók',
   'settings.ai_panel.providers_subtitle':
-    'Csatlakoztassa a Aura használni kívánt nyelvi modell háttérprogramjait. Kapcsolja be a szolgáltatót a kulcs hozzáadásához; kapcsolja ki a leválasztáshoz.',
+    'Csatlakoztassa a Youma használni kívánt nyelvi modell háttérprogramjait. Kapcsolja be a szolgáltatót a kulcs hozzáadásához; kapcsolja ki a leválasztáshoz.',
   'settings.ai_panel.routing_heading': 'Útválasztás',
   'settings.ai_panel.routing_subtitle':
-    'Válassza ki az egyes munkaterhelések kiszolgálásának módját. Az alapértelmezett Aura; Egyéni lehetővé teszi, hogy a munkaterhelést egy adott szolgáltatóra és modellre irányítsa.',
+    'Válassza ki az egyes munkaterhelések kiszolgálásának módját. Az alapértelmezett Youma; Egyéni lehetővé teszi, hogy a munkaterhelést egy adott szolgáltatóra és modellre irányítsa.',
   'settings.auto_recharge.add_card': '+ Kártya hozzáadása a Stripe-hoz',
   'settings.auto_recharge.amount_label': 'Adja hozzá ezt az összeget',
   'settings.auto_recharge.cancel': 'Mégse',
@@ -2012,22 +2012,22 @@ const huHU: TranslationMap = {
   'settings.mascot_panel.color_black': 'Fekete',
   'settings.mascot_panel.color_burgundy': 'Burgundia',
   'settings.mascot_panel.color_footer_hint':
-    'A kiválasztott színt mindenhol alkalmazza a rendszer, ahol Aura megjelenik, és az újraindításkor megjegyzik.',
+    'A kiválasztott színt mindenhol alkalmazza a rendszer, ahol Youma megjelenik, és az újraindításkor megjegyzik.',
   'settings.mascot_panel.color_green': 'Zöld',
   'settings.mascot_panel.color_heading': 'Szín',
   'settings.mascot_panel.color_navy': 'Haditengerészet',
-  'settings.mascot_panel.color_radiogroup_aria': 'Aura szín',
+  'settings.mascot_panel.color_radiogroup_aria': 'Youma szín',
   'settings.mascot_panel.color_yellow': 'Sárga',
-  'settings.mascot_panel.header_title': 'Aura',
-  'settings.mascot_panel.library_unavailable': 'Aura könyvtár nem elérhető: {error}',
+  'settings.mascot_panel.header_title': 'Youma',
+  'settings.mascot_panel.library_unavailable': 'Youma könyvtár nem elérhető: {error}',
   'settings.mascot_panel.load_library_error': 'Nem sikerült betölteni a kabalakönyvtárat.',
   'settings.mascot_panel.load_mascot_error': 'Nem sikerült betölteni a kabalát.',
-  'settings.mascot_panel.loading_library': 'Aura könyvtár betöltése…',
-  'settings.mascot_panel.local_aura_default': 'Helyi Aura (alapértelmezett)',
+  'settings.mascot_panel.loading_library': 'Youma könyvtár betöltése…',
+  'settings.mascot_panel.local_aura_default': 'Helyi Youma (alapértelmezett)',
   'settings.mascot_panel.no_characters':
-    'Még nem áll rendelkezésre Aura karakter. A fenti helyi színváltozatok továbbra is aktívak.',
+    'Még nem áll rendelkezésre Youma karakter. A fenti helyi színváltozatok továbbra is aktívak.',
   'settings.mascot_panel.no_color_variants':
-    'Ebben az összeállításban nem állnak rendelkezésre Aura színváltozatok.',
+    'Ebben az összeállításban nem állnak rendelkezésre Youma színváltozatok.',
   'settings.mascot_panel.preview_label': 'Előnézet · {name}',
   'settings.mascot_panel.version_states': 'v{version} · {states} állapotok',
   'settings.mascot_panel.visemes_suffix': '· visemes',
@@ -2072,7 +2072,7 @@ const huHU: TranslationMap = {
   'local_ai.download_snackbar.installing': 'Telepítés...',
   'local_ai.download_snackbar.preparing': 'Felkészülés...',
   'settings.cron_job_list.heading': 'Core Cron Jobs',
-  'settings.cron_job_list.subheading': 'A munkák megmaradtak a Aura ütemező alapadatbázisban.',
+  'settings.cron_job_list.subheading': 'A munkák megmaradtak a Youma ütemező alapadatbázisban.',
   'settings.cron_job_list.loading': 'Cron feladatok betöltése...',
   'settings.cron_job_list.empty': 'Nem található alapvető cron állás.',
   'settings.cron_job_list.status_enabled': 'Engedélyezve',
@@ -2144,16 +2144,16 @@ const huHU: TranslationMap = {
   'aura_link_modal.notifications_desktop_only':
     'A natív értesítések csak az asztali alkalmazásban érhetők el (futtassa a "pnpm dev:app" parancsot).',
   'aura_link_modal.notifications_permission_off':
-    'Az értesítési engedély ki van kapcsolva. Engedélyezze a Aura értéket a Rendszerbeállítások → Értesítések menüpontban, majd próbálkozzon újra.',
-  'aura_link_modal.notification_title': 'Aura már jó',
+    'Az értesítési engedély ki van kapcsolva. Engedélyezze a Youma értéket a Rendszerbeállítások → Értesítések menüpontban, majd próbálkozzon újra.',
+  'aura_link_modal.notification_title': 'Youma már jó',
   'aura_link_modal.notification_body': 'Itt pingeket fog kapni, ha valami figyelmet igényel.',
   'aura_link_modal.notification_send_failed':
-    'Aura nem tudott rendszerértesítést kiváltani. Ellenőrizze az operációs rendszer értesítési beállításait, és próbálkozzon újra.',
+    'Youma nem tudott rendszerértesítést kiváltani. Ellenőrizze az operációs rendszer értesítési beállításait, és próbálkozzon újra.',
   'aura_link_modal.notifications_intro':
-    'A Aura natív értesítéseket használ, így pingelni tud, ha valami figyelmet igényel, még akkor is, ha a csevegőablak el van rejtve.',
+    'A Youma natív értesítéseket használ, így pingelni tud, ha valami figyelmet igényel, még akkor is, ha a csevegőablak el van rejtve.',
   'aura_link_modal.notifications_blocked_line1': 'Az értesítések jelenleg le vannak tiltva.',
   'aura_link_modal.notifications_blocked_line2':
-    '1. Nyissa meg a Rendszerbeállítások → Értesítések → Aura lehetőséget',
+    '1. Nyissa meg a Rendszerbeállítások → Értesítések → Youma lehetőséget',
   'aura_link_modal.notifications_blocked_line3':
     '2. Kapcsolja be az Értesítések engedélyezése lehetőséget',
   'aura_link_modal.notifications_blocked_line4':
@@ -2164,7 +2164,7 @@ const huHU: TranslationMap = {
   'aura_link_modal.retry_test_notification': 'Próbálja újra a tesztértesítést',
   'aura_link_modal.send_test_notification': 'Tesztértesítés küldése',
   'aura_link_modal.notification_sent_success':
-    'Tesztértesítés elküldve. Ha nem kapta meg, lépjen a Rendszerbeállítások → Értesítések → Aura menüpontba, kapcsolja be az Értesítések engedélyezése funkciót, és állítsa a Szalaghirdetés stílusát Állandó értékre.',
+    'Tesztértesítés elküldve. Ha nem kapta meg, lépjen a Rendszerbeállítások → Értesítések → Youma menüpontba, kapcsolja be az Értesítések engedélyezése funkciót, és állítsa a Szalaghirdetés stílusát Állandó értékre.',
   'aura_link_modal.notification_send_error': 'Nem sikerült elküldeni: {error}',
   'aura_link_modal.trial_credit_label': 'Próbahitel',
   'aura_link_modal.trial_credit_amount': '1,00 USD',
@@ -2173,7 +2173,7 @@ const huHU: TranslationMap = {
   'aura_link_modal.open_dashboard': 'Nyissa meg az irányítópultot a böngészőben',
   'aura_link_modal.stay_on_trial': 'Maradjon tárgyaláson',
   'aura_link_modal.discord_intro':
-    'Lépjen be a Discord fiókunkba, és kapcsolja össze Aura fiókját. Exkluzív korai hozzáférést kapsz a funkciókhoz, ingyenes krediteket, amelyekkel játszani, egy nagyszerű közösséget kapsz, amellyel szórakozhatsz, és igen, ingyenes árucikkeket.',
+    'Lépjen be a Discord fiókunkba, és kapcsolja össze Youma fiókját. Exkluzív korai hozzáférést kapsz a funkciókhoz, ingyenes krediteket, amelyekkel játszani, egy nagyszerű közösséget kapsz, amellyel szórakozhatsz, és igen, ingyenes árucikkeket.',
   'aura_link_modal.discord_perk_feature_access': 'Exkluzív hozzáférés a funkciókhoz',
   'aura_link_modal.discord_perk_free_credits': 'Ingyenes kredit az aktív tagoknak',
   'aura_link_modal.discord_perk_community': 'Építők és üzemeltetők közössége',
@@ -2210,7 +2210,7 @@ const huHU: TranslationMap = {
   'channels.discord_config.copy': 'Másolat',
   'channels.discord_config.link_instructions_prefix': 'Discord-ben küldje el',
   'channels.discord_config.link_instructions_suffix':
-    'a Aura bothoz. A token 5 percen belül lejár.',
+    'a Youma bothoz. A token 5 percen belül lejár.',
   'channels.discord_config.link_token_warning':
     'Mentse el ezt a parancsot – ez a token csak egyszer jelenik meg.',
   'channels.discord_config.account_linked': 'Discord fiókja össze van kapcsolva.',
@@ -2251,9 +2251,9 @@ const huHU: TranslationMap = {
   'settings.memory_window_control.save_failed': 'Nem sikerült menteni a memóriaablakot',
   'settings.memory_window_control.heading': 'Hosszú távú memória ablak',
   'settings.memory_window_control.description':
-    'Mennyi emlékezett kontextust Aura injektál minden új ügynökfutásba. A nagyobb ablakok jobban tudatában vannak a múltbeli beszélgetéseknek, de több tokent használnak – és többe kerülnek – minden futásra.',
+    'Mennyi emlékezett kontextust Youma injektál minden új ügynökfutásba. A nagyobb ablakok jobban tudatában vannak a múltbeli beszélgetéseknek, de több tokent használnak – és többe kerülnek – minden futásra.',
   'home.banners.promo_credits': '{amount} promóciós jóváírása van.',
-  'home.banners.promo_credits_prefix': 'Pörgessen Aura, és ha többre készen áll,',
+  'home.banners.promo_credits_prefix': 'Pörgessen Youma, és ha többre készen áll,',
   'home.banners.get_subscription': 'előfizetést szerezni',
   'home.banners.promo_credits_suffix': 'és 10x több használatot kap.',
   'home.banners.dismiss_early_bird': 'Early bird szalaghirdetés elvetése',
@@ -2263,7 +2263,7 @@ const huHU: TranslationMap = {
   'home.banners.first_subscription': 'első előfizetés.',
   'home.banners.join_discord': 'Csatlakozzon Discord-unkhoz',
   'home.banners.discord_description':
-    'Frissítéseket, ingyenes árucikkeket, krediteket kaphat, hibákat jelenthet, és tagja lehet a Aura közösségnek.',
+    'Frissítéseket, ingyenes árucikkeket, krediteket kaphat, hibákat jelenthet, és tagja lehet a Youma közösségnek.',
   'intelligence.memory_chunk_detail.copy_chunk_id': 'Másolja a darabazonosítót',
   'intelligence.memory_chunk_detail.chunk_label': 'darab {id}',
   'intelligence.memory_chunk_detail.copied': 'másolt',
@@ -2288,7 +2288,7 @@ const huHU: TranslationMap = {
     'Valami elromlott. Kérjük, próbálja újra.\nEzt a hibát jelentették. Discord számon is lehet jelenteni.\n<aura-link path="community/discord">Jelentés a következőről: Discord</aura-link>',
   'daemon.service_blocking_gate.retry_failed':
     'Újrapróbálkozás sikertelen. Töltse le az alkalmazás legújabb verzióját, és próbálja újra.',
-  'daemon.service_blocking_gate.title': 'Aura mag nem elérhető',
+  'daemon.service_blocking_gate.title': 'Youma mag nem elérhető',
   'daemon.service_blocking_gate.description':
     'Többszöri próbálkozás után sem tudtuk helyreállítani a helyi alapszolgáltatást. Ez történhet kritikus összeomlás vagy bináris eltérés után.',
   'daemon.service_blocking_gate.download_hint':
@@ -2444,17 +2444,17 @@ const huHU: TranslationMap = {
   'chat.unsubscribe_approval_card.success_message': '✓ Sikeres leiratkozás.',
   'chat.unsubscribe_approval_card.denied_message': '✕ A kérés elutasítva.',
   'oauth.provider_button.twitter_startup_failure':
-    'A Twitter/X bejelentkezés nem indul el. Ellenőrizze, hogy a Twitter OAuth alkalmazás visszahívása URL, az ügyfél-azonosító/titkos és a kért hatókör megegyezik-e a Aura háttérrendszerrel, majd próbálkozzon újra.',
+    'A Twitter/X bejelentkezés nem indul el. Ellenőrizze, hogy a Twitter OAuth alkalmazás visszahívása URL, az ügyfél-azonosító/titkos és a kért hatókör megegyezik-e a Youma háttérrendszerrel, majd próbálkozzon újra.',
   'oauth.provider_button.generic_startup_failure':
     '{providerName} nem sikerült elindítani a bejelentkezést. Kérjük, próbálja újra.',
   'oauth.provider_button.connecting': 'Csatlakozás...',
   'skills.search_bar.placeholder': 'Keresési készségek...',
-  'common.persist_rehydration_screen.title': 'Aura a szokásosnál tovább tart a betöltése.',
+  'common.persist_rehydration_screen.title': 'Youma a szokásosnál tovább tart a betöltése.',
   'common.persist_rehydration_screen.description':
     'Lehetséges, hogy a helyi alkalmazás állapota sérült. Az alaphelyzetbe állítás kijelentkezteti Önt, és törli a gyorsítótárazott adatokat ezen az eszközön; a következő indításkor újra összekapcsolja fiókjait. A szerveren lévő adatait ez nem érinti.',
   'common.persist_rehydration_screen.resetting': 'Visszaállítás…',
   'common.persist_rehydration_screen.reset_button': 'Helyi állapot visszaállítása',
-  'common.route_loading_screen.initializing': 'Aura inicializálása...',
+  'common.route_loading_screen.initializing': 'Youma inicializálása...',
   'privacy.what_leaves_link.label': 'Mi hagyja el a számítógépemet?',
   'settings.provider_key_dialog.api_key_required': 'A folytatáshoz illessze be a API kulcsot.',
   'settings.provider_key_dialog.connect_title': 'Csatlakoztassa {label}',
@@ -2464,7 +2464,7 @@ const huHU: TranslationMap = {
   'settings.provider_key_dialog.cancel_button': 'Mégse',
   'settings.provider_key_dialog.saving': 'Megtakarítás…',
   'settings.provider_key_dialog.save_button': 'Megtakarítás',
-  'settings.workload_row.aura_default': 'Aura (alapértelmezett)',
+  'settings.workload_row.aura_default': 'Youma (alapértelmezett)',
   'settings.workload_row.default_button': 'Alapértelmezett',
   'settings.workload_row.custom_button': 'Szokás',
 };

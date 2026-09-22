@@ -126,7 +126,7 @@ const csCZ: TranslationMap = {
   'clearData.failedLogout': 'Odhlášení se nezdařilo. Zkuste to prosím znovu.',
   'clearData.failedPersist':
     'Nepodařilo se vymazat přetrvávající stav aplikace. Zkuste to prosím znovu.',
-  'welcome.title': 'Vítejte v Aura',
+  'welcome.title': 'Vítejte v Youma',
   'welcome.subtitle': 'Vaše osobní super inteligence AI. Soukromé, jednoduché a extrémně silné.',
   'welcome.connectPrompt': 'Konfigurace RPC URL (pokročilé)',
   'welcome.selectRuntime': 'Vyberte Runtime',
@@ -142,7 +142,7 @@ const csCZ: TranslationMap = {
     'Vaše zařízení je připojeno. Nechte aplikaci spuštěnou, aby připojení zůstalo živé. Pošlete zprávu svému agentovi pomocí tlačítka níže.',
   'home.statusBackendOnly': 'Opětovné připojení k backendu... váš agent bude brzy opět dostupný.',
   'home.statusCoreUnreachable':
-    'Místní základní postranní vozík nereaguje. Proces Aura na pozadí mohl selhat nebo se nepodařilo spustit.',
+    'Místní základní postranní vozík nereaguje. Proces Youma na pozadí mohl selhat nebo se nepodařilo spustit.',
   'home.statusInternetOffline':
     'Vaše zařízení je právě offline. Zkontrolujte svou síť nebo restartujte aplikaci a znovu se připojte.',
   'home.restartCore': 'Restartujte Core',
@@ -192,7 +192,7 @@ const csCZ: TranslationMap = {
   'rewards.referralCode': 'Váš doporučující kód',
   'rewards.copyCode': 'Kopírovat kód',
   'rewards.share': 'Podíl',
-  'onboarding.welcome': 'Ahoj. Jsem Aura.',
+  'onboarding.welcome': 'Ahoj. Jsem Youma.',
   'onboarding.welcomeDesc':
     'Váš superinteligentní asistent AI, který běží na vašem počítači. Soukromé, jednoduché a extrémně silné.',
   'onboarding.context': 'Shromažďování kontextu',
@@ -204,14 +204,14 @@ const csCZ: TranslationMap = {
   'onboarding.referral': 'Doporučení',
   'onboarding.referralDesc': 'Použijte doporučující kód, pokud jej máte.',
   'onboarding.finish': 'Dokončete nastavení',
-  'onboarding.finishDesc': 'Vše je připraveno! Začněte používat Aura.',
+  'onboarding.finishDesc': 'Vše je připraveno! Začněte používat Youma.',
   'onboarding.skip': 'Přeskočit',
   'onboarding.getStarted': 'Začněte',
-  'onboarding.runtimeChoice.title': 'Jak byste chtěli běžet Aura?',
+  'onboarding.runtimeChoice.title': 'Jak byste chtěli běžet Youma?',
   'onboarding.runtimeChoice.subtitle':
     'Vyberte si nastavení, které vám nejlépe vyhovuje. Toto můžete později změnit v Nastavení.',
   'onboarding.runtimeChoice.cloud.title': 'Jednoduchý',
-  'onboarding.runtimeChoice.cloud.tagline': 'Nechte Aura řídit vše za vás.',
+  'onboarding.runtimeChoice.cloud.tagline': 'Nechte Youma řídit vše za vás.',
   'onboarding.runtimeChoice.cloud.f1': 'Vestavěné zabezpečení',
   'onboarding.runtimeChoice.cloud.f2': 'Komprese tokenu pro další rozšíření využití',
   'onboarding.runtimeChoice.cloud.f3': 'Jedno předplatné, každý model v ceně',
@@ -248,7 +248,7 @@ const csCZ: TranslationMap = {
   'onboarding.custom.stepperMemory': 'Paměť',
   'onboarding.custom.stepCounter': 'Krok {n} z {total}',
   'onboarding.custom.defaultTitle': 'Výchozí',
-  'onboarding.custom.defaultSubtitle': 'Nechte Aura, aby to spravoval za vás.',
+  'onboarding.custom.defaultSubtitle': 'Nechte Youma, aby to spravoval za vás.',
   'onboarding.custom.configureTitle': 'Konfigurovat',
   'onboarding.custom.configureSubtitle': 'Vyberu co použiji.',
   'onboarding.custom.progressAriaLabel': 'Průběh registrace',
@@ -262,34 +262,34 @@ const csCZ: TranslationMap = {
   'onboarding.custom.inference.subtitle':
     'Jaký jazykový model by měl odpovídat na vaše otázky a řídit vaše agenty?',
   'onboarding.custom.inference.defaultDesc':
-    'Aura směruje každou pracovní zátěž na rozumný výchozí model. Žádné klíče, žádné nastavení.',
+    'Youma směruje každou pracovní zátěž na rozumný výchozí model. Žádné klíče, žádné nastavení.',
   'onboarding.custom.inference.configureDesc':
     'Přineste si vlastní klávesu OpenAI nebo Anthropic. Používáme ho pro každou textovou zátěž.',
   'onboarding.custom.voice.title': 'Hlas',
   'onboarding.custom.voice.subtitle':
     'Převod řeči na text a převod textu na řeč pro hlasový režim.',
   'onboarding.custom.voice.defaultDesc':
-    'Aura se dodává se spravovaným STT/TTS, který prostě funguje. Není co zapojovat.',
+    'Youma se dodává se spravovaným STT/TTS, který prostě funguje. Není co zapojovat.',
   'onboarding.custom.voice.configureDesc':
     'Použijte své vlastní ElevenLabs / OpenAI Whisper / atd. Nakonfigurujte v Nastavení › Hlas.',
   'onboarding.custom.oauth.title': 'Připojení (OAuth)',
   'onboarding.custom.oauth.subtitle':
     'Gmail, Slack, Notion a další připojené služby, které potřebují OAuth.',
   'onboarding.custom.oauth.defaultDesc':
-    'Aura provozuje spravovaný Composio pracovní prostor. Jedno kliknutí pro připojení každé služby později.',
+    'Youma provozuje spravovaný Composio pracovní prostor. Jedno kliknutí pro připojení každé služby později.',
   'onboarding.custom.oauth.configureDesc':
     'Přineste si vlastní účet Composio / klíč API. Nakonfigurujte v Nastavení › Připojení.',
   'onboarding.custom.search.title': 'Vyhledávání na webu',
-  'onboarding.custom.search.subtitle': 'Jak Aura prohledává web vaším jménem.',
+  'onboarding.custom.search.subtitle': 'Jak Youma prohledává web vaším jménem.',
   'onboarding.custom.search.defaultDesc':
-    'Aura používá backend spravovaného vyhledávání. Nejsou potřeba žádné klíče.',
+    'Youma používá backend spravovaného vyhledávání. Nejsou potřeba žádné klíče.',
   'onboarding.custom.search.configureDesc':
     'Přineste si vlastní klíč poskytovatele vyhledávání (Tavily, Brave atd.). Proveďte konfiguraci v Nastavení › Nástroje.',
   'onboarding.custom.memory.title': 'Paměť',
   'onboarding.custom.memory.subtitle':
-    'Jak si Aura pamatuje váš kontext, preference a předchozí konverzace.',
+    'Jak si Youma pamatuje váš kontext, preference a předchozí konverzace.',
   'onboarding.custom.memory.defaultDesc':
-    'Aura spravuje ukládání a načítání paměti automaticky. Není co nastavovat.',
+    'Youma spravuje ukládání a načítání paměti automaticky. Není co nastavovat.',
   'onboarding.custom.memory.configureDesc':
     'Kontrolujte, exportujte nebo vymažte paměť sami. Nakonfigurujte v Nastavení › Paměť.',
   'accounts.addAccount': 'Přidat účet',
@@ -349,7 +349,7 @@ const csCZ: TranslationMap = {
   'misc.downloading': 'Stahování...',
   'misc.installing': 'Instalace...',
   'misc.beta':
-    'Aura je v rané beta verzi. Neváhejte a podělte se o zpětnou vazbu nebo nahlaste jakékoli chyby, na které narazíte – každé hlášení nám pomáhá rychleji odesílat.',
+    'Youma je v rané beta verzi. Neváhejte a podělte se o zpětnou vazbu nebo nahlaste jakékoli chyby, na které narazíte – každé hlášení nám pomáhá rychleji odesílat.',
   'misc.betaFeedback': 'Odeslat zpětnou vazbu',
   'mnemonic.title': 'Recovery Fráze',
   'mnemonic.warning': 'Zapište si tato slova v pořadí a uložte je na bezpečném místě.',
@@ -372,11 +372,11 @@ const csCZ: TranslationMap = {
   'privacy.anonymizedAnalytics': 'Anonymizovaná analytika',
   'privacy.shareAnonymizedData': 'Sdílejte anonymizovaná data o používání',
   'privacy.shareAnonymizedDataDesc':
-    'Pomozte zlepšit Aura sdílením anonymních zpráv o selhání a analýz využití. Všechna data jsou plně anonymizována – nikdy se neshromažďují žádné osobní údaje, zprávy, klíče peněženky ani informace o relaci.',
+    'Pomozte zlepšit Youma sdílením anonymních zpráv o selhání a analýz využití. Všechna data jsou plně anonymizována – nikdy se neshromažďují žádné osobní údaje, zprávy, klíče peněženky ani informace o relaci.',
   'privacy.meetingFollowUps': 'Následná jednání',
   'privacy.autoHandoffMeet': 'Automatické předání Google Meet přepisů orchestrátorovi',
   'privacy.autoHandoffMeetDesc':
-    'Když hovor Google Meet skončí, orchestrátor Aura může číst přepis a může provádět akce, jako je navrhování zpráv, plánování následných akcí nebo odesílání shrnutí do vašeho připojeného pracovního prostoru Slack. Ve výchozím nastavení vypnuto.',
+    'Když hovor Google Meet skončí, orchestrátor Youma může číst přepis a může provádět akce, jako je navrhování zpráv, plánování následných akcí nebo odesílání shrnutí do vašeho připojeného pracovního prostoru Slack. Ve výchozím nastavení vypnuto.',
   'privacy.analyticsDisclaimer':
     'Všechny analýzy a hlášení chyb jsou plně anonymizovány. Je-li povoleno, shromažďujeme pouze informace o selhání, typu zařízení a umístění souboru s chybami. Nikdy nemáme přístup k vašim zprávám, datům relace, klíčům peněženky, klíčům API ani žádným osobním údajům. Toto nastavení můžete kdykoli změnit.',
   'settings.about.version': 'Verze',
@@ -434,7 +434,7 @@ const csCZ: TranslationMap = {
   'settings.billing.browserNotOpen': 'Pokud se váš prohlížeč neotevřel, použijte tlačítko výše.',
   'settings.billing.browserOpenFailed':
     'Prohlížeč nelze automaticky otevřít. Použijte tlačítko výše.',
-  'settings.tools.chooseCapabilities': 'Vyberte, které schopnosti může Aura používat vaším jménem.',
+  'settings.tools.chooseCapabilities': 'Vyberte, které schopnosti může Youma používat vaším jménem.',
   'settings.tools.saveChanges': 'Uložit změny',
   'settings.tools.preferencesSaved': 'Předvolby uloženy',
   'settings.tools.saveFailed': 'Předvolby se nepodařilo uložit. Zkuste to znovu.',
@@ -898,9 +898,9 @@ const csCZ: TranslationMap = {
   'bootCheck.tokenRequired': 'K připojení budeme potřebovat ověřovací token.',
   'bootCheck.chooseCoreMode': 'Vyberte Runtime',
   'bootCheck.connectToCore': 'Připojte se ke svému běhu',
-  'bootCheck.desktopDescription': 'Aura potřebuje čas na přemýšlení. Vyberte si, kde by měl žít.',
+  'bootCheck.desktopDescription': 'Youma potřebuje čas na přemýšlení. Vyberte si, kde by měl žít.',
   'bootCheck.webDescription':
-    'Na webu se Aura připojí k runtime, které ovládáte. Vhoďte jeho URL a ověřovací token níže, nebo uchopte desktopovou aplikaci a spusťte ji přímo na vašem počítači.',
+    'Na webu se Youma připojí k runtime, které ovládáte. Vhoďte jeho URL a ověřovací token níže, nebo uchopte desktopovou aplikaci a spusťte ji přímo na vašem počítači.',
   'bootCheck.preferDesktop': 'Raději mít vše na svém zařízení?',
   'bootCheck.downloadDesktop': 'Získejte desktopovou aplikaci',
   'bootCheck.localRecommended': 'Spustit lokálně (doporučeno)',
@@ -927,7 +927,7 @@ const csCZ: TranslationMap = {
   'bootCheck.quit': 'Přestat',
   'bootCheck.legacyDetected': 'Zjištěno starší běhové prostředí na pozadí',
   'bootCheck.legacyDescription':
-    'Na tomto zařízení již běží samostatně nainstalovaný démon Aura. Musíme to vymazat, než bude moci převzít vestavěný runtime.',
+    'Na tomto zařízení již běží samostatně nainstalovaný démon Youma. Musíme to vymazat, než bude moci převzít vestavěný runtime.',
   'bootCheck.removing': 'Odebírání…',
   'bootCheck.removeContinue': 'Odebrat a pokračovat',
   'bootCheck.localNeedsRestart': 'Místní běhové prostředí vyžaduje restart',
@@ -1065,9 +1065,9 @@ const csCZ: TranslationMap = {
   'rewards.referrals.load_stats_error': 'Nepodařilo se načíst statistiky doporučení',
   'rewards.referrals.copied': 'Zkopírováno',
   'rewards.referrals.copy_failed': 'Kopírování se nezdařilo',
-  'rewards.referrals.share_intro': 'Připojte se ke mně na Aura.',
+  'rewards.referrals.share_intro': 'Připojte se ke mně na Youma.',
   'rewards.referrals.share_code_line': 'Referenční kód: {code}',
-  'rewards.referrals.share_download_line': 'Stáhnout Aura: {url}',
+  'rewards.referrals.share_download_line': 'Stáhnout Youma: {url}',
   'rewards.referrals.apply_error': 'Kód doporučení nelze použít',
   'rewards.referrals.heading': 'Pozvěte přátele, získejte kredity',
   'rewards.referrals.description':
@@ -1301,22 +1301,22 @@ const csCZ: TranslationMap = {
   'skills.meeting_bots_card.platform_gmeet': 'Google Meet',
   'skills.meeting_bots_card.platform_zoom': 'Zoom',
   'skills.meeting_bots_card.platform_teams': 'Microsoft Teams',
-  'skills.meeting_bots_card.banner_title': 'Pošlete Aura na schůzku',
+  'skills.meeting_bots_card.banner_title': 'Pošlete Youma na schůzku',
   'skills.meeting_bots_card.new_badge': 'Nový',
   'skills.meeting_bots_card.banner_description':
-    'Pusťte odkaz Google Meet a Aura se připojí jako host, mluví, poslouchá a mává zpět.',
+    'Pusťte odkaz Google Meet a Youma se připojí jako host, mluví, poslouchá a mává zpět.',
   'skills.meeting_bots_card.coming_soon_error': 'Podpora {platform} již brzy.',
-  'skills.meeting_bots_card.toast_joining_title': 'Aura se připojuje ke schůzi',
+  'skills.meeting_bots_card.toast_joining_title': 'Youma se připojuje ke schůzi',
   'skills.meeting_bots_card.toast_joining_message':
     'Během několika sekund by se měl objevit jako účastník.',
-  'skills.meeting_bots_card.toast_busy_title': 'Aura je zaneprázdněn',
-  'skills.meeting_bots_card.toast_failed_title': 'Nelze spustit Aura',
-  'skills.meeting_bots_card.default_error_message': 'Nepodařilo se spustit Aura.',
-  'skills.meeting_bots_card.modal_aria_label': 'Pošlete Aura na schůzku',
+  'skills.meeting_bots_card.toast_busy_title': 'Youma je zaneprázdněn',
+  'skills.meeting_bots_card.toast_failed_title': 'Nelze spustit Youma',
+  'skills.meeting_bots_card.default_error_message': 'Nepodařilo se spustit Youma.',
+  'skills.meeting_bots_card.modal_aria_label': 'Pošlete Youma na schůzku',
   'skills.meeting_bots_card.close_aria': 'Blízko',
-  'skills.meeting_bots_card.modal_title': 'Pošlete Aura na schůzku',
+  'skills.meeting_bots_card.modal_title': 'Pošlete Youma na schůzku',
   'skills.meeting_bots_card.modal_description':
-    'Aura se připojí jako anonymní host, streamuje své video do hovoru a odpovídá prostřednictvím agenta.',
+    'Youma se připojí jako anonymní host, streamuje své video do hovoru a odpovídá prostřednictvím agenta.',
   'skills.meeting_bots_card.soon_suffix': '· brzy',
   'skills.meeting_bots_card.meeting_link_label': 'Odkaz na schůzku',
   'skills.meeting_bots_card.display_name_label': 'Zobrazovaný název',
@@ -1462,14 +1462,14 @@ const csCZ: TranslationMap = {
   'settings.composio_panel.title': 'Composio',
   'settings.composio_panel.loading': 'Načítání…',
   'settings.composio_panel.intro_prefix':
-    'Composio umožňuje integraci s Gmail, Notion, Slack, GitHub a více než 1000 dalšími aplikacemi. Ve výchozím nastavení to za vás spravuje Aura, takže nemusíte nosit klíč API. Pokud dáváte přednost přímému používání vlastního Composio účtu, přepněte na',
+    'Composio umožňuje integraci s Gmail, Notion, Slack, GitHub a více než 1000 dalšími aplikacemi. Ve výchozím nastavení to za vás spravuje Youma, takže nemusíte nosit klíč API. Pokud dáváte přednost přímému používání vlastního Composio účtu, přepněte na',
   'settings.composio_panel.direct_word': 'Řídit',
   'settings.composio_panel.intro_suffix': 'režimu a vložte svůj klíč níže.',
   'settings.composio_panel.routing_mode_legend': 'Režim směrování',
-  'settings.composio_panel.managed_aria_label': 'Spravováno (Aura to vyřídí za vás)',
-  'settings.composio_panel.managed_title': 'Spravováno (Aura to vyřídí za vás)',
+  'settings.composio_panel.managed_aria_label': 'Spravováno (Youma to vyřídí za vás)',
+  'settings.composio_panel.managed_title': 'Spravováno (Youma to vyřídí za vás)',
   'settings.composio_panel.managed_description':
-    'Výchozí. Aura spravuje připojení Composio za vás. Spouštět webhooky (Gmail v reálném čase / Slack události) fungují ihned po vybalení.',
+    'Výchozí. Youma spravuje připojení Composio za vás. Spouštět webhooky (Gmail v reálném čase / Slack události) fungují ihned po vybalení.',
   'settings.composio_panel.direct_aria_label': 'Přímo (přineste si vlastní klíč API)',
   'settings.composio_panel.direct_title': 'Přímo (přineste si vlastní klíč API)',
   'settings.composio_panel.direct_description_prefix': 'Hovory jdou na',
@@ -1480,7 +1480,7 @@ const csCZ: TranslationMap = {
   'settings.composio_panel.api_key_label': 'Tlačítko Composio API',
   'settings.composio_panel.api_key_help_prefix': 'Najděte svůj klíč na',
   'settings.composio_panel.api_key_help_suffix':
-    'Klíč je v tomto zařízení uložen zašifrovaný a nikdy není odeslán na Aura.',
+    'Klíč je v tomto zařízení uložen zašifrovaný a nikdy není odeslán na Youma.',
   'settings.composio_panel.api_key_placeholder_stored':
     '•••••••••••• (klíč uložen – vložte nový klíč, který chcete nahradit)',
   'settings.composio_panel.api_key_placeholder_empty': 'ck_live_xxxxxxxxxxxxxxxx',
@@ -1488,10 +1488,10 @@ const csCZ: TranslationMap = {
     'V tomto zařízení je aktuálně uložen klíč Composio API.',
   'settings.composio_panel.confirm_title': '⚠️ Přepnutí do přímého režimu',
   'settings.composio_panel.confirm_integrations_prefix':
-    'Vaše stávající integrace (Gmail, Slack, GitHub atd. propojené přes Aura)',
+    'Vaše stávající integrace (Gmail, Slack, GitHub atd. propojené přes Youma)',
   'settings.composio_panel.wont_be_visible': 'nebude vidět',
   'settings.composio_panel.confirm_integrations_suffix':
-    '— bydlí v Aura spravovaném Composio nájemci.',
+    '— bydlí v Youma spravovaném Composio nájemci.',
   'settings.composio_panel.confirm_needs_title': 'Budete potřebovat:',
   'settings.composio_panel.confirm_need_account_prefix': 'Účet na',
   'settings.composio_panel.confirm_need_account_suffix': 's klávesou API',
@@ -1510,7 +1510,7 @@ const csCZ: TranslationMap = {
     'Uložení se nezdařilo. Přímý režim vyžaduje neprázdné tlačítko API.',
   'settings.model_status.ollama_unavailable_title': 'Runtime Ollama není k dispozici',
   'settings.model_status.ollama_unavailable_description':
-    'Aura nyní zachází s Ollamou jako s externím inferenčním runtime. Spusťte svůj vlastní server Ollama, vytáhněte modely, které chcete, a nasměrujte na něj směrování zátěže.',
+    'Youma nyní zachází s Ollamou jako s externím inferenčním runtime. Spusťte svůj vlastní server Ollama, vytáhněte modely, které chcete, a nasměrujte na něj směrování zátěže.',
   'settings.model_status.ollama_docs_link': 'Ollama docs',
   'settings.model_status.runtime_status_title': 'Stav běhu',
   'settings.model_status.refresh': 'Obnovit',
@@ -1529,7 +1529,7 @@ const csCZ: TranslationMap = {
   'settings.model_status.hide_error_details': 'Skrýt podrobnosti o chybě',
   'settings.model_status.show_error_details': 'Zobrazit podrobnosti o chybě',
   'settings.model_status.connect_only_prefix':
-    'Aura se připojuje pouze k již spuštěnému koncovému bodu kompatibilnímu s Ollamou. Vidět',
+    'Youma se připojuje pouze k již spuštěnému koncovému bodu kompatibilnímu s Ollamou. Vidět',
   'settings.model_status.connect_only_suffix':
     'pro pokyny k nastavení a poté to zkuste znovu, až bude vaše běhové prostředí dosažitelné.',
   'settings.model_status.ollama_diagnostics_title': 'Diagnostika Ollama',
@@ -1555,7 +1555,7 @@ const csCZ: TranslationMap = {
   'settings.model_status.vision_model_line': 'Vize: {model}',
   'settings.model_status.issues_heading': 'Problémy',
   'settings.model_status.manage_ollama_footer':
-    'Spravujte proces Ollama a stahování modelu mimo Aura, poté znovu spusťte diagnostiku.',
+    'Spravujte proces Ollama a stahování modelu mimo Youma, poté znovu spusťte diagnostiku.',
   'settings.device_capability.model_tier_title': 'Modelová řada',
   'settings.device_capability.loading_device_info': 'Načítání informací o zařízení a předvoleb…',
   'settings.device_capability.could_not_load_presets': 'Nelze načíst předvolby: {error}',
@@ -1858,7 +1858,7 @@ const csCZ: TranslationMap = {
   'composio.connect_modal.disconnecting': 'Odpojování…',
   'composio.connect_modal.dismiss': 'Propustit',
   'composio.connect_modal.expired_body':
-    'Opětovným připojením znovu povolíte nástroje {name}. Aura ponechá tuto integraci nedostupnou, dokud neobnovíte OAuth přístup.',
+    'Opětovným připojením znovu povolíte nástroje {name}. Youma ponechá tuto integraci nedostupnou, dokud neobnovíte OAuth přístup.',
   'composio.connect_modal.expired_title': '{name} oprávnění vypršelo',
   'composio.connect_modal.generic_error': 'Něco se pokazilo.',
   'composio.connect_modal.header_connect': 'Připojte {name}',
@@ -1874,7 +1874,7 @@ const csCZ: TranslationMap = {
   'composio.connect_modal.needs_subdomain_intro_suffix': ') a zkuste to znovu.',
   'composio.connect_modal.permission_intro_prefix': '{name} může vystavit',
   'composio.connect_modal.permission_intro_suffix':
-    '. Po připojení jsou vlastní oprávnění agenta Aura řízena níže pomocí přepínačů čtení, zápisu a správce.',
+    '. Po připojení jsou vlastní oprávnění agenta Youma řízena níže pomocí přepínačů čtení, zápisu a správce.',
   'composio.connect_modal.permissions_default_hint': 'Ve výchozím nastavení povoleno čtení + zápis',
   'composio.connect_modal.permissions_heading': 'Oprávnění',
   'composio.connect_modal.poll_timeout':
@@ -1923,10 +1923,10 @@ const csCZ: TranslationMap = {
   'settings.ai_panel.local_runtime_disconnect_aria': 'Odpojte {label}',
   'settings.ai_panel.providers_heading': 'LLM Poskytovatelé',
   'settings.ai_panel.providers_subtitle':
-    'Připojte backendy jazykového modelu, které chcete Aura používat. Zapněte poskytovatele a přidejte jeho klíč; vypněte pro odpojení.',
+    'Připojte backendy jazykového modelu, které chcete Youma používat. Zapněte poskytovatele a přidejte jeho klíč; vypněte pro odpojení.',
   'settings.ai_panel.routing_heading': 'Směrování',
   'settings.ai_panel.routing_subtitle':
-    'Vyberte, jak bude každá úloha obsluhována. Výchozí používá Aura; Vlastní umožňuje nasměrovat zátěž na konkrétního poskytovatele a model.',
+    'Vyberte, jak bude každá úloha obsluhována. Výchozí používá Youma; Vlastní umožňuje nasměrovat zátěž na konkrétního poskytovatele a model.',
   'settings.auto_recharge.add_card': '+ Přidat kartu na Stripe',
   'settings.auto_recharge.amount_label': 'Přidejte toto množství',
   'settings.auto_recharge.cancel': 'Zrušit',
@@ -1988,22 +1988,22 @@ const csCZ: TranslationMap = {
   'settings.mascot_panel.color_black': 'Černý',
   'settings.mascot_panel.color_burgundy': 'burgundské',
   'settings.mascot_panel.color_footer_hint':
-    'Vybraná barva se použije všude tam, kde se objeví Aura, a zapamatuje se při restartech.',
+    'Vybraná barva se použije všude tam, kde se objeví Youma, a zapamatuje se při restartech.',
   'settings.mascot_panel.color_green': 'Zelený',
   'settings.mascot_panel.color_heading': 'Barva',
   'settings.mascot_panel.color_navy': 'námořnictvo',
-  'settings.mascot_panel.color_radiogroup_aria': 'Aura barva',
+  'settings.mascot_panel.color_radiogroup_aria': 'Youma barva',
   'settings.mascot_panel.color_yellow': 'Žluť',
-  'settings.mascot_panel.header_title': 'Aura',
-  'settings.mascot_panel.library_unavailable': 'Aura knihovna nedostupná: {error}',
+  'settings.mascot_panel.header_title': 'Youma',
+  'settings.mascot_panel.library_unavailable': 'Youma knihovna nedostupná: {error}',
   'settings.mascot_panel.load_library_error': 'Knihovnu maskotů nelze načíst.',
   'settings.mascot_panel.load_mascot_error': 'Maskot se nepodařilo načíst.',
-  'settings.mascot_panel.loading_library': 'Načítání knihovny Aura…',
-  'settings.mascot_panel.local_aura_default': 'Místní Aura (výchozí)',
+  'settings.mascot_panel.loading_library': 'Načítání knihovny Youma…',
+  'settings.mascot_panel.local_aura_default': 'Místní Youma (výchozí)',
   'settings.mascot_panel.no_characters':
-    'Zatím nejsou k dispozici žádné Aura znaky. Výše uvedené místní barevné varianty jsou stále aktivní.',
+    'Zatím nejsou k dispozici žádné Youma znaky. Výše uvedené místní barevné varianty jsou stále aktivní.',
   'settings.mascot_panel.no_color_variants':
-    'V této sestavě nejsou k dispozici žádné barevné varianty Aura.',
+    'V této sestavě nejsou k dispozici žádné barevné varianty Youma.',
   'settings.mascot_panel.preview_label': 'Náhled · {name}',
   'settings.mascot_panel.version_states': 'v{version} · {states} stavů',
   'settings.mascot_panel.visemes_suffix': '· visemy',
@@ -2048,7 +2048,7 @@ const csCZ: TranslationMap = {
   'local_ai.download_snackbar.installing': 'Instalace...',
   'local_ai.download_snackbar.preparing': 'Příprava...',
   'settings.cron_job_list.heading': 'Core Cron Jobs',
-  'settings.cron_job_list.subheading': 'Úlohy přetrvávaly v databázi jádrového plánovače Aura.',
+  'settings.cron_job_list.subheading': 'Úlohy přetrvávaly v databázi jádrového plánovače Youma.',
   'settings.cron_job_list.loading': 'Načítání úloh cronu...',
   'settings.cron_job_list.empty': 'Nebyly nalezeny žádné základní úlohy cronu.',
   'settings.cron_job_list.status_enabled': 'Povoleno',
@@ -2120,16 +2120,16 @@ const csCZ: TranslationMap = {
   'aura_link_modal.notifications_desktop_only':
     'Nativní oznámení jsou k dispozici pouze v desktopové aplikaci (spusťte `pnpm dev:app`).',
   'aura_link_modal.notifications_permission_off':
-    'Oprávnění k oznámení je vypnuto. Povolte Aura v Nastavení systému → Oznámení a zkuste to znovu.',
-  'aura_link_modal.notification_title': 'Aura je dobré jít',
+    'Oprávnění k oznámení je vypnuto. Povolte Youma v Nastavení systému → Oznámení a zkuste to znovu.',
+  'aura_link_modal.notification_title': 'Youma je dobré jít',
   'aura_link_modal.notification_body':
     'Zde budete dostávat pingy, když něco vyžaduje vaši pozornost.',
   'aura_link_modal.notification_send_failed':
-    'Aura nemohl spustit systémové upozornění. Zkontrolujte nastavení oznámení OS a zkuste to znovu.',
+    'Youma nemohl spustit systémové upozornění. Zkontrolujte nastavení oznámení OS a zkuste to znovu.',
   'aura_link_modal.notifications_intro':
-    'Aura používá nativní oznámení, takže vás může pingnout, když něco vyžaduje vaši pozornost, i když je okno chatu skryté.',
+    'Youma používá nativní oznámení, takže vás může pingnout, když něco vyžaduje vaši pozornost, i když je okno chatu skryté.',
   'aura_link_modal.notifications_blocked_line1': 'Oznámení jsou aktuálně blokována.',
-  'aura_link_modal.notifications_blocked_line2': '1. Otevřete Nastavení systému → Oznámení → Aura',
+  'aura_link_modal.notifications_blocked_line2': '1. Otevřete Nastavení systému → Oznámení → Youma',
   'aura_link_modal.notifications_blocked_line3': '2. Zapněte možnost Povolit upozornění',
   'aura_link_modal.notifications_blocked_line4':
     '3. Vraťte se sem a klepněte na Opakovat oznámení o testu',
@@ -2139,7 +2139,7 @@ const csCZ: TranslationMap = {
   'aura_link_modal.retry_test_notification': 'Opakovat oznámení o testu',
   'aura_link_modal.send_test_notification': 'Odeslat testovací oznámení',
   'aura_link_modal.notification_sent_success':
-    'Oznámení o testu odesláno. Pokud jste jej neobdrželi, přejděte do Nastavení systému → Oznámení → Aura, zapněte možnost Povolit upozornění a nastavte Styl banneru na Trvalé.',
+    'Oznámení o testu odesláno. Pokud jste jej neobdrželi, přejděte do Nastavení systému → Oznámení → Youma, zapněte možnost Povolit upozornění a nastavte Styl banneru na Trvalé.',
   'aura_link_modal.notification_send_error': 'Nelze odeslat: {error}',
   'aura_link_modal.trial_credit_label': 'Zkušební kredit',
   'aura_link_modal.trial_credit_amount': '1,00 $',
@@ -2148,7 +2148,7 @@ const csCZ: TranslationMap = {
   'aura_link_modal.open_dashboard': 'Otevřete řídicí panel v prohlížeči',
   'aura_link_modal.stay_on_trial': 'Zůstaňte u soudu',
   'aura_link_modal.discord_intro':
-    'Naskočte do našeho Discord a propojte svůj účet Aura. Získáte exkluzivní včasný přístup k funkcím, bezplatné kredity na hraní, skvělou komunitu, se kterou se můžete pobavit, a ano, zboží zdarma.',
+    'Naskočte do našeho Discord a propojte svůj účet Youma. Získáte exkluzivní včasný přístup k funkcím, bezplatné kredity na hraní, skvělou komunitu, se kterou se můžete pobavit, a ano, zboží zdarma.',
   'aura_link_modal.discord_perk_feature_access': 'Exkluzivní přístup k funkcím',
   'aura_link_modal.discord_perk_free_credits': 'Bezplatné kredity pro aktivní členy',
   'aura_link_modal.discord_perk_community': 'Společenství stavebníků a provozovatelů',
@@ -2186,7 +2186,7 @@ const csCZ: TranslationMap = {
   'channels.discord_config.copy': 'Kopie',
   'channels.discord_config.link_instructions_prefix': 'V Discord odešlete',
   'channels.discord_config.link_instructions_suffix':
-    'na robota Aura. Platnost tokenu vyprší za 5 minut.',
+    'na robota Youma. Platnost tokenu vyprší za 5 minut.',
   'channels.discord_config.link_token_warning':
     'Uložit tento příkaz — tento token se zobrazí pouze jednou.',
   'channels.discord_config.account_linked': 'Váš účet Discord je propojen.',
@@ -2226,9 +2226,9 @@ const csCZ: TranslationMap = {
   'settings.memory_window_control.save_failed': 'Okno uložení paměti se nezdařilo',
   'settings.memory_window_control.heading': 'Okno dlouhodobé paměti',
   'settings.memory_window_control.description':
-    'Kolik zapamatovaného kontextu Aura vloží do každého nového běhu agenta. Větší okna si lépe uvědomují minulé konverzace, ale při každém spuštění používají více tokenů – a jsou dražší.',
+    'Kolik zapamatovaného kontextu Youma vloží do každého nového běhu agenta. Větší okna si lépe uvědomují minulé konverzace, ale při každém spuštění používají více tokenů – a jsou dražší.',
   'home.banners.promo_credits': 'Máte {amount} propagačních kreditů.',
-  'home.banners.promo_credits_prefix': 'Zatočte Aura, a až budete připraveni na další,',
+  'home.banners.promo_credits_prefix': 'Zatočte Youma, a až budete připraveni na další,',
   'home.banners.get_subscription': 'získat předplatné',
   'home.banners.promo_credits_suffix': 'a získáte 10x větší využití.',
   'home.banners.dismiss_early_bird': 'Zavřít banner raného ptactva',
@@ -2238,7 +2238,7 @@ const csCZ: TranslationMap = {
   'home.banners.first_subscription': 'první předplatné.',
   'home.banners.join_discord': 'Připojte se k našemu Discord',
   'home.banners.discord_description':
-    'Získejte aktualizace, bezplatné zboží, kredity, nahlašte chyby a buďte součástí komunity Aura.',
+    'Získejte aktualizace, bezplatné zboží, kredity, nahlašte chyby a buďte součástí komunity Youma.',
   'intelligence.memory_chunk_detail.copy_chunk_id': 'Zkopírovat ID bloku',
   'intelligence.memory_chunk_detail.chunk_label': 'kus {id}',
   'intelligence.memory_chunk_detail.copied': 'zkopírován',
@@ -2263,7 +2263,7 @@ const csCZ: TranslationMap = {
     'Něco se pokazilo. Zkuste to prosím znovu.\nTato chyba byla nahlášena. Můžete to také nahlásit dne Discord.\n<aura-link path="community/discord">Nahlásit Discord</aura-link>',
   'daemon.service_blocking_gate.retry_failed':
     'Opakování se nezdařilo. Stáhněte si nejnovější sestavení aplikace a zkuste to znovu.',
-  'daemon.service_blocking_gate.title': 'Aura jádro není k dispozici',
+  'daemon.service_blocking_gate.title': 'Youma jádro není k dispozici',
   'daemon.service_blocking_gate.description':
     'Po několika pokusech se nepodařilo obnovit místní základní službu. K tomu může dojít po kritickém selhání nebo binární neshodě.',
   'daemon.service_blocking_gate.download_hint':
@@ -2420,17 +2420,17 @@ const csCZ: TranslationMap = {
   'chat.unsubscribe_approval_card.success_message': '✓ Úspěšně odhlášeno.',
   'chat.unsubscribe_approval_card.denied_message': '✕ Žádost byla zamítnuta.',
   'oauth.provider_button.twitter_startup_failure':
-    'Přihlášení k Twitteru/X se nepodařilo spustit. Zkontrolujte, zda zpětné volání aplikace Twitter OAuth URL, ID klienta/tajné informace a požadované rozsahy odpovídají backendu Aura, a zkuste to znovu.',
+    'Přihlášení k Twitteru/X se nepodařilo spustit. Zkontrolujte, zda zpětné volání aplikace Twitter OAuth URL, ID klienta/tajné informace a požadované rozsahy odpovídají backendu Youma, a zkuste to znovu.',
   'oauth.provider_button.generic_startup_failure':
     '{providerName} přihlášení se nepodařilo spustit. Zkuste to prosím znovu.',
   'oauth.provider_button.connecting': 'Spojovací...',
   'skills.search_bar.placeholder': 'Vyhledávací dovednosti...',
-  'common.persist_rehydration_screen.title': 'Aura načítání trvá déle než obvykle.',
+  'common.persist_rehydration_screen.title': 'Youma načítání trvá déle než obvykle.',
   'common.persist_rehydration_screen.description':
     'Stav místní aplikace může být poškozen. Resetováním se odhlásíte a vymažete data v mezipaměti tohoto zařízení; při příštím spuštění své účty znovu připojíte. Vaše data na serveru nejsou ovlivněna.',
   'common.persist_rehydration_screen.resetting': 'Resetování…',
   'common.persist_rehydration_screen.reset_button': 'Obnovit místní stav',
-  'common.route_loading_screen.initializing': 'Inicializace Aura...',
+  'common.route_loading_screen.initializing': 'Inicializace Youma...',
   'privacy.what_leaves_link.label': 'Co opouští můj počítač?',
   'settings.provider_key_dialog.api_key_required': 'Pokračujte vložením klíče API.',
   'settings.provider_key_dialog.connect_title': 'Připojte {label}',
@@ -2440,7 +2440,7 @@ const csCZ: TranslationMap = {
   'settings.provider_key_dialog.cancel_button': 'Zrušit',
   'settings.provider_key_dialog.saving': 'Ukládání…',
   'settings.provider_key_dialog.save_button': 'Uložit',
-  'settings.workload_row.aura_default': 'Aura (výchozí)',
+  'settings.workload_row.aura_default': 'Youma (výchozí)',
   'settings.workload_row.default_button': 'Výchozí',
   'settings.workload_row.custom_button': 'Zvyk',
 };

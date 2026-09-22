@@ -131,7 +131,7 @@ const bgBG: TranslationMap = {
   'clearData.failedLogout': 'Неуспешно излизане. Моля, опитайте отново.',
   'clearData.failedPersist':
     'Неуспешно изчистване на постоянното състояние на приложението. Моля, опитайте отново.',
-  'welcome.title': 'Добре дошли в Aura',
+  'welcome.title': 'Добре дошли в Youma',
   'welcome.subtitle': 'Вашият личен AI супер интелект. Личен, прост и изключително мощен.',
   'welcome.connectPrompt': 'Конфигуриране на RPC URL (Разширено)',
   'welcome.selectRuntime': 'Изберете среда за изпълнение',
@@ -148,7 +148,7 @@ const bgBG: TranslationMap = {
   'home.statusBackendOnly':
     'Повторно свързване към бекенда... Вашият агент скоро ще бъде отново достъпен.',
   'home.statusCoreUnreachable':
-    'Местната основна кошница не отговаря. Фоновият процес Aura може да се е сбил или да не е стартирал.',
+    'Местната основна кошница не отговаря. Фоновият процес Youma може да се е сбил или да не е стартирал.',
   'home.statusInternetOffline':
     'Устройството ви е офлайн в момента. Проверете мрежата си или рестартирайте приложението, за да се свържете отново.',
   'home.restartCore': 'Рестартирайте Core',
@@ -198,7 +198,7 @@ const bgBG: TranslationMap = {
   'rewards.referralCode': 'Вашият реферален код',
   'rewards.copyCode': 'Копирайте кода',
   'rewards.share': 'Споделете',
-  'onboarding.welcome': 'здрасти Аз съм Aura.',
+  'onboarding.welcome': 'здрасти Аз съм Youma.',
   'onboarding.welcomeDesc':
     'Вашият супер интелигентен AI асистент, който работи на вашия компютър. Личен, прост и изключително мощен.',
   'onboarding.context': 'Събиране на контекст',
@@ -210,14 +210,14 @@ const bgBG: TranslationMap = {
   'onboarding.referral': 'Препоръка',
   'onboarding.referralDesc': 'Приложете реферален код, ако имате такъв.',
   'onboarding.finish': 'Завършете настройката',
-  'onboarding.finishDesc': 'Всичко е готово! Започнете да използвате Aura.',
+  'onboarding.finishDesc': 'Всичко е готово! Започнете да използвате Youma.',
   'onboarding.skip': 'Пропускане',
   'onboarding.getStarted': 'Започнете',
-  'onboarding.runtimeChoice.title': 'Как бихте искали да изпълните Aura?',
+  'onboarding.runtimeChoice.title': 'Как бихте искали да изпълните Youma?',
   'onboarding.runtimeChoice.subtitle':
     'Изберете настройката, която ви подхожда най-добре. Можете да промените това по-късно в Настройки.',
   'onboarding.runtimeChoice.cloud.title': 'просто',
-  'onboarding.runtimeChoice.cloud.tagline': 'Оставете Aura да управлява всичко вместо вас.',
+  'onboarding.runtimeChoice.cloud.tagline': 'Оставете Youma да управлява всичко вместо вас.',
   'onboarding.runtimeChoice.cloud.f1': 'Вградена сигурност',
   'onboarding.runtimeChoice.cloud.f2':
     'Компресиране на токени за допълнително разширяване на използването ви',
@@ -255,7 +255,7 @@ const bgBG: TranslationMap = {
   'onboarding.custom.stepperMemory': 'памет',
   'onboarding.custom.stepCounter': 'Стъпка {n} от {total}',
   'onboarding.custom.defaultTitle': 'По подразбиране',
-  'onboarding.custom.defaultSubtitle': 'Оставете Aura да го управлява вместо вас.',
+  'onboarding.custom.defaultSubtitle': 'Оставете Youma да го управлява вместо вас.',
   'onboarding.custom.configureTitle': 'Конфигуриране',
   'onboarding.custom.configureSubtitle': 'Аз ще избера какво да използвам.',
   'onboarding.custom.progressAriaLabel': 'Напредък на борда',
@@ -269,33 +269,33 @@ const bgBG: TranslationMap = {
   'onboarding.custom.inference.subtitle':
     'Кой езиков модел трябва да отговори на вашите въпроси и да управлява вашите агенти?',
   'onboarding.custom.inference.defaultDesc':
-    'Aura насочва всяко работно натоварване към разумен модел по подразбиране. Без ключове, без настройка.',
+    'Youma насочва всяко работно натоварване към разумен модел по подразбиране. Без ключове, без настройка.',
   'onboarding.custom.inference.configureDesc':
     'Носете свой собствен ключ OpenAI или Anthropic. Използваме го за всяко текстово натоварване.',
   'onboarding.custom.voice.title': 'глас',
   'onboarding.custom.voice.subtitle': 'Реч към текст и текст към говор за гласов режим.',
   'onboarding.custom.voice.defaultDesc':
-    'Aura се доставя с управляван STT/TTS, който просто работи. Нищо за свързване.',
+    'Youma се доставя с управляван STT/TTS, който просто работи. Нищо за свързване.',
   'onboarding.custom.voice.configureDesc':
     'Използвайте вашите собствени ElevenLabs / OpenAI Whisper / и т.н. Конфигурирайте в Настройки › Глас.',
   'onboarding.custom.oauth.title': 'Връзки (OAuth)',
   'onboarding.custom.oauth.subtitle':
     'Gmail, Slack, Notion и други свързани услуги, които се нуждаят от OAuth.',
   'onboarding.custom.oauth.defaultDesc':
-    'Aura управлява управлявано Composio работно пространство. Едно кликване за свързване на всяка услуга по-късно.',
+    'Youma управлява управлявано Composio работно пространство. Едно кликване за свързване на всяка услуга по-късно.',
   'onboarding.custom.oauth.configureDesc':
     'Донесете свой собствен акаунт Composio / ключ API. Конфигурирайте в Настройки › Връзки.',
   'onboarding.custom.search.title': 'Търсене в мрежата',
-  'onboarding.custom.search.subtitle': 'Как Aura търси в мрежата от ваше име.',
+  'onboarding.custom.search.subtitle': 'Как Youma търси в мрежата от ваше име.',
   'onboarding.custom.search.defaultDesc':
-    'Aura използва бекенд за управлявано търсене. Не са необходими ключове.',
+    'Youma използва бекенд за управлявано търсене. Не са необходими ключове.',
   'onboarding.custom.search.configureDesc':
     'Носете свой собствен ключ за доставчик на търсене (Tavily, Brave и т.н.). Конфигурирайте в Настройки › Инструменти.',
   'onboarding.custom.memory.title': 'памет',
   'onboarding.custom.memory.subtitle':
-    'Как Aura помни вашия контекст, предпочитания и предишни разговори.',
+    'Как Youma помни вашия контекст, предпочитания и предишни разговори.',
   'onboarding.custom.memory.defaultDesc':
-    'Aura управлява автоматично съхранение и извличане на паметта. Няма нищо за настройка.',
+    'Youma управлява автоматично съхранение и извличане на паметта. Няма нищо за настройка.',
   'onboarding.custom.memory.configureDesc':
     'Проверете, експортирайте или изтрийте сами паметта. Конфигурирайте в Настройки › Памет.',
   'accounts.addAccount': 'Добавяне на акаунт',
@@ -357,7 +357,7 @@ const bgBG: TranslationMap = {
   'misc.downloading': 'Изтегля се...',
   'misc.installing': 'Инсталира се...',
   'misc.beta':
-    'Aura е в ранна бета версия. Чувствайте се свободни да споделяте отзиви или да съобщавате за грешки, които срещате – всеки доклад ни помага да доставяме по-бързо.',
+    'Youma е в ранна бета версия. Чувствайте се свободни да споделяте отзиви или да съобщавате за грешки, които срещате – всеки доклад ни помага да доставяме по-бързо.',
   'misc.betaFeedback': 'Изпратете обратна връзка',
   'mnemonic.title': 'Фраза за възстановяване',
   'mnemonic.warning': 'Запишете тези думи в ред и ги съхранявайте на сигурно място.',
@@ -380,11 +380,11 @@ const bgBG: TranslationMap = {
   'privacy.anonymizedAnalytics': 'Анонимизирани анализи',
   'privacy.shareAnonymizedData': 'Споделяйте анонимизирани данни за употреба',
   'privacy.shareAnonymizedDataDesc':
-    'Помогнете за подобряването на Aura, като споделяте анонимни доклади за сривове и анализи на използването. Всички данни са напълно анонимизирани — никога не се събират лични данни, съобщения, ключове за портфейли или информация за сесии.',
+    'Помогнете за подобряването на Youma, като споделяте анонимни доклади за сривове и анализи на използването. Всички данни са напълно анонимизирани — никога не се събират лични данни, съобщения, ключове за портфейли или информация за сесии.',
   'privacy.meetingFollowUps': 'Проследяване на срещите',
   'privacy.autoHandoffMeet': 'Автоматично предаване на Google Meet преписи към оркестратора',
   'privacy.autoHandoffMeetDesc':
-    'Когато разговорът на Google Meet приключи, оркестраторът на Aura може да прочете преписа и може да предприеме действия като изготвяне на съобщения, планиране на последващи действия или публикуване на резюмета във вашето свързано Slack работно пространство. Изключено по подразбиране.',
+    'Когато разговорът на Google Meet приключи, оркестраторът на Youma може да прочете преписа и може да предприеме действия като изготвяне на съобщения, планиране на последващи действия или публикуване на резюмета във вашето свързано Slack работно пространство. Изключено по подразбиране.',
   'privacy.analyticsDisclaimer':
     'Всички анализи и доклади за грешки са напълно анонимни. Когато е активирано, събираме само информация за сривове, тип устройство и местоположението на файла с грешките. Ние никога нямаме достъп до вашите съобщения, данни от сесии, ключове за портфейл, ключове API или каквато и да е лична информация. Можете да промените тази настройка по всяко време.',
   'settings.about.version': 'Версия',
@@ -444,7 +444,7 @@ const bgBG: TranslationMap = {
   'settings.billing.browserOpenFailed':
     'Браузърът не можа да се отвори автоматично. Използвайте бутона по-горе.',
   'settings.tools.chooseCapabilities':
-    'Изберете кои възможности Aura може да използва от ваше име.',
+    'Изберете кои възможности Youma може да използва от ваше име.',
   'settings.tools.saveChanges': 'Запазване на промените',
   'settings.tools.preferencesSaved': 'Предпочитанията са запазени',
   'settings.tools.saveFailed': 'Неуспешно запазване на предпочитанията. Опитайте отново.',
@@ -914,9 +914,9 @@ const bgBG: TranslationMap = {
   'bootCheck.chooseCoreMode': 'Изберете среда за изпълнение',
   'bootCheck.connectToCore': 'Свържете се с вашето време за изпълнение',
   'bootCheck.desktopDescription':
-    'Aura се нуждае от време за изпълнение, за да мисли. Изберете къде да живее.',
+    'Youma се нуждае от време за изпълнение, за да мисли. Изберете къде да живее.',
   'bootCheck.webDescription':
-    'В мрежата Aura се свързва с време за изпълнение, което контролирате. Пуснете неговия URL и токена за удостоверяване по-долу или вземете настолното приложение, за да го стартирате направо на вашата машина.',
+    'В мрежата Youma се свързва с време за изпълнение, което контролирате. Пуснете неговия URL и токена за удостоверяване по-долу или вземете настолното приложение, за да го стартирате направо на вашата машина.',
   'bootCheck.preferDesktop': 'Предпочитате да запазите всичко на собственото си устройство?',
   'bootCheck.downloadDesktop': 'Вземете настолното приложение',
   'bootCheck.localRecommended': 'Изпълнявай локално (препоръчително)',
@@ -944,7 +944,7 @@ const bgBG: TranslationMap = {
   'bootCheck.quit': 'Откажете се',
   'bootCheck.legacyDetected': 'Открита е наследена фонова среда за изпълнение',
   'bootCheck.legacyDescription':
-    'Отделно инсталиран демон Aura вече работи на това устройство. Трябва да го изчистим, преди вграденото време за изпълнение да може да поеме.',
+    'Отделно инсталиран демон Youma вече работи на това устройство. Трябва да го изчистим, преди вграденото време за изпълнение да може да поеме.',
   'bootCheck.removing': 'Премахване...',
   'bootCheck.removeContinue': 'Премахни и продължи',
   'bootCheck.localNeedsRestart': 'Локалното време за изпълнение се нуждае от рестартиране',
@@ -1082,9 +1082,9 @@ const bgBG: TranslationMap = {
   'rewards.referrals.load_stats_error': 'Неуспешно зареждане на статистически данни за реферали',
   'rewards.referrals.copied': 'Копирано',
   'rewards.referrals.copy_failed': 'Неуспешно копиране',
-  'rewards.referrals.share_intro': 'Присъединете се към мен на Aura.',
+  'rewards.referrals.share_intro': 'Присъединете се към мен на Youma.',
   'rewards.referrals.share_code_line': 'Код за препоръка: {code}',
-  'rewards.referrals.share_download_line': 'Изтегляне Aura: {url}',
+  'rewards.referrals.share_download_line': 'Изтегляне Youma: {url}',
   'rewards.referrals.apply_error': 'Не може да се приложи реферален код',
   'rewards.referrals.heading': 'Поканете приятели, спечелете кредити',
   'rewards.referrals.description':
@@ -1319,22 +1319,22 @@ const bgBG: TranslationMap = {
   'skills.meeting_bots_card.platform_gmeet': 'Google Meet',
   'skills.meeting_bots_card.platform_zoom': 'Zoom',
   'skills.meeting_bots_card.platform_teams': 'Microsoft Teams',
-  'skills.meeting_bots_card.banner_title': 'Изпратете Aura на среща',
+  'skills.meeting_bots_card.banner_title': 'Изпратете Youma на среща',
   'skills.meeting_bots_card.new_badge': 'Нов',
   'skills.meeting_bots_card.banner_description':
-    'Пуснете връзка Google Meet и Aura се присъединява като гост, говори, слуша и маха в отговор.',
+    'Пуснете връзка Google Meet и Youma се присъединява като гост, говори, слуша и маха в отговор.',
   'skills.meeting_bots_card.coming_soon_error': '{platform} поддръжка идва скоро.',
-  'skills.meeting_bots_card.toast_joining_title': 'Aura се присъединява към срещата',
+  'skills.meeting_bots_card.toast_joining_title': 'Youma се присъединява към срещата',
   'skills.meeting_bots_card.toast_joining_message':
     'Трябва да се появи като участник след няколко секунди.',
-  'skills.meeting_bots_card.toast_busy_title': 'Aura е заето',
-  'skills.meeting_bots_card.toast_failed_title': 'Не може да стартира Aura',
-  'skills.meeting_bots_card.default_error_message': 'Неуспешно стартиране на Aura.',
-  'skills.meeting_bots_card.modal_aria_label': 'Изпратете Aura на среща',
+  'skills.meeting_bots_card.toast_busy_title': 'Youma е заето',
+  'skills.meeting_bots_card.toast_failed_title': 'Не може да стартира Youma',
+  'skills.meeting_bots_card.default_error_message': 'Неуспешно стартиране на Youma.',
+  'skills.meeting_bots_card.modal_aria_label': 'Изпратете Youma на среща',
   'skills.meeting_bots_card.close_aria': 'затвори',
-  'skills.meeting_bots_card.modal_title': 'Изпратете Aura на среща',
+  'skills.meeting_bots_card.modal_title': 'Изпратете Youma на среща',
   'skills.meeting_bots_card.modal_description':
-    'Aura се присъединява като анонимен гост, предава поточно видеото си в разговора и отговаря чрез агента.',
+    'Youma се присъединява като анонимен гост, предава поточно видеото си в разговора и отговаря чрез агента.',
   'skills.meeting_bots_card.soon_suffix': '· скоро',
   'skills.meeting_bots_card.meeting_link_label': 'Линк към срещата',
   'skills.meeting_bots_card.display_name_label': 'Екранно име',
@@ -1480,14 +1480,14 @@ const bgBG: TranslationMap = {
   'settings.composio_panel.title': 'Composio',
   'settings.composio_panel.loading': 'Зарежда се...',
   'settings.composio_panel.intro_prefix':
-    'Composio осигурява интеграции с Gmail, Notion, Slack, GitHub и 1000+ други приложения. По подразбиране Aura го управлява вместо вас, така че не е необходимо да носите ключ API. Ако предпочитате да използвате директно собствения си Composio акаунт, преминете към',
+    'Composio осигурява интеграции с Gmail, Notion, Slack, GitHub и 1000+ други приложения. По подразбиране Youma го управлява вместо вас, така че не е необходимо да носите ключ API. Ако предпочитате да използвате директно собствения си Composio акаунт, преминете към',
   'settings.composio_panel.direct_word': 'Директен',
   'settings.composio_panel.intro_suffix': 'режим и поставете ключа си по-долу.',
   'settings.composio_panel.routing_mode_legend': 'Режим на маршрутизиране',
-  'settings.composio_panel.managed_aria_label': 'Управляван (Aura се справя вместо вас)',
-  'settings.composio_panel.managed_title': 'Управляван (Aura се справя вместо вас)',
+  'settings.composio_panel.managed_aria_label': 'Управляван (Youma се справя вместо вас)',
+  'settings.composio_panel.managed_title': 'Управляван (Youma се справя вместо вас)',
   'settings.composio_panel.managed_description':
-    'По подразбиране. Aura управлява връзката Composio вместо вас. Задействането на уеб кукички (Gmail в реално време / Slack събития) работи веднага.',
+    'По подразбиране. Youma управлява връзката Composio вместо вас. Задействането на уеб кукички (Gmail в реално време / Slack събития) работи веднага.',
   'settings.composio_panel.direct_aria_label': 'Директно (носете свой собствен ключ API)',
   'settings.composio_panel.direct_title': 'Директно (носете свой собствен ключ API)',
   'settings.composio_panel.direct_description_prefix': 'Обажданията отиват до',
@@ -1498,7 +1498,7 @@ const bgBG: TranslationMap = {
   'settings.composio_panel.api_key_label': 'Клавиш Composio API',
   'settings.composio_panel.api_key_help_prefix': 'Намерете ключа си на',
   'settings.composio_panel.api_key_help_suffix':
-    'Ключът се съхранява криптиран на това устройство и никога не се изпраща на Aura.',
+    'Ключът се съхранява криптиран на това устройство и никога не се изпраща на Youma.',
   'settings.composio_panel.api_key_placeholder_stored':
     '•••••••••••• (ключът е съхранен — поставете нов ключ за замяна)',
   'settings.composio_panel.api_key_placeholder_empty': 'ck_live_xxxxxxxxxxxxxxxxxx',
@@ -1506,10 +1506,10 @@ const bgBG: TranslationMap = {
     'В момента на това устройство се съхранява ключ Composio API.',
   'settings.composio_panel.confirm_title': '⚠️ Превключване към директен режим',
   'settings.composio_panel.confirm_integrations_prefix':
-    'Вашите съществуващи интеграции (Gmail, Slack, GitHub и др., свързани чрез Aura)',
+    'Вашите съществуващи интеграции (Gmail, Slack, GitHub и др., свързани чрез Youma)',
   'settings.composio_panel.wont_be_visible': 'няма да се вижда',
   'settings.composio_panel.confirm_integrations_suffix':
-    '— живеят в Aura-управляван Composio наемател.',
+    '— живеят в Youma-управляван Composio наемател.',
   'settings.composio_panel.confirm_needs_title': 'Ще ви трябва:',
   'settings.composio_panel.confirm_need_account_prefix': 'Акаунт при',
   'settings.composio_panel.confirm_need_account_suffix': 'с клавиш API',
@@ -1528,7 +1528,7 @@ const bgBG: TranslationMap = {
     'Неуспешно запазване. Директният режим изисква непразен клавиш API.',
   'settings.model_status.ollama_unavailable_title': 'Времето за изпълнение на Ollama не е налично',
   'settings.model_status.ollama_unavailable_description':
-    'Aura сега третира Ollama като външна среда за изпълнение на изводи. Стартирайте свой собствен Ollama сървър, изтеглете моделите, които искате, и насочете маршрутизиране на работното натоварване към него.',
+    'Youma сега третира Ollama като външна среда за изпълнение на изводи. Стартирайте свой собствен Ollama сървър, изтеглете моделите, които искате, и насочете маршрутизиране на работното натоварване към него.',
   'settings.model_status.ollama_docs_link': 'Олама документи',
   'settings.model_status.runtime_status_title': 'Състояние на изпълнение',
   'settings.model_status.refresh': 'Опресняване',
@@ -1548,7 +1548,7 @@ const bgBG: TranslationMap = {
   'settings.model_status.hide_error_details': 'Скриване на подробностите за грешката',
   'settings.model_status.show_error_details': 'Показване на подробности за грешката',
   'settings.model_status.connect_only_prefix':
-    'Aura се свързва само към вече работеща крайна точка, съвместима с Ollama. Вижте',
+    'Youma се свързва само към вече работеща крайна точка, съвместима с Ollama. Вижте',
   'settings.model_status.connect_only_suffix':
     'за инструкции за настройка, след това опитайте отново, след като вашето време за изпълнение стане достъпно.',
   'settings.model_status.ollama_diagnostics_title': 'Олама Диагностика',
@@ -1574,7 +1574,7 @@ const bgBG: TranslationMap = {
   'settings.model_status.vision_model_line': 'Визия: {model}',
   'settings.model_status.issues_heading': 'Проблеми',
   'settings.model_status.manage_ollama_footer':
-    'Управлявайте процеса Ollama и изтеглянето на модела извън Aura, след което изпълнете отново диагностиката.',
+    'Управлявайте процеса Ollama и изтеглянето на модела извън Youma, след което изпълнете отново диагностиката.',
   'settings.device_capability.model_tier_title': 'Ниво на модела',
   'settings.device_capability.loading_device_info':
     'Информацията за устройството и предварително зададените настройки се зареждат...',
@@ -1887,7 +1887,7 @@ const bgBG: TranslationMap = {
   'composio.connect_modal.disconnecting': 'Прекъсване на връзката...',
   'composio.connect_modal.dismiss': 'Отхвърляне',
   'composio.connect_modal.expired_body':
-    'Свържете се отново, за да активирате отново {name} инструменти. Aura ще запази тази интеграция недостъпна, докато не обновите OAuth достъп.',
+    'Свържете се отново, за да активирате отново {name} инструменти. Youma ще запази тази интеграция недостъпна, докато не обновите OAuth достъп.',
   'composio.connect_modal.expired_title': '{name} разрешението е изтекло',
   'composio.connect_modal.generic_error': 'Нещо се обърка.',
   'composio.connect_modal.header_connect': 'Свържете {name}',
@@ -1903,7 +1903,7 @@ const bgBG: TranslationMap = {
   'composio.connect_modal.needs_subdomain_intro_suffix': ') и опитайте отново.',
   'composio.connect_modal.permission_intro_prefix': '{name} може да изложи',
   'composio.connect_modal.permission_intro_suffix':
-    '. След като се свържете, разрешенията на собствения агент на Aura се контролират по-долу като превключватели за четене, писане и администратор.',
+    '. След като се свържете, разрешенията на собствения агент на Youma се контролират по-долу като превключватели за четене, писане и администратор.',
   'composio.connect_modal.permissions_default_hint': 'Четене + Писане е активирано по подразбиране',
   'composio.connect_modal.permissions_heading': 'Разрешения',
   'composio.connect_modal.poll_timeout':
@@ -1954,10 +1954,10 @@ const bgBG: TranslationMap = {
   'settings.ai_panel.local_runtime_disconnect_aria': 'Прекъснете връзката {label}',
   'settings.ai_panel.providers_heading': 'LLM Доставчици',
   'settings.ai_panel.providers_subtitle':
-    'Свържете бекенда на езиковия модел, който искате Aura да използва. Включете доставчик, за да добавите неговия ключ; изключете, за да прекъснете връзката.',
+    'Свържете бекенда на езиковия модел, който искате Youma да използва. Включете доставчик, за да добавите неговия ключ; изключете, за да прекъснете връзката.',
   'settings.ai_panel.routing_heading': 'Маршрутизиране',
   'settings.ai_panel.routing_subtitle':
-    'Изберете как се обслужва всяко работно натоварване. По подразбиране се използва Aura; Custom ви позволява да насочите работно натоварване към конкретен доставчик и модел.',
+    'Изберете как се обслужва всяко работно натоварване. По подразбиране се използва Youma; Custom ви позволява да насочите работно натоварване към конкретен доставчик и модел.',
   'settings.auto_recharge.add_card': '+ Добавете карта на Stripe',
   'settings.auto_recharge.amount_label': 'Добавете тази сума',
   'settings.auto_recharge.cancel': 'Отказ',
@@ -2020,22 +2020,22 @@ const bgBG: TranslationMap = {
   'settings.mascot_panel.color_black': 'черен',
   'settings.mascot_panel.color_burgundy': 'Бордо',
   'settings.mascot_panel.color_footer_hint':
-    'Избраният цвят се прилага навсякъде, където се появи Aura и се запомня при рестартиране.',
+    'Избраният цвят се прилага навсякъде, където се появи Youma и се запомня при рестартиране.',
   'settings.mascot_panel.color_green': 'зелено',
   'settings.mascot_panel.color_heading': 'Цвят',
   'settings.mascot_panel.color_navy': 'ВМС',
-  'settings.mascot_panel.color_radiogroup_aria': 'Aura цвят',
+  'settings.mascot_panel.color_radiogroup_aria': 'Youma цвят',
   'settings.mascot_panel.color_yellow': 'Жълто',
-  'settings.mascot_panel.header_title': 'Aura',
-  'settings.mascot_panel.library_unavailable': 'Aura библиотеката е недостъпна: {error}',
+  'settings.mascot_panel.header_title': 'Youma',
+  'settings.mascot_panel.library_unavailable': 'Youma библиотеката е недостъпна: {error}',
   'settings.mascot_panel.load_library_error': 'Библиотеката с талисмани не можа да се зареди.',
   'settings.mascot_panel.load_mascot_error': 'Талисманът не можа да се зареди.',
-  'settings.mascot_panel.loading_library': 'Зарежда се Aura библиотека…',
-  'settings.mascot_panel.local_aura_default': 'Локален Aura (по подразбиране)',
+  'settings.mascot_panel.loading_library': 'Зарежда се Youma библиотека…',
+  'settings.mascot_panel.local_aura_default': 'Локален Youma (по подразбиране)',
   'settings.mascot_panel.no_characters':
-    'Все още няма налични знаци Aura. Местните цветови варианти по-горе все още са активни.',
+    'Все още няма налични знаци Youma. Местните цветови варианти по-горе все още са активни.',
   'settings.mascot_panel.no_color_variants':
-    'В тази компилация не са налични Aura цветови варианти.',
+    'В тази компилация не са налични Youma цветови варианти.',
   'settings.mascot_panel.preview_label': 'Преглед · {name}',
   'settings.mascot_panel.version_states': 'v{version} · {states} състояния',
   'settings.mascot_panel.visemes_suffix': '· виземи',
@@ -2080,7 +2080,7 @@ const bgBG: TranslationMap = {
   'local_ai.download_snackbar.preparing': 'Подготвя се...',
   'settings.cron_job_list.heading': 'Основни Cron задачи',
   'settings.cron_job_list.subheading':
-    'Задачите се запазват в базата данни на Aura основния планировчик.',
+    'Задачите се запазват в базата данни на Youma основния планировчик.',
   'settings.cron_job_list.loading': 'Зареждат се cron задачи...',
   'settings.cron_job_list.empty': 'Няма намерени основни cron задачи.',
   'settings.cron_job_list.status_enabled': 'Активирано',
@@ -2152,16 +2152,16 @@ const bgBG: TranslationMap = {
   'aura_link_modal.notifications_desktop_only':
     'Собствените известия са налични само в настолното приложение (изпълнете `pnpm dev:app`).',
   'aura_link_modal.notifications_permission_off':
-    'Разрешението за уведомяване е изключено. Активирайте Aura в Системни настройки → Известия, след което опитайте отново.',
-  'aura_link_modal.notification_title': 'Aura е готово',
+    'Разрешението за уведомяване е изключено. Активирайте Youma в Системни настройки → Известия, след което опитайте отново.',
+  'aura_link_modal.notification_title': 'Youma е готово',
   'aura_link_modal.notification_body':
     'Тук ще получавате ping, когато нещо се нуждае от вашето внимание.',
   'aura_link_modal.notification_send_failed':
-    'Aura не може да задейства системно известие. Проверете настройките за уведомяване на операционната система и опитайте отново.',
+    'Youma не може да задейства системно известие. Проверете настройките за уведомяване на операционната система и опитайте отново.',
   'aura_link_modal.notifications_intro':
-    'Aura използва собствени известия, за да може да ви пингва, когато нещо се нуждае от вашето внимание, дори когато прозорецът за чат е скрит.',
+    'Youma използва собствени известия, за да може да ви пингва, когато нещо се нуждае от вашето внимание, дори когато прозорецът за чат е скрит.',
   'aura_link_modal.notifications_blocked_line1': 'Известията в момента са блокирани.',
-  'aura_link_modal.notifications_blocked_line2': '1. Отворете Системни настройки → Известия → Aura',
+  'aura_link_modal.notifications_blocked_line2': '1. Отворете Системни настройки → Известия → Youma',
   'aura_link_modal.notifications_blocked_line3': '2. Включете Разрешаване на известия',
   'aura_link_modal.notifications_blocked_line4':
     '3. Върнете се тук и докоснете Повторно известие за тест',
@@ -2171,7 +2171,7 @@ const bgBG: TranslationMap = {
   'aura_link_modal.retry_test_notification': 'Повторно тестово известие',
   'aura_link_modal.send_test_notification': 'Изпратете тестово известие',
   'aura_link_modal.notification_sent_success':
-    'Тестовото известие е изпратено. Ако не сте го получили, отидете на Системни настройки → Известия → Aura, включете Разрешаване на известия и задайте Стил на банер на Постоянно.',
+    'Тестовото известие е изпратено. Ако не сте го получили, отидете на Системни настройки → Известия → Youma, включете Разрешаване на известия и задайте Стил на банер на Постоянно.',
   'aura_link_modal.notification_send_error': 'Неуспешно изпращане: {error}',
   'aura_link_modal.trial_credit_label': 'Пробен кредит',
   'aura_link_modal.trial_credit_amount': '$1,00',
@@ -2180,7 +2180,7 @@ const bgBG: TranslationMap = {
   'aura_link_modal.open_dashboard': 'Отворете таблото за управление в браузъра',
   'aura_link_modal.stay_on_trial': 'Останете на изпитание',
   'aura_link_modal.discord_intro':
-    'Влезте в нашия Discord и свържете вашия Aura акаунт. Ще получите ексклузивен ранен достъп до функции, безплатни кредити, с които да играете, страхотна общност, с която да се занимавате, и да, безплатни стоки.',
+    'Влезте в нашия Discord и свържете вашия Youma акаунт. Ще получите ексклузивен ранен достъп до функции, безплатни кредити, с които да играете, страхотна общност, с която да се занимавате, и да, безплатни стоки.',
   'aura_link_modal.discord_perk_feature_access': 'Изключителен достъп до функции',
   'aura_link_modal.discord_perk_free_credits': 'Безплатни кредити за активни членове',
   'aura_link_modal.discord_perk_community': 'Общността на строители и оператори',
@@ -2218,7 +2218,7 @@ const bgBG: TranslationMap = {
   'channels.discord_config.copy': 'копие',
   'channels.discord_config.link_instructions_prefix': 'В Discord изпратете',
   'channels.discord_config.link_instructions_suffix':
-    'към бота Aura. Токенът изтича след 5 минути.',
+    'към бота Youma. Токенът изтича след 5 минути.',
   'channels.discord_config.link_token_warning':
     'Запазете тази команда — този маркер се показва само веднъж.',
   'channels.discord_config.account_linked': 'Вашият акаунт Discord е свързан.',
@@ -2258,9 +2258,9 @@ const bgBG: TranslationMap = {
   'settings.memory_window_control.save_failed': 'Неуспешно запазване на прозореца на паметта',
   'settings.memory_window_control.heading': 'Прозорец на дългосрочната памет',
   'settings.memory_window_control.description':
-    'Колко запомнен контекст Aura инжектира във всеки нов агент. По-големите прозорци се чувстват по-наясно с минали разговори, но използват повече токени — и струват повече — при всяко изпълнение.',
+    'Колко запомнен контекст Youma инжектира във всеки нов агент. По-големите прозорци се чувстват по-наясно с минали разговори, но използват повече токени — и струват повече — при всяко изпълнение.',
   'home.banners.promo_credits': 'Имате {amount} промоционални кредити.',
-  'home.banners.promo_credits_prefix': 'Завъртете Aura и когато сте готови за още,',
+  'home.banners.promo_credits_prefix': 'Завъртете Youma и когато сте готови за още,',
   'home.banners.get_subscription': 'вземете абонамент',
   'home.banners.promo_credits_suffix': 'и получете 10 пъти повече употреба.',
   'home.banners.dismiss_early_bird': 'Отхвърлете банера за ранно записване',
@@ -2270,7 +2270,7 @@ const bgBG: TranslationMap = {
   'home.banners.first_subscription': 'първи абонамент.',
   'home.banners.join_discord': 'Присъединете се към нашия Discord',
   'home.banners.discord_description':
-    'Получавайте актуализации, безплатни стоки, кредити, докладвайте за грешки и бъдете част от общността Aura.',
+    'Получавайте актуализации, безплатни стоки, кредити, докладвайте за грешки и бъдете част от общността Youma.',
   'intelligence.memory_chunk_detail.copy_chunk_id': 'Копирайте идентификатора на парче',
   'intelligence.memory_chunk_detail.chunk_label': 'парче {id}',
   'intelligence.memory_chunk_detail.copied': 'копиран',
@@ -2295,7 +2295,7 @@ const bgBG: TranslationMap = {
     'Нещо се обърка. Моля, опитайте отново.\nТази грешка е докладвана. Можете също да го съобщите на Discord.\n<aura-link path="community/discord">Докладвайте за Discord</aura-link>',
   'daemon.service_blocking_gate.retry_failed':
     'Неуспешен повторен опит. Изтеглете най-новата версия на приложението и опитайте отново.',
-  'daemon.service_blocking_gate.title': 'Aura ядрото не е налично',
+  'daemon.service_blocking_gate.title': 'Youma ядрото не е налично',
   'daemon.service_blocking_gate.description':
     'Не можахме да възстановим локалната основна услуга след многократни опити. Това може да се случи след критичен срив или двоично несъответствие.',
   'daemon.service_blocking_gate.download_hint':
@@ -2452,18 +2452,18 @@ const bgBG: TranslationMap = {
   'chat.unsubscribe_approval_card.success_message': '✓ Успешно отписан абонамент.',
   'chat.unsubscribe_approval_card.denied_message': '✕ Заявката е отказана.',
   'oauth.provider_button.twitter_startup_failure':
-    'Влизането в Twitter/X не можа да започне. Проверете дали обратното извикване на приложението Twitter OAuth URL, ИД/тайната на клиента и заявените обхвати съответстват на бекенда Aura, след което опитайте отново.',
+    'Влизането в Twitter/X не можа да започне. Проверете дали обратното извикване на приложението Twitter OAuth URL, ИД/тайната на клиента и заявените обхвати съответстват на бекенда Youma, след което опитайте отново.',
   'oauth.provider_button.generic_startup_failure':
     '{providerName} влизането не може да започне. Моля, опитайте отново.',
   'oauth.provider_button.connecting': 'Свързване...',
   'skills.search_bar.placeholder': 'Умения за търсене...',
   'common.persist_rehydration_screen.title':
-    'Зареждането на Aura отнема повече време от обикновено.',
+    'Зареждането на Youma отнема повече време от обикновено.',
   'common.persist_rehydration_screen.description':
     'Състоянието на локалното приложение може да е повредено. Нулирането ще ви излезе и ще изчисти кешираните данни на това устройство; ще свържете отново вашите акаунти при следващото стартиране. Вашите данни на сървъра не са засегнати.',
   'common.persist_rehydration_screen.resetting': 'Нулиране...',
   'common.persist_rehydration_screen.reset_button': 'Нулирайте местното състояние',
-  'common.route_loading_screen.initializing': 'Инициализиране на Aura...',
+  'common.route_loading_screen.initializing': 'Инициализиране на Youma...',
   'privacy.what_leaves_link.label': 'Какво оставя моя компютър?',
   'settings.provider_key_dialog.api_key_required':
     'Моля, поставете своя ключ API, за да продължите.',
@@ -2474,7 +2474,7 @@ const bgBG: TranslationMap = {
   'settings.provider_key_dialog.cancel_button': 'Отказ',
   'settings.provider_key_dialog.saving': 'Запазва се...',
   'settings.provider_key_dialog.save_button': 'Запазване',
-  'settings.workload_row.aura_default': 'Aura (по подразбиране)',
+  'settings.workload_row.aura_default': 'Youma (по подразбиране)',
   'settings.workload_row.default_button': 'По подразбиране',
   'settings.workload_row.custom_button': 'По поръчка',
 };

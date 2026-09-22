@@ -125,7 +125,7 @@ const daDK: TranslationMap = {
   'clearData.failed': 'Kunne ikke rydde data og logge ud. Prøv venligst igen.',
   'clearData.failedLogout': 'Kunne ikke logge ud. Prøv venligst igen.',
   'clearData.failedPersist': 'Kunne ikke rydde vedvarende apptilstand. Prøv venligst igen.',
-  'welcome.title': 'Velkommen til Aura',
+  'welcome.title': 'Velkommen til Youma',
   'welcome.subtitle': 'Din personlige AI super intelligens. Privat, enkelt og ekstremt kraftfuldt.',
   'welcome.connectPrompt': 'Konfigurer RPC URL (avanceret)',
   'welcome.selectRuntime': 'Vælg en Runtime',
@@ -142,7 +142,7 @@ const daDK: TranslationMap = {
   'home.statusBackendOnly':
     'Genopretter forbindelse til backend... din agent vil snart være tilgængelig igen.',
   'home.statusCoreUnreachable':
-    'Den lokale kernesidevogn reagerer ikke. Aura baggrundsprocessen kan være gået ned eller kunne ikke starte.',
+    'Den lokale kernesidevogn reagerer ikke. Youma baggrundsprocessen kan være gået ned eller kunne ikke starte.',
   'home.statusInternetOffline':
     'Din enhed er offline lige nu. Tjek dit netværk, eller genstart appen for at oprette forbindelse igen.',
   'home.restartCore': 'Genstart Core',
@@ -192,7 +192,7 @@ const daDK: TranslationMap = {
   'rewards.referralCode': 'Din henvisningskode',
   'rewards.copyCode': 'Kopiér kode',
   'rewards.share': 'Dele',
-  'onboarding.welcome': 'Hej. Jeg er Aura.',
+  'onboarding.welcome': 'Hej. Jeg er Youma.',
   'onboarding.welcomeDesc':
     'Din superintelligente AI-assistent, der kører på din computer. Privat, enkelt og ekstremt kraftfuldt.',
   'onboarding.context': 'Kontekstsamling',
@@ -204,14 +204,14 @@ const daDK: TranslationMap = {
   'onboarding.referral': 'Henvisning',
   'onboarding.referralDesc': 'Anvend en henvisningskode, hvis du har en.',
   'onboarding.finish': 'Afslut opsætning',
-  'onboarding.finishDesc': 'Du er klar! Begynd at bruge Aura.',
+  'onboarding.finishDesc': 'Du er klar! Begynd at bruge Youma.',
   'onboarding.skip': 'Springe',
   'onboarding.getStarted': 'Kom i gang',
-  'onboarding.runtimeChoice.title': 'Hvordan vil du køre Aura?',
+  'onboarding.runtimeChoice.title': 'Hvordan vil du køre Youma?',
   'onboarding.runtimeChoice.subtitle':
     'Vælg den opsætning, der passer dig bedst. Du kan ændre dette senere i Indstillinger.',
   'onboarding.runtimeChoice.cloud.title': 'Enkel',
-  'onboarding.runtimeChoice.cloud.tagline': 'Lad Aura styre alt for dig.',
+  'onboarding.runtimeChoice.cloud.tagline': 'Lad Youma styre alt for dig.',
   'onboarding.runtimeChoice.cloud.f1': 'Indbygget sikkerhed',
   'onboarding.runtimeChoice.cloud.f2': 'Token-komprimering for at strække dit forbrug yderligere',
   'onboarding.runtimeChoice.cloud.f3': 'Et abonnement, hver model inkluderet',
@@ -247,7 +247,7 @@ const daDK: TranslationMap = {
   'onboarding.custom.stepperMemory': 'Hukommelse',
   'onboarding.custom.stepCounter': 'Trin {n} af {total}',
   'onboarding.custom.defaultTitle': 'Misligholdelse',
-  'onboarding.custom.defaultSubtitle': 'Lad Aura administrere det for dig.',
+  'onboarding.custom.defaultSubtitle': 'Lad Youma administrere det for dig.',
   'onboarding.custom.configureTitle': 'Konfigurer',
   'onboarding.custom.configureSubtitle': 'Jeg vælger, hvad jeg skal bruge.',
   'onboarding.custom.progressAriaLabel': 'Onboarding fremskridt',
@@ -261,33 +261,33 @@ const daDK: TranslationMap = {
   'onboarding.custom.inference.subtitle':
     'Hvilken sprogmodel skal besvare dine spørgsmål og drive dine agenter?',
   'onboarding.custom.inference.defaultDesc':
-    'Aura dirigerer enhver arbejdsbyrde til en fornuftig standardmodel. Ingen nøgler, ingen opsætning.',
+    'Youma dirigerer enhver arbejdsbyrde til en fornuftig standardmodel. Ingen nøgler, ingen opsætning.',
   'onboarding.custom.inference.configureDesc':
     'Medbring din egen OpenAI eller Anthropic nøgle. Vi bruger det til enhver tekstbaseret arbejdsbelastning.',
   'onboarding.custom.voice.title': 'Stemme',
   'onboarding.custom.voice.subtitle': 'Tale-til-tekst og tekst-til-tale til stemmetilstand.',
   'onboarding.custom.voice.defaultDesc':
-    'Aura leveres med administreret STT/TTS, der bare virker. Intet at koble op.',
+    'Youma leveres med administreret STT/TTS, der bare virker. Intet at koble op.',
   'onboarding.custom.voice.configureDesc':
     'Brug dine egne ElevenLabs / OpenAI Whisper / osv. Konfigurer i Indstillinger › Stemme.',
   'onboarding.custom.oauth.title': 'Forbindelser (OAuth)',
   'onboarding.custom.oauth.subtitle':
     'Gmail, Slack, Notion og andre forbundne tjenester, der har brug for OAuth.',
   'onboarding.custom.oauth.defaultDesc':
-    'Aura kører et administreret Composio arbejdsområde. Et klik for at tilslutte hver tjeneste senere.',
+    'Youma kører et administreret Composio arbejdsområde. Et klik for at tilslutte hver tjeneste senere.',
   'onboarding.custom.oauth.configureDesc':
     'Medbring din egen Composio konto / API nøgle. Konfigurer i Indstillinger › Forbindelser.',
   'onboarding.custom.search.title': 'Websøgning',
-  'onboarding.custom.search.subtitle': 'Hvordan Aura søger på nettet på dine vegne.',
+  'onboarding.custom.search.subtitle': 'Hvordan Youma søger på nettet på dine vegne.',
   'onboarding.custom.search.defaultDesc':
-    'Aura bruger en administreret søgebackend. Ingen nøgler nødvendig.',
+    'Youma bruger en administreret søgebackend. Ingen nøgler nødvendig.',
   'onboarding.custom.search.configureDesc':
     'Medbring din egen søgeudbydernøgle (Tavily, Brave osv.). Konfigurer i Indstillinger › Værktøjer.',
   'onboarding.custom.memory.title': 'Hukommelse',
   'onboarding.custom.memory.subtitle':
-    'Hvordan Aura husker din kontekst, præferencer og tidligere samtaler.',
+    'Hvordan Youma husker din kontekst, præferencer og tidligere samtaler.',
   'onboarding.custom.memory.defaultDesc':
-    'Aura styrer hukommelseslagring og -hentning automatisk. Intet at sætte op.',
+    'Youma styrer hukommelseslagring og -hentning automatisk. Intet at sætte op.',
   'onboarding.custom.memory.configureDesc':
     'Undersøg, eksporter eller slet hukommelsen selv. Konfigurer i Indstillinger › Hukommelse.',
   'accounts.addAccount': 'Tilføj konto',
@@ -347,7 +347,7 @@ const daDK: TranslationMap = {
   'misc.downloading': 'Downloader...',
   'misc.installing': 'Installerer...',
   'misc.beta':
-    'Aura er i tidlig beta. Du er velkommen til at dele feedback eller rapportere eventuelle fejl, du støder på - hver rapport hjælper os med at sende hurtigere.',
+    'Youma er i tidlig beta. Du er velkommen til at dele feedback eller rapportere eventuelle fejl, du støder på - hver rapport hjælper os med at sende hurtigere.',
   'misc.betaFeedback': 'Send feedback',
   'mnemonic.title': 'Gendannelsessætning',
   'mnemonic.warning': 'Skriv disse ord ned i rækkefølge og opbevar dem et sikkert sted.',
@@ -370,11 +370,11 @@ const daDK: TranslationMap = {
   'privacy.anonymizedAnalytics': 'Anonymiseret analyse',
   'privacy.shareAnonymizedData': 'Del anonymiserede brugsdata',
   'privacy.shareAnonymizedDataDesc':
-    'Hjælp med at forbedre Aura ved at dele anonyme nedbrudsrapporter og brugsanalyser. Alle data er fuldstændig anonymiseret - ingen personlige data, beskeder, tegnebogsnøgler eller sessionsoplysninger indsamles nogensinde.',
+    'Hjælp med at forbedre Youma ved at dele anonyme nedbrudsrapporter og brugsanalyser. Alle data er fuldstændig anonymiseret - ingen personlige data, beskeder, tegnebogsnøgler eller sessionsoplysninger indsamles nogensinde.',
   'privacy.meetingFollowUps': 'Mødeopfølgninger',
   'privacy.autoHandoffMeet': 'Automatisk aflevering Google Meet transskriptioner til orkestratoren',
   'privacy.autoHandoffMeetDesc':
-    'Når et Google Meet opkald slutter, kan Auras orkestrator læse transskriptionen og kan udføre handlinger som at udarbejde beskeder, planlægge opfølgninger eller sende resuméer til dit tilsluttede Slack-arbejdsområde. Fra som standard.',
+    'Når et Google Meet opkald slutter, kan Youmas orkestrator læse transskriptionen og kan udføre handlinger som at udarbejde beskeder, planlægge opfølgninger eller sende resuméer til dit tilsluttede Slack-arbejdsområde. Fra som standard.',
   'privacy.analyticsDisclaimer':
     'Alle analyser og fejlrapporter er fuldstændig anonymiserede. Når det er aktiveret, indsamler vi kun oplysninger om nedbrud, enhedstype og filplacering af fejl. Vi får aldrig adgang til dine beskeder, sessionsdata, tegnebogsnøgler, API nøgler eller nogen personlig identificerbar information. Du kan til enhver tid ændre denne indstilling.',
   'settings.about.version': 'Version',
@@ -432,7 +432,7 @@ const daDK: TranslationMap = {
   'settings.billing.browserNotOpen': 'Hvis din browser ikke åbnede, skal du bruge knappen ovenfor.',
   'settings.billing.browserOpenFailed':
     'Browseren kunne ikke åbnes automatisk. Brug knappen ovenfor.',
-  'settings.tools.chooseCapabilities': 'Vælg, hvilke funktioner Aura kan bruge på dine vegne.',
+  'settings.tools.chooseCapabilities': 'Vælg, hvilke funktioner Youma kan bruge på dine vegne.',
   'settings.tools.saveChanges': 'Gem ændringer',
   'settings.tools.preferencesSaved': 'Præferencer gemt',
   'settings.tools.saveFailed': 'Præferencerne kunne ikke gemmes. Prøv igen.',
@@ -897,9 +897,9 @@ const daDK: TranslationMap = {
   'bootCheck.chooseCoreMode': 'Vælg en Runtime',
   'bootCheck.connectToCore': 'Opret forbindelse til din Runtime',
   'bootCheck.desktopDescription':
-    'Aura har brug for en køretid for at tænke. Vælg, hvor den skal bo.',
+    'Youma har brug for en køretid for at tænke. Vælg, hvor den skal bo.',
   'bootCheck.webDescription':
-    'På nettet forbinder Aura en kørselstid, du kontrollerer. Indtast dens URL og godkendelsestoken nedenfor, eller tag fat i desktop-appen for at køre en direkte på din maskine.',
+    'På nettet forbinder Youma en kørselstid, du kontrollerer. Indtast dens URL og godkendelsestoken nedenfor, eller tag fat i desktop-appen for at køre en direkte på din maskine.',
   'bootCheck.preferDesktop': 'Beholder du hellere alt på din egen enhed?',
   'bootCheck.downloadDesktop': 'Hent Desktop-appen',
   'bootCheck.localRecommended': 'Kør lokalt (anbefales)',
@@ -926,7 +926,7 @@ const daDK: TranslationMap = {
   'bootCheck.quit': 'Forlade',
   'bootCheck.legacyDetected': 'Legacy Background Runtime fundet',
   'bootCheck.legacyDescription':
-    'En separat installeret Aura-dæmon kører allerede på denne enhed. Vi er nødt til at rydde det ud, før den indbyggede køretid kan tage over.',
+    'En separat installeret Youma-dæmon kører allerede på denne enhed. Vi er nødt til at rydde det ud, før den indbyggede køretid kan tage over.',
   'bootCheck.removing': 'Fjerner...',
   'bootCheck.removeContinue': 'Fjern og fortsæt',
   'bootCheck.localNeedsRestart': 'Lokal Runtime har brug for en genstart',
@@ -1064,9 +1064,9 @@ const daDK: TranslationMap = {
   'rewards.referrals.load_stats_error': 'Kunne ikke indlæse henvisningsstatistikker',
   'rewards.referrals.copied': 'Kopieret',
   'rewards.referrals.copy_failed': 'Kopiering mislykkedes',
-  'rewards.referrals.share_intro': 'Slut dig til mig på Aura.',
+  'rewards.referrals.share_intro': 'Slut dig til mig på Youma.',
   'rewards.referrals.share_code_line': 'Henvisningskode: {code}',
-  'rewards.referrals.share_download_line': 'Download Aura: {url}',
+  'rewards.referrals.share_download_line': 'Download Youma: {url}',
   'rewards.referrals.apply_error': 'Kunne ikke anvende henvisningskoden',
   'rewards.referrals.heading': 'Inviter venner, optjen kreditter',
   'rewards.referrals.description':
@@ -1299,22 +1299,22 @@ const daDK: TranslationMap = {
   'skills.meeting_bots_card.platform_gmeet': 'Google Meet',
   'skills.meeting_bots_card.platform_zoom': 'Zoom',
   'skills.meeting_bots_card.platform_teams': 'Microsoft Teams',
-  'skills.meeting_bots_card.banner_title': 'Send Aura til et møde',
+  'skills.meeting_bots_card.banner_title': 'Send Youma til et møde',
   'skills.meeting_bots_card.new_badge': 'Ny',
   'skills.meeting_bots_card.banner_description':
-    'Slip et Google Meet-link og Aura deltager som gæst, taler, lytter og vinker tilbage.',
+    'Slip et Google Meet-link og Youma deltager som gæst, taler, lytter og vinker tilbage.',
   'skills.meeting_bots_card.coming_soon_error': '{platform} support kommer snart.',
-  'skills.meeting_bots_card.toast_joining_title': 'Aura deltager i mødet',
+  'skills.meeting_bots_card.toast_joining_title': 'Youma deltager i mødet',
   'skills.meeting_bots_card.toast_joining_message':
     'Den skulle fremstå som en deltager om få sekunder.',
-  'skills.meeting_bots_card.toast_busy_title': 'Aura er optaget',
-  'skills.meeting_bots_card.toast_failed_title': 'Kunne ikke starte Aura',
-  'skills.meeting_bots_card.default_error_message': 'Kunne ikke starte Aura.',
-  'skills.meeting_bots_card.modal_aria_label': 'Send Aura til et møde',
+  'skills.meeting_bots_card.toast_busy_title': 'Youma er optaget',
+  'skills.meeting_bots_card.toast_failed_title': 'Kunne ikke starte Youma',
+  'skills.meeting_bots_card.default_error_message': 'Kunne ikke starte Youma.',
+  'skills.meeting_bots_card.modal_aria_label': 'Send Youma til et møde',
   'skills.meeting_bots_card.close_aria': 'Tæt',
-  'skills.meeting_bots_card.modal_title': 'Send Aura til et møde',
+  'skills.meeting_bots_card.modal_title': 'Send Youma til et møde',
   'skills.meeting_bots_card.modal_description':
-    'Aura deltager som anonym gæst, streamer sin video til opkaldet og svarer via agenten.',
+    'Youma deltager som anonym gæst, streamer sin video til opkaldet og svarer via agenten.',
   'skills.meeting_bots_card.soon_suffix': '· snart',
   'skills.meeting_bots_card.meeting_link_label': 'Møde link',
   'skills.meeting_bots_card.display_name_label': 'Vist navn',
@@ -1459,14 +1459,14 @@ const daDK: TranslationMap = {
   'settings.composio_panel.title': 'Composio',
   'settings.composio_panel.loading': 'Indlæser...',
   'settings.composio_panel.intro_prefix':
-    'Composio driver integrationer med Gmail, Notion, Slack, GitHub og mere end 1000 andre apps. Som standard administrerer Aura det for dig, så du behøver ikke at medbringe en API nøgle. Hvis du foretrækker at bruge din egen Composio-konto direkte, skal du skifte til',
+    'Composio driver integrationer med Gmail, Notion, Slack, GitHub og mere end 1000 andre apps. Som standard administrerer Youma det for dig, så du behøver ikke at medbringe en API nøgle. Hvis du foretrækker at bruge din egen Composio-konto direkte, skal du skifte til',
   'settings.composio_panel.direct_word': 'Direkte',
   'settings.composio_panel.intro_suffix': 'tilstand og indsæt din nøgle nedenfor.',
   'settings.composio_panel.routing_mode_legend': 'Routing mode',
-  'settings.composio_panel.managed_aria_label': 'Administreret (Aura håndterer det for dig)',
-  'settings.composio_panel.managed_title': 'Administreret (Aura håndterer det for dig)',
+  'settings.composio_panel.managed_aria_label': 'Administreret (Youma håndterer det for dig)',
+  'settings.composio_panel.managed_title': 'Administreret (Youma håndterer det for dig)',
   'settings.composio_panel.managed_description':
-    'Misligholdelse. Aura administrerer Composio-forbindelsen for dig. Trigger webhooks (realtids Gmail / Slack hændelser) fungerer ud af boksen.',
+    'Misligholdelse. Youma administrerer Composio-forbindelsen for dig. Trigger webhooks (realtids Gmail / Slack hændelser) fungerer ud af boksen.',
   'settings.composio_panel.direct_aria_label': 'Direkte (medbring din egen API nøgle)',
   'settings.composio_panel.direct_title': 'Direkte (medbring din egen API nøgle)',
   'settings.composio_panel.direct_description_prefix': 'Opkald går til',
@@ -1477,7 +1477,7 @@ const daDK: TranslationMap = {
   'settings.composio_panel.api_key_label': 'Composio API-tasten',
   'settings.composio_panel.api_key_help_prefix': 'Find din nøgle på',
   'settings.composio_panel.api_key_help_suffix':
-    'Nøglen gemmes krypteret på denne enhed og sendes aldrig til Aura.',
+    'Nøglen gemmes krypteret på denne enhed og sendes aldrig til Youma.',
   'settings.composio_panel.api_key_placeholder_stored':
     '•••••••••••• (nøgle gemt — indsæt en ny nøgle for at erstatte)',
   'settings.composio_panel.api_key_placeholder_empty': 'ck_live_xxxxxxxxxxxxxxxx',
@@ -1485,10 +1485,10 @@ const daDK: TranslationMap = {
     'En Composio API-nøgle er i øjeblikket gemt på denne enhed.',
   'settings.composio_panel.confirm_title': '⚠️ Skift til direkte tilstand',
   'settings.composio_panel.confirm_integrations_prefix':
-    'Dine eksisterende integrationer (Gmail, Slack, GitHub osv. forbundet via Aura)',
+    'Dine eksisterende integrationer (Gmail, Slack, GitHub osv. forbundet via Youma)',
   'settings.composio_panel.wont_be_visible': 'vil ikke være synlig',
   'settings.composio_panel.confirm_integrations_suffix':
-    '— de bor i den Aura-administrerede Composio lejer.',
+    '— de bor i den Youma-administrerede Composio lejer.',
   'settings.composio_panel.confirm_needs_title': 'Du skal bruge:',
   'settings.composio_panel.confirm_need_account_prefix': 'En konto på',
   'settings.composio_panel.confirm_need_account_suffix': 'med en API-tast',
@@ -1507,7 +1507,7 @@ const daDK: TranslationMap = {
     'Kunne ikke gemme. Direkte tilstand kræver en ikke-tom API-tast.',
   'settings.model_status.ollama_unavailable_title': 'Ollama runtime er ikke tilgængelig',
   'settings.model_status.ollama_unavailable_description':
-    'Aura behandler nu Ollama som en ekstern slutningskørsel. Start din egen Ollama-server, træk de modeller, du ønsker, og peg arbejdsbelastningsruting på den.',
+    'Youma behandler nu Ollama som en ekstern slutningskørsel. Start din egen Ollama-server, træk de modeller, du ønsker, og peg arbejdsbelastningsruting på den.',
   'settings.model_status.ollama_docs_link': 'Ollama docs',
   'settings.model_status.runtime_status_title': 'Kørselsstatus',
   'settings.model_status.refresh': 'Opfriske',
@@ -1526,7 +1526,7 @@ const daDK: TranslationMap = {
   'settings.model_status.hide_error_details': 'Skjul fejloplysninger',
   'settings.model_status.show_error_details': 'Vis fejldetaljer',
   'settings.model_status.connect_only_prefix':
-    'Aura forbinder kun til et allerede kørende Ollama-kompatibelt slutpunkt. Se',
+    'Youma forbinder kun til et allerede kørende Ollama-kompatibelt slutpunkt. Se',
   'settings.model_status.connect_only_suffix':
     'for opsætningsinstruktioner, og prøv derefter igen, når din runtime er tilgængelig.',
   'settings.model_status.ollama_diagnostics_title': 'Ollama diagnostik',
@@ -1552,7 +1552,7 @@ const daDK: TranslationMap = {
   'settings.model_status.vision_model_line': 'Syn: {model}',
   'settings.model_status.issues_heading': 'Problemer',
   'settings.model_status.manage_ollama_footer':
-    'Administrer Ollama-processen og modeltræk uden for Aura, og kør derefter diagnostik igen.',
+    'Administrer Ollama-processen og modeltræk uden for Youma, og kør derefter diagnostik igen.',
   'settings.device_capability.model_tier_title': 'Model Tier',
   'settings.device_capability.loading_device_info':
     'Indlæser enhedsoplysninger og forudindstillinger...',
@@ -1857,7 +1857,7 @@ const daDK: TranslationMap = {
   'composio.connect_modal.disconnecting': 'Afbryder forbindelsen...',
   'composio.connect_modal.dismiss': 'Afskedige',
   'composio.connect_modal.expired_body':
-    'Tilslut igen for at genaktivere {name} værktøjer. Aura vil holde denne integration utilgængelig, indtil du opdaterer OAuth-adgangen.',
+    'Tilslut igen for at genaktivere {name} værktøjer. Youma vil holde denne integration utilgængelig, indtil du opdaterer OAuth-adgangen.',
   'composio.connect_modal.expired_title': '{name} autorisation er udløbet',
   'composio.connect_modal.generic_error': 'Noget gik galt.',
   'composio.connect_modal.header_connect': 'Tilslut {name}',
@@ -1873,7 +1873,7 @@ const daDK: TranslationMap = {
   'composio.connect_modal.needs_subdomain_intro_suffix': ') og prøv igen.',
   'composio.connect_modal.permission_intro_prefix': '{name} kan udsætte',
   'composio.connect_modal.permission_intro_suffix':
-    '. Når du har oprettet forbindelse, styres Auras egne agenttilladelser nedenfor som læse-, skrive- og admin-skift.',
+    '. Når du har oprettet forbindelse, styres Youmas egne agenttilladelser nedenfor som læse-, skrive- og admin-skift.',
   'composio.connect_modal.permissions_default_hint': 'Læs + Skriv aktiveret som standard',
   'composio.connect_modal.permissions_heading': 'Tilladelser',
   'composio.connect_modal.poll_timeout':
@@ -1922,10 +1922,10 @@ const daDK: TranslationMap = {
   'settings.ai_panel.local_runtime_disconnect_aria': 'Afbryd {label}',
   'settings.ai_panel.providers_heading': 'LLM Udbydere',
   'settings.ai_panel.providers_subtitle':
-    'Tilslut de sprogmodel-backends, du ønsker Aura at bruge. Slå en udbyder til for at tilføje dens nøgle; slå fra for at afbryde forbindelsen.',
+    'Tilslut de sprogmodel-backends, du ønsker Youma at bruge. Slå en udbyder til for at tilføje dens nøgle; slå fra for at afbryde forbindelsen.',
   'settings.ai_panel.routing_heading': 'Routing',
   'settings.ai_panel.routing_subtitle':
-    'Vælg, hvordan hver arbejdsbyrde skal betjenes. Standard bruger Aura; Brugerdefineret giver dig mulighed for at pege en arbejdsbyrde på en bestemt udbyder og model.',
+    'Vælg, hvordan hver arbejdsbyrde skal betjenes. Standard bruger Youma; Brugerdefineret giver dig mulighed for at pege en arbejdsbyrde på en bestemt udbyder og model.',
   'settings.auto_recharge.add_card': '+ Tilføj kort på Stripe',
   'settings.auto_recharge.amount_label': 'Tilføj dette beløb',
   'settings.auto_recharge.cancel': 'Ophæve',
@@ -1988,22 +1988,22 @@ const daDK: TranslationMap = {
   'settings.mascot_panel.color_black': 'Sort',
   'settings.mascot_panel.color_burgundy': 'Bourgogne',
   'settings.mascot_panel.color_footer_hint':
-    'Den valgte farve anvendes overalt, hvor Aura vises og huskes ved genstarter.',
+    'Den valgte farve anvendes overalt, hvor Youma vises og huskes ved genstarter.',
   'settings.mascot_panel.color_green': 'Grøn',
   'settings.mascot_panel.color_heading': 'Farve',
   'settings.mascot_panel.color_navy': 'Flåde',
-  'settings.mascot_panel.color_radiogroup_aria': 'Aura farve',
+  'settings.mascot_panel.color_radiogroup_aria': 'Youma farve',
   'settings.mascot_panel.color_yellow': 'Gul',
-  'settings.mascot_panel.header_title': 'Aura',
-  'settings.mascot_panel.library_unavailable': 'Aura bibliotek utilgængeligt: ​​{error}',
+  'settings.mascot_panel.header_title': 'Youma',
+  'settings.mascot_panel.library_unavailable': 'Youma bibliotek utilgængeligt: ​​{error}',
   'settings.mascot_panel.load_library_error': 'Kunne ikke indlæse maskotbiblioteket.',
   'settings.mascot_panel.load_mascot_error': 'Kunne ikke indlæse maskot.',
-  'settings.mascot_panel.loading_library': 'Indlæser Aura bibliotek...',
-  'settings.mascot_panel.local_aura_default': 'Lokal Aura (standard)',
+  'settings.mascot_panel.loading_library': 'Indlæser Youma bibliotek...',
+  'settings.mascot_panel.local_aura_default': 'Lokal Youma (standard)',
   'settings.mascot_panel.no_characters':
-    'Ingen Aura tegn er tilgængelige endnu. Lokale farvevarianter ovenfor er stadig aktive.',
+    'Ingen Youma tegn er tilgængelige endnu. Lokale farvevarianter ovenfor er stadig aktive.',
   'settings.mascot_panel.no_color_variants':
-    'Ingen Aura farvevarianter er tilgængelige i denne build.',
+    'Ingen Youma farvevarianter er tilgængelige i denne build.',
   'settings.mascot_panel.preview_label': 'Forhåndsvisning · {name}',
   'settings.mascot_panel.version_states': 'v{version} · {states} angiver',
   'settings.mascot_panel.visemes_suffix': '· visemes',
@@ -2048,7 +2048,7 @@ const daDK: TranslationMap = {
   'local_ai.download_snackbar.installing': 'Installerer...',
   'local_ai.download_snackbar.preparing': 'Forbereder...',
   'settings.cron_job_list.heading': 'Core Cron Jobs',
-  'settings.cron_job_list.subheading': 'Jobs fortsatte i Aura kerneplanlægningsdatabasen.',
+  'settings.cron_job_list.subheading': 'Jobs fortsatte i Youma kerneplanlægningsdatabasen.',
   'settings.cron_job_list.loading': 'Indlæser cron-job...',
   'settings.cron_job_list.empty': 'Ingen centrale cron-job fundet.',
   'settings.cron_job_list.status_enabled': 'Aktiveret',
@@ -2120,16 +2120,16 @@ const daDK: TranslationMap = {
   'aura_link_modal.notifications_desktop_only':
     'Native notifikationer er kun tilgængelige i desktop-appen (kør `pnpm dev:app`).',
   'aura_link_modal.notifications_permission_off':
-    'Notifikationstilladelse er slået fra. Aktiver Aura i Systemindstillinger → Meddelelser, og prøv derefter igen.',
-  'aura_link_modal.notification_title': 'Aura er god at gå',
+    'Notifikationstilladelse er slået fra. Aktiver Youma i Systemindstillinger → Meddelelser, og prøv derefter igen.',
+  'aura_link_modal.notification_title': 'Youma er god at gå',
   'aura_link_modal.notification_body':
     'Du vil få ping her, når noget har brug for din opmærksomhed.',
   'aura_link_modal.notification_send_failed':
-    'Aura kunne ikke udløse en systemmeddelelse. Tjek OS-meddelelsesindstillinger og prøv igen.',
+    'Youma kunne ikke udløse en systemmeddelelse. Tjek OS-meddelelsesindstillinger og prøv igen.',
   'aura_link_modal.notifications_intro':
-    'Aura bruger indbyggede meddelelser, så den kan pinge dig, når noget har brug for din opmærksomhed, selv når chatvinduet er skjult.',
+    'Youma bruger indbyggede meddelelser, så den kan pinge dig, når noget har brug for din opmærksomhed, selv når chatvinduet er skjult.',
   'aura_link_modal.notifications_blocked_line1': 'Notifikationer er i øjeblikket blokeret.',
-  'aura_link_modal.notifications_blocked_line2': '1. Åbn Systemindstillinger → Meddelelser → Aura',
+  'aura_link_modal.notifications_blocked_line2': '1. Åbn Systemindstillinger → Meddelelser → Youma',
   'aura_link_modal.notifications_blocked_line3': '2. Slå Tillad meddelelser til',
   'aura_link_modal.notifications_blocked_line4':
     '3. Vend tilbage hertil, og tryk på Prøv igen testbesked',
@@ -2139,7 +2139,7 @@ const daDK: TranslationMap = {
   'aura_link_modal.retry_test_notification': 'Prøv testmeddelelse igen',
   'aura_link_modal.send_test_notification': 'Send testbesked',
   'aura_link_modal.notification_sent_success':
-    'Testmeddelelse sendt. Hvis du ikke har modtaget den, skal du gå til Systemindstillinger → Meddelelser → Aura, slå Tillad meddelelser til og indstille Bannerstil til Vedvarende.',
+    'Testmeddelelse sendt. Hvis du ikke har modtaget den, skal du gå til Systemindstillinger → Meddelelser → Youma, slå Tillad meddelelser til og indstille Bannerstil til Vedvarende.',
   'aura_link_modal.notification_send_error': 'Kunne ikke sende: {error}',
   'aura_link_modal.trial_credit_label': 'Prøvekredit',
   'aura_link_modal.trial_credit_amount': '1,00 USD',
@@ -2148,7 +2148,7 @@ const daDK: TranslationMap = {
   'aura_link_modal.open_dashboard': 'Åbn dashboard i browseren',
   'aura_link_modal.stay_on_trial': 'Bliv på prøve',
   'aura_link_modal.discord_intro':
-    'Hop ind i vores Discord og tilknyt din Aura-konto. Du får eksklusiv tidlig adgang til funktioner, gratis kreditter at spille med, et fantastisk fællesskab at nørde med, og ja, gratis merch.',
+    'Hop ind i vores Discord og tilknyt din Youma-konto. Du får eksklusiv tidlig adgang til funktioner, gratis kreditter at spille med, et fantastisk fællesskab at nørde med, og ja, gratis merch.',
   'aura_link_modal.discord_perk_feature_access': 'Eksklusiv funktionsadgang',
   'aura_link_modal.discord_perk_free_credits': 'Gratis kreditter til aktive medlemmer',
   'aura_link_modal.discord_perk_community': 'Fællesskab af bygherrer og operatører',
@@ -2184,7 +2184,7 @@ const daDK: TranslationMap = {
   'channels.discord_config.copy': 'Kopi',
   'channels.discord_config.link_instructions_prefix': 'Send i Discord',
   'channels.discord_config.link_instructions_suffix':
-    'til Aura-botten. Token udløber om 5 minutter.',
+    'til Youma-botten. Token udløber om 5 minutter.',
   'channels.discord_config.link_token_warning':
     'Gem denne kommando - dette token vises kun én gang.',
   'channels.discord_config.account_linked': 'Din Discord-konto er tilknyttet.',
@@ -2224,9 +2224,9 @@ const daDK: TranslationMap = {
   'settings.memory_window_control.save_failed': 'Vinduet gemte ikke hukommelsen',
   'settings.memory_window_control.heading': 'Langtidshukommelsesvindue',
   'settings.memory_window_control.description':
-    'Hvor meget husket kontekst Aura sprøjter ind i hver ny agentkørsel. Større vinduer føler sig mere opmærksomme på tidligere samtaler, men bruger flere tokens - og koster mere - på hver løbetur.',
+    'Hvor meget husket kontekst Youma sprøjter ind i hver ny agentkørsel. Større vinduer føler sig mere opmærksomme på tidligere samtaler, men bruger flere tokens - og koster mere - på hver løbetur.',
   'home.banners.promo_credits': 'Du har {amount} i salgsfremmende kreditter.',
-  'home.banners.promo_credits_prefix': 'Giv Aura et spin, og når du er klar til mere,',
+  'home.banners.promo_credits_prefix': 'Giv Youma et spin, og når du er klar til mere,',
   'home.banners.get_subscription': 'få et abonnement',
   'home.banners.promo_credits_suffix': 'og få 10 gange mere brug.',
   'home.banners.dismiss_early_bird': 'Afvis early bird banner',
@@ -2236,7 +2236,7 @@ const daDK: TranslationMap = {
   'home.banners.first_subscription': 'første abonnement.',
   'home.banners.join_discord': 'Tilmeld dig vores Discord',
   'home.banners.discord_description':
-    'Få opdateringer, gratis merchandise, kreditter, rapporter fejl, og bliv en del af Aura-fællesskabet.',
+    'Få opdateringer, gratis merchandise, kreditter, rapporter fejl, og bliv en del af Youma-fællesskabet.',
   'intelligence.memory_chunk_detail.copy_chunk_id': 'Kopiér chunk-id',
   'intelligence.memory_chunk_detail.chunk_label': 'stykke {id}',
   'intelligence.memory_chunk_detail.copied': 'kopieret',
@@ -2261,7 +2261,7 @@ const daDK: TranslationMap = {
     'Noget gik galt. Prøv venligst igen.\nDenne fejl er blevet rapporteret. Du kan også rapportere det på Discord.\n<aura-link path="community/discord">Rapportér om Discord</aura-link>',
   'daemon.service_blocking_gate.retry_failed':
     'Forsøg igen mislykkedes. Download den seneste app build, og prøv igen.',
-  'daemon.service_blocking_gate.title': 'Aura kerne er ikke tilgængelig',
+  'daemon.service_blocking_gate.title': 'Youma kerne er ikke tilgængelig',
   'daemon.service_blocking_gate.description':
     'Vi kunne ikke gendanne den lokale kernetjeneste efter flere forsøg. Dette kan ske efter et kritisk nedbrud eller binært uoverensstemmelse.',
   'daemon.service_blocking_gate.download_hint':
@@ -2418,17 +2418,17 @@ const daDK: TranslationMap = {
   'chat.unsubscribe_approval_card.success_message': '✓ Afmeldt med succes.',
   'chat.unsubscribe_approval_card.denied_message': '✕ Anmodning afvist.',
   'oauth.provider_button.twitter_startup_failure':
-    'Twitter/X-login kunne ikke starte. Tjek, at Twitter OAuth app-callback URL, klient-id/hemmelighed og anmodede omfang matcher Aura-backend, og prøv derefter igen.',
+    'Twitter/X-login kunne ikke starte. Tjek, at Twitter OAuth app-callback URL, klient-id/hemmelighed og anmodede omfang matcher Youma-backend, og prøv derefter igen.',
   'oauth.provider_button.generic_startup_failure':
     '{providerName} login kunne ikke starte. Prøv venligst igen.',
   'oauth.provider_button.connecting': 'Opretter forbindelse...',
   'skills.search_bar.placeholder': 'Søgefærdigheder...',
-  'common.persist_rehydration_screen.title': 'Aura tager længere tid end normalt at indlæse.',
+  'common.persist_rehydration_screen.title': 'Youma tager længere tid end normalt at indlæse.',
   'common.persist_rehydration_screen.description':
     'Lokal app-tilstand kan være beskadiget. Nulstilling vil logge dig ud og rydde cachelagrede data på denne enhed; du gentilslutter dine konti ved næste lancering. Dine data på serveren påvirkes ikke.',
   'common.persist_rehydration_screen.resetting': 'Nulstiller...',
   'common.persist_rehydration_screen.reset_button': 'Nulstil lokal stat',
-  'common.route_loading_screen.initializing': 'Initialiserer Aura...',
+  'common.route_loading_screen.initializing': 'Initialiserer Youma...',
   'privacy.what_leaves_link.label': 'Hvad forlader min computer?',
   'settings.provider_key_dialog.api_key_required':
     'Indsæt venligst din API-nøgle for at fortsætte.',
@@ -2439,7 +2439,7 @@ const daDK: TranslationMap = {
   'settings.provider_key_dialog.cancel_button': 'Ophæve',
   'settings.provider_key_dialog.saving': 'Gemmer...',
   'settings.provider_key_dialog.save_button': 'Spare',
-  'settings.workload_row.aura_default': 'Aura (standard)',
+  'settings.workload_row.aura_default': 'Youma (standard)',
   'settings.workload_row.default_button': 'Misligholdelse',
   'settings.workload_row.custom_button': 'Skik',
 };

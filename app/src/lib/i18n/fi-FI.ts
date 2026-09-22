@@ -129,7 +129,7 @@ const fiFI: TranslationMap = {
   'clearData.failedLogout': 'Uloskirjautuminen epäonnistui. Yritä uudelleen.',
   'clearData.failedPersist':
     'Pysyneen sovelluksen tilan tyhjentäminen epäonnistui. Yritä uudelleen.',
-  'welcome.title': 'Tervetuloa Aura',
+  'welcome.title': 'Tervetuloa Youma',
   'welcome.subtitle':
     'Henkilökohtainen AI superälykkyytesi. Yksityinen, yksinkertainen ja erittäin tehokas.',
   'welcome.connectPrompt': 'Määritä RPC URL (Lisäasetukset)',
@@ -147,7 +147,7 @@ const fiFI: TranslationMap = {
   'home.statusBackendOnly':
     'Yhdistetään uudelleen taustajärjestelmään… agenttisi on taas käytettävissä pian.',
   'home.statusCoreUnreachable':
-    'Paikallinen sivuvaunu ei vastaa. Aura taustaprosessi on saattanut kaatua tai ei käynnistynyt.',
+    'Paikallinen sivuvaunu ei vastaa. Youma taustaprosessi on saattanut kaatua tai ei käynnistynyt.',
   'home.statusInternetOffline':
     'Laitteesi on offline-tilassa juuri nyt. Tarkista verkkosi tai käynnistä sovellus uudelleen yhteyden muodostamiseksi.',
   'home.restartCore': 'Käynnistä Core uudelleen',
@@ -198,7 +198,7 @@ const fiFI: TranslationMap = {
   'rewards.referralCode': 'Suosituskoodisi',
   'rewards.copyCode': 'Kopioi koodi',
   'rewards.share': 'Jakaa',
-  'onboarding.welcome': 'Hei. Olen Aura.',
+  'onboarding.welcome': 'Hei. Olen Youma.',
   'onboarding.welcomeDesc':
     'Älykäs AI-avustajasi, joka toimii tietokoneellasi. Yksityinen, yksinkertainen ja erittäin tehokas.',
   'onboarding.context': 'Kontekstin kerääminen',
@@ -210,14 +210,14 @@ const fiFI: TranslationMap = {
   'onboarding.referral': 'Viittaus',
   'onboarding.referralDesc': 'Käytä viittauskoodia, jos sinulla on sellainen.',
   'onboarding.finish': 'Viimeistele asennus',
-  'onboarding.finishDesc': 'Kaikki on valmista! Aloita Aura käyttö.',
+  'onboarding.finishDesc': 'Kaikki on valmista! Aloita Youma käyttö.',
   'onboarding.skip': 'Ohita',
   'onboarding.getStarted': 'Aloita',
-  'onboarding.runtimeChoice.title': 'Kuinka haluaisit juosta Aura?',
+  'onboarding.runtimeChoice.title': 'Kuinka haluaisit juosta Youma?',
   'onboarding.runtimeChoice.subtitle':
     'Valitse itsellesi parhaiten sopiva kokoonpano. Voit muuttaa tätä myöhemmin asetuksissa.',
   'onboarding.runtimeChoice.cloud.title': 'Yksinkertainen',
-  'onboarding.runtimeChoice.cloud.tagline': 'Anna Aura hoitaa kaikki puolestasi.',
+  'onboarding.runtimeChoice.cloud.tagline': 'Anna Youma hoitaa kaikki puolestasi.',
   'onboarding.runtimeChoice.cloud.f1': 'Sisäänrakennettu suojaus',
   'onboarding.runtimeChoice.cloud.f2': 'Token-pakkaus laajentaa käyttöäsi',
   'onboarding.runtimeChoice.cloud.f3': 'Yksi tilaus, jokainen malli mukana',
@@ -253,7 +253,7 @@ const fiFI: TranslationMap = {
   'onboarding.custom.stepperMemory': 'Muisti',
   'onboarding.custom.stepCounter': 'Vaihe {n} / {total}',
   'onboarding.custom.defaultTitle': 'Oletus',
-  'onboarding.custom.defaultSubtitle': 'Anna Aura hoitaa se puolestasi.',
+  'onboarding.custom.defaultSubtitle': 'Anna Youma hoitaa se puolestasi.',
   'onboarding.custom.configureTitle': 'Määritä',
   'onboarding.custom.configureSubtitle': 'Valitsen mitä käytän.',
   'onboarding.custom.progressAriaLabel': 'Käyttöönoton edistyminen',
@@ -267,33 +267,33 @@ const fiFI: TranslationMap = {
   'onboarding.custom.inference.subtitle':
     'Minkä kielimallin pitäisi vastata kysymyksiisi ja johtaa agenttejasi?',
   'onboarding.custom.inference.defaultDesc':
-    'Aura reitittää jokaisen työkuorman järkevään oletusmalliin. Ei avaimia, ei asetuksia.',
+    'Youma reitittää jokaisen työkuorman järkevään oletusmalliin. Ei avaimia, ei asetuksia.',
   'onboarding.custom.inference.configureDesc':
     'Ota mukaan oma OpenAI- tai Anthropic-avain. Käytämme sitä jokaiseen tekstipohjaiseen työmäärään.',
   'onboarding.custom.voice.title': 'Ääni',
   'onboarding.custom.voice.subtitle': 'Puhe tekstiksi ja teksti puheeksi äänitilassa.',
   'onboarding.custom.voice.defaultDesc':
-    'Aura toimitetaan hallitulla STT/TTS-koodilla, joka vain toimii. Ei mitään kytkettävää.',
+    'Youma toimitetaan hallitulla STT/TTS-koodilla, joka vain toimii. Ei mitään kytkettävää.',
   'onboarding.custom.voice.configureDesc':
     'Käytä omia ElevenLabsia / OpenAI Whisper / jne. Määritä kohdassa Asetukset › Voice.',
   'onboarding.custom.oauth.title': 'Liitännät (OAuth)',
   'onboarding.custom.oauth.subtitle':
     'Gmail, Slack, Notion ja muut yhdistetyt palvelut, jotka tarvitsevat OAuth.',
   'onboarding.custom.oauth.defaultDesc':
-    'Aura käyttää hallittua Composio -työtilaa. Yhdistä jokainen palvelu myöhemmin yhdellä napsautuksella.',
+    'Youma käyttää hallittua Composio -työtilaa. Yhdistä jokainen palvelu myöhemmin yhdellä napsautuksella.',
   'onboarding.custom.oauth.configureDesc':
     'Tuo oma Composio -tili / API avain. Määritä kohdassa Asetukset › Yhteydet.',
   'onboarding.custom.search.title': 'Verkkohaku',
-  'onboarding.custom.search.subtitle': 'Kuinka Aura tekee verkkohakuja puolestasi.',
+  'onboarding.custom.search.subtitle': 'Kuinka Youma tekee verkkohakuja puolestasi.',
   'onboarding.custom.search.defaultDesc':
-    'Aura käyttää hallittua haun taustaohjelmaa. Avaimia ei tarvita.',
+    'Youma käyttää hallittua haun taustaohjelmaa. Avaimia ei tarvita.',
   'onboarding.custom.search.configureDesc':
     'Ota mukaan oma hakupalveluavain (Tavily, Brave jne.). Määritä kohdassa Asetukset › Työkalut.',
   'onboarding.custom.memory.title': 'Muisti',
   'onboarding.custom.memory.subtitle':
-    'Kuinka Aura muistaa kontekstisi, mieltymyksesi ja aikaisemmat keskustelusi.',
+    'Kuinka Youma muistaa kontekstisi, mieltymyksesi ja aikaisemmat keskustelusi.',
   'onboarding.custom.memory.defaultDesc':
-    'Aura hallitsee muistin tallennusta ja hakua automaattisesti. Ei mitään määritettävää.',
+    'Youma hallitsee muistin tallennusta ja hakua automaattisesti. Ei mitään määritettävää.',
   'onboarding.custom.memory.configureDesc':
     'Tarkista, vie tai pyyhi muisti itse. Määritä kohdassa Asetukset › Muisti.',
   'accounts.addAccount': 'Lisää tili',
@@ -353,7 +353,7 @@ const fiFI: TranslationMap = {
   'misc.downloading': 'Ladataan...',
   'misc.installing': 'Asennetaan...',
   'misc.beta':
-    'Aura on alkuvaiheessa. Voit vapaasti jakaa palautetta tai ilmoittaa havaitsemistasi virheistä – jokainen raportti auttaa meitä toimittamaan nopeammin.',
+    'Youma on alkuvaiheessa. Voit vapaasti jakaa palautetta tai ilmoittaa havaitsemistasi virheistä – jokainen raportti auttaa meitä toimittamaan nopeammin.',
   'misc.betaFeedback': 'Lähetä palautetta',
   'mnemonic.title': 'Palautuslause',
   'mnemonic.warning': 'Kirjoita nämä sanat muistiin ja säilytä ne turvallisessa paikassa.',
@@ -376,11 +376,11 @@ const fiFI: TranslationMap = {
   'privacy.anonymizedAnalytics': 'Anonymisoitu Analytics',
   'privacy.shareAnonymizedData': 'Jaa anonymisoituja käyttötietoja',
   'privacy.shareAnonymizedDataDesc':
-    'Auta parantamaan Aura jakamalla nimettömiä virheraportteja ja käyttöanalytiikkaa. Kaikki tiedot ovat täysin anonymisoituja – henkilökohtaisia ​​tietoja, viestejä, lompakkoavaimia tai istuntotietoja ei koskaan kerätä.',
+    'Auta parantamaan Youma jakamalla nimettömiä virheraportteja ja käyttöanalytiikkaa. Kaikki tiedot ovat täysin anonymisoituja – henkilökohtaisia ​​tietoja, viestejä, lompakkoavaimia tai istuntotietoja ei koskaan kerätä.',
   'privacy.meetingFollowUps': 'Kokouksen seuranta',
   'privacy.autoHandoffMeet': 'Automaattinen Google Meet -transkriptiot orkesterille',
   'privacy.autoHandoffMeetDesc':
-    'Kun Google Meet -puhelu päättyy, Aura orkesteri voi lukea transkription ja ryhtyä toimiin, kuten luonnostelemaan viestejä, ajoittamaan seurantaa tai lähettämään yhteenvedot yhdistetylle Slack-työtilalle. Oletuksena pois päältä.',
+    'Kun Google Meet -puhelu päättyy, Youma orkesteri voi lukea transkription ja ryhtyä toimiin, kuten luonnostelemaan viestejä, ajoittamaan seurantaa tai lähettämään yhteenvedot yhdistetylle Slack-työtilalle. Oletuksena pois päältä.',
   'privacy.analyticsDisclaimer':
     'Kaikki analytiikka- ja virheraportit ovat täysin anonymisoituja. Kun tämä on käytössä, keräämme vain kaatumistiedot, laitetyypin ja virheiden tiedostosijainnin. Emme koskaan käytä viestejäsi, istuntotietojasi, lompakon avaimia, API-avaimia tai muita henkilökohtaisia ​​tunnistetietoja. Voit muuttaa tätä asetusta milloin tahansa.',
   'settings.about.version': 'Versio',
@@ -438,7 +438,7 @@ const fiFI: TranslationMap = {
   'settings.billing.browserNotOpen': 'Jos selaimesi ei avautunut, käytä yllä olevaa painiketta.',
   'settings.billing.browserOpenFailed':
     'Selainta ei voitu avata automaattisesti. Käytä yllä olevaa painiketta.',
-  'settings.tools.chooseCapabilities': 'Valitse, mitä ominaisuuksia Aura voi käyttää puolestasi.',
+  'settings.tools.chooseCapabilities': 'Valitse, mitä ominaisuuksia Youma voi käyttää puolestasi.',
   'settings.tools.saveChanges': 'Tallenna muutokset',
   'settings.tools.preferencesSaved': 'Asetukset tallennettu',
   'settings.tools.saveFailed': 'Asetusten tallentaminen epäonnistui. Yritä uudelleen.',
@@ -904,9 +904,9 @@ const fiFI: TranslationMap = {
   'bootCheck.tokenRequired': 'Tarvitsemme todennustunnuksen yhteyden muodostamiseen.',
   'bootCheck.chooseCoreMode': 'Valitse suoritusaika',
   'bootCheck.connectToCore': 'Yhdistä Runtimeen',
-  'bootCheck.desktopDescription': 'Aura tarvitsee ajatteluaikaa. Valitse missä sen pitäisi asua.',
+  'bootCheck.desktopDescription': 'Youma tarvitsee ajatteluaikaa. Valitse missä sen pitäisi asua.',
   'bootCheck.webDescription':
-    'Verkossa Aura muodostaa yhteyden hallitsemaasi suoritusaikaan. Pudota sen URL ja todennustunnus alla tai nappaa työpöytäsovellus suorittaaksesi sellaisen suoraan koneellesi.',
+    'Verkossa Youma muodostaa yhteyden hallitsemaasi suoritusaikaan. Pudota sen URL ja todennustunnus alla tai nappaa työpöytäsovellus suorittaaksesi sellaisen suoraan koneellesi.',
   'bootCheck.preferDesktop': 'Pidätkö mieluummin kaiken omalla laitteellasi?',
   'bootCheck.downloadDesktop': 'Hanki työpöytäsovellus',
   'bootCheck.localRecommended': 'Suorita paikallisesti (suositus)',
@@ -933,7 +933,7 @@ const fiFI: TranslationMap = {
   'bootCheck.quit': 'Lopettaa',
   'bootCheck.legacyDetected': 'Vanha taustan suoritusaika havaittu',
   'bootCheck.legacyDescription':
-    'Tässä laitteessa on jo käynnissä erikseen asennettu Aura-daemon. Meidän on tyhjennettävä se ennen kuin sisäänrakennettu suoritusaika voi ottaa haltuunsa.',
+    'Tässä laitteessa on jo käynnissä erikseen asennettu Youma-daemon. Meidän on tyhjennettävä se ennen kuin sisäänrakennettu suoritusaika voi ottaa haltuunsa.',
   'bootCheck.removing': 'Poistetaan…',
   'bootCheck.removeContinue': 'Poista ja jatka',
   'bootCheck.localNeedsRestart': 'Paikallinen suoritusaika vaatii uudelleenkäynnistyksen',
@@ -1071,9 +1071,9 @@ const fiFI: TranslationMap = {
   'rewards.referrals.load_stats_error': 'Viittaustilastoja ei voitu ladata',
   'rewards.referrals.copied': 'Kopioitu',
   'rewards.referrals.copy_failed': 'Kopiointi epäonnistui',
-  'rewards.referrals.share_intro': 'Liity kanssani Aura.',
+  'rewards.referrals.share_intro': 'Liity kanssani Youma.',
   'rewards.referrals.share_code_line': 'Viitekoodi: {code}',
-  'rewards.referrals.share_download_line': 'Lataa Aura: {url}',
+  'rewards.referrals.share_download_line': 'Lataa Youma: {url}',
   'rewards.referrals.apply_error': 'Viittauskoodia ei voitu käyttää',
   'rewards.referrals.heading': 'Kutsu ystäviä, ansaitse krediittejä',
   'rewards.referrals.description':
@@ -1305,22 +1305,22 @@ const fiFI: TranslationMap = {
   'skills.meeting_bots_card.platform_gmeet': 'Google Meet',
   'skills.meeting_bots_card.platform_zoom': 'Zoom',
   'skills.meeting_bots_card.platform_teams': 'Microsoft Teams',
-  'skills.meeting_bots_card.banner_title': 'Lähetä Aura kokoukseen',
+  'skills.meeting_bots_card.banner_title': 'Lähetä Youma kokoukseen',
   'skills.meeting_bots_card.new_badge': 'Uusi',
   'skills.meeting_bots_card.banner_description':
-    'Pudota Google Meet -linkki ja Aura liittyy vieraaksi, puhuu, kuuntelee ja vilkuttaa takaisin.',
+    'Pudota Google Meet -linkki ja Youma liittyy vieraaksi, puhuu, kuuntelee ja vilkuttaa takaisin.',
   'skills.meeting_bots_card.coming_soon_error': '{platform} tuki on tulossa pian.',
-  'skills.meeting_bots_card.toast_joining_title': 'Aura liittyy kokoukseen',
+  'skills.meeting_bots_card.toast_joining_title': 'Youma liittyy kokoukseen',
   'skills.meeting_bots_card.toast_joining_message':
     'Sen pitäisi ilmestyä osallistujana muutaman sekunnin kuluttua.',
-  'skills.meeting_bots_card.toast_busy_title': 'Aura on kiireinen',
-  'skills.meeting_bots_card.toast_failed_title': 'Ei voitu käynnistää Aura',
-  'skills.meeting_bots_card.default_error_message': 'Aura käynnistys epäonnistui.',
-  'skills.meeting_bots_card.modal_aria_label': 'Lähetä Aura kokoukseen',
+  'skills.meeting_bots_card.toast_busy_title': 'Youma on kiireinen',
+  'skills.meeting_bots_card.toast_failed_title': 'Ei voitu käynnistää Youma',
+  'skills.meeting_bots_card.default_error_message': 'Youma käynnistys epäonnistui.',
+  'skills.meeting_bots_card.modal_aria_label': 'Lähetä Youma kokoukseen',
   'skills.meeting_bots_card.close_aria': 'Lähellä',
-  'skills.meeting_bots_card.modal_title': 'Lähetä Aura kokoukseen',
+  'skills.meeting_bots_card.modal_title': 'Lähetä Youma kokoukseen',
   'skills.meeting_bots_card.modal_description':
-    'Aura liittyy nimettömänä vieraana, suoratoistaa videonsa puheluun ja vastaa agentin kautta.',
+    'Youma liittyy nimettömänä vieraana, suoratoistaa videonsa puheluun ja vastaa agentin kautta.',
   'skills.meeting_bots_card.soon_suffix': '· pian',
   'skills.meeting_bots_card.meeting_link_label': 'Linkki kokoukseen',
   'skills.meeting_bots_card.display_name_label': 'Näyttönimi',
@@ -1466,14 +1466,14 @@ const fiFI: TranslationMap = {
   'settings.composio_panel.title': 'Composio',
   'settings.composio_panel.loading': 'Ladataan…',
   'settings.composio_panel.intro_prefix':
-    'Composio mahdollistaa integraatiot Gmailin, Notionin, Slack, GitHub ja yli 1000 muun sovelluksen kanssa. Oletuksena Aura hoitaa sen puolestasi, joten sinun ei tarvitse ottaa API-avainta mukaan. Jos haluat käyttää omaa Composio-tiliäsi suoraan, vaihda osoitteeseen',
+    'Composio mahdollistaa integraatiot Gmailin, Notionin, Slack, GitHub ja yli 1000 muun sovelluksen kanssa. Oletuksena Youma hoitaa sen puolestasi, joten sinun ei tarvitse ottaa API-avainta mukaan. Jos haluat käyttää omaa Composio-tiliäsi suoraan, vaihda osoitteeseen',
   'settings.composio_panel.direct_word': 'Suoraan',
   'settings.composio_panel.intro_suffix': 'tila ja liitä avaimesi alle.',
   'settings.composio_panel.routing_mode_legend': 'Reititystila',
-  'settings.composio_panel.managed_aria_label': 'Hallittu (Aura hoitaa sen puolestasi)',
-  'settings.composio_panel.managed_title': 'Hallittu (Aura hoitaa sen puolestasi)',
+  'settings.composio_panel.managed_aria_label': 'Hallittu (Youma hoitaa sen puolestasi)',
+  'settings.composio_panel.managed_title': 'Hallittu (Youma hoitaa sen puolestasi)',
   'settings.composio_panel.managed_description':
-    'Oletus. Aura hallitsee Composio-yhteyttä puolestasi. Trigger webhookit (reaaliaikaiset Gmail / Slack tapahtumat) toimivat heti.',
+    'Oletus. Youma hallitsee Composio-yhteyttä puolestasi. Trigger webhookit (reaaliaikaiset Gmail / Slack tapahtumat) toimivat heti.',
   'settings.composio_panel.direct_aria_label': 'Suora (mukana oma API-avain)',
   'settings.composio_panel.direct_title': 'Suora (mukana oma API-avain)',
   'settings.composio_panel.direct_description_prefix': 'Puhelut menevät osoitteeseen',
@@ -1484,7 +1484,7 @@ const fiFI: TranslationMap = {
   'settings.composio_panel.api_key_label': 'Composio API -näppäin',
   'settings.composio_panel.api_key_help_prefix': 'Etsi avaimesi osoitteessa',
   'settings.composio_panel.api_key_help_suffix':
-    'Avain tallennetaan salattuna tähän laitteeseen, eikä sitä koskaan lähetetä numeroon Aura.',
+    'Avain tallennetaan salattuna tähän laitteeseen, eikä sitä koskaan lähetetä numeroon Youma.',
   'settings.composio_panel.api_key_placeholder_stored':
     '•••••••••••• (avain tallennettu — liitä uusi avain tilalle)',
   'settings.composio_panel.api_key_placeholder_empty': 'ck_live_xxxxxxxxxxxxxxxxx',
@@ -1492,10 +1492,10 @@ const fiFI: TranslationMap = {
     'Näppäin Composio API on tällä hetkellä tallennettu tähän laitteeseen.',
   'settings.composio_panel.confirm_title': '⚠️ Siirtyminen suoraan tilaan',
   'settings.composio_panel.confirm_integrations_prefix':
-    'Nykyiset integraatiosi (Gmail, Slack, GitHub jne. linkitetty Aura:n kautta)',
+    'Nykyiset integraatiosi (Gmail, Slack, GitHub jne. linkitetty Youma:n kautta)',
   'settings.composio_panel.wont_be_visible': 'ei tule näkymään',
   'settings.composio_panel.confirm_integrations_suffix':
-    '— he asuvat Aura hallinnoimassa Composio vuokralaisessa.',
+    '— he asuvat Youma hallinnoimassa Composio vuokralaisessa.',
   'settings.composio_panel.confirm_needs_title': 'Tarvitset:',
   'settings.composio_panel.confirm_need_account_prefix': 'Tili osoitteessa',
   'settings.composio_panel.confirm_need_account_suffix': 'API-näppäimellä',
@@ -1514,7 +1514,7 @@ const fiFI: TranslationMap = {
     'Tallentaminen epäonnistui. Suora tila vaatii ei-tyhjän API-näppäimen.',
   'settings.model_status.ollama_unavailable_title': 'Ollaman suoritusaika ei ole käytettävissä',
   'settings.model_status.ollama_unavailable_description':
-    'Aura käsittelee nyt Ollamaa ulkoisena päättelyn ajonaikana. Aloita oma Ollama-palvelin, vedä haluamasi mallit ja kohdista siihen työkuorman reititys.',
+    'Youma käsittelee nyt Ollamaa ulkoisena päättelyn ajonaikana. Aloita oma Ollama-palvelin, vedä haluamasi mallit ja kohdista siihen työkuorman reititys.',
   'settings.model_status.ollama_docs_link': 'Ollama dokumentit',
   'settings.model_status.runtime_status_title': 'Runtime Status',
   'settings.model_status.refresh': 'Päivitä',
@@ -1533,7 +1533,7 @@ const fiFI: TranslationMap = {
   'settings.model_status.hide_error_details': 'Piilota virheen tiedot',
   'settings.model_status.show_error_details': 'Näytä virheen tiedot',
   'settings.model_status.connect_only_prefix':
-    'Aura muodostaa yhteyden vain jo käynnissä olevaan Ollama-yhteensopivaan päätepisteeseen. Katso',
+    'Youma muodostaa yhteyden vain jo käynnissä olevaan Ollama-yhteensopivaan päätepisteeseen. Katso',
   'settings.model_status.connect_only_suffix':
     'saadaksesi asennusohjeet, ja yritä sitten uudelleen, kun suoritusaikasi on saavutettavissa.',
   'settings.model_status.ollama_diagnostics_title': 'Ollama Diagnostiikka',
@@ -1559,7 +1559,7 @@ const fiFI: TranslationMap = {
   'settings.model_status.vision_model_line': 'Näkö: {model}',
   'settings.model_status.issues_heading': 'Ongelmat',
   'settings.model_status.manage_ollama_footer':
-    'Hallitse Ollama-prosessia ja mallivedot arvon Aura ulkopuolella ja suorita diagnostiikka uudelleen.',
+    'Hallitse Ollama-prosessia ja mallivedot arvon Youma ulkopuolella ja suorita diagnostiikka uudelleen.',
   'settings.device_capability.model_tier_title': 'Mallin taso',
   'settings.device_capability.loading_device_info': 'Ladataan laitetietoja ja esiasetuksia…',
   'settings.device_capability.could_not_load_presets': 'Esiasetuksia ei voitu ladata: {error}',
@@ -1866,7 +1866,7 @@ const fiFI: TranslationMap = {
   'composio.connect_modal.disconnecting': 'Katkaistaan…',
   'composio.connect_modal.dismiss': 'Hylkää',
   'composio.connect_modal.expired_body':
-    'Ota {name}-työkalut uudelleen käyttöön muodostamalla yhteys uudelleen. Aura pitää tämän integroinnin poissa käytöstä, kunnes päivität OAuth-käyttöoikeuden.',
+    'Ota {name}-työkalut uudelleen käyttöön muodostamalla yhteys uudelleen. Youma pitää tämän integroinnin poissa käytöstä, kunnes päivität OAuth-käyttöoikeuden.',
   'composio.connect_modal.expired_title': '{name} valtuutus vanhentunut',
   'composio.connect_modal.generic_error': 'Jotain meni pieleen.',
   'composio.connect_modal.header_connect': 'Yhdistä {name}',
@@ -1882,7 +1882,7 @@ const fiFI: TranslationMap = {
   'composio.connect_modal.needs_subdomain_intro_suffix': ') ja yritä uudelleen.',
   'composio.connect_modal.permission_intro_prefix': '{name} voi paljastaa',
   'composio.connect_modal.permission_intro_suffix':
-    '. Kun olet muodostanut yhteyden, Aura omia agenttioikeuksia ohjataan alla luku-, kirjoitus- ja järjestelmänvalvojan vaihto- vaihtoehdoilla.',
+    '. Kun olet muodostanut yhteyden, Youma omia agenttioikeuksia ohjataan alla luku-, kirjoitus- ja järjestelmänvalvojan vaihto- vaihtoehdoilla.',
   'composio.connect_modal.permissions_default_hint': 'Luku + kirjoitus käytössä oletuksena',
   'composio.connect_modal.permissions_heading': 'Käyttöoikeudet',
   'composio.connect_modal.poll_timeout':
@@ -1931,10 +1931,10 @@ const fiFI: TranslationMap = {
   'settings.ai_panel.local_runtime_disconnect_aria': 'Irrota {label}',
   'settings.ai_panel.providers_heading': 'LLM Palveluntarjoajat',
   'settings.ai_panel.providers_subtitle':
-    'Yhdistä kielimallin taustaohjelmat, joita haluat Aura käyttää. Ota palveluntarjoaja käyttöön lisätäksesi sen avaimen; katkaise yhteys.',
+    'Yhdistä kielimallin taustaohjelmat, joita haluat Youma käyttää. Ota palveluntarjoaja käyttöön lisätäksesi sen avaimen; katkaise yhteys.',
   'settings.ai_panel.routing_heading': 'Reititys',
   'settings.ai_panel.routing_subtitle':
-    'Valitse, miten kutakin työtaakkaa palvellaan. Oletus käyttää Aura; Mukautetun avulla voit osoittaa työkuorman tietylle toimittajalle ja mallille.',
+    'Valitse, miten kutakin työtaakkaa palvellaan. Oletus käyttää Youma; Mukautetun avulla voit osoittaa työkuorman tietylle toimittajalle ja mallille.',
   'settings.auto_recharge.add_card': '+ Lisää kortti Stripeen',
   'settings.auto_recharge.amount_label': 'Lisää tämä määrä',
   'settings.auto_recharge.cancel': 'Peruuttaa',
@@ -1997,22 +1997,22 @@ const fiFI: TranslationMap = {
   'settings.mascot_panel.color_black': 'Musta',
   'settings.mascot_panel.color_burgundy': 'Burgundia',
   'settings.mascot_panel.color_footer_hint':
-    'Valittua väriä käytetään kaikkialla, missä Aura näkyy, ja se muistetaan uudelleenkäynnistettäessä.',
+    'Valittua väriä käytetään kaikkialla, missä Youma näkyy, ja se muistetaan uudelleenkäynnistettäessä.',
   'settings.mascot_panel.color_green': 'Vihreä',
   'settings.mascot_panel.color_heading': 'Väri',
   'settings.mascot_panel.color_navy': 'Laivasto',
-  'settings.mascot_panel.color_radiogroup_aria': 'Aura väri',
+  'settings.mascot_panel.color_radiogroup_aria': 'Youma väri',
   'settings.mascot_panel.color_yellow': 'Keltainen',
-  'settings.mascot_panel.header_title': 'Aura',
-  'settings.mascot_panel.library_unavailable': 'Aura kirjasto ei saatavilla: {error}',
+  'settings.mascot_panel.header_title': 'Youma',
+  'settings.mascot_panel.library_unavailable': 'Youma kirjasto ei saatavilla: {error}',
   'settings.mascot_panel.load_library_error': 'Maskottikirjastoa ei voitu ladata.',
   'settings.mascot_panel.load_mascot_error': 'Maskottia ei voitu ladata.',
-  'settings.mascot_panel.loading_library': 'Ladataan Aura kirjastoa…',
-  'settings.mascot_panel.local_aura_default': 'Paikallinen Aura (oletus)',
+  'settings.mascot_panel.loading_library': 'Ladataan Youma kirjastoa…',
+  'settings.mascot_panel.local_aura_default': 'Paikallinen Youma (oletus)',
   'settings.mascot_panel.no_characters':
-    'Aura-merkkejä ei ole vielä saatavilla. Yllä olevat paikalliset värivaihtoehdot ovat edelleen aktiivisia.',
+    'Youma-merkkejä ei ole vielä saatavilla. Yllä olevat paikalliset värivaihtoehdot ovat edelleen aktiivisia.',
   'settings.mascot_panel.no_color_variants':
-    'Tässä kokoonpanossa ei ole saatavilla Aura värivaihtoehtoja.',
+    'Tässä kokoonpanossa ei ole saatavilla Youma värivaihtoehtoja.',
   'settings.mascot_panel.preview_label': 'Esikatselu · {name}',
   'settings.mascot_panel.version_states': 'v{version} · {states} tilaa',
   'settings.mascot_panel.visemes_suffix': '· visemes',
@@ -2056,7 +2056,7 @@ const fiFI: TranslationMap = {
   'local_ai.download_snackbar.installing': 'Asennetaan...',
   'local_ai.download_snackbar.preparing': 'Valmistellaan...',
   'settings.cron_job_list.heading': 'Core Cron Jobs',
-  'settings.cron_job_list.subheading': 'Työpaikat säilyivät Aura-ydinaikataulutietokannassa.',
+  'settings.cron_job_list.subheading': 'Työpaikat säilyivät Youma-ydinaikataulutietokannassa.',
   'settings.cron_job_list.loading': 'Ladataan cron-töitä...',
   'settings.cron_job_list.empty': 'Cronin ydintöitä ei löytynyt.',
   'settings.cron_job_list.status_enabled': 'Käytössä',
@@ -2128,16 +2128,16 @@ const fiFI: TranslationMap = {
   'aura_link_modal.notifications_desktop_only':
     'Alkuperäiset ilmoitukset ovat saatavilla vain työpöytäsovelluksessa (suorita "pnpm dev:app").',
   'aura_link_modal.notifications_permission_off':
-    'Ilmoituslupa ei ole käytössä. Ota Aura käyttöön kohdassa Järjestelmäasetukset → Ilmoitukset ja yritä sitten uudelleen.',
-  'aura_link_modal.notification_title': 'Aura on hyvä mennä',
+    'Ilmoituslupa ei ole käytössä. Ota Youma käyttöön kohdassa Järjestelmäasetukset → Ilmoitukset ja yritä sitten uudelleen.',
+  'aura_link_modal.notification_title': 'Youma on hyvä mennä',
   'aura_link_modal.notification_body': 'Saat pingit täältä, kun jokin tarvitsee huomiotasi.',
   'aura_link_modal.notification_send_failed':
-    'Aura ei voinut laukaista järjestelmäilmoitusta. Tarkista käyttöjärjestelmän ilmoitusasetukset ja yritä uudelleen.',
+    'Youma ei voinut laukaista järjestelmäilmoitusta. Tarkista käyttöjärjestelmän ilmoitusasetukset ja yritä uudelleen.',
   'aura_link_modal.notifications_intro':
-    'Aura käyttää alkuperäisiä ilmoituksia, jotta se voi lähettää sinulle ping-viestejä, kun jokin tarvitsee huomiotasi, vaikka chat-ikkuna olisi piilotettu.',
+    'Youma käyttää alkuperäisiä ilmoituksia, jotta se voi lähettää sinulle ping-viestejä, kun jokin tarvitsee huomiotasi, vaikka chat-ikkuna olisi piilotettu.',
   'aura_link_modal.notifications_blocked_line1': 'Ilmoitukset on tällä hetkellä estetty.',
   'aura_link_modal.notifications_blocked_line2':
-    '1. Avaa Järjestelmäasetukset → Ilmoitukset → Aura',
+    '1. Avaa Järjestelmäasetukset → Ilmoitukset → Youma',
   'aura_link_modal.notifications_blocked_line3': '2. Ota käyttöön Salli ilmoitukset',
   'aura_link_modal.notifications_blocked_line4':
     '3. Palaa tähän ja napauta Yritä testiilmoitus uudelleen',
@@ -2147,7 +2147,7 @@ const fiFI: TranslationMap = {
   'aura_link_modal.retry_test_notification': 'Yritä testiilmoitus uudelleen',
   'aura_link_modal.send_test_notification': 'Lähetä testiilmoitus',
   'aura_link_modal.notification_sent_success':
-    'Testiilmoitus lähetetty. Jos et saanut sitä, siirry kohtaan Järjestelmäasetukset → Ilmoitukset → Aura, laita Salli ilmoitukset päälle ja aseta Banner Style -asetukseksi Pysyvä.',
+    'Testiilmoitus lähetetty. Jos et saanut sitä, siirry kohtaan Järjestelmäasetukset → Ilmoitukset → Youma, laita Salli ilmoitukset päälle ja aseta Banner Style -asetukseksi Pysyvä.',
   'aura_link_modal.notification_send_error': 'Ei voitu lähettää: {error}',
   'aura_link_modal.trial_credit_label': 'Kokeiluluotto',
   'aura_link_modal.trial_credit_amount': '1,00 dollaria',
@@ -2156,7 +2156,7 @@ const fiFI: TranslationMap = {
   'aura_link_modal.open_dashboard': 'Avaa hallintapaneeli selaimessa',
   'aura_link_modal.stay_on_trial': 'Pysy oikeudenkäynnissä',
   'aura_link_modal.discord_intro':
-    'Hyppää Discord -tiliimme ja linkitä Aura -tilisi. Saat eksklusiivisen pääsyn ominaisuuksiin varhaisessa vaiheessa, ilmaisia ​​krediittejä pelaamiseen, mahtavan yhteisön, jonka kanssa nörttiä, ja kyllä, ilmaisia ​​oheistuotteita.',
+    'Hyppää Discord -tiliimme ja linkitä Youma -tilisi. Saat eksklusiivisen pääsyn ominaisuuksiin varhaisessa vaiheessa, ilmaisia ​​krediittejä pelaamiseen, mahtavan yhteisön, jonka kanssa nörttiä, ja kyllä, ilmaisia ​​oheistuotteita.',
   'aura_link_modal.discord_perk_feature_access': 'Ainutlaatuinen käyttöoikeus',
   'aura_link_modal.discord_perk_free_credits': 'Ilmaisia ​​luottoja aktiivisille jäsenille',
   'aura_link_modal.discord_perk_community': 'Rakentajien ja toiminnanharjoittajien yhteisö',
@@ -2193,7 +2193,7 @@ const fiFI: TranslationMap = {
   'channels.discord_config.copy': 'Kopioida',
   'channels.discord_config.link_instructions_prefix': 'Discord, lähetä',
   'channels.discord_config.link_instructions_suffix':
-    'Aura -botille. Tunnus vanhenee 5 minuutin kuluttua.',
+    'Youma -botille. Tunnus vanhenee 5 minuutin kuluttua.',
   'channels.discord_config.link_token_warning':
     'Tallenna tämä komento — tämä merkki näytetään vain kerran.',
   'channels.discord_config.account_linked': 'Discord -tilisi on linkitetty.',
@@ -2234,9 +2234,9 @@ const fiFI: TranslationMap = {
   'settings.memory_window_control.save_failed': 'Muistiikkunan tallennus epäonnistui',
   'settings.memory_window_control.heading': 'Pitkäaikainen muistiikkuna',
   'settings.memory_window_control.description':
-    'Kuinka paljon muistettua kontekstia Aura ruiskuttaa jokaiseen uuteen agenttiajoon. Suuremmat ikkunat tuntuvat olevan tietoisempia aiemmista keskusteluista, mutta käyttävät enemmän tunnuksia – ja maksavat enemmän – jokaisella ajolla.',
+    'Kuinka paljon muistettua kontekstia Youma ruiskuttaa jokaiseen uuteen agenttiajoon. Suuremmat ikkunat tuntuvat olevan tietoisempia aiemmista keskusteluista, mutta käyttävät enemmän tunnuksia – ja maksavat enemmän – jokaisella ajolla.',
   'home.banners.promo_credits': 'Sinulla on {amount} tarjoushyvitystä.',
-  'home.banners.promo_credits_prefix': 'Pyöritä Aura, ja kun olet valmis lisää,',
+  'home.banners.promo_credits_prefix': 'Pyöritä Youma, ja kun olet valmis lisää,',
   'home.banners.get_subscription': 'hanki tilaus',
   'home.banners.promo_credits_suffix': 'ja saat 10x enemmän käyttöä.',
   'home.banners.dismiss_early_bird': 'Hylkää Early Bird -banneri',
@@ -2246,7 +2246,7 @@ const fiFI: TranslationMap = {
   'home.banners.first_subscription': 'ensimmäinen tilaus.',
   'home.banners.join_discord': 'Liity joukkoomme Discord',
   'home.banners.discord_description':
-    'Hanki päivityksiä, ilmaisia ​​oheistuotteita, krediittejä, ilmoita virheistä ja ole osa Aura-yhteisöä.',
+    'Hanki päivityksiä, ilmaisia ​​oheistuotteita, krediittejä, ilmoita virheistä ja ole osa Youma-yhteisöä.',
   'intelligence.memory_chunk_detail.copy_chunk_id': 'Kopioi kappaleen tunnus',
   'intelligence.memory_chunk_detail.chunk_label': 'pala {id}',
   'intelligence.memory_chunk_detail.copied': 'kopioitu',
@@ -2271,7 +2271,7 @@ const fiFI: TranslationMap = {
     'Jotain meni pieleen. Yritä uudelleen.\nTästä virheestä on ilmoitettu. Voit ilmoittaa siitä myös Discord.\n<aura-link path="community/discord">Raportti Discord</aura-link>',
   'daemon.service_blocking_gate.retry_failed':
     'Uudelleenyritys epäonnistui. Lataa uusin sovellusversio ja yritä uudelleen.',
-  'daemon.service_blocking_gate.title': 'Aura ydin ei ole käytettävissä',
+  'daemon.service_blocking_gate.title': 'Youma ydin ei ole käytettävissä',
   'daemon.service_blocking_gate.description':
     'Emme voineet palauttaa paikallista ydinpalvelua useiden yritysten jälkeen. Tämä voi tapahtua kriittisen kaatumisen tai binäärivirheen jälkeen.',
   'daemon.service_blocking_gate.download_hint':
@@ -2426,17 +2426,17 @@ const fiFI: TranslationMap = {
   'chat.unsubscribe_approval_card.success_message': '✓ Tilauksen peruutus onnistui.',
   'chat.unsubscribe_approval_card.denied_message': '✕ Pyyntö evätty.',
   'oauth.provider_button.twitter_startup_failure':
-    'Twitter/X-sisäänkirjautuminen ei käynnistynyt. Tarkista, että Twitter OAuth -sovelluksen takaisinsoitto URL, asiakastunnus/salaisuus ja pyydetyt laajuudet vastaavat Aura-taustajärjestelmää, ja yritä sitten uudelleen.',
+    'Twitter/X-sisäänkirjautuminen ei käynnistynyt. Tarkista, että Twitter OAuth -sovelluksen takaisinsoitto URL, asiakastunnus/salaisuus ja pyydetyt laajuudet vastaavat Youma-taustajärjestelmää, ja yritä sitten uudelleen.',
   'oauth.provider_button.generic_startup_failure':
     '{providerName} sisäänkirjautumista ei voitu aloittaa. Yritä uudelleen.',
   'oauth.provider_button.connecting': 'Yhdistetään...',
   'skills.search_bar.placeholder': 'Hakutaidot...',
-  'common.persist_rehydration_screen.title': 'Aura lataaminen kestää tavallista kauemmin.',
+  'common.persist_rehydration_screen.title': 'Youma lataaminen kestää tavallista kauemmin.',
   'common.persist_rehydration_screen.description':
     'Paikallisen sovelluksen tila voi olla vioittunut. Nollaus kirjaa sinut ulos ja tyhjentää tämän laitteen välimuistissa olevat tiedot. yhdistät tilisi uudelleen seuraavan käynnistyksen yhteydessä. Tämä ei vaikuta palvelimella oleviin tietoihisi.',
   'common.persist_rehydration_screen.resetting': 'Nollataan…',
   'common.persist_rehydration_screen.reset_button': 'Palauta paikallinen tila',
-  'common.route_loading_screen.initializing': 'Alustetaan Aura...',
+  'common.route_loading_screen.initializing': 'Alustetaan Youma...',
   'privacy.what_leaves_link.label': 'Mikä jättää tietokoneeni?',
   'settings.provider_key_dialog.api_key_required': 'Liitä API-avain jatkaaksesi.',
   'settings.provider_key_dialog.connect_title': 'Yhdistä {label}',
@@ -2446,7 +2446,7 @@ const fiFI: TranslationMap = {
   'settings.provider_key_dialog.cancel_button': 'Peruuttaa',
   'settings.provider_key_dialog.saving': 'Tallennetaan…',
   'settings.provider_key_dialog.save_button': 'Tallentaa',
-  'settings.workload_row.aura_default': 'Aura (oletus)',
+  'settings.workload_row.aura_default': 'Youma (oletus)',
   'settings.workload_row.default_button': 'Oletus',
   'settings.workload_row.custom_button': 'Mukautettu',
 };

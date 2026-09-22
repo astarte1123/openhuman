@@ -132,7 +132,7 @@ function MeetingBotsModal({ onClose, onToast }: ModalProps) {
   const { t } = useT();
   const [platform, setPlatform] = useState<MascotMeetPlatform>('gmeet');
   const [meetUrl, setMeetUrl] = useState('');
-  const [displayName, setDisplayName] = useState('Aura');
+  const [displayName, setDisplayName] = useState('Youma');
   const [submitting, setSubmitting] = useState(false);
   const [capacityGated, setCapacityGated] = useState(false);
   const [error, setError] = useState<string | null>(null);

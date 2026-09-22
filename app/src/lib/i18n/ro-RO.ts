@@ -131,7 +131,7 @@ const roRO: TranslationMap = {
   'clearData.failedLogout': 'Nu s-a putut deconecta. Vă rugăm să încercați din nou.',
   'clearData.failedPersist':
     'Nu s-a șters starea aplicației persistente. Vă rugăm să încercați din nou.',
-  'welcome.title': 'Bun venit la Aura',
+  'welcome.title': 'Bun venit la Youma',
   'welcome.subtitle': 'Super inteligența ta personală AI. Privat, simplu și extrem de puternic.',
   'welcome.connectPrompt': 'Configurați RPC URL (avansat)',
   'welcome.selectRuntime': 'Selectați un Runtime',
@@ -148,7 +148,7 @@ const roRO: TranslationMap = {
   'home.statusBackendOnly':
     'Reconectarea la backend... agentul dvs. va fi disponibil din nou în curând.',
   'home.statusCoreUnreachable':
-    'Sidecarul de bază local nu răspunde. Este posibil ca procesul de fundal Aura să se fi blocat sau să nu pornească.',
+    'Sidecarul de bază local nu răspunde. Este posibil ca procesul de fundal Youma să se fi blocat sau să nu pornească.',
   'home.statusInternetOffline':
     'Dispozitivul dvs. este offline acum. Verificați-vă rețeaua sau reporniți aplicația pentru a vă reconecta.',
   'home.restartCore': 'Reporniți Core',
@@ -199,7 +199,7 @@ const roRO: TranslationMap = {
   'rewards.referralCode': 'Codul dvs. de recomandare',
   'rewards.copyCode': 'Copiați codul',
   'rewards.share': 'Distribuie',
-  'onboarding.welcome': 'Hi. Sunt Aura.',
+  'onboarding.welcome': 'Hi. Sunt Youma.',
   'onboarding.welcomeDesc':
     'Asistentul AI super-inteligent care rulează pe computer. Privat, simplu și extrem de puternic.',
   'onboarding.context': 'Adunarea contextului',
@@ -212,14 +212,14 @@ const roRO: TranslationMap = {
   'onboarding.referral': 'Sesizare',
   'onboarding.referralDesc': 'Aplicați un cod de recomandare dacă aveți unul.',
   'onboarding.finish': 'Finalizați configurarea',
-  'onboarding.finishDesc': 'Sunteți gata! Începeți să utilizați Aura.',
+  'onboarding.finishDesc': 'Sunteți gata! Începeți să utilizați Youma.',
   'onboarding.skip': 'Sari peste',
   'onboarding.getStarted': 'Începeți',
-  'onboarding.runtimeChoice.title': 'Cum ți-ar plăcea să alergi Aura?',
+  'onboarding.runtimeChoice.title': 'Cum ți-ar plăcea să alergi Youma?',
   'onboarding.runtimeChoice.subtitle':
     'Alegeți configurația care vi se potrivește cel mai bine. Puteți schimba acest lucru mai târziu în Setări.',
   'onboarding.runtimeChoice.cloud.title': 'Simplu',
-  'onboarding.runtimeChoice.cloud.tagline': 'Lasă Aura să gestioneze totul pentru tine.',
+  'onboarding.runtimeChoice.cloud.tagline': 'Lasă Youma să gestioneze totul pentru tine.',
   'onboarding.runtimeChoice.cloud.f1': 'Securitate încorporată',
   'onboarding.runtimeChoice.cloud.f2':
     'Comprimarea simbolului pentru a vă extinde mai mult utilizarea',
@@ -257,7 +257,7 @@ const roRO: TranslationMap = {
   'onboarding.custom.stepperMemory': 'Memorie',
   'onboarding.custom.stepCounter': 'Pasul {n} din {total}',
   'onboarding.custom.defaultTitle': 'Implicit',
-  'onboarding.custom.defaultSubtitle': 'Lasă-l pe Aura să o gestioneze pentru tine.',
+  'onboarding.custom.defaultSubtitle': 'Lasă-l pe Youma să o gestioneze pentru tine.',
   'onboarding.custom.configureTitle': 'Configurați',
   'onboarding.custom.configureSubtitle': 'Voi alege ce să folosesc.',
   'onboarding.custom.progressAriaLabel': 'Progres de integrare',
@@ -271,33 +271,33 @@ const roRO: TranslationMap = {
   'onboarding.custom.inference.subtitle':
     'Ce model de limbă ar trebui să vă răspundă la întrebări și să vă conducă agenții?',
   'onboarding.custom.inference.defaultDesc':
-    'Aura direcționează fiecare sarcină de lucru către un model implicit sensibil. Fără chei, fără setări.',
+    'Youma direcționează fiecare sarcină de lucru către un model implicit sensibil. Fără chei, fără setări.',
   'onboarding.custom.inference.configureDesc':
     'Aduceți-vă propria cheie OpenAI sau Anthropic. Îl folosim pentru fiecare volum de lucru bazat pe text.',
   'onboarding.custom.voice.title': 'Voce',
   'onboarding.custom.voice.subtitle': 'Vorbire în text și text în vorbire pentru modul voce.',
   'onboarding.custom.voice.defaultDesc':
-    'Aura se livrează cu STT/TTS gestionate care pur și simplu funcționează. Nimic de conectat.',
+    'Youma se livrează cu STT/TTS gestionate care pur și simplu funcționează. Nimic de conectat.',
   'onboarding.custom.voice.configureDesc':
     'Utilizați propriile ElevenLabs / OpenAI Whisper / etc. Configurați în Setări › Voce.',
   'onboarding.custom.oauth.title': 'Conexiuni (OAuth)',
   'onboarding.custom.oauth.subtitle':
     'Gmail, Slack, Notion și alte servicii conectate care au nevoie de OAuth.',
   'onboarding.custom.oauth.defaultDesc':
-    'Aura rulează un spațiu de lucru gestionat Composio. Un clic pentru a conecta fiecare serviciu mai târziu.',
+    'Youma rulează un spațiu de lucru gestionat Composio. Un clic pentru a conecta fiecare serviciu mai târziu.',
   'onboarding.custom.oauth.configureDesc':
     'Aduceți-vă propriul cont Composio / cheia API. Configurați în Setări › Conexiuni.',
   'onboarding.custom.search.title': 'Căutare pe Web',
-  'onboarding.custom.search.subtitle': 'Cum caută Aura pe web în numele tău.',
+  'onboarding.custom.search.subtitle': 'Cum caută Youma pe web în numele tău.',
   'onboarding.custom.search.defaultDesc':
-    'Aura utilizează un backend de căutare gestionat. Nu sunt necesare chei.',
+    'Youma utilizează un backend de căutare gestionat. Nu sunt necesare chei.',
   'onboarding.custom.search.configureDesc':
     'Aduceți-vă propria cheie de furnizor de căutare (Tavily, Brave etc.). Configurați în Setări › Instrumente.',
   'onboarding.custom.memory.title': 'Memorie',
   'onboarding.custom.memory.subtitle':
-    'Cum își amintește Aura contextul, preferințele și conversațiile anterioare.',
+    'Cum își amintește Youma contextul, preferințele și conversațiile anterioare.',
   'onboarding.custom.memory.defaultDesc':
-    'Aura gestionează automat stocarea și recuperarea memoriei. Nimic de configurat.',
+    'Youma gestionează automat stocarea și recuperarea memoriei. Nimic de configurat.',
   'onboarding.custom.memory.configureDesc':
     'Inspectați, exportați sau ștergeți singur memoria. Configurați în Setări › Memorie.',
   'accounts.addAccount': 'Adăugați un cont',
@@ -358,7 +358,7 @@ const roRO: TranslationMap = {
   'misc.downloading': 'Se descarcă...',
   'misc.installing': 'Se instalează...',
   'misc.beta':
-    'Aura este în versiunea beta incipientă. Simțiți-vă liber să împărtășiți feedback sau să raportați orice erori în care vă întâlniți - fiecare raport ne ajută să livrăm mai rapid.',
+    'Youma este în versiunea beta incipientă. Simțiți-vă liber să împărtășiți feedback sau să raportați orice erori în care vă întâlniți - fiecare raport ne ajută să livrăm mai rapid.',
   'misc.betaFeedback': 'Trimite feedback',
   'mnemonic.title': 'Expresie de recuperare',
   'mnemonic.warning': 'Notează aceste cuvinte în ordine și păstrează-le undeva în siguranță.',
@@ -381,11 +381,11 @@ const roRO: TranslationMap = {
   'privacy.anonymizedAnalytics': 'Analytics anonimizat',
   'privacy.shareAnonymizedData': 'Partajați date de utilizare anonimizate',
   'privacy.shareAnonymizedDataDesc':
-    'Ajutați la îmbunătățirea Aura partajând rapoarte anonime de blocare și analize de utilizare. Toate datele sunt complet anonimizate – nu se colectează niciodată date personale, mesaje, chei de portofel sau informații despre sesiune.',
+    'Ajutați la îmbunătățirea Youma partajând rapoarte anonime de blocare și analize de utilizare. Toate datele sunt complet anonimizate – nu se colectează niciodată date personale, mesaje, chei de portofel sau informații despre sesiune.',
   'privacy.meetingFollowUps': 'Urmărirea întâlnirilor',
   'privacy.autoHandoffMeet': 'Transcrieri automate Google Meet către orchestrator',
   'privacy.autoHandoffMeetDesc':
-    'Când un apel Google Meet se încheie, orchestratorul lui Aura poate citi transcrierea și poate întreprinde acțiuni precum redactarea mesajelor, programarea urmăririlor sau postarea rezumatelor în spațiul de lucru conectat Slack. Oprit implicit.',
+    'Când un apel Google Meet se încheie, orchestratorul lui Youma poate citi transcrierea și poate întreprinde acțiuni precum redactarea mesajelor, programarea urmăririlor sau postarea rezumatelor în spațiul de lucru conectat Slack. Oprit implicit.',
   'privacy.analyticsDisclaimer':
     'Toate analizele și rapoartele de erori sunt complet anonimizate. Când este activată, colectăm numai informații despre blocare, tipul de dispozitiv și locația fișierelor erorilor. Nu vă accesăm niciodată mesajele, datele de sesiune, cheile portofelului, cheile API sau orice informații de identificare personală. Puteți modifica oricând această setare.',
   'settings.about.version': 'Versiune',
@@ -444,7 +444,7 @@ const roRO: TranslationMap = {
     'Dacă browserul dvs. nu s-a deschis, utilizați butonul de mai sus.',
   'settings.billing.browserOpenFailed':
     'Browserul nu a putut fi deschis automat. Folosiți butonul de mai sus.',
-  'settings.tools.chooseCapabilities': 'Alegeți ce capabilități poate folosi Aura în numele dvs.',
+  'settings.tools.chooseCapabilities': 'Alegeți ce capabilități poate folosi Youma în numele dvs.',
   'settings.tools.saveChanges': 'Salvați modificările',
   'settings.tools.preferencesSaved': 'Preferințe salvate',
   'settings.tools.saveFailed': 'Nu s-au salvat preferințele. Încearcă din nou.',
@@ -912,9 +912,9 @@ const roRO: TranslationMap = {
   'bootCheck.chooseCoreMode': 'Selectați un Runtime',
   'bootCheck.connectToCore': 'Conectați-vă la Runtime',
   'bootCheck.desktopDescription':
-    'Aura are nevoie de un timp de rulare pentru a gândi. Alegeți unde ar trebui să locuiască.',
+    'Youma are nevoie de un timp de rulare pentru a gândi. Alegeți unde ar trebui să locuiască.',
   'bootCheck.webDescription':
-    'Pe web, Aura se conectează la un timp de rulare pe care îl controlați. Introduceți URL și jetonul de autentificare de mai jos sau luați aplicația desktop pentru a rula una chiar pe computer.',
+    'Pe web, Youma se conectează la un timp de rulare pe care îl controlați. Introduceți URL și jetonul de autentificare de mai jos sau luați aplicația desktop pentru a rula una chiar pe computer.',
   'bootCheck.preferDesktop': 'Mai degrabă păstrați totul pe propriul dispozitiv?',
   'bootCheck.downloadDesktop': 'Obțineți aplicația desktop',
   'bootCheck.localRecommended': 'Rulați local (recomandat)',
@@ -941,7 +941,7 @@ const roRO: TranslationMap = {
   'bootCheck.quit': 'Renunță',
   'bootCheck.legacyDetected': 'Timp de execuție în fundal moștenit a fost detectat',
   'bootCheck.legacyDescription':
-    'Un daemon Aura instalat separat rulează deja pe acest dispozitiv. Trebuie să o ștergem înainte ca timpul de execuție încorporat să preia controlul.',
+    'Un daemon Youma instalat separat rulează deja pe acest dispozitiv. Trebuie să o ștergem înainte ca timpul de execuție încorporat să preia controlul.',
   'bootCheck.removing': 'Se elimină…',
   'bootCheck.removeContinue': 'Eliminați și continuați',
   'bootCheck.localNeedsRestart': 'Runtime locală necesită o repornire',
@@ -1080,9 +1080,9 @@ const roRO: TranslationMap = {
   'rewards.referrals.load_stats_error': 'Nu s-au putut încărca statisticile de recomandare',
   'rewards.referrals.copied': 'Copiat',
   'rewards.referrals.copy_failed': 'Copierea eșuată',
-  'rewards.referrals.share_intro': 'Vino alături de mine pe Aura.',
+  'rewards.referrals.share_intro': 'Vino alături de mine pe Youma.',
   'rewards.referrals.share_code_line': 'Cod de recomandare: {code}',
-  'rewards.referrals.share_download_line': 'Descărcați Aura: {url}',
+  'rewards.referrals.share_download_line': 'Descărcați Youma: {url}',
   'rewards.referrals.apply_error': 'Nu s-a putut aplica codul de recomandare',
   'rewards.referrals.heading': 'Invită prieteni, câștigă credite',
   'rewards.referrals.description':
@@ -1317,22 +1317,22 @@ const roRO: TranslationMap = {
   'skills.meeting_bots_card.platform_gmeet': 'Google Meet',
   'skills.meeting_bots_card.platform_zoom': 'Zoom',
   'skills.meeting_bots_card.platform_teams': 'Microsoft Teams',
-  'skills.meeting_bots_card.banner_title': 'Trimiteți Aura la o întâlnire',
+  'skills.meeting_bots_card.banner_title': 'Trimiteți Youma la o întâlnire',
   'skills.meeting_bots_card.new_badge': 'Nou',
   'skills.meeting_bots_card.banner_description':
-    'Aruncă un link Google Meet și Aura se alătură ca invitat, vorbește, ascultă și îi răspund cu mâna.',
+    'Aruncă un link Google Meet și Youma se alătură ca invitat, vorbește, ascultă și îi răspund cu mâna.',
   'skills.meeting_bots_card.coming_soon_error': 'Asistența {platform} va veni în curând.',
-  'skills.meeting_bots_card.toast_joining_title': 'Aura se alătură întâlnirii',
+  'skills.meeting_bots_card.toast_joining_title': 'Youma se alătură întâlnirii',
   'skills.meeting_bots_card.toast_joining_message':
     'Ar trebui să apară ca participant în câteva secunde.',
-  'skills.meeting_bots_card.toast_busy_title': 'Aura este ocupat',
-  'skills.meeting_bots_card.toast_failed_title': 'Nu s-a putut porni Aura',
-  'skills.meeting_bots_card.default_error_message': 'Nu s-a putut porni Aura.',
-  'skills.meeting_bots_card.modal_aria_label': 'Trimiteți Aura la o întâlnire',
+  'skills.meeting_bots_card.toast_busy_title': 'Youma este ocupat',
+  'skills.meeting_bots_card.toast_failed_title': 'Nu s-a putut porni Youma',
+  'skills.meeting_bots_card.default_error_message': 'Nu s-a putut porni Youma.',
+  'skills.meeting_bots_card.modal_aria_label': 'Trimiteți Youma la o întâlnire',
   'skills.meeting_bots_card.close_aria': 'Aproape',
-  'skills.meeting_bots_card.modal_title': 'Trimiteți Aura la o întâlnire',
+  'skills.meeting_bots_card.modal_title': 'Trimiteți Youma la o întâlnire',
   'skills.meeting_bots_card.modal_description':
-    'Aura se alătură ca invitat anonim, își transmite în flux videoclipul la apel și răspunde prin intermediul agentului.',
+    'Youma se alătură ca invitat anonim, își transmite în flux videoclipul la apel și răspunde prin intermediul agentului.',
   'skills.meeting_bots_card.soon_suffix': '· în curând',
   'skills.meeting_bots_card.meeting_link_label': 'Link pentru întâlnire',
   'skills.meeting_bots_card.display_name_label': 'Numele de afișare',
@@ -1479,14 +1479,14 @@ const roRO: TranslationMap = {
   'settings.composio_panel.title': 'Composio',
   'settings.composio_panel.loading': 'Încărcare…',
   'settings.composio_panel.intro_prefix':
-    'Composio permite integrările cu Gmail, Notion, Slack, GitHub și peste 1000 de alte aplicații. În mod implicit, Aura îl gestionează pentru tine, deci nu trebuie să aduci o cheie API. Dacă preferați să utilizați propriul cont Composio direct, comutați la',
+    'Composio permite integrările cu Gmail, Notion, Slack, GitHub și peste 1000 de alte aplicații. În mod implicit, Youma îl gestionează pentru tine, deci nu trebuie să aduci o cheie API. Dacă preferați să utilizați propriul cont Composio direct, comutați la',
   'settings.composio_panel.direct_word': 'Direct',
   'settings.composio_panel.intro_suffix': 'modul și inserați cheia mai jos.',
   'settings.composio_panel.routing_mode_legend': 'Modul de rutare',
-  'settings.composio_panel.managed_aria_label': 'Gestionat (Aura se ocupă de asta)',
-  'settings.composio_panel.managed_title': 'Gestionat (Aura se ocupă de asta)',
+  'settings.composio_panel.managed_aria_label': 'Gestionat (Youma se ocupă de asta)',
+  'settings.composio_panel.managed_title': 'Gestionat (Youma se ocupă de asta)',
   'settings.composio_panel.managed_description':
-    'Implicit. Aura gestionează conexiunea Composio pentru tine. Declanșați webhook-urile (Gmail în timp real/evenimente Slack) funcționează imediat.',
+    'Implicit. Youma gestionează conexiunea Composio pentru tine. Declanșați webhook-urile (Gmail în timp real/evenimente Slack) funcționează imediat.',
   'settings.composio_panel.direct_aria_label': 'Direct (aduceți propria cheie API)',
   'settings.composio_panel.direct_title': 'Direct (aduceți propria cheie API)',
   'settings.composio_panel.direct_description_prefix': 'Apelurile merg la',
@@ -1497,7 +1497,7 @@ const roRO: TranslationMap = {
   'settings.composio_panel.api_key_label': 'tasta Composio API',
   'settings.composio_panel.api_key_help_prefix': 'Găsiți-vă cheia la',
   'settings.composio_panel.api_key_help_suffix':
-    'Cheia este stocată criptată pe acest dispozitiv și nu este niciodată trimisă la Aura.',
+    'Cheia este stocată criptată pe acest dispozitiv și nu este niciodată trimisă la Youma.',
   'settings.composio_panel.api_key_placeholder_stored':
     '•••••••••••• (cheie stocată — inserați o cheie nouă pentru a o înlocui)',
   'settings.composio_panel.api_key_placeholder_empty': 'ck_live_xxxxxxxxxxxxxxxx',
@@ -1505,10 +1505,10 @@ const roRO: TranslationMap = {
     'O cheie Composio API este stocată în prezent pe acest dispozitiv.',
   'settings.composio_panel.confirm_title': '⚠️ Trecerea la modul Direct',
   'settings.composio_panel.confirm_integrations_prefix':
-    'Integrarile dvs. existente (Gmail, Slack, GitHub etc. legate prin Aura)',
+    'Integrarile dvs. existente (Gmail, Slack, GitHub etc. legate prin Youma)',
   'settings.composio_panel.wont_be_visible': 'nu va fi vizibil',
   'settings.composio_panel.confirm_integrations_suffix':
-    '— locuiesc în chiriașul Composio administrat Aura.',
+    '— locuiesc în chiriașul Composio administrat Youma.',
   'settings.composio_panel.confirm_needs_title': 'Veți avea nevoie de:',
   'settings.composio_panel.confirm_need_account_prefix': 'Un cont la',
   'settings.composio_panel.confirm_need_account_suffix': 'cu o cheie API',
@@ -1527,7 +1527,7 @@ const roRO: TranslationMap = {
     'Salvare eșuată. Modul direct necesită o tastă API care nu este goală.',
   'settings.model_status.ollama_unavailable_title': 'Runtime Ollama indisponibil',
   'settings.model_status.ollama_unavailable_description':
-    'Aura tratează acum Ollama ca pe un timp de rulare a inferenței externe. Porniți propriul dvs. server Ollama, trageți modelele dorite și direcționați-l pe acesta.',
+    'Youma tratează acum Ollama ca pe un timp de rulare a inferenței externe. Porniți propriul dvs. server Ollama, trageți modelele dorite și direcționați-l pe acesta.',
   'settings.model_status.ollama_docs_link': 'Ollama docs',
   'settings.model_status.runtime_status_title': 'Stare de rulare',
   'settings.model_status.refresh': 'Reîmprospăta',
@@ -1546,7 +1546,7 @@ const roRO: TranslationMap = {
   'settings.model_status.hide_error_details': 'Ascunde detaliile erorii',
   'settings.model_status.show_error_details': 'Afișați detalii despre eroare',
   'settings.model_status.connect_only_prefix':
-    'Aura se conectează numai la un punct final compatibil cu Ollama care rulează deja. Vedea',
+    'Youma se conectează numai la un punct final compatibil cu Ollama care rulează deja. Vedea',
   'settings.model_status.connect_only_suffix':
     'pentru instrucțiuni de configurare, apoi reîncercați după ce timpul de rulare este accesibil.',
   'settings.model_status.ollama_diagnostics_title': 'Ollama Diagnostics',
@@ -1572,7 +1572,7 @@ const roRO: TranslationMap = {
   'settings.model_status.vision_model_line': 'Viziune: {model}',
   'settings.model_status.issues_heading': 'Probleme',
   'settings.model_status.manage_ollama_footer':
-    'Gestionați procesul Ollama și tragerile modelului în afara Aura, apoi reluați diagnosticarea.',
+    'Gestionați procesul Ollama și tragerile modelului în afara Youma, apoi reluați diagnosticarea.',
   'settings.device_capability.model_tier_title': 'Model Tier',
   'settings.device_capability.loading_device_info':
     'Se încarcă informații despre dispozitiv și presetări...',
@@ -1884,7 +1884,7 @@ const roRO: TranslationMap = {
   'composio.connect_modal.disconnecting': 'Se deconectează…',
   'composio.connect_modal.dismiss': 'Respingeți',
   'composio.connect_modal.expired_body':
-    'Reconectați-vă pentru a reactiva instrumentele {name}. Aura va menține această integrare indisponibilă până când reîmprospătați accesul OAuth.',
+    'Reconectați-vă pentru a reactiva instrumentele {name}. Youma va menține această integrare indisponibilă până când reîmprospătați accesul OAuth.',
   'composio.connect_modal.expired_title': 'Autorizația {name} a expirat',
   'composio.connect_modal.generic_error': 'Ceva a mers prost.',
   'composio.connect_modal.header_connect': 'Conectați {name}',
@@ -1900,7 +1900,7 @@ const roRO: TranslationMap = {
   'composio.connect_modal.needs_subdomain_intro_suffix': ') și încercați din nou.',
   'composio.connect_modal.permission_intro_prefix': '{name} poate expune',
   'composio.connect_modal.permission_intro_suffix':
-    '. După ce vă conectați, permisiunile de agent proprii ale lui Aura sunt controlate mai jos ca comutare de citire, scriere și administrare.',
+    '. După ce vă conectați, permisiunile de agent proprii ale lui Youma sunt controlate mai jos ca comutare de citire, scriere și administrare.',
   'composio.connect_modal.permissions_default_hint': 'Citire + Scriere activată în mod implicit',
   'composio.connect_modal.permissions_heading': 'Permisiuni',
   'composio.connect_modal.poll_timeout':
@@ -1951,10 +1951,10 @@ const roRO: TranslationMap = {
   'settings.ai_panel.local_runtime_disconnect_aria': 'Deconectați {label}',
   'settings.ai_panel.providers_heading': 'LLM Furnizori',
   'settings.ai_panel.providers_subtitle':
-    'Conectați backend-urile modelului de limbă pe care doriți să le folosească Aura. Activați un furnizor pentru a adăuga cheia acestuia; dezactivați pentru a deconecta.',
+    'Conectați backend-urile modelului de limbă pe care doriți să le folosească Youma. Activați un furnizor pentru a adăuga cheia acestuia; dezactivați pentru a deconecta.',
   'settings.ai_panel.routing_heading': 'Dirijare',
   'settings.ai_panel.routing_subtitle':
-    'Alegeți cum este servită fiecare sarcină de lucru. Implicit folosește Aura; Personalizat vă permite să direcționați o sarcină de lucru către un anumit furnizor și model.',
+    'Alegeți cum este servită fiecare sarcină de lucru. Implicit folosește Youma; Personalizat vă permite să direcționați o sarcină de lucru către un anumit furnizor și model.',
   'settings.auto_recharge.add_card': '+ Adăugați card pe Stripe',
   'settings.auto_recharge.amount_label': 'Adăugați această sumă',
   'settings.auto_recharge.cancel': 'Anula',
@@ -2017,22 +2017,22 @@ const roRO: TranslationMap = {
   'settings.mascot_panel.color_black': 'Negru',
   'settings.mascot_panel.color_burgundy': 'Burgundia',
   'settings.mascot_panel.color_footer_hint':
-    'Culoarea selectată este aplicată oriunde apare Aura și este reținută la reporniri.',
+    'Culoarea selectată este aplicată oriunde apare Youma și este reținută la reporniri.',
   'settings.mascot_panel.color_green': 'Verde',
   'settings.mascot_panel.color_heading': 'Culoare',
   'settings.mascot_panel.color_navy': 'Marinei',
-  'settings.mascot_panel.color_radiogroup_aria': 'Aura culoare',
+  'settings.mascot_panel.color_radiogroup_aria': 'Youma culoare',
   'settings.mascot_panel.color_yellow': 'Galben',
-  'settings.mascot_panel.header_title': 'Aura',
-  'settings.mascot_panel.library_unavailable': 'Aura bibliotecă indisponibilă: {error}',
+  'settings.mascot_panel.header_title': 'Youma',
+  'settings.mascot_panel.library_unavailable': 'Youma bibliotecă indisponibilă: {error}',
   'settings.mascot_panel.load_library_error': 'Nu s-a putut încărca biblioteca de mascote.',
   'settings.mascot_panel.load_mascot_error': 'Mascota nu s-a putut încărca.',
-  'settings.mascot_panel.loading_library': 'Se încarcă Aura bibliotecă…',
-  'settings.mascot_panel.local_aura_default': 'Local Aura (implicit)',
+  'settings.mascot_panel.loading_library': 'Se încarcă Youma bibliotecă…',
+  'settings.mascot_panel.local_aura_default': 'Local Youma (implicit)',
   'settings.mascot_panel.no_characters':
-    'Nu există încă Aura caractere disponibile. Variantele de culori locale de mai sus sunt încă active.',
+    'Nu există încă Youma caractere disponibile. Variantele de culori locale de mai sus sunt încă active.',
   'settings.mascot_panel.no_color_variants':
-    'Nu sunt disponibile variante de culoare Aura în această versiune.',
+    'Nu sunt disponibile variante de culoare Youma în această versiune.',
   'settings.mascot_panel.preview_label': 'Previzualizare · {name}',
   'settings.mascot_panel.version_states': 'v{version} · {states} stări',
   'settings.mascot_panel.visemes_suffix': '· viseme',
@@ -2078,7 +2078,7 @@ const roRO: TranslationMap = {
   'local_ai.download_snackbar.preparing': 'Se pregatesc...',
   'settings.cron_job_list.heading': 'Locuri de muncă de bază Cron',
   'settings.cron_job_list.subheading':
-    'Lucrările au persistat în baza de date de planificare principală Aura.',
+    'Lucrările au persistat în baza de date de planificare principală Youma.',
   'settings.cron_job_list.loading': 'Se încarcă lucrări cron...',
   'settings.cron_job_list.empty': 'Nu s-au găsit joburi cron de bază.',
   'settings.cron_job_list.status_enabled': 'Activat',
@@ -2150,15 +2150,15 @@ const roRO: TranslationMap = {
   'aura_link_modal.notifications_desktop_only':
     'Notificările native sunt disponibile numai în aplicația desktop (rulați `pnpm dev:app`).',
   'aura_link_modal.notifications_permission_off':
-    'Permisiunea de notificare este dezactivată. Activați Aura în Setări sistem → Notificări, apoi reîncercați.',
-  'aura_link_modal.notification_title': 'Aura este gata',
+    'Permisiunea de notificare este dezactivată. Activați Youma în Setări sistem → Notificări, apoi reîncercați.',
+  'aura_link_modal.notification_title': 'Youma este gata',
   'aura_link_modal.notification_body': 'Veți primi ping-uri aici când ceva necesită atenția dvs.',
   'aura_link_modal.notification_send_failed':
-    'Aura nu a putut declanșa o notificare de sistem. Verificați setările de notificări ale sistemului de operare și încercați din nou.',
+    'Youma nu a putut declanșa o notificare de sistem. Verificați setările de notificări ale sistemului de operare și încercați din nou.',
   'aura_link_modal.notifications_intro':
-    'Aura folosește notificări native, astfel încât să vă poată suna atunci când ceva necesită atenția dvs., chiar și atunci când fereastra de chat este ascunsă.',
+    'Youma folosește notificări native, astfel încât să vă poată suna atunci când ceva necesită atenția dvs., chiar și atunci când fereastra de chat este ascunsă.',
   'aura_link_modal.notifications_blocked_line1': 'Notificările sunt blocate momentan.',
-  'aura_link_modal.notifications_blocked_line2': '1. Deschideți Setări sistem → Notificări → Aura',
+  'aura_link_modal.notifications_blocked_line2': '1. Deschideți Setări sistem → Notificări → Youma',
   'aura_link_modal.notifications_blocked_line3': '2. Activați Permiteți notificări',
   'aura_link_modal.notifications_blocked_line4':
     '3. Reveniți aici și atingeți Reîncercați notificarea de testare',
@@ -2168,7 +2168,7 @@ const roRO: TranslationMap = {
   'aura_link_modal.retry_test_notification': 'Reîncercați notificarea de testare',
   'aura_link_modal.send_test_notification': 'Trimiteți o notificare de testare',
   'aura_link_modal.notification_sent_success':
-    'Notificare de testare trimisă. Dacă nu l-ați primit, accesați Setări de sistem → Notificări → Aura, activați Permite notificări și setați Stilul banner la Persistent.',
+    'Notificare de testare trimisă. Dacă nu l-ați primit, accesați Setări de sistem → Notificări → Youma, activați Permite notificări și setați Stilul banner la Persistent.',
   'aura_link_modal.notification_send_error': 'Nu s-a putut trimite: {error}',
   'aura_link_modal.trial_credit_label': 'Credit de probă',
   'aura_link_modal.trial_credit_amount': '1,00 USD',
@@ -2177,7 +2177,7 @@ const roRO: TranslationMap = {
   'aura_link_modal.open_dashboard': 'Deschideți tabloul de bord în browser',
   'aura_link_modal.stay_on_trial': 'Rămâi în proces',
   'aura_link_modal.discord_intro':
-    'Intră în Discord nostru și conectează-ți contul Aura. Veți primi acces anticipat exclusiv la funcții, credite gratuite cu care să vă jucați, o comunitate grozavă cu care să vă învățați și, da, produse gratuite.',
+    'Intră în Discord nostru și conectează-ți contul Youma. Veți primi acces anticipat exclusiv la funcții, credite gratuite cu care să vă jucați, o comunitate grozavă cu care să vă învățați și, da, produse gratuite.',
   'aura_link_modal.discord_perk_feature_access': 'Acces la funcții exclusive',
   'aura_link_modal.discord_perk_free_credits': 'Credite gratuite pentru membrii activi',
   'aura_link_modal.discord_perk_community': 'Comunitate de constructori si operatori',
@@ -2214,7 +2214,7 @@ const roRO: TranslationMap = {
   'channels.discord_config.copied': 'Copiat!',
   'channels.discord_config.copy': 'Copie',
   'channels.discord_config.link_instructions_prefix': 'În Discord, trimite',
-  'channels.discord_config.link_instructions_suffix': 'la botul Aura. Tokenul expiră în 5 minute.',
+  'channels.discord_config.link_instructions_suffix': 'la botul Youma. Tokenul expiră în 5 minute.',
   'channels.discord_config.link_token_warning':
     'Salvați această comandă — acest simbol este afișat o singură dată.',
   'channels.discord_config.account_linked': 'Contul dvs. Discord este conectat.',
@@ -2255,9 +2255,9 @@ const roRO: TranslationMap = {
   'settings.memory_window_control.save_failed': 'Nu s-a putut salva fereastra de memorie',
   'settings.memory_window_control.heading': 'Fereastra memoriei pe termen lung',
   'settings.memory_window_control.description':
-    'Cât de mult contextul amintit injectează Aura în fiecare rulare de agent nou. Ferestrele mai mari se simt mai conștiente de conversațiile anterioare, dar folosesc mai multe jetoane - și costă mai mult - la fiecare rulare.',
+    'Cât de mult contextul amintit injectează Youma în fiecare rulare de agent nou. Ferestrele mai mari se simt mai conștiente de conversațiile anterioare, dar folosesc mai multe jetoane - și costă mai mult - la fiecare rulare.',
   'home.banners.promo_credits': 'Aveți {amount} de credite promoționale.',
-  'home.banners.promo_credits_prefix': 'Învârte Aura, iar când ești gata pentru mai mult,',
+  'home.banners.promo_credits_prefix': 'Învârte Youma, iar când ești gata pentru mai mult,',
   'home.banners.get_subscription': 'obține un abonament',
   'home.banners.promo_credits_suffix': 'și obțineți o utilizare de 10 ori mai mare.',
   'home.banners.dismiss_early_bird': 'Îndepărtați bannerul pentru trecerea timpurie',
@@ -2267,7 +2267,7 @@ const roRO: TranslationMap = {
   'home.banners.first_subscription': 'primul abonament.',
   'home.banners.join_discord': 'Alăturați-vă Discord',
   'home.banners.discord_description':
-    'Obțineți actualizări, produse gratuite, credite, raportați erori și faceți parte din comunitatea Aura.',
+    'Obțineți actualizări, produse gratuite, credite, raportați erori și faceți parte din comunitatea Youma.',
   'intelligence.memory_chunk_detail.copy_chunk_id': 'Copiați id-ul fragmentului',
   'intelligence.memory_chunk_detail.chunk_label': 'bucată {id}',
   'intelligence.memory_chunk_detail.copied': 'copiat',
@@ -2292,7 +2292,7 @@ const roRO: TranslationMap = {
     'Ceva a mers prost. Vă rugăm să încercați din nou.\nAceastă eroare a fost raportată. Puteți raporta și pe Discord.\n<aura-link path="community/discord">Raportați pe Discord</aura-link>',
   'daemon.service_blocking_gate.retry_failed':
     'Reîncercarea a eșuat. Descărcați cea mai recentă versiune a aplicației și încercați din nou.',
-  'daemon.service_blocking_gate.title': 'Nucleul Aura nu este disponibil',
+  'daemon.service_blocking_gate.title': 'Nucleul Youma nu este disponibil',
   'daemon.service_blocking_gate.description':
     'Nu am putut recupera serviciul de bază local după mai multe încercări. Acest lucru se poate întâmpla după un accident critic sau nepotrivire binară.',
   'daemon.service_blocking_gate.download_hint':
@@ -2451,17 +2451,17 @@ const roRO: TranslationMap = {
   'chat.unsubscribe_approval_card.success_message': '✓ S-a dezabonat cu succes.',
   'chat.unsubscribe_approval_card.denied_message': '✕ Solicitare respinsă.',
   'oauth.provider_button.twitter_startup_failure':
-    'Conectarea Twitter/X nu a putut începe. Verificați dacă apelul invers al aplicației Twitter OAuth URL, ID-ul clientului/secretul și domeniile solicitate se potrivesc cu backend-ul Aura, apoi încercați din nou.',
+    'Conectarea Twitter/X nu a putut începe. Verificați dacă apelul invers al aplicației Twitter OAuth URL, ID-ul clientului/secretul și domeniile solicitate se potrivesc cu backend-ul Youma, apoi încercați din nou.',
   'oauth.provider_button.generic_startup_failure':
     'Conectarea {providerName} nu a putut începe. Vă rugăm să încercați din nou.',
   'oauth.provider_button.connecting': 'Se conectează...',
   'skills.search_bar.placeholder': 'Abilități de căutare...',
-  'common.persist_rehydration_screen.title': 'Încărcarea Aura durează mai mult decât de obicei.',
+  'common.persist_rehydration_screen.title': 'Încărcarea Youma durează mai mult decât de obicei.',
   'common.persist_rehydration_screen.description':
     'Starea aplicației locale poate fi coruptă. Resetarea vă va deconecta și șterge datele din cache de pe acest dispozitiv; vă veți reconecta conturile la următoarea lansare. Datele dvs. de pe server nu sunt afectate.',
   'common.persist_rehydration_screen.resetting': 'Se resetează…',
   'common.persist_rehydration_screen.reset_button': 'Resetați starea locală',
-  'common.route_loading_screen.initializing': 'Se inițializează Aura...',
+  'common.route_loading_screen.initializing': 'Se inițializează Youma...',
   'privacy.what_leaves_link.label': 'Ce îmi lasă computerul?',
   'settings.provider_key_dialog.api_key_required':
     'Vă rugăm să lipiți cheia API pentru a continua.',
@@ -2472,7 +2472,7 @@ const roRO: TranslationMap = {
   'settings.provider_key_dialog.cancel_button': 'Anula',
   'settings.provider_key_dialog.saving': 'Economisire…',
   'settings.provider_key_dialog.save_button': 'Salva',
-  'settings.workload_row.aura_default': 'Aura (implicit)',
+  'settings.workload_row.aura_default': 'Youma (implicit)',
   'settings.workload_row.default_button': 'Implicit',
   'settings.workload_row.custom_button': 'Personalizat',
 };

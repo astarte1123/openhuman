@@ -130,7 +130,7 @@ const lvLV: TranslationMap = {
   'clearData.failedLogout': 'Neizdevās iziet. Lūdzu, mēģiniet vēlreiz.',
   'clearData.failedPersist':
     'Neizdevās notīrīt lietotnes pastāvīgo stāvokli. Lūdzu, mēģiniet vēlreiz.',
-  'welcome.title': 'Laipni lūdzam Aura',
+  'welcome.title': 'Laipni lūdzam Youma',
   'welcome.subtitle':
     'Jūsu personīgais AI superinteliģence. Privāts, vienkāršs un ārkārtīgi spēcīgs.',
   'welcome.connectPrompt': 'Konfigurēt RPC URL (papildu)',
@@ -148,7 +148,7 @@ const lvLV: TranslationMap = {
   'home.statusBackendOnly':
     'Notiek atkārtota savienojuma izveide ar aizmugursistēmu... jūsu aģents drīzumā atkal būs pieejams.',
   'home.statusCoreUnreachable':
-    'Vietējais galvenais blakusvāģis nereaģē. Aura fona process, iespējams, ir avarējis vai neizdevās sākt.',
+    'Vietējais galvenais blakusvāģis nereaģē. Youma fona process, iespējams, ir avarējis vai neizdevās sākt.',
   'home.statusInternetOffline':
     'Jūsu ierīce pašlaik ir bezsaistē. Pārbaudiet savu tīklu vai restartējiet lietotni, lai izveidotu savienojumu.',
   'home.restartCore': 'Restartējiet Core',
@@ -198,7 +198,7 @@ const lvLV: TranslationMap = {
   'rewards.referralCode': 'Jūsu ieteikuma kods',
   'rewards.copyCode': 'Kopēt kodu',
   'rewards.share': 'Dalīties',
-  'onboarding.welcome': 'Sveiki. Es esmu Aura.',
+  'onboarding.welcome': 'Sveiki. Es esmu Youma.',
   'onboarding.welcomeDesc':
     'Jūsu superinteliģentais AI palīgs, kas darbojas jūsu datorā. Privāts, vienkāršs un ārkārtīgi spēcīgs.',
   'onboarding.context': 'Konteksta pulcēšanās',
@@ -210,14 +210,14 @@ const lvLV: TranslationMap = {
   'onboarding.referral': 'Ieteikums',
   'onboarding.referralDesc': 'Lietojiet novirzīšanas kodu, ja jums tāds ir.',
   'onboarding.finish': 'Pabeidziet iestatīšanu',
-  'onboarding.finishDesc': 'Viss ir gatavs! Sāciet lietot Aura.',
+  'onboarding.finishDesc': 'Viss ir gatavs! Sāciet lietot Youma.',
   'onboarding.skip': 'Izlaist',
   'onboarding.getStarted': 'Sāciet darbu',
-  'onboarding.runtimeChoice.title': 'Kā jūs vēlētos noskriet Aura?',
+  'onboarding.runtimeChoice.title': 'Kā jūs vēlētos noskriet Youma?',
   'onboarding.runtimeChoice.subtitle':
     'Izvēlieties sev piemērotāko iestatījumu. Vēlāk varat to mainīt sadaļā Iestatījumi.',
   'onboarding.runtimeChoice.cloud.title': 'Vienkārši',
-  'onboarding.runtimeChoice.cloud.tagline': 'Ļaujiet Aura visu pārvaldīt jūsu vietā.',
+  'onboarding.runtimeChoice.cloud.tagline': 'Ļaujiet Youma visu pārvaldīt jūsu vietā.',
   'onboarding.runtimeChoice.cloud.f1': 'Iebūvēta drošība',
   'onboarding.runtimeChoice.cloud.f2': 'Tokena saspiešana, lai paplašinātu lietojumu',
   'onboarding.runtimeChoice.cloud.f3': 'Viens abonements, katrs modelis iekļauts',
@@ -254,7 +254,7 @@ const lvLV: TranslationMap = {
   'onboarding.custom.stepperMemory': 'Atmiņa',
   'onboarding.custom.stepCounter': 'Solis {n} no {total}',
   'onboarding.custom.defaultTitle': 'Noklusējums',
-  'onboarding.custom.defaultSubtitle': 'Ļaujiet Aura to pārvaldīt jūsu vietā.',
+  'onboarding.custom.defaultSubtitle': 'Ļaujiet Youma to pārvaldīt jūsu vietā.',
   'onboarding.custom.configureTitle': 'Konfigurēt',
   'onboarding.custom.configureSubtitle': 'Es izvēlēšos, ko izmantot.',
   'onboarding.custom.progressAriaLabel': 'Ieslēgšanās progress',
@@ -268,34 +268,34 @@ const lvLV: TranslationMap = {
   'onboarding.custom.inference.subtitle':
     'Kuram valodas modelim vajadzētu atbildēt uz jūsu jautājumiem un vadīt savus aģentus?',
   'onboarding.custom.inference.defaultDesc':
-    'Aura katru darba slodzi novirza uz saprātīgu noklusējuma modeli. Nav atslēgu, nav iestatīšanas.',
+    'Youma katru darba slodzi novirza uz saprātīgu noklusējuma modeli. Nav atslēgu, nav iestatīšanas.',
   'onboarding.custom.inference.configureDesc':
     'Paņemiet līdzi savu taustiņu OpenAI vai Anthropic. Mēs to izmantojam katrai uz tekstu balstītai darba slodzei.',
   'onboarding.custom.voice.title': 'Balss',
   'onboarding.custom.voice.subtitle':
     'Runas pārveide tekstā un teksta pārveide runā balss režīmam.',
   'onboarding.custom.voice.defaultDesc':
-    'Aura tiek piegādāts ar pārvaldītu STT/TTS, kas vienkārši darbojas. Nav ko vadāt.',
+    'Youma tiek piegādāts ar pārvaldītu STT/TTS, kas vienkārši darbojas. Nav ko vadāt.',
   'onboarding.custom.voice.configureDesc':
     'Izmantojiet savu ElevenLabs / OpenAI Whisper / utt. Konfigurējiet sadaļā Iestatījumi › Balss.',
   'onboarding.custom.oauth.title': 'Savienojumi (OAuth)',
   'onboarding.custom.oauth.subtitle':
     'Gmail, Slack, Notion un citi saistītie pakalpojumi, kuriem nepieciešams OAuth.',
   'onboarding.custom.oauth.defaultDesc':
-    'Aura vada pārvaldītu Composio darbvietu. Viens klikšķis, lai vēlāk savienotu katru pakalpojumu.',
+    'Youma vada pārvaldītu Composio darbvietu. Viens klikšķis, lai vēlāk savienotu katru pakalpojumu.',
   'onboarding.custom.oauth.configureDesc':
     'Ņemiet līdzi savu Composio kontu / API atslēgu. Konfigurējiet sadaļā Iestatījumi › Savienojumi.',
   'onboarding.custom.search.title': 'Meklēšana tīmeklī',
-  'onboarding.custom.search.subtitle': 'Kā Aura meklē tīmeklī jūsu vārdā.',
+  'onboarding.custom.search.subtitle': 'Kā Youma meklē tīmeklī jūsu vārdā.',
   'onboarding.custom.search.defaultDesc':
-    'Aura izmanto pārvaldītu meklēšanas aizmugursistēmu. Nav vajadzīgas atslēgas.',
+    'Youma izmanto pārvaldītu meklēšanas aizmugursistēmu. Nav vajadzīgas atslēgas.',
   'onboarding.custom.search.configureDesc':
     'Paņemiet līdzi savu meklēšanas nodrošinātāja atslēgu (Tavily, Brave utt.). Konfigurējiet sadaļā Iestatījumi › Rīki.',
   'onboarding.custom.memory.title': 'Atmiņa',
   'onboarding.custom.memory.subtitle':
-    'Kā Aura atceras jūsu kontekstu, preferences un iepriekšējās sarunas.',
+    'Kā Youma atceras jūsu kontekstu, preferences un iepriekšējās sarunas.',
   'onboarding.custom.memory.defaultDesc':
-    'Aura automātiski pārvalda atmiņas uzglabāšanu un izguvi. Nav ko iestatīt.',
+    'Youma automātiski pārvalda atmiņas uzglabāšanu un izguvi. Nav ko iestatīt.',
   'onboarding.custom.memory.configureDesc':
     'Pārbaudiet, eksportējiet vai iztīriet atmiņu pats. Konfigurējiet sadaļā Iestatījumi › Atmiņa.',
   'accounts.addAccount': 'Pievienot kontu',
@@ -355,7 +355,7 @@ const lvLV: TranslationMap = {
   'misc.downloading': 'Notiek lejupielāde...',
   'misc.installing': 'Notiek instalēšana...',
   'misc.beta':
-    'Aura ir agrīnā beta versijā. Jūtieties brīvi dalīties ar atsauksmēm vai ziņot par kļūdām, ar kurām saskaraties — katrs ziņojums palīdz mums nosūtīt ātrāk.',
+    'Youma ir agrīnā beta versijā. Jūtieties brīvi dalīties ar atsauksmēm vai ziņot par kļūdām, ar kurām saskaraties — katrs ziņojums palīdz mums nosūtīt ātrāk.',
   'misc.betaFeedback': 'Sūtiet atsauksmes',
   'mnemonic.title': 'Atkopšanas frāze',
   'mnemonic.warning': 'Pierakstiet šos vārdus secībā un glabājiet tos drošā vietā.',
@@ -378,11 +378,11 @@ const lvLV: TranslationMap = {
   'privacy.anonymizedAnalytics': 'Anonimizēta Analytics',
   'privacy.shareAnonymizedData': 'Kopīgojiet anonimizētus lietošanas datus',
   'privacy.shareAnonymizedDataDesc':
-    'Palīdziet uzlabot Aura, kopīgojot anonīmus avāriju pārskatus un lietojuma analīzi. Visi dati ir pilnībā anonimizēti — nekad netiek apkopoti nekādi personas dati, ziņojumi, seifa atslēgas vai sesijas informācija.',
+    'Palīdziet uzlabot Youma, kopīgojot anonīmus avāriju pārskatus un lietojuma analīzi. Visi dati ir pilnībā anonimizēti — nekad netiek apkopoti nekādi personas dati, ziņojumi, seifa atslēgas vai sesijas informācija.',
   'privacy.meetingFollowUps': 'Tikšanās turpinājums',
   'privacy.autoHandoffMeet': 'Automātiska Google Meet atšifrējumu pārsūtīšana orķestrim',
   'privacy.autoHandoffMeetDesc':
-    'Kad zvans Google Meet beidzas, Aura orķestrētājs var izlasīt stenogrammu un veikt tādas darbības kā ziņojumu sastādīšana, turpmāko darbību plānošana vai kopsavilkumu publicēšana pievienotajā Slack darbvietā. Pēc noklusējuma izslēgts.',
+    'Kad zvans Google Meet beidzas, Youma orķestrētājs var izlasīt stenogrammu un veikt tādas darbības kā ziņojumu sastādīšana, turpmāko darbību plānošana vai kopsavilkumu publicēšana pievienotajā Slack darbvietā. Pēc noklusējuma izslēgts.',
   'privacy.analyticsDisclaimer':
     'Visi analītikas un kļūdu ziņojumi ir pilnībā anonimizēti. Kad tas ir iespējots, mēs apkopojam tikai informāciju par avārijām, ierīces veidu un kļūdu faila atrašanās vietu. Mēs nekad nepiekļūstam jūsu ziņojumiem, sesiju datiem, seifa atslēgām, API atslēgām vai jebkādai personu identificējošai informācijai. Šo iestatījumu varat mainīt jebkurā laikā.',
   'settings.about.version': 'Versija',
@@ -442,7 +442,7 @@ const lvLV: TranslationMap = {
     'Ja jūsu pārlūkprogramma netika atvērta, izmantojiet augstāk esošo pogu.',
   'settings.billing.browserOpenFailed':
     'Pārlūkprogrammu nevarēja atvērt automātiski. Izmantojiet augstāk esošo pogu.',
-  'settings.tools.chooseCapabilities': 'Izvēlieties, kuras iespējas Aura var izmantot jūsu vārdā.',
+  'settings.tools.chooseCapabilities': 'Izvēlieties, kuras iespējas Youma var izmantot jūsu vārdā.',
   'settings.tools.saveChanges': 'Saglabāt izmaiņas',
   'settings.tools.preferencesSaved': 'Preferences saglabātas',
   'settings.tools.saveFailed': 'Neizdevās saglabāt preferences. Mēģiniet vēlreiz.',
@@ -911,9 +911,9 @@ const lvLV: TranslationMap = {
   'bootCheck.chooseCoreMode': 'Izvēlieties izpildlaiku',
   'bootCheck.connectToCore': 'Izveidojiet savienojumu ar jūsu Runtime',
   'bootCheck.desktopDescription':
-    'Aura nepieciešams izpildlaiks, lai domātu. Izvēlieties, kur tai vajadzētu dzīvot.',
+    'Youma nepieciešams izpildlaiks, lai domātu. Izvēlieties, kur tai vajadzētu dzīvot.',
   'bootCheck.webDescription':
-    'Tīmeklī Aura izveido savienojumu ar jūsu kontrolēto izpildlaiku. Tālāk ievietojiet tās URL un autentifikācijas pilnvaru vai izmantojiet darbvirsmas lietotni, lai palaistu to tieši savā datorā.',
+    'Tīmeklī Youma izveido savienojumu ar jūsu kontrolēto izpildlaiku. Tālāk ievietojiet tās URL un autentifikācijas pilnvaru vai izmantojiet darbvirsmas lietotni, lai palaistu to tieši savā datorā.',
   'bootCheck.preferDesktop': 'Vai vēlaties visu paturēt savā ierīcē?',
   'bootCheck.downloadDesktop': 'Iegūstiet darbvirsmas lietotni',
   'bootCheck.localRecommended': 'Palaist lokāli (ieteicams)',
@@ -940,7 +940,7 @@ const lvLV: TranslationMap = {
   'bootCheck.quit': 'Iziet',
   'bootCheck.legacyDetected': 'Atklāts mantotais fona izpildlaiks',
   'bootCheck.legacyDescription':
-    'Šajā ierīcē jau darbojas atsevišķi instalēts Aura dēmons. Mums tas ir jādzēš, pirms iebūvētais izpildlaiks var pārņemt.',
+    'Šajā ierīcē jau darbojas atsevišķi instalēts Youma dēmons. Mums tas ir jādzēš, pirms iebūvētais izpildlaiks var pārņemt.',
   'bootCheck.removing': 'Notiek noņemšana…',
   'bootCheck.removeContinue': 'Noņemt un turpināt',
   'bootCheck.localNeedsRestart': 'Vietējam izpildlaikam ir nepieciešama restartēšana',
@@ -1079,9 +1079,9 @@ const lvLV: TranslationMap = {
   'rewards.referrals.load_stats_error': 'Nevarēja ielādēt novirzīšanas statistiku',
   'rewards.referrals.copied': 'Kopēts',
   'rewards.referrals.copy_failed': 'Kopēšana neizdevās',
-  'rewards.referrals.share_intro': 'Pievienojieties man Aura.',
+  'rewards.referrals.share_intro': 'Pievienojieties man Youma.',
   'rewards.referrals.share_code_line': 'Ieteikuma kods: {code}',
-  'rewards.referrals.share_download_line': 'Lejupielādēt Aura: {url}',
+  'rewards.referrals.share_download_line': 'Lejupielādēt Youma: {url}',
   'rewards.referrals.apply_error': 'Nevarēja lietot novirzīšanas kodu',
   'rewards.referrals.heading': 'Uzaiciniet draugus, nopelniet kredītus',
   'rewards.referrals.description':
@@ -1315,22 +1315,22 @@ const lvLV: TranslationMap = {
   'skills.meeting_bots_card.platform_gmeet': 'Google Meet',
   'skills.meeting_bots_card.platform_zoom': 'Zoom',
   'skills.meeting_bots_card.platform_teams': 'Microsoft Teams',
-  'skills.meeting_bots_card.banner_title': 'Nosūtiet Aura uz sapulci',
+  'skills.meeting_bots_card.banner_title': 'Nosūtiet Youma uz sapulci',
   'skills.meeting_bots_card.new_badge': 'Jauns',
   'skills.meeting_bots_card.banner_description':
-    'Nometiet Google Meet saiti, un Aura pievienojas kā viesis, runā, klausās un pamāj ar roku.',
+    'Nometiet Google Meet saiti, un Youma pievienojas kā viesis, runā, klausās un pamāj ar roku.',
   'skills.meeting_bots_card.coming_soon_error': '{platform} atbalsts drīzumā būs pieejams.',
-  'skills.meeting_bots_card.toast_joining_title': 'Aura pievienojas sapulcei',
+  'skills.meeting_bots_card.toast_joining_title': 'Youma pievienojas sapulcei',
   'skills.meeting_bots_card.toast_joining_message':
     'Pēc dažām sekundēm tai vajadzētu parādīties kā dalībniekam.',
-  'skills.meeting_bots_card.toast_busy_title': 'Aura ir aizņemts',
-  'skills.meeting_bots_card.toast_failed_title': 'Nevarēja sākt Aura',
-  'skills.meeting_bots_card.default_error_message': 'Neizdevās sākt Aura.',
-  'skills.meeting_bots_card.modal_aria_label': 'Nosūtiet Aura uz sapulci',
+  'skills.meeting_bots_card.toast_busy_title': 'Youma ir aizņemts',
+  'skills.meeting_bots_card.toast_failed_title': 'Nevarēja sākt Youma',
+  'skills.meeting_bots_card.default_error_message': 'Neizdevās sākt Youma.',
+  'skills.meeting_bots_card.modal_aria_label': 'Nosūtiet Youma uz sapulci',
   'skills.meeting_bots_card.close_aria': 'Aizvērt',
-  'skills.meeting_bots_card.modal_title': 'Nosūtiet Aura uz sapulci',
+  'skills.meeting_bots_card.modal_title': 'Nosūtiet Youma uz sapulci',
   'skills.meeting_bots_card.modal_description':
-    'Aura pievienojas kā anonīms viesis, straumē tā video zvanā un atbild ar aģenta starpniecību.',
+    'Youma pievienojas kā anonīms viesis, straumē tā video zvanā un atbild ar aģenta starpniecību.',
   'skills.meeting_bots_card.soon_suffix': '· drīzumā',
   'skills.meeting_bots_card.meeting_link_label': 'Tikšanās saite',
   'skills.meeting_bots_card.display_name_label': 'Parādāmais vārds',
@@ -1475,14 +1475,14 @@ const lvLV: TranslationMap = {
   'settings.composio_panel.title': 'Composio',
   'settings.composio_panel.loading': 'Notiek ielāde…',
   'settings.composio_panel.intro_prefix':
-    'Composio nodrošina integrāciju ar Gmail, Notion, Slack, GitHub un vairāk nekā 1000 citām lietotnēm. Pēc noklusējuma Aura to pārvalda jūsu vietā, tāpēc jums nav jāņem līdzi taustiņš API. Ja vēlaties tieši izmantot savu Composio kontu, pārslēdzieties uz',
+    'Composio nodrošina integrāciju ar Gmail, Notion, Slack, GitHub un vairāk nekā 1000 citām lietotnēm. Pēc noklusējuma Youma to pārvalda jūsu vietā, tāpēc jums nav jāņem līdzi taustiņš API. Ja vēlaties tieši izmantot savu Composio kontu, pārslēdzieties uz',
   'settings.composio_panel.direct_word': 'Tieša',
   'settings.composio_panel.intro_suffix': 'režīmā un ielīmējiet savu atslēgu zemāk.',
   'settings.composio_panel.routing_mode_legend': 'Maršrutēšanas režīms',
-  'settings.composio_panel.managed_aria_label': 'Pārvaldīts (Aura to apstrādā jūsu vietā)',
-  'settings.composio_panel.managed_title': 'Pārvaldīts (Aura to apstrādā jūsu vietā)',
+  'settings.composio_panel.managed_aria_label': 'Pārvaldīts (Youma to apstrādā jūsu vietā)',
+  'settings.composio_panel.managed_title': 'Pārvaldīts (Youma to apstrādā jūsu vietā)',
   'settings.composio_panel.managed_description':
-    'Noklusējums. Aura pārvalda Composio savienojumu jūsu vietā. Aktivizējiet tīmekļa aizķeres (reāllaika Gmail / Slack notikumi) jau no sākuma.',
+    'Noklusējums. Youma pārvalda Composio savienojumu jūsu vietā. Aktivizējiet tīmekļa aizķeres (reāllaika Gmail / Slack notikumi) jau no sākuma.',
   'settings.composio_panel.direct_aria_label': 'Tiešs (paņemiet līdzi savu taustiņu API)',
   'settings.composio_panel.direct_title': 'Tiešs (paņemiet līdzi savu taustiņu API)',
   'settings.composio_panel.direct_description_prefix': 'Zvani iet uz',
@@ -1493,7 +1493,7 @@ const lvLV: TranslationMap = {
   'settings.composio_panel.api_key_label': 'Composio API taustiņš',
   'settings.composio_panel.api_key_help_prefix': 'Atrodiet savu atslēgu vietnē',
   'settings.composio_panel.api_key_help_suffix':
-    'Atslēga šajā ierīcē tiek saglabāta šifrētā veidā un nekad netiek nosūtīta uz Aura.',
+    'Atslēga šajā ierīcē tiek saglabāta šifrētā veidā un nekad netiek nosūtīta uz Youma.',
   'settings.composio_panel.api_key_placeholder_stored':
     '•••••••••••• (atslēga saglabāta — ielīmējiet jaunu atslēgu, lai to aizstātu)',
   'settings.composio_panel.api_key_placeholder_empty': 'ck_live_xxxxxxxxxxxxxxxxx',
@@ -1501,10 +1501,10 @@ const lvLV: TranslationMap = {
     'Šajā ierīcē pašlaik ir saglabāts taustiņš Composio API.',
   'settings.composio_panel.confirm_title': '⚠️ Pārslēgšanās uz tiešo režīmu',
   'settings.composio_panel.confirm_integrations_prefix':
-    'Jūsu esošās integrācijas (Gmail, Slack, GitHub utt., kas saistītas, izmantojot Aura)',
+    'Jūsu esošās integrācijas (Gmail, Slack, GitHub utt., kas saistītas, izmantojot Youma)',
   'settings.composio_panel.wont_be_visible': 'nebūs redzams',
   'settings.composio_panel.confirm_integrations_suffix':
-    '— viņi dzīvo Aura pārvaldītajā Composio īrniekā.',
+    '— viņi dzīvo Youma pārvaldītajā Composio īrniekā.',
   'settings.composio_panel.confirm_needs_title': 'Jums būs nepieciešams:',
   'settings.composio_panel.confirm_need_account_prefix': 'Konts vietnē',
   'settings.composio_panel.confirm_need_account_suffix': 'ar taustiņu API',
@@ -1523,7 +1523,7 @@ const lvLV: TranslationMap = {
     'Neizdevās saglabāt. Tiešajam režīmam ir nepieciešams taustiņš API, kas nav tukšs.',
   'settings.model_status.ollama_unavailable_title': 'Ollama izpildlaiks nav pieejams',
   'settings.model_status.ollama_unavailable_description':
-    'Aura tagad traktē Ollama kā ārēju secinājumu izpildlaiku. Sāciet savu Ollama serveri, izvelciet vajadzīgos modeļus un norādiet uz to darba slodzes maršrutēšanu.',
+    'Youma tagad traktē Ollama kā ārēju secinājumu izpildlaiku. Sāciet savu Ollama serveri, izvelciet vajadzīgos modeļus un norādiet uz to darba slodzes maršrutēšanu.',
   'settings.model_status.ollama_docs_link': 'Ollama dokumenti',
   'settings.model_status.runtime_status_title': 'Izpildlaika statuss',
   'settings.model_status.refresh': 'Atsvaidzināt',
@@ -1542,7 +1542,7 @@ const lvLV: TranslationMap = {
   'settings.model_status.hide_error_details': 'Slēpt informāciju par kļūdu',
   'settings.model_status.show_error_details': 'Rādīt informāciju par kļūdu',
   'settings.model_status.connect_only_prefix':
-    'Aura savienojas tikai ar jau strādājošu ar Ollama saderīgu galapunktu. Skat',
+    'Youma savienojas tikai ar jau strādājošu ar Ollama saderīgu galapunktu. Skat',
   'settings.model_status.connect_only_suffix':
     'lai iegūtu iestatīšanas norādījumus, pēc tam mēģiniet vēlreiz, kad būs pieejams izpildlaiks.',
   'settings.model_status.ollama_diagnostics_title': 'Ollama diagnostika',
@@ -1568,7 +1568,7 @@ const lvLV: TranslationMap = {
   'settings.model_status.vision_model_line': 'Vīzija: {model}',
   'settings.model_status.issues_heading': 'problēmas',
   'settings.model_status.manage_ollama_footer':
-    'Pārvaldiet Ollama procesu un modeļa izvilkumus ārpus Aura, pēc tam atkārtoti palaidiet diagnostiku.',
+    'Pārvaldiet Ollama procesu un modeļa izvilkumus ārpus Youma, pēc tam atkārtoti palaidiet diagnostiku.',
   'settings.device_capability.model_tier_title': 'Modeļa līmenis',
   'settings.device_capability.loading_device_info':
     'Notiek ierīces informācijas un sākotnējo iestatījumu ielāde…',
@@ -1879,7 +1879,7 @@ const lvLV: TranslationMap = {
   'composio.connect_modal.disconnecting': 'Notiek savienojuma pārtraukšana…',
   'composio.connect_modal.dismiss': 'Atlaist',
   'composio.connect_modal.expired_body':
-    'Atkārtoti izveidojiet savienojumu, lai atkārtoti iespējotu {name} rīkus. Aura šī integrācija paliks nepieejama, līdz atsvaidzināsit OAuth piekļuvi.',
+    'Atkārtoti izveidojiet savienojumu, lai atkārtoti iespējotu {name} rīkus. Youma šī integrācija paliks nepieejama, līdz atsvaidzināsit OAuth piekļuvi.',
   'composio.connect_modal.expired_title': '{name} autorizācija beidzās',
   'composio.connect_modal.generic_error': 'Kaut kas nogāja greizi.',
   'composio.connect_modal.header_connect': 'Pievienojiet {name}',
@@ -1895,7 +1895,7 @@ const lvLV: TranslationMap = {
   'composio.connect_modal.needs_subdomain_intro_suffix': ') un mēģiniet vēlreiz.',
   'composio.connect_modal.permission_intro_prefix': '{name} var eksponēt',
   'composio.connect_modal.permission_intro_suffix':
-    '. Pēc savienojuma izveides tālāk tiek kontrolētas paša Aura aģenta atļaujas kā lasīšanas, rakstīšanas un administratora slēdži.',
+    '. Pēc savienojuma izveides tālāk tiek kontrolētas paša Youma aģenta atļaujas kā lasīšanas, rakstīšanas un administratora slēdži.',
   'composio.connect_modal.permissions_default_hint':
     'Lasīšana + rakstīšana ir iespējota pēc noklusējuma',
   'composio.connect_modal.permissions_heading': 'Atļaujas',
@@ -1945,10 +1945,10 @@ const lvLV: TranslationMap = {
   'settings.ai_panel.local_runtime_disconnect_aria': 'Atvienojiet {label}',
   'settings.ai_panel.providers_heading': 'LLM Pakalpojumu sniedzēji',
   'settings.ai_panel.providers_subtitle':
-    'Savienojiet valodas modeļa aizmugursistēmas, kuras vēlaties izmantot Aura. Ieslēdziet pakalpojumu sniedzēju, lai pievienotu tā atslēgu; izslēdziet, lai atvienotos.',
+    'Savienojiet valodas modeļa aizmugursistēmas, kuras vēlaties izmantot Youma. Ieslēdziet pakalpojumu sniedzēju, lai pievienotu tā atslēgu; izslēdziet, lai atvienotos.',
   'settings.ai_panel.routing_heading': 'Maršrutēšana',
   'settings.ai_panel.routing_subtitle':
-    'Izvēlieties, kā tiek apkalpota katra darba slodze. Noklusējums izmanto Aura; Pielāgots ļauj norādīt darba slodzi uz konkrētu pakalpojumu sniedzēju un modeli.',
+    'Izvēlieties, kā tiek apkalpota katra darba slodze. Noklusējums izmanto Youma; Pielāgots ļauj norādīt darba slodzi uz konkrētu pakalpojumu sniedzēju un modeli.',
   'settings.auto_recharge.add_card': '+ Pievienojiet karti Stripe',
   'settings.auto_recharge.amount_label': 'Pievienojiet šo summu',
   'settings.auto_recharge.cancel': 'Atcelt',
@@ -2011,21 +2011,21 @@ const lvLV: TranslationMap = {
   'settings.mascot_panel.color_black': 'Melns',
   'settings.mascot_panel.color_burgundy': 'Burgundija',
   'settings.mascot_panel.color_footer_hint':
-    'Atlasītā krāsa tiek lietota visur, kur parādās Aura, un tā tiek atcerēta restartēšanas laikā.',
+    'Atlasītā krāsa tiek lietota visur, kur parādās Youma, un tā tiek atcerēta restartēšanas laikā.',
   'settings.mascot_panel.color_green': 'Zaļš',
   'settings.mascot_panel.color_heading': 'Krāsa',
   'settings.mascot_panel.color_navy': 'Navy',
-  'settings.mascot_panel.color_radiogroup_aria': 'Aura krāsa',
+  'settings.mascot_panel.color_radiogroup_aria': 'Youma krāsa',
   'settings.mascot_panel.color_yellow': 'Dzeltens',
-  'settings.mascot_panel.header_title': 'Aura',
-  'settings.mascot_panel.library_unavailable': 'Aura bibliotēka nav pieejama: {error}',
+  'settings.mascot_panel.header_title': 'Youma',
+  'settings.mascot_panel.library_unavailable': 'Youma bibliotēka nav pieejama: {error}',
   'settings.mascot_panel.load_library_error': 'Nevarēja ielādēt talismanu bibliotēku.',
   'settings.mascot_panel.load_mascot_error': 'Nevarēja ielādēt talismanu.',
-  'settings.mascot_panel.loading_library': 'Notiek Aura bibliotēkas ielāde…',
-  'settings.mascot_panel.local_aura_default': 'Vietējais Aura (noklusējums)',
+  'settings.mascot_panel.loading_library': 'Notiek Youma bibliotēkas ielāde…',
+  'settings.mascot_panel.local_aura_default': 'Vietējais Youma (noklusējums)',
   'settings.mascot_panel.no_characters':
-    'Vēl nav pieejama neviena Aura rakstzīme. Iepriekš minētie vietējie krāsu varianti joprojām ir aktīvi.',
-  'settings.mascot_panel.no_color_variants': 'Šajā būvniecībā nav pieejami Aura krāsu varianti.',
+    'Vēl nav pieejama neviena Youma rakstzīme. Iepriekš minētie vietējie krāsu varianti joprojām ir aktīvi.',
+  'settings.mascot_panel.no_color_variants': 'Šajā būvniecībā nav pieejami Youma krāsu varianti.',
   'settings.mascot_panel.preview_label': 'Priekšskatījums · {name}',
   'settings.mascot_panel.version_states': 'v{version} · {states} stāvokļi',
   'settings.mascot_panel.visemes_suffix': '· visemes',
@@ -2071,7 +2071,7 @@ const lvLV: TranslationMap = {
   'local_ai.download_snackbar.installing': 'Notiek instalēšana...',
   'local_ai.download_snackbar.preparing': 'Notiek sagatavošana...',
   'settings.cron_job_list.heading': 'Core Cron Jobs',
-  'settings.cron_job_list.subheading': 'Darbi saglabājās Aura pamata plānotāja datubāzē.',
+  'settings.cron_job_list.subheading': 'Darbi saglabājās Youma pamata plānotāja datubāzē.',
   'settings.cron_job_list.loading': 'Notiek cron darbu ielāde...',
   'settings.cron_job_list.empty': 'Nav atrasta neviena galvenā cron darba vieta.',
   'settings.cron_job_list.status_enabled': 'Iespējots',
@@ -2143,17 +2143,17 @@ const lvLV: TranslationMap = {
   'aura_link_modal.notifications_desktop_only':
     'Vietējie paziņojumi ir pieejami tikai datora lietotnē (palaidiet pnpm dev:app).',
   'aura_link_modal.notifications_permission_off':
-    'Paziņojumu atļauja ir izslēgta. Iespējojiet Aura sadaļā Sistēmas iestatījumi → Paziņojumi un pēc tam mēģiniet vēlreiz.',
-  'aura_link_modal.notification_title': 'Aura ir labi',
+    'Paziņojumu atļauja ir izslēgta. Iespējojiet Youma sadaļā Sistēmas iestatījumi → Paziņojumi un pēc tam mēģiniet vēlreiz.',
+  'aura_link_modal.notification_title': 'Youma ir labi',
   'aura_link_modal.notification_body':
     'Šeit jūs saņemsiet ping, kad kaut kam būs nepieciešama jūsu uzmanība.',
   'aura_link_modal.notification_send_failed':
-    'Aura nevarēja aktivizēt sistēmas paziņojumu. Pārbaudiet OS paziņojumu iestatījumus un mēģiniet vēlreiz.',
+    'Youma nevarēja aktivizēt sistēmas paziņojumu. Pārbaudiet OS paziņojumu iestatījumus un mēģiniet vēlreiz.',
   'aura_link_modal.notifications_intro':
-    'Aura izmanto vietējos paziņojumus, lai varētu nosūtīt jums ping, kad kaut kam jāpievērš uzmanība, pat ja tērzēšanas logs ir paslēpts.',
+    'Youma izmanto vietējos paziņojumus, lai varētu nosūtīt jums ping, kad kaut kam jāpievērš uzmanība, pat ja tērzēšanas logs ir paslēpts.',
   'aura_link_modal.notifications_blocked_line1': 'Paziņojumi pašlaik ir bloķēti.',
   'aura_link_modal.notifications_blocked_line2':
-    '1. Atveriet Sistēmas iestatījumi → Paziņojumi → Aura',
+    '1. Atveriet Sistēmas iestatījumi → Paziņojumi → Youma',
   'aura_link_modal.notifications_blocked_line3': '2. Ieslēdziet Atļaut paziņojumus',
   'aura_link_modal.notifications_blocked_line4':
     '3. Atgriezieties šeit un pieskarieties pie Mēģināt vēlreiz testa paziņojumu',
@@ -2163,7 +2163,7 @@ const lvLV: TranslationMap = {
   'aura_link_modal.retry_test_notification': 'Mēģiniet vēlreiz pārbaudīt paziņojumu',
   'aura_link_modal.send_test_notification': 'Nosūtiet testa paziņojumu',
   'aura_link_modal.notification_sent_success':
-    'Testa paziņojums nosūtīts. Ja to nesaņēmāt, atveriet Sistēmas iestatījumi → Paziņojumi → Aura, ieslēdziet Atļaut paziņojumus un iestatiet reklāmkaroga stilu uz Pastāvīgs.',
+    'Testa paziņojums nosūtīts. Ja to nesaņēmāt, atveriet Sistēmas iestatījumi → Paziņojumi → Youma, ieslēdziet Atļaut paziņojumus un iestatiet reklāmkaroga stilu uz Pastāvīgs.',
   'aura_link_modal.notification_send_error': 'Nevarēja nosūtīt: {error}',
   'aura_link_modal.trial_credit_label': 'Izmēģinājuma kredīts',
   'aura_link_modal.trial_credit_amount': '1,00 $',
@@ -2172,7 +2172,7 @@ const lvLV: TranslationMap = {
   'aura_link_modal.open_dashboard': 'Pārlūkprogrammā atveriet informācijas paneli',
   'aura_link_modal.stay_on_trial': 'Palieciet tiesā',
   'aura_link_modal.discord_intro':
-    'Dodieties uz mūsu Discord un saistiet savu Aura kontu. Jūs iegūsit ekskluzīvu priekšlaicīgu piekļuvi funkcijām, bezmaksas kredītus spēlēšanai, lielisku kopienu, ar kuru izklaidēties, un jā, bezmaksas preces.',
+    'Dodieties uz mūsu Discord un saistiet savu Youma kontu. Jūs iegūsit ekskluzīvu priekšlaicīgu piekļuvi funkcijām, bezmaksas kredītus spēlēšanai, lielisku kopienu, ar kuru izklaidēties, un jā, bezmaksas preces.',
   'aura_link_modal.discord_perk_feature_access': 'Ekskluzīva piekļuve funkcijām',
   'aura_link_modal.discord_perk_free_credits': 'Bezmaksas kredīti aktīviem biedriem',
   'aura_link_modal.discord_perk_community': 'Būvnieku un operatoru kopiena',
@@ -2209,7 +2209,7 @@ const lvLV: TranslationMap = {
   'channels.discord_config.copied': 'Kopēts!',
   'channels.discord_config.copy': 'Kopēt',
   'channels.discord_config.link_instructions_prefix': 'Pēc Discord nosūtiet',
-  'channels.discord_config.link_instructions_suffix': 'uz Aura botu. Token beidzas pēc 5 minūtēm.',
+  'channels.discord_config.link_instructions_suffix': 'uz Youma botu. Token beidzas pēc 5 minūtēm.',
   'channels.discord_config.link_token_warning':
     'Saglabāt šo komandu — šis marķieris tiek parādīts tikai vienu reizi.',
   'channels.discord_config.account_linked': 'Jūsu Discord konts ir saistīts.',
@@ -2250,9 +2250,9 @@ const lvLV: TranslationMap = {
   'settings.memory_window_control.save_failed': 'Neizdevās saglabāt atmiņas logu',
   'settings.memory_window_control.heading': 'Ilgtermiņa atmiņas logs',
   'settings.memory_window_control.description':
-    'Cik daudz atcerēto kontekstu Aura ievada katrā jaunā aģenta palaišanā. Lielāki logi jūtas labāk informēti par pagātnes sarunām, taču katrā darbības reizē tiek izmantots vairāk marķieru — un tas maksā vairāk.',
+    'Cik daudz atcerēto kontekstu Youma ievada katrā jaunā aģenta palaišanā. Lielāki logi jūtas labāk informēti par pagātnes sarunām, taču katrā darbības reizē tiek izmantots vairāk marķieru — un tas maksā vairāk.',
   'home.banners.promo_credits': 'Jums ir {amount} reklāmas kredītu.',
-  'home.banners.promo_credits_prefix': 'Izmēģiniet Aura, un, kad esat gatavs vairāk,',
+  'home.banners.promo_credits_prefix': 'Izmēģiniet Youma, un, kad esat gatavs vairāk,',
   'home.banners.get_subscription': 'saņemt abonementu',
   'home.banners.promo_credits_suffix': 'un izmantojiet 10x vairāk.',
   'home.banners.dismiss_early_bird': 'Noraidīt agrā putna reklāmkarogu',
@@ -2262,7 +2262,7 @@ const lvLV: TranslationMap = {
   'home.banners.first_subscription': 'pirmais abonements.',
   'home.banners.join_discord': 'Pievienojieties mūsu Discord',
   'home.banners.discord_description':
-    'Saņemiet atjauninājumus, bezmaksas preces, kredītus, ziņojiet par kļūdām un esiet daļa no Aura kopienas.',
+    'Saņemiet atjauninājumus, bezmaksas preces, kredītus, ziņojiet par kļūdām un esiet daļa no Youma kopienas.',
   'intelligence.memory_chunk_detail.copy_chunk_id': 'Kopēt gabala ID',
   'intelligence.memory_chunk_detail.chunk_label': 'gabals {id}',
   'intelligence.memory_chunk_detail.copied': 'nokopēts',
@@ -2287,7 +2287,7 @@ const lvLV: TranslationMap = {
     'Kaut kas nogāja greizi. Lūdzu, mēģiniet vēlreiz.\nPar šo kļūdu ziņots. Varat arī ziņot par to pa Discord.\n<aura-link path="community/discord">Ziņojums par Discord</aura-link>',
   'daemon.service_blocking_gate.retry_failed':
     'Atkārtots mēģinājums neizdevās. Lejupielādējiet jaunāko lietotnes versiju un mēģiniet vēlreiz.',
-  'daemon.service_blocking_gate.title': 'Aura kodols nav pieejams',
+  'daemon.service_blocking_gate.title': 'Youma kodols nav pieejams',
   'daemon.service_blocking_gate.description':
     'Mēs nevarējām atgūt vietējo pamatpakalpojumu pēc vairākiem mēģinājumiem. Tas var notikt pēc kritiskas avārijas vai bināras neatbilstības.',
   'daemon.service_blocking_gate.download_hint':
@@ -2446,17 +2446,17 @@ const lvLV: TranslationMap = {
   'chat.unsubscribe_approval_card.success_message': '✓ Veiksmīgi anulēts.',
   'chat.unsubscribe_approval_card.denied_message': '✕ Pieprasījums noraidīts.',
   'oauth.provider_button.twitter_startup_failure':
-    'Twitter/X pierakstīšanos nevarēja sākt. Pārbaudiet, vai lietotnes Twitter OAuth atzvanīšanas URL, klienta ID/slepenais un pieprasītais tvērums atbilst Aura aizmugursistēmai, un pēc tam mēģiniet vēlreiz.',
+    'Twitter/X pierakstīšanos nevarēja sākt. Pārbaudiet, vai lietotnes Twitter OAuth atzvanīšanas URL, klienta ID/slepenais un pieprasītais tvērums atbilst Youma aizmugursistēmai, un pēc tam mēģiniet vēlreiz.',
   'oauth.provider_button.generic_startup_failure':
     '{providerName} pierakstīšanos nevarēja sākt. Lūdzu, mēģiniet vēlreiz.',
   'oauth.provider_button.connecting': 'Notiek savienojuma izveide...',
   'skills.search_bar.placeholder': 'Meklēšanas prasmes...',
-  'common.persist_rehydration_screen.title': 'Aura ielāde aizņem ilgāku laiku nekā parasti.',
+  'common.persist_rehydration_screen.title': 'Youma ielāde aizņem ilgāku laiku nekā parasti.',
   'common.persist_rehydration_screen.description':
     'Iespējams, ir bojāts vietējās lietotnes statuss. Atiestatot jūs izrakstīsities un notīrīsit kešatmiņā saglabātos datus šajā ierīcē; nākamajā palaišanas reizē jūs atkārtoti savienosit savus kontus. Jūsu dati serverī netiek ietekmēti.',
   'common.persist_rehydration_screen.resetting': 'Notiek atiestatīšana…',
   'common.persist_rehydration_screen.reset_button': 'Atiestatīt vietējo stāvokli',
-  'common.route_loading_screen.initializing': 'Notiek inicializācija Aura...',
+  'common.route_loading_screen.initializing': 'Notiek inicializācija Youma...',
   'privacy.what_leaves_link.label': 'Kas atstāj manu datoru?',
   'settings.provider_key_dialog.api_key_required': 'Lai turpinātu, lūdzu, ielīmējiet taustiņu API.',
   'settings.provider_key_dialog.connect_title': 'Pievienojiet {label}',
@@ -2466,7 +2466,7 @@ const lvLV: TranslationMap = {
   'settings.provider_key_dialog.cancel_button': 'Atcelt',
   'settings.provider_key_dialog.saving': 'Notiek saglabāšana…',
   'settings.provider_key_dialog.save_button': 'Saglabāt',
-  'settings.workload_row.aura_default': 'Aura (noklusējums)',
+  'settings.workload_row.aura_default': 'Youma (noklusējums)',
   'settings.workload_row.default_button': 'Noklusējums',
   'settings.workload_row.custom_button': 'Pielāgots',
 };

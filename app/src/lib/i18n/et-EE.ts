@@ -126,7 +126,7 @@ const etEE: TranslationMap = {
   'clearData.failed': 'Andmete kustutamine ja väljalogimine ebaõnnestus. Palun proovi uuesti.',
   'clearData.failedLogout': 'Väljalogimine ebaõnnestus. Palun proovi uuesti.',
   'clearData.failedPersist': 'Püsiva rakenduse oleku kustutamine ebaõnnestus. Palun proovi uuesti.',
-  'welcome.title': 'Tere tulemast Aura',
+  'welcome.title': 'Tere tulemast Youma',
   'welcome.subtitle': 'Teie isiklik AI superintelligentsus. Privaatne, lihtne ja äärmiselt võimas.',
   'welcome.connectPrompt': 'RPC seadistamine URL (täpsem)',
   'welcome.selectRuntime': 'Valige käitusaeg',
@@ -142,7 +142,7 @@ const etEE: TranslationMap = {
     'Teie seade on ühendatud. Ühenduse säilitamiseks hoidke rakendust töös. Saatke oma agendile sõnum alloleva nupuga.',
   'home.statusBackendOnly': 'Tagaühenduse loomine… teie agent on peagi taas saadaval.',
   'home.statusCoreUnreachable':
-    'Kohalik külgkorv ei reageeri. Taustprotsess Aura võib olla jooksnud või ebaõnnestunud.',
+    'Kohalik külgkorv ei reageeri. Taustprotsess Youma võib olla jooksnud või ebaõnnestunud.',
   'home.statusInternetOffline':
     'Teie seade on praegu võrguühenduseta. Ühenduse taastamiseks kontrollige oma võrku või taaskäivitage rakendus.',
   'home.restartCore': 'Taaskäivitage Core',
@@ -192,7 +192,7 @@ const etEE: TranslationMap = {
   'rewards.referralCode': 'Teie viitekood',
   'rewards.copyCode': 'Kopeeri kood',
   'rewards.share': 'Jaga',
-  'onboarding.welcome': 'Tere. Ma olen Aura.',
+  'onboarding.welcome': 'Tere. Ma olen Youma.',
   'onboarding.welcomeDesc':
     'Teie üliintelligentne AI-assistent, mis töötab teie arvutis. Privaatne, lihtne ja äärmiselt võimas.',
   'onboarding.context': 'Konteksti kogumine',
@@ -204,14 +204,14 @@ const etEE: TranslationMap = {
   'onboarding.referral': 'Suunamine',
   'onboarding.referralDesc': 'Kui teil on viitekood, kasutage seda.',
   'onboarding.finish': 'Lõpetage seadistamine',
-  'onboarding.finishDesc': 'Kõik on valmis! Alustage Aura kasutamist.',
+  'onboarding.finishDesc': 'Kõik on valmis! Alustage Youma kasutamist.',
   'onboarding.skip': 'Jäta vahele',
   'onboarding.getStarted': 'Alustage',
-  'onboarding.runtimeChoice.title': 'Kuidas sa tahaksid Aura joosta?',
+  'onboarding.runtimeChoice.title': 'Kuidas sa tahaksid Youma joosta?',
   'onboarding.runtimeChoice.subtitle':
     'Valige seadistus, mis teile kõige paremini sobib. Saate seda hiljem seadetes muuta.',
   'onboarding.runtimeChoice.cloud.title': 'Lihtne',
-  'onboarding.runtimeChoice.cloud.tagline': 'Las Aura haldab kõike sinu eest.',
+  'onboarding.runtimeChoice.cloud.tagline': 'Las Youma haldab kõike sinu eest.',
   'onboarding.runtimeChoice.cloud.f1': 'Sisseehitatud turvalisus',
   'onboarding.runtimeChoice.cloud.f2': 'Märgi tihendamine kasutuse laiendamiseks',
   'onboarding.runtimeChoice.cloud.f3': 'Üks tellimus, iga mudel kaasas',
@@ -248,7 +248,7 @@ const etEE: TranslationMap = {
   'onboarding.custom.stepperMemory': 'Mälu',
   'onboarding.custom.stepCounter': 'Samm {n}/{total}',
   'onboarding.custom.defaultTitle': 'Vaikimisi',
-  'onboarding.custom.defaultSubtitle': 'Laske Aura seda teie eest hallata.',
+  'onboarding.custom.defaultSubtitle': 'Laske Youma seda teie eest hallata.',
   'onboarding.custom.configureTitle': 'Seadistage',
   'onboarding.custom.configureSubtitle': 'Ma valin, mida kasutada.',
   'onboarding.custom.progressAriaLabel': 'Sissevõtmise edenemine',
@@ -262,33 +262,33 @@ const etEE: TranslationMap = {
   'onboarding.custom.inference.subtitle':
     'Milline keelemudel peaks teie küsimustele vastama ja agente juhtima?',
   'onboarding.custom.inference.defaultDesc':
-    'Aura suunab iga töökoormuse mõistlikule vaikemudelile. Pole võtmeid, pole seadistamist.',
+    'Youma suunab iga töökoormuse mõistlikule vaikemudelile. Pole võtmeid, pole seadistamist.',
   'onboarding.custom.inference.configureDesc':
     'Võtke kaasa oma võti OpenAI või Anthropic. Kasutame seda iga tekstipõhise töökoormuse jaoks.',
   'onboarding.custom.voice.title': 'Hääl',
   'onboarding.custom.voice.subtitle': 'Kõne tekstiks ja tekst kõneks kõnerežiimi jaoks.',
   'onboarding.custom.voice.defaultDesc':
-    'Aura tarnitakse hallatud STT/TTS-ga, mis lihtsalt töötab. Pole midagi siduda.',
+    'Youma tarnitakse hallatud STT/TTS-ga, mis lihtsalt töötab. Pole midagi siduda.',
   'onboarding.custom.voice.configureDesc':
     'Kasutage oma ElevenLabsi / OpenAI Whisper / jne. Seadistage menüüs Seaded › Hääl.',
   'onboarding.custom.oauth.title': 'Ühendused (OAuth)',
   'onboarding.custom.oauth.subtitle':
     'Gmail, Slack, Notion ja muud ühendatud teenused, mis vajavad OAuth.',
   'onboarding.custom.oauth.defaultDesc':
-    'Aura juhib hallatavat Composio tööruumi. Iga teenuse hiljem ühendamiseks üks klõps.',
+    'Youma juhib hallatavat Composio tööruumi. Iga teenuse hiljem ühendamiseks üks klõps.',
   'onboarding.custom.oauth.configureDesc':
     'Võtke kaasa oma Composio konto / API võti. Seadistage menüüs Seaded › Ühendused.',
   'onboarding.custom.search.title': 'Veebiotsing',
-  'onboarding.custom.search.subtitle': 'Kuidas Aura teie nimel veebist otsib.',
+  'onboarding.custom.search.subtitle': 'Kuidas Youma teie nimel veebist otsib.',
   'onboarding.custom.search.defaultDesc':
-    'Aura kasutab hallatud otsingu taustaprogrammi. Võtmeid pole vaja.',
+    'Youma kasutab hallatud otsingu taustaprogrammi. Võtmeid pole vaja.',
   'onboarding.custom.search.configureDesc':
     'Võtke kaasa oma otsingupakkuja võti (Tavily, Brave jne). Seadistage menüüs Seaded › Tööriistad.',
   'onboarding.custom.memory.title': 'Mälu',
   'onboarding.custom.memory.subtitle':
-    'Kuidas Aura jätab meelde teie konteksti, eelistused ja eelnevad vestlused.',
+    'Kuidas Youma jätab meelde teie konteksti, eelistused ja eelnevad vestlused.',
   'onboarding.custom.memory.defaultDesc':
-    'Aura haldab mälusalvestust ja -otsingut automaatselt. Pole midagi seadistada.',
+    'Youma haldab mälusalvestust ja -otsingut automaatselt. Pole midagi seadistada.',
   'onboarding.custom.memory.configureDesc':
     'Kontrollige, eksportige või pühkige mälu ise. Seadistage menüüs Seaded › Mälu.',
   'accounts.addAccount': 'Lisa konto',
@@ -348,7 +348,7 @@ const etEE: TranslationMap = {
   'misc.downloading': 'Allalaadimine...',
   'misc.installing': 'Installimine...',
   'misc.beta':
-    'Aura on varases beetaversioonis. Jagage julgelt tagasisidet või teatage oma vigadest – iga aruanne aitab meil kiiremini kohale toimetada.',
+    'Youma on varases beetaversioonis. Jagage julgelt tagasisidet või teatage oma vigadest – iga aruanne aitab meil kiiremini kohale toimetada.',
   'misc.betaFeedback': 'Saatke tagasisidet',
   'mnemonic.title': 'Taastamise fraas',
   'mnemonic.warning': 'Kirjutage need sõnad järjekorras ja hoidke neid kuskil turvalises kohas.',
@@ -371,11 +371,11 @@ const etEE: TranslationMap = {
   'privacy.anonymizedAnalytics': 'Anonüümne Analytics',
   'privacy.shareAnonymizedData': 'Jagage anonüümseid kasutusandmeid',
   'privacy.shareAnonymizedDataDesc':
-    'Aidake Aura täiustada, jagades anonüümseid krahhiaruandeid ja kasutusanalüüse. Kõik andmed on täielikult anonüümseks muudetud – isikuandmeid, sõnumeid, rahakotivõtmeid ega seansi teavet ei koguta.',
+    'Aidake Youma täiustada, jagades anonüümseid krahhiaruandeid ja kasutusanalüüse. Kõik andmed on täielikult anonüümseks muudetud – isikuandmeid, sõnumeid, rahakotivõtmeid ega seansi teavet ei koguta.',
   'privacy.meetingFollowUps': 'Kohtumise järelmeetmed',
   'privacy.autoHandoffMeet': 'Google Meet ärakirjade automaatne üleandmine orkestraatorile',
   'privacy.autoHandoffMeetDesc':
-    'Kui Google Meet kõne lõppeb, saab Aura orkestrant transkriptsiooni lugeda ja võib teha toiminguid, nagu sõnumite koostamine, järelmeetmete ajastamine või kokkuvõtete postitamine ühendatud Slack tööruumi. Vaikimisi väljas.',
+    'Kui Google Meet kõne lõppeb, saab Youma orkestrant transkriptsiooni lugeda ja võib teha toiminguid, nagu sõnumite koostamine, järelmeetmete ajastamine või kokkuvõtete postitamine ühendatud Slack tööruumi. Vaikimisi väljas.',
   'privacy.analyticsDisclaimer':
     'Kõik analüüsi- ja veaaruanded on täielikult anonüümsed. Kui see on lubatud, kogume ainult krahhiteavet, seadme tüüpi ja vigade faili asukohta. Me ei pääse kunagi juurde teie sõnumitele, seansiandmetele, rahakotivõtmetele, API-võtmetele ega isikut tuvastavale teabele. Saate seda seadet igal ajal muuta.',
   'settings.about.version': 'Versioon',
@@ -434,7 +434,7 @@ const etEE: TranslationMap = {
   'settings.billing.browserNotOpen': 'Kui teie brauser ei avanenud, kasutage ülaltoodud nuppu.',
   'settings.billing.browserOpenFailed':
     'Brauserit ei saanud automaatselt avada. Kasutage ülaltoodud nuppu.',
-  'settings.tools.chooseCapabilities': 'Valige, milliseid võimalusi Aura saab teie nimel kasutada.',
+  'settings.tools.chooseCapabilities': 'Valige, milliseid võimalusi Youma saab teie nimel kasutada.',
   'settings.tools.saveChanges': 'Salvesta muudatused',
   'settings.tools.preferencesSaved': 'Eelistused salvestatud',
   'settings.tools.saveFailed': 'Eelistuste salvestamine ebaõnnestus. Proovi uuesti.',
@@ -897,9 +897,9 @@ const etEE: TranslationMap = {
   'bootCheck.tokenRequired': 'Vajame ühenduse loomiseks autentimisluba.',
   'bootCheck.chooseCoreMode': 'Valige käitusaeg',
   'bootCheck.connectToCore': 'Ühendage oma käitusajaga',
-  'bootCheck.desktopDescription': 'Aura vajab mõtlemiseks käitusaega. Valige, kus see peaks elama.',
+  'bootCheck.desktopDescription': 'Youma vajab mõtlemiseks käitusaega. Valige, kus see peaks elama.',
   'bootCheck.webDescription':
-    'Veebis loob Aura ühenduse teie juhitava käitusajaga. Sisestage selle URL ja autentimisluba allpool või haarake töölauarakendus, et käivitada see otse oma arvutis.',
+    'Veebis loob Youma ühenduse teie juhitava käitusajaga. Sisestage selle URL ja autentimisluba allpool või haarake töölauarakendus, et käivitada see otse oma arvutis.',
   'bootCheck.preferDesktop': 'Kas soovite pigem hoida kõike oma seadmes?',
   'bootCheck.downloadDesktop': 'Hankige töölauarakendus',
   'bootCheck.localRecommended': 'Käita kohapeal (soovitatav)',
@@ -926,7 +926,7 @@ const etEE: TranslationMap = {
   'bootCheck.quit': 'Lõpeta',
   'bootCheck.legacyDetected': 'Tuvastati pärandtausta käitusaeg',
   'bootCheck.legacyDescription':
-    'Selles seadmes töötab juba eraldi installitud Aura deemon. Peame selle kustutama, enne kui sisseehitatud käitusaeg saab üle võtta.',
+    'Selles seadmes töötab juba eraldi installitud Youma deemon. Peame selle kustutama, enne kui sisseehitatud käitusaeg saab üle võtta.',
   'bootCheck.removing': 'Eemaldamine…',
   'bootCheck.removeContinue': 'Eemalda ja jätka',
   'bootCheck.localNeedsRestart': 'Kohalik käitusaeg vajab taaskäivitamist',
@@ -1064,9 +1064,9 @@ const etEE: TranslationMap = {
   'rewards.referrals.load_stats_error': 'Viitamise statistikat ei saanud laadida',
   'rewards.referrals.copied': 'Kopeeritud',
   'rewards.referrals.copy_failed': 'Kopeerimine ebaõnnestus',
-  'rewards.referrals.share_intro': 'Liituge minuga Aura.',
+  'rewards.referrals.share_intro': 'Liituge minuga Youma.',
   'rewards.referrals.share_code_line': 'Viitekood: {code}',
-  'rewards.referrals.share_download_line': 'Laadi alla Aura: {url}',
+  'rewards.referrals.share_download_line': 'Laadi alla Youma: {url}',
   'rewards.referrals.apply_error': 'Viitekoodi ei saanud rakendada',
   'rewards.referrals.heading': 'Kutsuge sõpru, teenige krediiti',
   'rewards.referrals.description':
@@ -1299,22 +1299,22 @@ const etEE: TranslationMap = {
   'skills.meeting_bots_card.platform_gmeet': 'Google Meet',
   'skills.meeting_bots_card.platform_zoom': 'Zoom',
   'skills.meeting_bots_card.platform_teams': 'Microsoft Teams',
-  'skills.meeting_bots_card.banner_title': 'Saada Aura koosolekule',
+  'skills.meeting_bots_card.banner_title': 'Saada Youma koosolekule',
   'skills.meeting_bots_card.new_badge': 'Uus',
   'skills.meeting_bots_card.banner_description':
-    'Loobuge link Google Meet ja Aura liitub külalisena, räägib, kuulab ja lehvitab.',
+    'Loobuge link Google Meet ja Youma liitub külalisena, räägib, kuulab ja lehvitab.',
   'skills.meeting_bots_card.coming_soon_error': '{platform} tugi on peagi tulemas.',
-  'skills.meeting_bots_card.toast_joining_title': 'Aura liitub koosolekuga',
+  'skills.meeting_bots_card.toast_joining_title': 'Youma liitub koosolekuga',
   'skills.meeting_bots_card.toast_joining_message':
     'See peaks mõne sekundi pärast ilmuma osalejana.',
-  'skills.meeting_bots_card.toast_busy_title': 'Aura on hõivatud',
-  'skills.meeting_bots_card.toast_failed_title': 'Ei saanud käivitada Aura',
-  'skills.meeting_bots_card.default_error_message': 'Aura käivitamine ebaõnnestus.',
-  'skills.meeting_bots_card.modal_aria_label': 'Saada Aura koosolekule',
+  'skills.meeting_bots_card.toast_busy_title': 'Youma on hõivatud',
+  'skills.meeting_bots_card.toast_failed_title': 'Ei saanud käivitada Youma',
+  'skills.meeting_bots_card.default_error_message': 'Youma käivitamine ebaõnnestus.',
+  'skills.meeting_bots_card.modal_aria_label': 'Saada Youma koosolekule',
   'skills.meeting_bots_card.close_aria': 'Sule',
-  'skills.meeting_bots_card.modal_title': 'Saada Aura koosolekule',
+  'skills.meeting_bots_card.modal_title': 'Saada Youma koosolekule',
   'skills.meeting_bots_card.modal_description':
-    'Aura liitub anonüümse külalisena, voogesitab oma video kõnesse ja vastab agendi kaudu.',
+    'Youma liitub anonüümse külalisena, voogesitab oma video kõnesse ja vastab agendi kaudu.',
   'skills.meeting_bots_card.soon_suffix': '· varsti',
   'skills.meeting_bots_card.meeting_link_label': 'Kohtumise link',
   'skills.meeting_bots_card.display_name_label': 'Kuvatav nimi',
@@ -1459,14 +1459,14 @@ const etEE: TranslationMap = {
   'settings.composio_panel.title': 'Composio',
   'settings.composio_panel.loading': 'Laadimine…',
   'settings.composio_panel.intro_prefix':
-    'Composio võimaldab integreerida Gmaili, Notioni, Slack, GitHub ja rohkem kui 1000 muu rakendusega. Vaikimisi haldab Aura seda teie eest, seega ei pea te API võtit kaasa võtma. Kui eelistate oma Composio kontot otse kasutada, minge ümber',
+    'Composio võimaldab integreerida Gmaili, Notioni, Slack, GitHub ja rohkem kui 1000 muu rakendusega. Vaikimisi haldab Youma seda teie eest, seega ei pea te API võtit kaasa võtma. Kui eelistate oma Composio kontot otse kasutada, minge ümber',
   'settings.composio_panel.direct_word': 'Otsene',
   'settings.composio_panel.intro_suffix': 'režiimi ja kleepige oma võti alla.',
   'settings.composio_panel.routing_mode_legend': 'Marsruutimise režiim',
-  'settings.composio_panel.managed_aria_label': 'Hallatud (Aura tegeleb sellega teie eest)',
-  'settings.composio_panel.managed_title': 'Hallatud (Aura tegeleb sellega teie eest)',
+  'settings.composio_panel.managed_aria_label': 'Hallatud (Youma tegeleb sellega teie eest)',
+  'settings.composio_panel.managed_title': 'Hallatud (Youma tegeleb sellega teie eest)',
   'settings.composio_panel.managed_description':
-    'Vaikimisi. Aura haldab Composio ühendust teie eest. Käivitage veebihaagid (reaalajas Gmail / Slack sündmused) töötavad juba karbist välja.',
+    'Vaikimisi. Youma haldab Composio ühendust teie eest. Käivitage veebihaagid (reaalajas Gmail / Slack sündmused) töötavad juba karbist välja.',
   'settings.composio_panel.direct_aria_label': 'Otsene (võtke kaasa oma API-klahv)',
   'settings.composio_panel.direct_title': 'Otsene (võtke kaasa oma API-klahv)',
   'settings.composio_panel.direct_description_prefix': 'Kõned lähevad aadressile',
@@ -1477,7 +1477,7 @@ const etEE: TranslationMap = {
   'settings.composio_panel.api_key_label': 'Composio API klahv',
   'settings.composio_panel.api_key_help_prefix': 'Leidke oma võti aadressilt',
   'settings.composio_panel.api_key_help_suffix':
-    'Võti salvestatakse selles seadmes krüpteeritult ja seda ei saadeta kunagi aadressile Aura.',
+    'Võti salvestatakse selles seadmes krüpteeritult ja seda ei saadeta kunagi aadressile Youma.',
   'settings.composio_panel.api_key_placeholder_stored':
     '•••••••••••• (võti on salvestatud – kleepige asendamiseks uus võti)',
   'settings.composio_panel.api_key_placeholder_empty': 'ck_live_xxxxxxxxxxxxxxxxx',
@@ -1485,10 +1485,10 @@ const etEE: TranslationMap = {
     'Sellesse seadmesse on praegu salvestatud klahv Composio API.',
   'settings.composio_panel.confirm_title': '⚠️ Lülitumine otserežiimile',
   'settings.composio_panel.confirm_integrations_prefix':
-    'Teie olemasolevad integratsioonid (Gmail, Slack, GitHub jne, mis on lingitud Aura kaudu)',
+    'Teie olemasolevad integratsioonid (Gmail, Slack, GitHub jne, mis on lingitud Youma kaudu)',
   'settings.composio_panel.wont_be_visible': 'ei jää nähtavaks',
   'settings.composio_panel.confirm_integrations_suffix':
-    '— nad elavad Aura juhitavas Composio üürnikus.',
+    '— nad elavad Youma juhitavas Composio üürnikus.',
   'settings.composio_panel.confirm_needs_title': 'Teil on vaja:',
   'settings.composio_panel.confirm_need_account_prefix': 'Konto aadressil',
   'settings.composio_panel.confirm_need_account_suffix': 'klahviga API',
@@ -1507,7 +1507,7 @@ const etEE: TranslationMap = {
     'Salvestamine ebaõnnestus. Otserežiim nõuab mittetühja klahvi API.',
   'settings.model_status.ollama_unavailable_title': 'Ollama käitusaeg pole saadaval',
   'settings.model_status.ollama_unavailable_description':
-    'Aura käsitleb nüüd Ollamat kui välist järelduste käituskeskkonda. Käivitage oma Ollama server, hankige soovitud mudelid ja suunake sellele töökoormuse marsruutimine.',
+    'Youma käsitleb nüüd Ollamat kui välist järelduste käituskeskkonda. Käivitage oma Ollama server, hankige soovitud mudelid ja suunake sellele töökoormuse marsruutimine.',
   'settings.model_status.ollama_docs_link': 'Ollama dok',
   'settings.model_status.runtime_status_title': 'Käitusaja olek',
   'settings.model_status.refresh': 'Värskenda',
@@ -1526,7 +1526,7 @@ const etEE: TranslationMap = {
   'settings.model_status.hide_error_details': 'Peida vea üksikasjad',
   'settings.model_status.show_error_details': 'Kuva vea üksikasjad',
   'settings.model_status.connect_only_prefix':
-    'Aura loob ühenduse ainult juba töötava Ollama-ühilduva lõpp-punktiga. Vaata',
+    'Youma loob ühenduse ainult juba töötava Ollama-ühilduva lõpp-punktiga. Vaata',
   'settings.model_status.connect_only_suffix':
     'seadistusjuhiste saamiseks proovige uuesti, kui teie käitusaeg on kättesaadav.',
   'settings.model_status.ollama_diagnostics_title': 'Ollama diagnostika',
@@ -1552,7 +1552,7 @@ const etEE: TranslationMap = {
   'settings.model_status.vision_model_line': 'Nägemine: {model}',
   'settings.model_status.issues_heading': 'Probleemid',
   'settings.model_status.manage_ollama_footer':
-    'Hallake Ollama protsessi ja mudeli tõmbamisi väljaspool Aura, seejärel käivitage diagnostika uuesti.',
+    'Hallake Ollama protsessi ja mudeli tõmbamisi väljaspool Youma, seejärel käivitage diagnostika uuesti.',
   'settings.device_capability.model_tier_title': 'Mudeli tase',
   'settings.device_capability.loading_device_info': 'Seadme teabe ja eelseadete laadimine…',
   'settings.device_capability.could_not_load_presets': 'Eelseadeid ei saanud laadida: {error}',
@@ -1858,7 +1858,7 @@ const etEE: TranslationMap = {
   'composio.connect_modal.disconnecting': 'Ühenduse katkestamine…',
   'composio.connect_modal.dismiss': 'Loobu',
   'composio.connect_modal.expired_body':
-    'Ühendage uuesti, et {name} tööriistad uuesti lubada. Aura jätab selle integratsiooni kättesaamatuks, kuni OAuth juurdepääsu värskendate.',
+    'Ühendage uuesti, et {name} tööriistad uuesti lubada. Youma jätab selle integratsiooni kättesaamatuks, kuni OAuth juurdepääsu värskendate.',
   'composio.connect_modal.expired_title': '{name} luba aegus',
   'composio.connect_modal.generic_error': 'Midagi läks valesti.',
   'composio.connect_modal.header_connect': 'Ühendage {name}',
@@ -1874,7 +1874,7 @@ const etEE: TranslationMap = {
   'composio.connect_modal.needs_subdomain_intro_suffix': ') ja proovige uuesti.',
   'composio.connect_modal.permission_intro_prefix': '{name} võib paljastada',
   'composio.connect_modal.permission_intro_suffix':
-    '. Pärast ühenduse loomist juhitakse allpool Aura enda agendiõigusi lugemise, kirjutamise ja administraatori lülitustena.',
+    '. Pärast ühenduse loomist juhitakse allpool Youma enda agendiõigusi lugemise, kirjutamise ja administraatori lülitustena.',
   'composio.connect_modal.permissions_default_hint': 'Vaikimisi on lugemine + kirjutamine lubatud',
   'composio.connect_modal.permissions_heading': 'load',
   'composio.connect_modal.poll_timeout':
@@ -1923,10 +1923,10 @@ const etEE: TranslationMap = {
   'settings.ai_panel.local_runtime_disconnect_aria': 'Ühendage lahti {label}',
   'settings.ai_panel.providers_heading': 'LLM Pakkujad',
   'settings.ai_panel.providers_subtitle':
-    'Ühendage keelemudeli taustaprogrammid, mida soovite Aura kasutada. Lülitage teenusepakkuja võtme lisamiseks sisse; lülitage ühenduse katkestamiseks välja.',
+    'Ühendage keelemudeli taustaprogrammid, mida soovite Youma kasutada. Lülitage teenusepakkuja võtme lisamiseks sisse; lülitage ühenduse katkestamiseks välja.',
   'settings.ai_panel.routing_heading': 'Marsruutimine',
   'settings.ai_panel.routing_subtitle':
-    'Valige, kuidas iga töökoormust teenindatakse. Vaikimisi kasutab Aura; Kohandatud võimaldab teil suunata töökoormuse konkreetsele pakkujale ja mudelile.',
+    'Valige, kuidas iga töökoormust teenindatakse. Vaikimisi kasutab Youma; Kohandatud võimaldab teil suunata töökoormuse konkreetsele pakkujale ja mudelile.',
   'settings.auto_recharge.add_card': "+ Lisage kaart Stripe'ile",
   'settings.auto_recharge.amount_label': 'Lisa see summa',
   'settings.auto_recharge.cancel': 'Tühista',
@@ -1989,22 +1989,22 @@ const etEE: TranslationMap = {
   'settings.mascot_panel.color_black': 'Must',
   'settings.mascot_panel.color_burgundy': 'Burgundia',
   'settings.mascot_panel.color_footer_hint':
-    'Valitud värvi rakendatakse kõikjal, kus Aura kuvatakse, ja see jäetakse meelde taaskäivitamisel.',
+    'Valitud värvi rakendatakse kõikjal, kus Youma kuvatakse, ja see jäetakse meelde taaskäivitamisel.',
   'settings.mascot_panel.color_green': 'Roheline',
   'settings.mascot_panel.color_heading': 'Värv',
   'settings.mascot_panel.color_navy': 'Merevägi',
-  'settings.mascot_panel.color_radiogroup_aria': 'Aura värv',
+  'settings.mascot_panel.color_radiogroup_aria': 'Youma värv',
   'settings.mascot_panel.color_yellow': 'Kollane',
-  'settings.mascot_panel.header_title': 'Aura',
-  'settings.mascot_panel.library_unavailable': 'Aura teek pole saadaval: {error}',
+  'settings.mascot_panel.header_title': 'Youma',
+  'settings.mascot_panel.library_unavailable': 'Youma teek pole saadaval: {error}',
   'settings.mascot_panel.load_library_error': 'Maskotiteeki ei saanud laadida.',
   'settings.mascot_panel.load_mascot_error': 'Maskotti ei saanud laadida.',
-  'settings.mascot_panel.loading_library': 'Teegi Aura laadimine…',
-  'settings.mascot_panel.local_aura_default': 'Kohalik Aura (vaikimisi)',
+  'settings.mascot_panel.loading_library': 'Teegi Youma laadimine…',
+  'settings.mascot_panel.local_aura_default': 'Kohalik Youma (vaikimisi)',
   'settings.mascot_panel.no_characters':
-    'Aura tähemärki pole veel saadaval. Ülaltoodud kohalikud värvivariandid on endiselt aktiivsed.',
+    'Youma tähemärki pole veel saadaval. Ülaltoodud kohalikud värvivariandid on endiselt aktiivsed.',
   'settings.mascot_panel.no_color_variants':
-    'Selles konstruktsioonis pole Aura värvivariante saadaval.',
+    'Selles konstruktsioonis pole Youma värvivariante saadaval.',
   'settings.mascot_panel.preview_label': 'Eelvaade · {name}',
   'settings.mascot_panel.version_states': 'v{version} · {states} olekud',
   'settings.mascot_panel.visemes_suffix': '· visemes',
@@ -2048,7 +2048,7 @@ const etEE: TranslationMap = {
   'local_ai.download_snackbar.installing': 'Installimine...',
   'local_ai.download_snackbar.preparing': 'Ettevalmistus...',
   'settings.cron_job_list.heading': 'Core Cron Jobs',
-  'settings.cron_job_list.subheading': 'Töökohad püsisid Aura põhiplaanide andmebaasis.',
+  'settings.cron_job_list.subheading': 'Töökohad püsisid Youma põhiplaanide andmebaasis.',
   'settings.cron_job_list.loading': 'Croni tööde laadimine...',
   'settings.cron_job_list.empty': 'Põhilisi cron töökohti ei leitud.',
   'settings.cron_job_list.status_enabled': 'Lubatud',
@@ -2120,15 +2120,15 @@ const etEE: TranslationMap = {
   'aura_link_modal.notifications_desktop_only':
     'Omamärguanded on saadaval ainult töölauarakenduses (käivitage pnpm dev:app).',
   'aura_link_modal.notifications_permission_off':
-    'Teavitamise luba on välja lülitatud. Lubage Aura jaotises Süsteemi sätted → Märguanded, seejärel proovige uuesti.',
-  'aura_link_modal.notification_title': 'Aura on hea minna',
+    'Teavitamise luba on välja lülitatud. Lubage Youma jaotises Süsteemi sätted → Märguanded, seejärel proovige uuesti.',
+  'aura_link_modal.notification_title': 'Youma on hea minna',
   'aura_link_modal.notification_body': 'Kui miski vajab teie tähelepanu, saate siin pingi.',
   'aura_link_modal.notification_send_failed':
-    'Aura ei saanud süsteemi märguannet käivitada. Kontrollige OS-i teavitusseadeid ja proovige uuesti.',
+    'Youma ei saanud süsteemi märguannet käivitada. Kontrollige OS-i teavitusseadeid ja proovige uuesti.',
   'aura_link_modal.notifications_intro':
-    'Aura kasutab natiivseid märguandeid, et saaks teid pingida, kui miski vajab teie tähelepanu, isegi kui vestlusaken on peidetud.',
+    'Youma kasutab natiivseid märguandeid, et saaks teid pingida, kui miski vajab teie tähelepanu, isegi kui vestlusaken on peidetud.',
   'aura_link_modal.notifications_blocked_line1': 'Teavitused on praegu blokeeritud.',
-  'aura_link_modal.notifications_blocked_line2': '1. Avage Süsteemi sätted → Teavitused → Aura',
+  'aura_link_modal.notifications_blocked_line2': '1. Avage Süsteemi sätted → Teavitused → Youma',
   'aura_link_modal.notifications_blocked_line3': '2. Lülitage sisse valik Allow Notifications',
   'aura_link_modal.notifications_blocked_line4':
     '3. Naaske siia ja puudutage valikut Proovi testi uuesti',
@@ -2138,7 +2138,7 @@ const etEE: TranslationMap = {
   'aura_link_modal.retry_test_notification': 'Proovige uuesti testi märguanne',
   'aura_link_modal.send_test_notification': 'Saada testiteade',
   'aura_link_modal.notification_sent_success':
-    'Testiteatis saadetud. Kui te seda ei saanud, avage Süsteemi sätted → Märguanded → Aura, lülitage sisse Luba märguanded ja määrake bänneri stiil väärtuseks Püsiv.',
+    'Testiteatis saadetud. Kui te seda ei saanud, avage Süsteemi sätted → Märguanded → Youma, lülitage sisse Luba märguanded ja määrake bänneri stiil väärtuseks Püsiv.',
   'aura_link_modal.notification_send_error': 'Ei saanud saata: {error}',
   'aura_link_modal.trial_credit_label': 'Proovikrediit',
   'aura_link_modal.trial_credit_amount': '1,00 dollarit',
@@ -2147,7 +2147,7 @@ const etEE: TranslationMap = {
   'aura_link_modal.open_dashboard': 'Avage brauseris armatuurlaud',
   'aura_link_modal.stay_on_trial': 'Jääge kohtu alla',
   'aura_link_modal.discord_intro':
-    'Hüppa meie Discord ja linkige oma Aura konto. Saate eksklusiivse varajase juurdepääsu funktsioonidele, tasuta krediiti mängimiseks, suurepärase kogukonna, kellega koos suhelda, ja jah, tasuta kaupu.',
+    'Hüppa meie Discord ja linkige oma Youma konto. Saate eksklusiivse varajase juurdepääsu funktsioonidele, tasuta krediiti mängimiseks, suurepärase kogukonna, kellega koos suhelda, ja jah, tasuta kaupu.',
   'aura_link_modal.discord_perk_feature_access': 'Eksklusiivne juurdepääs funktsioonidele',
   'aura_link_modal.discord_perk_free_credits': 'Aktiivsetele liikmetele tasuta krediiti',
   'aura_link_modal.discord_perk_community': 'Ehitajate ja operaatorite kogukond',
@@ -2183,7 +2183,7 @@ const etEE: TranslationMap = {
   'channels.discord_config.copied': 'Kopeeritud!',
   'channels.discord_config.copy': 'Kopeeri',
   'channels.discord_config.link_instructions_prefix': 'Discord, saatke',
-  'channels.discord_config.link_instructions_suffix': 'Aura robotile. Token aegub 5 minuti pärast.',
+  'channels.discord_config.link_instructions_suffix': 'Youma robotile. Token aegub 5 minuti pärast.',
   'channels.discord_config.link_token_warning':
     'Salvesta see käsk – seda märki näidatakse ainult üks kord.',
   'channels.discord_config.account_linked': 'Teie Discord konto on lingitud.',
@@ -2223,9 +2223,9 @@ const etEE: TranslationMap = {
   'settings.memory_window_control.save_failed': 'Mäluakna salvestamine ebaõnnestus',
   'settings.memory_window_control.heading': 'Pikaajalise mälu aken',
   'settings.memory_window_control.description':
-    'Kui palju meeldejäänud konteksti Aura süstib igasse uude agendijooksu. Suuremad aknad on varasematest vestlustest teadlikumad, kuid kasutavad igal käivitamisel rohkem märke ja maksavad rohkem.',
+    'Kui palju meeldejäänud konteksti Youma süstib igasse uude agendijooksu. Suuremad aknad on varasematest vestlustest teadlikumad, kuid kasutavad igal käivitamisel rohkem märke ja maksavad rohkem.',
   'home.banners.promo_credits': 'Teil on {amount} sooduskrediiti.',
-  'home.banners.promo_credits_prefix': 'Pöörake Aura ja kui olete enamaks valmis,',
+  'home.banners.promo_credits_prefix': 'Pöörake Youma ja kui olete enamaks valmis,',
   'home.banners.get_subscription': 'hankige tellimus',
   'home.banners.promo_credits_suffix': 'ja saate 10 korda rohkem kasutust.',
   'home.banners.dismiss_early_bird': 'Loobu varajase tellija bänner',
@@ -2235,7 +2235,7 @@ const etEE: TranslationMap = {
   'home.banners.first_subscription': 'esimene tellimus.',
   'home.banners.join_discord': 'Liituge meie Discord-ga',
   'home.banners.discord_description':
-    'Hankige värskendusi, tasuta kaupu, krediite, teatage vigadest ja saage osa Aura kogukonnast.',
+    'Hankige värskendusi, tasuta kaupu, krediite, teatage vigadest ja saage osa Youma kogukonnast.',
   'intelligence.memory_chunk_detail.copy_chunk_id': 'Kopeeri tüki ID',
   'intelligence.memory_chunk_detail.chunk_label': 'tükk {id}',
   'intelligence.memory_chunk_detail.copied': 'kopeeritud',
@@ -2260,7 +2260,7 @@ const etEE: TranslationMap = {
     'Midagi läks valesti. Palun proovi uuesti.\nSellest veast on teatatud. Teatada saab ka numbril Discord.\n<aura-link path="community/discord">Aruanne Discord kohta</aura-link>',
   'daemon.service_blocking_gate.retry_failed':
     'Uuesti proovimine ebaõnnestus. Laadige alla rakenduse uusim versioon ja proovige uuesti.',
-  'daemon.service_blocking_gate.title': 'Aura tuum pole saadaval',
+  'daemon.service_blocking_gate.title': 'Youma tuum pole saadaval',
   'daemon.service_blocking_gate.description':
     'Me ei saanud pärast mitut katset kohalikku põhiteenust taastada. See võib juhtuda pärast kriitilist krahhi või binaarset mittevastavust.',
   'daemon.service_blocking_gate.download_hint':
@@ -2415,17 +2415,17 @@ const etEE: TranslationMap = {
   'chat.unsubscribe_approval_card.success_message': '✓ Tellimusest loobumine õnnestus.',
   'chat.unsubscribe_approval_card.denied_message': '✕ Taotlus lükati tagasi.',
   'oauth.provider_button.twitter_startup_failure':
-    'Twitteri/X-i sisselogimist ei saanud alustada. Kontrollige, kas Twitteri rakenduse OAuth tagasihelistamine URL, kliendi ID/saladus ja taotletud ulatused vastavad taustaprogrammile Aura, seejärel proovige uuesti.',
+    'Twitteri/X-i sisselogimist ei saanud alustada. Kontrollige, kas Twitteri rakenduse OAuth tagasihelistamine URL, kliendi ID/saladus ja taotletud ulatused vastavad taustaprogrammile Youma, seejärel proovige uuesti.',
   'oauth.provider_button.generic_startup_failure':
     '{providerName} sisselogimist ei saanud alustada. Palun proovi uuesti.',
   'oauth.provider_button.connecting': 'Ühendamine...',
   'skills.search_bar.placeholder': 'Otsinguoskused...',
-  'common.persist_rehydration_screen.title': 'Aura laadimine võtab tavapärasest kauem aega.',
+  'common.persist_rehydration_screen.title': 'Youma laadimine võtab tavapärasest kauem aega.',
   'common.persist_rehydration_screen.description':
     'Kohaliku rakenduse olek võib olla rikutud. Lähtestamine logib teid välja ja kustutab selle seadme vahemällu salvestatud andmed; järgmisel käivitamisel ühendate oma kontod uuesti. Teie andmeid serveris see ei mõjuta.',
   'common.persist_rehydration_screen.resetting': 'Lähtestamine…',
   'common.persist_rehydration_screen.reset_button': 'Lähtesta kohalik osariik',
-  'common.route_loading_screen.initializing': 'Aura lähtestamine...',
+  'common.route_loading_screen.initializing': 'Youma lähtestamine...',
   'privacy.what_leaves_link.label': 'Mis minu arvutist maha jätab?',
   'settings.provider_key_dialog.api_key_required': 'Jätkamiseks kleepige võti API.',
   'settings.provider_key_dialog.connect_title': 'Ühendage {label}',
@@ -2435,7 +2435,7 @@ const etEE: TranslationMap = {
   'settings.provider_key_dialog.cancel_button': 'Tühista',
   'settings.provider_key_dialog.saving': 'Salvestamine…',
   'settings.provider_key_dialog.save_button': 'Salvesta',
-  'settings.workload_row.aura_default': 'Aura (vaikimisi)',
+  'settings.workload_row.aura_default': 'Youma (vaikimisi)',
   'settings.workload_row.default_button': 'Vaikimisi',
   'settings.workload_row.custom_button': 'Kohandatud',
 };

@@ -1209,7 +1209,7 @@ fn macos_app_menu(app: &AppHandle<AppRuntime>) -> tauri::Result<Menu<AppRuntime>
     let quit = MenuItem::with_id(
         app,
         APP_QUIT_MENU_ID,
-        "Quit Aura",
+        "Quit Youma",
         true,
         Some("CmdOrCtrl+Q"),
     )?;
@@ -1217,7 +1217,7 @@ fn macos_app_menu(app: &AppHandle<AppRuntime>) -> tauri::Result<Menu<AppRuntime>
     let app_sep_2 = PredefinedMenuItem::separator(app)?;
     let app_menu = Submenu::with_items(
         app,
-        "Aura",
+        "Youma",
         true,
         &[
             &about,
@@ -1278,7 +1278,7 @@ fn setup_tray(app: &AppHandle<AppRuntime>) -> tauri::Result<()> {
     let show_item = MenuItem::with_id(
         app,
         "tray_show_window",
-        "Open Aura",
+        "Open Youma",
         true,
         None::<&str>,
     )?;

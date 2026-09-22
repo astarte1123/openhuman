@@ -128,7 +128,7 @@ const slSI: TranslationMap = {
   'clearData.failed': 'Brisanje podatkov in odjava nista uspela. prosim poskusite ponovno',
   'clearData.failedLogout': 'Odjava ni uspela. prosim poskusite ponovno',
   'clearData.failedPersist': 'Stanja aplikacije ni bilo mogoče izbrisati. prosim poskusite ponovno',
-  'welcome.title': 'Dobrodošli v Aura',
+  'welcome.title': 'Dobrodošli v Youma',
   'welcome.subtitle': 'Vaša osebna AI super inteligenca. Zasebno, preprosto in izjemno zmogljivo.',
   'welcome.connectPrompt': 'Konfiguracija RPC URL (napredno)',
   'welcome.selectRuntime': 'Izberite Runtime',
@@ -144,7 +144,7 @@ const slSI: TranslationMap = {
     'Vaša naprava je povezana. Naj aplikacija deluje, da ohranite povezavo. Pošljite sporočilo svojemu agentu s spodnjim gumbom.',
   'home.statusBackendOnly': 'Ponovna povezava z zaledjem ... vaš agent bo kmalu spet na voljo.',
   'home.statusCoreUnreachable':
-    'Lokalna osnovna stranska prikolica se ne odziva. Postopek v ozadju Aura se je morda zrušil ali pa se ni zagnal.',
+    'Lokalna osnovna stranska prikolica se ne odziva. Postopek v ozadju Youma se je morda zrušil ali pa se ni zagnal.',
   'home.statusInternetOffline':
     'Vaša naprava je trenutno brez povezave. Preverite omrežje ali znova zaženite aplikacijo, da znova vzpostavite povezavo.',
   'home.restartCore': 'Znova zaženite Core',
@@ -194,7 +194,7 @@ const slSI: TranslationMap = {
   'rewards.referralCode': 'Vaša priporočilna koda',
   'rewards.copyCode': 'Kopiraj kodo',
   'rewards.share': 'Delite',
-  'onboarding.welcome': 'zdravo Jaz sem Aura.',
+  'onboarding.welcome': 'zdravo Jaz sem Youma.',
   'onboarding.welcomeDesc':
     'Vaš super inteligentni pomočnik AI, ki deluje na vašem računalniku. Zasebno, preprosto in izjemno zmogljivo.',
   'onboarding.context': 'Zbiranje konteksta',
@@ -206,14 +206,14 @@ const slSI: TranslationMap = {
   'onboarding.referral': 'Napotitev',
   'onboarding.referralDesc': 'Uporabite referenčno kodo, če jo imate.',
   'onboarding.finish': 'Dokončajte nastavitev',
-  'onboarding.finishDesc': 'Vse je pripravljeno! Začnite uporabljati Aura.',
+  'onboarding.finishDesc': 'Vse je pripravljeno! Začnite uporabljati Youma.',
   'onboarding.skip': 'Preskoči',
   'onboarding.getStarted': 'Začnite',
-  'onboarding.runtimeChoice.title': 'Kako želite teči Aura?',
+  'onboarding.runtimeChoice.title': 'Kako želite teči Youma?',
   'onboarding.runtimeChoice.subtitle':
     'Izberite nastavitev, ki vam najbolj ustreza. To lahko pozneje spremenite v nastavitvah.',
   'onboarding.runtimeChoice.cloud.title': 'Enostavno',
-  'onboarding.runtimeChoice.cloud.tagline': 'Naj Aura uredi vse namesto vas.',
+  'onboarding.runtimeChoice.cloud.tagline': 'Naj Youma uredi vse namesto vas.',
   'onboarding.runtimeChoice.cloud.f1': 'Vgrajena varnost',
   'onboarding.runtimeChoice.cloud.f2': 'Stiskanje žetonov za dodatno razširitev vaše uporabe',
   'onboarding.runtimeChoice.cloud.f3': 'Ena naročnina, vsak model vključen',
@@ -250,7 +250,7 @@ const slSI: TranslationMap = {
   'onboarding.custom.stepperMemory': 'Spomin',
   'onboarding.custom.stepCounter': 'Korak {n} od {total}',
   'onboarding.custom.defaultTitle': 'Privzeto',
-  'onboarding.custom.defaultSubtitle': 'Naj Aura upravlja namesto vas.',
+  'onboarding.custom.defaultSubtitle': 'Naj Youma upravlja namesto vas.',
   'onboarding.custom.configureTitle': 'Konfiguriraj',
   'onboarding.custom.configureSubtitle': 'Izbral bom, kaj bom uporabil.',
   'onboarding.custom.progressAriaLabel': 'Napredek vkrcanja',
@@ -264,34 +264,34 @@ const slSI: TranslationMap = {
   'onboarding.custom.inference.subtitle':
     'Kateri jezikovni model bi moral odgovarjati na vaša vprašanja in voditi vaše agente?',
   'onboarding.custom.inference.defaultDesc':
-    'Aura vsako delovno obremenitev usmeri k razumnemu privzetemu modelu. Brez ključev, brez nastavitev.',
+    'Youma vsako delovno obremenitev usmeri k razumnemu privzetemu modelu. Brez ključev, brez nastavitev.',
   'onboarding.custom.inference.configureDesc':
     'Prinesite svoj ključ OpenAI ali Anthropic. Uporabljamo ga za vsako delovno obremenitev, ki temelji na besedilu.',
   'onboarding.custom.voice.title': 'Glas',
   'onboarding.custom.voice.subtitle':
     'Pretvorba govora v besedilo in besedilo v govor za glasovni način.',
   'onboarding.custom.voice.defaultDesc':
-    'Aura je dobavljen z upravljanim STT/TTS, ki preprosto deluje. Nič za povezovanje.',
+    'Youma je dobavljen z upravljanim STT/TTS, ki preprosto deluje. Nič za povezovanje.',
   'onboarding.custom.voice.configureDesc':
     'Uporabite svoj ElevenLabs / OpenAI Whisper / itd. Konfigurirajte v Settings › Voice.',
   'onboarding.custom.oauth.title': 'Povezave (OAuth)',
   'onboarding.custom.oauth.subtitle':
     'Gmail, Slack, Notion in druge povezane storitve, ki potrebujejo OAuth.',
   'onboarding.custom.oauth.defaultDesc':
-    'Aura izvaja upravljan Composio delovni prostor. En klik za kasnejšo povezavo vsake storitve.',
+    'Youma izvaja upravljan Composio delovni prostor. En klik za kasnejšo povezavo vsake storitve.',
   'onboarding.custom.oauth.configureDesc':
     'Prinesite svoj račun Composio / ključ API. Konfigurirajte v Nastavitve › Povezave.',
   'onboarding.custom.search.title': 'Spletno iskanje',
-  'onboarding.custom.search.subtitle': 'Kako Aura išče po spletu v vašem imenu.',
+  'onboarding.custom.search.subtitle': 'Kako Youma išče po spletu v vašem imenu.',
   'onboarding.custom.search.defaultDesc':
-    'Aura uporablja zaledje upravljanega iskanja. Ključi niso potrebni.',
+    'Youma uporablja zaledje upravljanega iskanja. Ključi niso potrebni.',
   'onboarding.custom.search.configureDesc':
     'Prinesite svoj ključ ponudnika iskanja (Tavily, Brave itd.). Konfigurirajte v Nastavitve › Orodja.',
   'onboarding.custom.memory.title': 'Spomin',
   'onboarding.custom.memory.subtitle':
-    'Kako si Aura zapomni vaš kontekst, nastavitve in prejšnje pogovore.',
+    'Kako si Youma zapomni vaš kontekst, nastavitve in prejšnje pogovore.',
   'onboarding.custom.memory.defaultDesc':
-    'Aura samodejno upravlja shranjevanje in priklic v pomnilnik. Nič za nastaviti.',
+    'Youma samodejno upravlja shranjevanje in priklic v pomnilnik. Nič za nastaviti.',
   'onboarding.custom.memory.configureDesc':
     'Preglejte, izvozite ali pobrišite pomnilnik sami. Konfigurirajte v Nastavitve › Pomnilnik.',
   'accounts.addAccount': 'Dodaj račun',
@@ -351,7 +351,7 @@ const slSI: TranslationMap = {
   'misc.downloading': 'Prenašanje ...',
   'misc.installing': 'Namestitev ...',
   'misc.beta':
-    'Aura je v zgodnji različici beta. Delite povratne informacije ali prijavite morebitne napake, na katere naletite – vsako poročilo nam pomaga hitreje pošiljati.',
+    'Youma je v zgodnji različici beta. Delite povratne informacije ali prijavite morebitne napake, na katere naletite – vsako poročilo nam pomaga hitreje pošiljati.',
   'misc.betaFeedback': 'Pošlji povratne informacije',
   'mnemonic.title': 'Fraza za obnovitev',
   'mnemonic.warning': 'Zapišite te besede po vrstnem redu in jih shranite na varno mesto.',
@@ -374,11 +374,11 @@ const slSI: TranslationMap = {
   'privacy.anonymizedAnalytics': 'Anonimizirana analitika',
   'privacy.shareAnonymizedData': 'Delite anonimizirane podatke o uporabi',
   'privacy.shareAnonymizedDataDesc':
-    'Pomagajte izboljšati Aura z deljenjem anonimnih poročil o zrušitvah in analitike uporabe. Vsi podatki so popolnoma anonimizirani – osebni podatki, sporočila, ključi denarnice ali informacije o sejah se nikoli ne zbirajo.',
+    'Pomagajte izboljšati Youma z deljenjem anonimnih poročil o zrušitvah in analitike uporabe. Vsi podatki so popolnoma anonimizirani – osebni podatki, sporočila, ključi denarnice ali informacije o sejah se nikoli ne zbirajo.',
   'privacy.meetingFollowUps': 'Nadaljevanje srečanja',
   'privacy.autoHandoffMeet': 'Samodejna predaja Google Meet prepisov orkestratorju',
   'privacy.autoHandoffMeetDesc':
-    'Ko se klic Google Meet konča, lahko orkestrator Aura prebere prepis in izvede dejanja, kot so pisanje sporočil, načrtovanje nadaljnjih dejanj ali objavljanje povzetkov v vašem povezanem delovnem prostoru Slack. Privzeto izklopljeno.',
+    'Ko se klic Google Meet konča, lahko orkestrator Youma prebere prepis in izvede dejanja, kot so pisanje sporočil, načrtovanje nadaljnjih dejanj ali objavljanje povzetkov v vašem povezanem delovnem prostoru Slack. Privzeto izklopljeno.',
   'privacy.analyticsDisclaimer':
     'Vsa analitika in poročila o napakah so popolnoma anonimizirana. Ko je omogočeno, zbiramo samo informacije o zrušitvah, vrsti naprave in lokaciji datoteke z napakami. Nikoli ne dostopamo do vaših sporočil, podatkov o sejah, ključev denarnice, ključev API ali kakršnih koli osebnih podatkov. To nastavitev lahko kadar koli spremenite.',
   'settings.about.version': 'Različica',
@@ -437,7 +437,7 @@ const slSI: TranslationMap = {
   'settings.billing.browserOpenFailed':
     'Brskalnika ni bilo mogoče samodejno odpreti. Uporabite zgornji gumb.',
   'settings.tools.chooseCapabilities':
-    'Izberite, katere zmogljivosti lahko Aura uporablja v vašem imenu.',
+    'Izberite, katere zmogljivosti lahko Youma uporablja v vašem imenu.',
   'settings.tools.saveChanges': 'Shrani spremembe',
   'settings.tools.preferencesSaved': 'Nastavitve shranjene',
   'settings.tools.saveFailed': 'Nastavitev ni bilo mogoče shraniti. Poskusite znova.',
@@ -901,9 +901,9 @@ const slSI: TranslationMap = {
   'bootCheck.tokenRequired': 'Za povezavo potrebujemo žeton za preverjanje avtorizacije.',
   'bootCheck.chooseCoreMode': 'Izberite Runtime',
   'bootCheck.connectToCore': 'Povežite se s svojim izvajalnim okoljem',
-  'bootCheck.desktopDescription': 'Aura potrebuje čas za premislek. Izberite, kje naj živi.',
+  'bootCheck.desktopDescription': 'Youma potrebuje čas za premislek. Izberite, kje naj živi.',
   'bootCheck.webDescription':
-    'V spletu se Aura poveže z izvajalnim okoljem, ki ga nadzirate. Spodaj spustite njegov URL in žeton za avtorizacijo ali zgrabite namizno aplikacijo, da jo zaženete kar na svojem računalniku.',
+    'V spletu se Youma poveže z izvajalnim okoljem, ki ga nadzirate. Spodaj spustite njegov URL in žeton za avtorizacijo ali zgrabite namizno aplikacijo, da jo zaženete kar na svojem računalniku.',
   'bootCheck.preferDesktop': 'Bi raje obdržali vse na svoji napravi?',
   'bootCheck.downloadDesktop': 'Pridobite namizno aplikacijo',
   'bootCheck.localRecommended': 'Zaženi lokalno (priporočeno)',
@@ -930,7 +930,7 @@ const slSI: TranslationMap = {
   'bootCheck.quit': 'Odnehaj',
   'bootCheck.legacyDetected': 'Zaznano starejše izvajalno okolje v ozadju',
   'bootCheck.legacyDescription':
-    'V tej napravi se že izvaja ločeno nameščen demon Aura. To moramo razčistiti, preden lahko prevzame vgrajeno izvajalno okolje.',
+    'V tej napravi se že izvaja ločeno nameščen demon Youma. To moramo razčistiti, preden lahko prevzame vgrajeno izvajalno okolje.',
   'bootCheck.removing': 'Odstranjevanje ...',
   'bootCheck.removeContinue': 'Odstrani in nadaljuj',
   'bootCheck.localNeedsRestart': 'Lokalni izvajalnik potrebuje ponovni zagon',
@@ -1068,9 +1068,9 @@ const slSI: TranslationMap = {
   'rewards.referrals.load_stats_error': 'Statistike napotitev ni bilo mogoče naložiti',
   'rewards.referrals.copied': 'Kopirano',
   'rewards.referrals.copy_failed': 'Kopiranje ni uspelo',
-  'rewards.referrals.share_intro': 'Pridružite se mi na Aura.',
+  'rewards.referrals.share_intro': 'Pridružite se mi na Youma.',
   'rewards.referrals.share_code_line': 'Napotitvena koda: {code}',
-  'rewards.referrals.share_download_line': 'Prenos Aura: {url}',
+  'rewards.referrals.share_download_line': 'Prenos Youma: {url}',
   'rewards.referrals.apply_error': 'Napotitvene kode ni bilo mogoče uporabiti',
   'rewards.referrals.heading': 'Povabite prijatelje, pridobite kredite',
   'rewards.referrals.description':
@@ -1302,22 +1302,22 @@ const slSI: TranslationMap = {
   'skills.meeting_bots_card.platform_gmeet': 'Google Meet',
   'skills.meeting_bots_card.platform_zoom': 'Zoom',
   'skills.meeting_bots_card.platform_teams': 'Microsoftove ekipe',
-  'skills.meeting_bots_card.banner_title': 'Pošljite Aura na sestanek',
+  'skills.meeting_bots_card.banner_title': 'Pošljite Youma na sestanek',
   'skills.meeting_bots_card.new_badge': 'Novo',
   'skills.meeting_bots_card.banner_description':
-    'Spustite povezavo Google Meet in Aura se pridruži kot gost, govori, posluša in maha nazaj.',
+    'Spustite povezavo Google Meet in Youma se pridruži kot gost, govori, posluša in maha nazaj.',
   'skills.meeting_bots_card.coming_soon_error': '{platform} podpora bo kmalu na voljo.',
-  'skills.meeting_bots_card.toast_joining_title': 'Aura se pridružuje srečanju',
+  'skills.meeting_bots_card.toast_joining_title': 'Youma se pridružuje srečanju',
   'skills.meeting_bots_card.toast_joining_message':
     'Čez nekaj sekund bi se moral prikazati kot udeleženec.',
-  'skills.meeting_bots_card.toast_busy_title': 'Aura je zaseden',
-  'skills.meeting_bots_card.toast_failed_title': 'Ni bilo mogoče zagnati Aura',
-  'skills.meeting_bots_card.default_error_message': 'Zagon Aura ni uspel.',
-  'skills.meeting_bots_card.modal_aria_label': 'Pošljite Aura na sestanek',
+  'skills.meeting_bots_card.toast_busy_title': 'Youma je zaseden',
+  'skills.meeting_bots_card.toast_failed_title': 'Ni bilo mogoče zagnati Youma',
+  'skills.meeting_bots_card.default_error_message': 'Zagon Youma ni uspel.',
+  'skills.meeting_bots_card.modal_aria_label': 'Pošljite Youma na sestanek',
   'skills.meeting_bots_card.close_aria': 'Zapri',
-  'skills.meeting_bots_card.modal_title': 'Pošljite Aura na sestanek',
+  'skills.meeting_bots_card.modal_title': 'Pošljite Youma na sestanek',
   'skills.meeting_bots_card.modal_description':
-    'Aura se pridruži kot anonimni gost, pretaka svoj video v klic in odgovarja prek agenta.',
+    'Youma se pridruži kot anonimni gost, pretaka svoj video v klic in odgovarja prek agenta.',
   'skills.meeting_bots_card.soon_suffix': '· kmalu',
   'skills.meeting_bots_card.meeting_link_label': 'Povezava do srečanja',
   'skills.meeting_bots_card.display_name_label': 'Prikazno ime',
@@ -1463,14 +1463,14 @@ const slSI: TranslationMap = {
   'settings.composio_panel.title': 'Composio',
   'settings.composio_panel.loading': 'Nalaganje ...',
   'settings.composio_panel.intro_prefix':
-    'Composio omogoča integracije z Gmailom, Notionom, Slack, GitHub in več kot 1000 drugimi aplikacijami. Privzeto Aura upravlja namesto vas, zato vam ni treba prinesti ključa API. Če raje neposredno uporabljate svoj račun Composio, preklopite na',
+    'Composio omogoča integracije z Gmailom, Notionom, Slack, GitHub in več kot 1000 drugimi aplikacijami. Privzeto Youma upravlja namesto vas, zato vam ni treba prinesti ključa API. Če raje neposredno uporabljate svoj račun Composio, preklopite na',
   'settings.composio_panel.direct_word': 'Neposredno',
   'settings.composio_panel.intro_suffix': 'način in spodaj prilepite svoj ključ.',
   'settings.composio_panel.routing_mode_legend': 'Način usmerjanja',
-  'settings.composio_panel.managed_aria_label': 'Upravljano (Aura upravlja namesto vas)',
-  'settings.composio_panel.managed_title': 'Upravljano (Aura upravlja namesto vas)',
+  'settings.composio_panel.managed_aria_label': 'Upravljano (Youma upravlja namesto vas)',
+  'settings.composio_panel.managed_title': 'Upravljano (Youma upravlja namesto vas)',
   'settings.composio_panel.managed_description':
-    'Privzeto. Aura namesto vas upravlja povezavo Composio. Sprožitev webhookov (Gmail v realnem času / Slack dogodki) deluje takoj po namestitvi.',
+    'Privzeto. Youma namesto vas upravlja povezavo Composio. Sprožitev webhookov (Gmail v realnem času / Slack dogodki) deluje takoj po namestitvi.',
   'settings.composio_panel.direct_aria_label': 'Direktno (prinesite svoj ključ API)',
   'settings.composio_panel.direct_title': 'Direktno (prinesite svoj ključ API)',
   'settings.composio_panel.direct_description_prefix': 'Klici gredo na',
@@ -1481,7 +1481,7 @@ const slSI: TranslationMap = {
   'settings.composio_panel.api_key_label': 'Tipka Composio API',
   'settings.composio_panel.api_key_help_prefix': 'Poiščite svoj ključ na',
   'settings.composio_panel.api_key_help_suffix':
-    'Ključ je v tej napravi shranjen šifriran in nikoli ni poslan na Aura.',
+    'Ključ je v tej napravi shranjen šifriran in nikoli ni poslan na Youma.',
   'settings.composio_panel.api_key_placeholder_stored':
     '•••••••••••• (ključ shranjen — prilepite nov ključ za zamenjavo)',
   'settings.composio_panel.api_key_placeholder_empty': 'ck_live_xxxxxxxxxxxxxxxxxx',
@@ -1489,10 +1489,10 @@ const slSI: TranslationMap = {
     'V tej napravi je trenutno shranjen ključ Composio API.',
   'settings.composio_panel.confirm_title': '⚠️ Preklop v neposredni način',
   'settings.composio_panel.confirm_integrations_prefix':
-    'Vaše obstoječe integracije (Gmail, Slack, GitHub itd., povezani prek Aura)',
+    'Vaše obstoječe integracije (Gmail, Slack, GitHub itd., povezani prek Youma)',
   'settings.composio_panel.wont_be_visible': 'ne bo viden',
   'settings.composio_panel.confirm_integrations_suffix':
-    '— živijo v najemniku Aura v upravljanju Composio.',
+    '— živijo v najemniku Youma v upravljanju Composio.',
   'settings.composio_panel.confirm_needs_title': 'Potrebovali boste:',
   'settings.composio_panel.confirm_need_account_prefix': 'Račun pri',
   'settings.composio_panel.confirm_need_account_suffix': 's tipko API',
@@ -1511,7 +1511,7 @@ const slSI: TranslationMap = {
     'Shranjevanje ni uspelo. Neposredni način zahteva neprazno tipko API.',
   'settings.model_status.ollama_unavailable_title': 'Ollama runtime ni na voljo',
   'settings.model_status.ollama_unavailable_description':
-    'Aura zdaj obravnava Ollamo kot zunanje izvajanje sklepanja. Zaženite lasten strežnik Ollama, potegnite želene modele in nanj usmerite usmerjanje delovne obremenitve.',
+    'Youma zdaj obravnava Ollamo kot zunanje izvajanje sklepanja. Zaženite lasten strežnik Ollama, potegnite želene modele in nanj usmerite usmerjanje delovne obremenitve.',
   'settings.model_status.ollama_docs_link': 'Ollama docs',
   'settings.model_status.runtime_status_title': 'Stanje izvajalnega časa',
   'settings.model_status.refresh': 'Osveži',
@@ -1530,7 +1530,7 @@ const slSI: TranslationMap = {
   'settings.model_status.hide_error_details': 'Skrij podrobnosti o napaki',
   'settings.model_status.show_error_details': 'Pokaži podrobnosti o napaki',
   'settings.model_status.connect_only_prefix':
-    'Aura se poveže samo z že delujočo končno točko, združljivo z Ollama. glej',
+    'Youma se poveže samo z že delujočo končno točko, združljivo z Ollama. glej',
   'settings.model_status.connect_only_suffix':
     'za navodila za nastavitev, nato poskusite znova, ko bo vaš čas izvajanja dosegljiv.',
   'settings.model_status.ollama_diagnostics_title': 'Ollama Diagnostics',
@@ -1556,7 +1556,7 @@ const slSI: TranslationMap = {
   'settings.model_status.vision_model_line': 'Vid: {model}',
   'settings.model_status.issues_heading': 'Težave',
   'settings.model_status.manage_ollama_footer':
-    'Upravljajte postopek Ollama in potegnite model zunaj Aura, nato znova zaženite diagnostiko.',
+    'Upravljajte postopek Ollama in potegnite model zunaj Youma, nato znova zaženite diagnostiko.',
   'settings.device_capability.model_tier_title': 'Stopnja modela',
   'settings.device_capability.loading_device_info':
     'Nalaganje informacij o napravi in ​​prednastavitev …',
@@ -1863,7 +1863,7 @@ const slSI: TranslationMap = {
   'composio.connect_modal.disconnecting': 'Prekinitev povezave ...',
   'composio.connect_modal.dismiss': 'Odpusti',
   'composio.connect_modal.expired_body':
-    'Ponovno vzpostavite povezavo, da znova omogočite orodja {name}. Aura bo pustil to integracijo nedosegljivo, dokler ne osvežite OAuth dostopa.',
+    'Ponovno vzpostavite povezavo, da znova omogočite orodja {name}. Youma bo pustil to integracijo nedosegljivo, dokler ne osvežite OAuth dostopa.',
   'composio.connect_modal.expired_title': '{name} Pooblastilo je poteklo',
   'composio.connect_modal.generic_error': 'Nekaj ​​je šlo narobe.',
   'composio.connect_modal.header_connect': 'Poveži {name}',
@@ -1879,7 +1879,7 @@ const slSI: TranslationMap = {
   'composio.connect_modal.needs_subdomain_intro_suffix': ') in poskusite znova.',
   'composio.connect_modal.permission_intro_prefix': '{name} lahko izpostavi',
   'composio.connect_modal.permission_intro_suffix':
-    '. Ko vzpostavite povezavo, so dovoljenja lastnega agenta Aura nadzorovana spodaj kot preklopi za branje, pisanje in skrbništvo.',
+    '. Ko vzpostavite povezavo, so dovoljenja lastnega agenta Youma nadzorovana spodaj kot preklopi za branje, pisanje in skrbništvo.',
   'composio.connect_modal.permissions_default_hint': 'Branje + pisanje je privzeto omogočeno',
   'composio.connect_modal.permissions_heading': 'Dovoljenja',
   'composio.connect_modal.poll_timeout':
@@ -1929,10 +1929,10 @@ const slSI: TranslationMap = {
   'settings.ai_panel.local_runtime_disconnect_aria': 'Prekinite povezavo {label}',
   'settings.ai_panel.providers_heading': 'LLM Ponudniki',
   'settings.ai_panel.providers_subtitle':
-    'Povežite zaledja jezikovnega modela, ki jih želite Aura uporabljati. Vklopite ponudnika, da dodate njegov ključ; izklopite za prekinitev povezave.',
+    'Povežite zaledja jezikovnega modela, ki jih želite Youma uporabljati. Vklopite ponudnika, da dodate njegov ključ; izklopite za prekinitev povezave.',
   'settings.ai_panel.routing_heading': 'Usmerjanje',
   'settings.ai_panel.routing_subtitle':
-    'Izberite, kako se streže posamezna delovna obremenitev. Privzeto uporablja Aura; Po meri vam omogoča, da delovno obremenitev usmerite na določenega ponudnika in model.',
+    'Izberite, kako se streže posamezna delovna obremenitev. Privzeto uporablja Youma; Po meri vam omogoča, da delovno obremenitev usmerite na določenega ponudnika in model.',
   'settings.auto_recharge.add_card': '+ Dodaj kartico na Stripe',
   'settings.auto_recharge.amount_label': 'Dodajte ta znesek',
   'settings.auto_recharge.cancel': 'Prekliči',
@@ -1994,22 +1994,22 @@ const slSI: TranslationMap = {
   'settings.mascot_panel.color_black': 'Črna',
   'settings.mascot_panel.color_burgundy': 'Bordo',
   'settings.mascot_panel.color_footer_hint':
-    'Izbrana barva se uporabi povsod, kjer se pojavi Aura, in si zapomni med ponovnimi zagoni.',
+    'Izbrana barva se uporabi povsod, kjer se pojavi Youma, in si zapomni med ponovnimi zagoni.',
   'settings.mascot_panel.color_green': 'zelena',
   'settings.mascot_panel.color_heading': 'barva',
   'settings.mascot_panel.color_navy': 'Mornarica',
-  'settings.mascot_panel.color_radiogroup_aria': 'Aura barva',
+  'settings.mascot_panel.color_radiogroup_aria': 'Youma barva',
   'settings.mascot_panel.color_yellow': 'Rumena',
-  'settings.mascot_panel.header_title': 'Aura',
-  'settings.mascot_panel.library_unavailable': 'Aura knjižnica ni na voljo: {error}',
+  'settings.mascot_panel.header_title': 'Youma',
+  'settings.mascot_panel.library_unavailable': 'Youma knjižnica ni na voljo: {error}',
   'settings.mascot_panel.load_library_error': 'Ni bilo mogoče naložiti knjižnice maskot.',
   'settings.mascot_panel.load_mascot_error': 'Maskote ni bilo mogoče naložiti.',
-  'settings.mascot_panel.loading_library': 'Nalaganje knjižnice Aura …',
-  'settings.mascot_panel.local_aura_default': 'Lokalno Aura (privzeto)',
+  'settings.mascot_panel.loading_library': 'Nalaganje knjižnice Youma …',
+  'settings.mascot_panel.local_aura_default': 'Lokalno Youma (privzeto)',
   'settings.mascot_panel.no_characters':
-    'Na voljo še ni nobenih znakov Aura. Zgornje lokalne barvne različice so še vedno aktivne.',
+    'Na voljo še ni nobenih znakov Youma. Zgornje lokalne barvne različice so še vedno aktivne.',
   'settings.mascot_panel.no_color_variants':
-    'V tej zgradbi ni na voljo nobena barvna različica Aura.',
+    'V tej zgradbi ni na voljo nobena barvna različica Youma.',
   'settings.mascot_panel.preview_label': 'Predogled · {name}',
   'settings.mascot_panel.version_states': 'v{version} · {states} stanja',
   'settings.mascot_panel.visemes_suffix': '· visemi',
@@ -2055,7 +2055,7 @@ const slSI: TranslationMap = {
   'local_ai.download_snackbar.preparing': 'Priprava ...',
   'settings.cron_job_list.heading': 'Core Cron Jobs',
   'settings.cron_job_list.subheading':
-    'Opravila so obstajala v bazi podatkov jedrnega razporejevalnika Aura.',
+    'Opravila so obstajala v bazi podatkov jedrnega razporejevalnika Youma.',
   'settings.cron_job_list.loading': 'Nalaganje cron opravil ...',
   'settings.cron_job_list.empty': 'Najdenih ni bilo nobenih temeljnih opravil cron.',
   'settings.cron_job_list.status_enabled': 'Omogočeno',
@@ -2127,17 +2127,17 @@ const slSI: TranslationMap = {
   'aura_link_modal.notifications_desktop_only':
     'Izvorna obvestila so na voljo samo v namizni aplikaciji (zaženite `pnpm dev:app`).',
   'aura_link_modal.notifications_permission_off':
-    'Dovoljenje za obvestila je izklopljeno. Omogočite Aura v sistemskih nastavitvah → Obvestila, nato poskusite znova.',
-  'aura_link_modal.notification_title': 'Aura je pripravljen',
+    'Dovoljenje za obvestila je izklopljeno. Omogočite Youma v sistemskih nastavitvah → Obvestila, nato poskusite znova.',
+  'aura_link_modal.notification_title': 'Youma je pripravljen',
   'aura_link_modal.notification_body':
     'Tukaj boste prejeli pinge, ko nekaj potrebuje vašo pozornost.',
   'aura_link_modal.notification_send_failed':
-    'Aura ni mogel sprožiti sistemskega obvestila. Preverite nastavitve obvestil OS in poskusite znova.',
+    'Youma ni mogel sprožiti sistemskega obvestila. Preverite nastavitve obvestil OS in poskusite znova.',
   'aura_link_modal.notifications_intro':
-    'Aura uporablja izvorna obvestila, tako da vas lahko pinga, ko nekaj potrebuje vašo pozornost, tudi ko je okno za klepet skrito.',
+    'Youma uporablja izvorna obvestila, tako da vas lahko pinga, ko nekaj potrebuje vašo pozornost, tudi ko je okno za klepet skrito.',
   'aura_link_modal.notifications_blocked_line1': 'Obvestila so trenutno blokirana.',
   'aura_link_modal.notifications_blocked_line2':
-    '1. Odprite Sistemske nastavitve → Obvestila → Aura',
+    '1. Odprite Sistemske nastavitve → Obvestila → Youma',
   'aura_link_modal.notifications_blocked_line3': '2. Vklopite možnost Dovoli obvestila',
   'aura_link_modal.notifications_blocked_line4':
     '3. Vrnite se sem in tapnite Poskusi znova poskusno obvestilo',
@@ -2147,7 +2147,7 @@ const slSI: TranslationMap = {
   'aura_link_modal.retry_test_notification': 'Poskusite ponovno preskusno obvestilo',
   'aura_link_modal.send_test_notification': 'Pošlji testno obvestilo',
   'aura_link_modal.notification_sent_success':
-    'Testno obvestilo je poslano. Če ga niste prejeli, pojdite na Sistemske nastavitve → Obvestila → Aura, vklopite Dovoli obvestila in nastavite slog pasice na Trajno.',
+    'Testno obvestilo je poslano. Če ga niste prejeli, pojdite na Sistemske nastavitve → Obvestila → Youma, vklopite Dovoli obvestila in nastavite slog pasice na Trajno.',
   'aura_link_modal.notification_send_error': 'Ni bilo mogoče poslati: {error}',
   'aura_link_modal.trial_credit_label': 'Poskusni kredit',
   'aura_link_modal.trial_credit_amount': '1,00 $',
@@ -2156,7 +2156,7 @@ const slSI: TranslationMap = {
   'aura_link_modal.open_dashboard': 'Odprite nadzorno ploščo v brskalniku',
   'aura_link_modal.stay_on_trial': 'Ostanite na sojenju',
   'aura_link_modal.discord_intro':
-    'Skočite v naš Discord in povežite svoj račun Aura. Dobili boste ekskluziven zgodnji dostop do funkcij, brezplačne kredite za igranje, odlično skupnost za piflarjenje in ja, brezplačno blago.',
+    'Skočite v naš Discord in povežite svoj račun Youma. Dobili boste ekskluziven zgodnji dostop do funkcij, brezplačne kredite za igranje, odlično skupnost za piflarjenje in ja, brezplačno blago.',
   'aura_link_modal.discord_perk_feature_access': 'Ekskluziven dostop do funkcij',
   'aura_link_modal.discord_perk_free_credits': 'Brezplačni krediti za aktivne člane',
   'aura_link_modal.discord_perk_community': 'Skupnost graditeljev in operaterjev',
@@ -2193,7 +2193,7 @@ const slSI: TranslationMap = {
   'channels.discord_config.copied': 'Kopirano!',
   'channels.discord_config.copy': 'Kopiraj',
   'channels.discord_config.link_instructions_prefix': 'V Discord pošljite',
-  'channels.discord_config.link_instructions_suffix': 'na Aura bot. Žeton poteče v 5 minutah.',
+  'channels.discord_config.link_instructions_suffix': 'na Youma bot. Žeton poteče v 5 minutah.',
   'channels.discord_config.link_token_warning':
     'Shrani ta ukaz — ta žeton je prikazan samo enkrat.',
   'channels.discord_config.account_linked': 'Vaš račun Discord je povezan.',
@@ -2234,9 +2234,9 @@ const slSI: TranslationMap = {
   'settings.memory_window_control.save_failed': 'Okna pomnilnika ni bilo mogoče shraniti',
   'settings.memory_window_control.heading': 'Okno dolgoročnega spomina',
   'settings.memory_window_control.description':
-    'Koliko pomnjenega konteksta Aura vnese v vsak nov zagon agenta. Večja okna dajejo občutek, da se bolje zavedajo preteklih pogovorov, vendar pri vsakem zagonu porabijo več žetonov in so dražja.',
+    'Koliko pomnjenega konteksta Youma vnese v vsak nov zagon agenta. Večja okna dajejo občutek, da se bolje zavedajo preteklih pogovorov, vendar pri vsakem zagonu porabijo več žetonov in so dražja.',
   'home.banners.promo_credits': 'Imate {amount} promocijskih kreditov.',
-  'home.banners.promo_credits_prefix': 'Zavrtite Aura in ko boste pripravljeni na več,',
+  'home.banners.promo_credits_prefix': 'Zavrtite Youma in ko boste pripravljeni na več,',
   'home.banners.get_subscription': 'pridobite naročnino',
   'home.banners.promo_credits_suffix': 'in pridobite 10x večjo uporabo.',
   'home.banners.dismiss_early_bird': 'Opusti pasico za zgodnjo prijavo',
@@ -2246,7 +2246,7 @@ const slSI: TranslationMap = {
   'home.banners.first_subscription': 'prva naročnina.',
   'home.banners.join_discord': 'Pridružite se naši Discord',
   'home.banners.discord_description':
-    'Pridobite posodobitve, brezplačno blago, kredite, prijavite napake in bodite del skupnosti Aura.',
+    'Pridobite posodobitve, brezplačno blago, kredite, prijavite napake in bodite del skupnosti Youma.',
   'intelligence.memory_chunk_detail.copy_chunk_id': 'Kopiraj ID koščka',
   'intelligence.memory_chunk_detail.chunk_label': 'kos {id}',
   'intelligence.memory_chunk_detail.copied': 'kopirano',
@@ -2271,7 +2271,7 @@ const slSI: TranslationMap = {
     'Nekaj ​​je šlo narobe. prosim poskusite ponovno\nTa napaka je bila prijavljena. Prijavite jo lahko tudi na Discord.\n<aura-link path="community/discord">Poročilo o Discord</aura-link>',
   'daemon.service_blocking_gate.retry_failed':
     'Ponovni poskus ni uspel. Prenesite najnovejšo različico aplikacije in poskusite znova.',
-  'daemon.service_blocking_gate.title': 'Aura jedro ni na voljo',
+  'daemon.service_blocking_gate.title': 'Youma jedro ni na voljo',
   'daemon.service_blocking_gate.description':
     'Po več poskusih nismo mogli obnoviti lokalne osnovne storitve. To se lahko zgodi po kritičnem zrušitvi ali binarnem neujemanju.',
   'daemon.service_blocking_gate.download_hint':
@@ -2426,17 +2426,17 @@ const slSI: TranslationMap = {
   'chat.unsubscribe_approval_card.success_message': '✓ Uspešno odjavljen.',
   'chat.unsubscribe_approval_card.denied_message': '✕ Zahteva zavrnjena.',
   'oauth.provider_button.twitter_startup_failure':
-    'Prijava v Twitter/X se ni mogla začeti. Preverite, ali se povratni klic aplikacije Twitter OAuth URL, ID/skrivnost odjemalca in zahtevani obsegi ujemajo z zaledjem Aura, nato poskusite znova.',
+    'Prijava v Twitter/X se ni mogla začeti. Preverite, ali se povratni klic aplikacije Twitter OAuth URL, ID/skrivnost odjemalca in zahtevani obsegi ujemajo z zaledjem Youma, nato poskusite znova.',
   'oauth.provider_button.generic_startup_failure':
     '{providerName} prijave ni bilo mogoče začeti. prosim poskusite ponovno',
   'oauth.provider_button.connecting': 'Povezovanje ...',
   'skills.search_bar.placeholder': 'Veščine iskanja ...',
-  'common.persist_rehydration_screen.title': 'Aura se nalaga dlje kot običajno.',
+  'common.persist_rehydration_screen.title': 'Youma se nalaga dlje kot običajno.',
   'common.persist_rehydration_screen.description':
     'Stanje lokalne aplikacije je morda poškodovano. S ponastavitvijo se boste odjavili in izbrisali predpomnjene podatke v tej napravi; ob naslednjem zagonu boste znova povezali svoje račune. Vaši podatki na strežniku niso prizadeti.',
   'common.persist_rehydration_screen.resetting': 'Ponastavitev ...',
   'common.persist_rehydration_screen.reset_button': 'Ponastavi lokalno stanje',
-  'common.route_loading_screen.initializing': 'Inicializacija Aura...',
+  'common.route_loading_screen.initializing': 'Inicializacija Youma...',
   'privacy.what_leaves_link.label': 'Kaj zapusti moj računalnik?',
   'settings.provider_key_dialog.api_key_required': 'Za nadaljevanje prilepite svoj ključ API.',
   'settings.provider_key_dialog.connect_title': 'Poveži {label}',
@@ -2446,7 +2446,7 @@ const slSI: TranslationMap = {
   'settings.provider_key_dialog.cancel_button': 'Prekliči',
   'settings.provider_key_dialog.saving': 'Shranjevanje ...',
   'settings.provider_key_dialog.save_button': 'Shrani',
-  'settings.workload_row.aura_default': 'Aura (privzeto)',
+  'settings.workload_row.aura_default': 'Youma (privzeto)',
   'settings.workload_row.default_button': 'Privzeto',
   'settings.workload_row.custom_button': 'Po meri',
 };

@@ -126,7 +126,7 @@ const nlNL: TranslationMap = {
   'clearData.failedLogout': 'Uitloggen is mislukt. Probeer het opnieuw.',
   'clearData.failedPersist':
     'Het wissen van de opgeslagen app-status is mislukt. Probeer het opnieuw.',
-  'welcome.title': 'Welkom bij Aura',
+  'welcome.title': 'Welkom bij Youma',
   'welcome.subtitle':
     'Jouw persoonlijke AI-superintelligentie. Privé, eenvoudig en extreem krachtig.',
   'welcome.connectPrompt': 'RPC-URL configureren (Geavanceerd)',
@@ -143,7 +143,7 @@ const nlNL: TranslationMap = {
     'Je apparaat is verbonden. Houd de app actief om de verbinding te behouden. Stuur je agent een bericht met de knop hieronder.',
   'home.statusBackendOnly': 'Opnieuw verbinden met backend… je agent is zo weer beschikbaar.',
   'home.statusCoreUnreachable':
-    'De lokale core reageert niet. Het Aura-achtergrondproces is mogelijk gecrasht of niet gestart.',
+    'De lokale core reageert niet. Het Youma-achtergrondproces is mogelijk gecrasht of niet gestart.',
   'home.statusInternetOffline':
     'Je apparaat is momenteel offline. Controleer je netwerk of herstart de app om opnieuw te verbinden.',
   'home.restartCore': 'Core herstarten',
@@ -194,7 +194,7 @@ const nlNL: TranslationMap = {
   'rewards.referralCode': 'Jouw verwijzingscode',
   'rewards.copyCode': 'Code kopiëren',
   'rewards.share': 'Delen',
-  'onboarding.welcome': 'Hoi. Ik ben Aura.',
+  'onboarding.welcome': 'Hoi. Ik ben Youma.',
   'onboarding.welcomeDesc':
     'Jouw superintelligente AI-assistent die op je computer draait. Privé, eenvoudig en extreem krachtig.',
   'onboarding.context': 'Context verzamelen',
@@ -206,14 +206,14 @@ const nlNL: TranslationMap = {
   'onboarding.referral': 'Verwijzing',
   'onboarding.referralDesc': 'Pas een verwijzingscode toe als je die hebt.',
   'onboarding.finish': 'Installatie voltooien',
-  'onboarding.finishDesc': 'Je bent helemaal klaar! Begin met Aura.',
+  'onboarding.finishDesc': 'Je bent helemaal klaar! Begin met Youma.',
   'onboarding.skip': 'Overslaan',
   'onboarding.getStarted': 'Aan de slag',
-  'onboarding.runtimeChoice.title': 'Hoe zou jij Aura willen rennen?',
+  'onboarding.runtimeChoice.title': 'Hoe zou jij Youma willen rennen?',
   'onboarding.runtimeChoice.subtitle':
     'Kies de opstelling die het beste bij u past. Je kunt dit later wijzigen in Instellingen.',
   'onboarding.runtimeChoice.cloud.title': 'Eenvoudig',
-  'onboarding.runtimeChoice.cloud.tagline': 'Laat Aura alles voor u beheren.',
+  'onboarding.runtimeChoice.cloud.tagline': 'Laat Youma alles voor u beheren.',
   'onboarding.runtimeChoice.cloud.f1': 'Ingebouwde beveiliging',
   'onboarding.runtimeChoice.cloud.f2': 'Tokencompressie om uw gebruik verder uit te breiden',
   'onboarding.runtimeChoice.cloud.f3': 'Eén abonnement, elk model inbegrepen',
@@ -250,7 +250,7 @@ const nlNL: TranslationMap = {
   'onboarding.custom.stepperMemory': 'Geheugen',
   'onboarding.custom.stepCounter': 'Stap {n} van {total}',
   'onboarding.custom.defaultTitle': 'Standaard',
-  'onboarding.custom.defaultSubtitle': 'Laat Aura het voor u beheren.',
+  'onboarding.custom.defaultSubtitle': 'Laat Youma het voor u beheren.',
   'onboarding.custom.configureTitle': 'Configureer',
   'onboarding.custom.configureSubtitle': 'Ik kies wat ik ga gebruiken.',
   'onboarding.custom.progressAriaLabel': 'Voortgang bij het onboarden',
@@ -264,33 +264,33 @@ const nlNL: TranslationMap = {
   'onboarding.custom.inference.subtitle':
     'Welk taalmodel moet uw vragen beantwoorden en uw agenten aansturen?',
   'onboarding.custom.inference.defaultDesc':
-    'Aura stuurt elke werklast naar een verstandig standaardmodel. Geen sleutels, geen installatie.',
+    'Youma stuurt elke werklast naar een verstandig standaardmodel. Geen sleutels, geen installatie.',
   'onboarding.custom.inference.configureDesc':
     'Neem uw eigen OpenAI of Anthropic sleutel mee. We gebruiken het voor elke tekstgebaseerde werklast.',
   'onboarding.custom.voice.title': 'Stem',
   'onboarding.custom.voice.subtitle': 'Spraak-naar-tekst en tekst-naar-spraak voor stemmodus.',
   'onboarding.custom.voice.defaultDesc':
-    'Aura wordt geleverd met beheerde STT/TTS die gewoon werkt. Niets om aan te sluiten.',
+    'Youma wordt geleverd met beheerde STT/TTS die gewoon werkt. Niets om aan te sluiten.',
   'onboarding.custom.voice.configureDesc':
     'Gebruik je eigen ElevenLabs / OpenAI Whisper / etc. Configureer in Instellingen › Stem.',
   'onboarding.custom.oauth.title': 'Aansluitingen (OAuth)',
   'onboarding.custom.oauth.subtitle':
     'Gmail, Slack, Notion en andere verbonden services die OAuth nodig hebben.',
   'onboarding.custom.oauth.defaultDesc':
-    'Aura beheert een beheerde Composio-werkruimte. Eén klik om elke dienst later te verbinden.',
+    'Youma beheert een beheerde Composio-werkruimte. Eén klik om elke dienst later te verbinden.',
   'onboarding.custom.oauth.configureDesc':
     'Neem uw eigen Composio-account / API-sleutel mee. Configureer in Instellingen › Verbindingen.',
   'onboarding.custom.search.title': 'Zoeken op internet',
-  'onboarding.custom.search.subtitle': 'Hoe Aura namens u op internet zoekt.',
+  'onboarding.custom.search.subtitle': 'Hoe Youma namens u op internet zoekt.',
   'onboarding.custom.search.defaultDesc':
-    'Aura maakt gebruik van een beheerde zoekbackend. Geen sleutels nodig.',
+    'Youma maakt gebruik van een beheerde zoekbackend. Geen sleutels nodig.',
   'onboarding.custom.search.configureDesc':
     'Neem uw eigen zoekmachinesleutel mee (Tavily, Brave, enz.). Configureer in Instellingen ›Extra.',
   'onboarding.custom.memory.title': 'Geheugen',
   'onboarding.custom.memory.subtitle':
-    'Hoe Aura uw context, voorkeuren en eerdere gesprekken onthoudt.',
+    'Hoe Youma uw context, voorkeuren en eerdere gesprekken onthoudt.',
   'onboarding.custom.memory.defaultDesc':
-    'Aura beheert de opslag en het ophalen van geheugen automatisch. Niets in te stellen.',
+    'Youma beheert de opslag en het ophalen van geheugen automatisch. Niets in te stellen.',
   'onboarding.custom.memory.configureDesc':
     'Inspecteer, exporteer of wis het geheugen zelf. Configureer in Instellingen › Geheugen.',
   'accounts.addAccount': 'Account toevoegen',
@@ -350,7 +350,7 @@ const nlNL: TranslationMap = {
   'misc.downloading': 'Downloaden...',
   'misc.installing': 'Installeren...',
   'misc.beta':
-    'Aura bevindt zich in een vroege bètafase. Deel gerust feedback of rapporteer eventuele bugs die u tegenkomt; elke melding helpt ons sneller te verzenden.',
+    'Youma bevindt zich in een vroege bètafase. Deel gerust feedback of rapporteer eventuele bugs die u tegenkomt; elke melding helpt ons sneller te verzenden.',
   'misc.betaFeedback': 'Stuur feedback',
   'mnemonic.title': 'Herstelzin',
   'mnemonic.warning': 'Schrijf deze woorden op volgorde op en bewaar ze op een veilige plek.',
@@ -374,12 +374,12 @@ const nlNL: TranslationMap = {
   'privacy.anonymizedAnalytics': 'Geanonimiseerde analyses',
   'privacy.shareAnonymizedData': 'Deel geanonimiseerde gebruiksgegevens',
   'privacy.shareAnonymizedDataDesc':
-    'Help Aura te verbeteren door anonieme crashrapporten en gebruiksanalyses te delen. Alle gegevens zijn volledig geanonimiseerd: er worden nooit persoonlijke gegevens, berichten, portemonneesleutels of sessie-informatie verzameld.',
+    'Help Youma te verbeteren door anonieme crashrapporten en gebruiksanalyses te delen. Alle gegevens zijn volledig geanonimiseerd: er worden nooit persoonlijke gegevens, berichten, portemonneesleutels of sessie-informatie verzameld.',
   'privacy.meetingFollowUps': 'Vervolg van vergaderingen',
   'privacy.autoHandoffMeet':
     'Automatische overdracht van Google Meet-transcripties naar de orkestrator',
   'privacy.autoHandoffMeetDesc':
-    'Wanneer een Google Meet-gesprek eindigt, kan de orkestrator van Aura het transcript lezen en acties ondernemen zoals het opstellen van berichten, het plannen van vervolgacties of het plaatsen van samenvattingen op uw verbonden Slack-werkruimte. Standaard uitgeschakeld.',
+    'Wanneer een Google Meet-gesprek eindigt, kan de orkestrator van Youma het transcript lezen en acties ondernemen zoals het opstellen van berichten, het plannen van vervolgacties of het plaatsen van samenvattingen op uw verbonden Slack-werkruimte. Standaard uitgeschakeld.',
   'privacy.analyticsDisclaimer':
     'Alle analyses en bugrapporten zijn volledig geanonimiseerd. Indien ingeschakeld verzamelen we alleen crashinformatie, apparaattype en de bestandslocatie van fouten. We hebben nooit toegang tot uw berichten, sessiegegevens, portemonneesleutels, API-sleutels of enige persoonlijk identificeerbare informatie. U kunt deze instelling op elk gewenst moment wijzigen.',
   'settings.about.version': 'Versie',
@@ -438,7 +438,7 @@ const nlNL: TranslationMap = {
     'Als uw browser niet is geopend, gebruikt u de bovenstaande knop.',
   'settings.billing.browserOpenFailed':
     'De browser kon niet automatisch worden geopend. Gebruik de knop hierboven.',
-  'settings.tools.chooseCapabilities': 'Kies welke mogelijkheden Aura namens u kan gebruiken.',
+  'settings.tools.chooseCapabilities': 'Kies welke mogelijkheden Youma namens u kan gebruiken.',
   'settings.tools.saveChanges': 'Wijzigingen opslaan',
   'settings.tools.preferencesSaved': 'Voorkeuren opgeslagen',
   'settings.tools.saveFailed': 'Kan voorkeuren niet opslaan. Probeer het opnieuw.',
@@ -904,9 +904,9 @@ const nlNL: TranslationMap = {
   'bootCheck.chooseCoreMode': 'Selecteer een runtime',
   'bootCheck.connectToCore': 'Maak verbinding met uw runtime',
   'bootCheck.desktopDescription':
-    'Aura heeft een looptijd nodig om na te denken. Kies waar het moet leven.',
+    'Youma heeft een looptijd nodig om na te denken. Kies waar het moet leven.',
   'bootCheck.webDescription':
-    'Op internet maakt Aura verbinding met een runtime die u beheert. Voer de URL en het authentificatietoken hieronder in, of pak de desktop-app om er een rechtstreeks op uw computer uit te voeren.',
+    'Op internet maakt Youma verbinding met een runtime die u beheert. Voer de URL en het authentificatietoken hieronder in, of pak de desktop-app om er een rechtstreeks op uw computer uit te voeren.',
   'bootCheck.preferDesktop': 'Bewaar je liever alles op je eigen device?',
   'bootCheck.downloadDesktop': 'Download de desktop-app',
   'bootCheck.localRecommended': 'Lokaal uitvoeren (aanbevolen)',
@@ -933,7 +933,7 @@ const nlNL: TranslationMap = {
   'bootCheck.quit': 'Ontslag nemen',
   'bootCheck.legacyDetected': 'Verouderde achtergrondruntime gedetecteerd',
   'bootCheck.legacyDescription':
-    'Op dit apparaat draait al een afzonderlijk geïnstalleerde Aura-daemon. We moeten het opruimen voordat de ingebouwde runtime het kan overnemen.',
+    'Op dit apparaat draait al een afzonderlijk geïnstalleerde Youma-daemon. We moeten het opruimen voordat de ingebouwde runtime het kan overnemen.',
   'bootCheck.removing': 'Verwijderen…',
   'bootCheck.removeContinue': 'Verwijderen en doorgaan',
   'bootCheck.localNeedsRestart': 'Lokale runtime heeft een herstart nodig',
@@ -1072,9 +1072,9 @@ const nlNL: TranslationMap = {
   'rewards.referrals.load_stats_error': 'Kan verwijzingsstatistieken niet laden',
   'rewards.referrals.copied': 'Gekopieerd',
   'rewards.referrals.copy_failed': 'Kopiëren mislukt',
-  'rewards.referrals.share_intro': 'Sluit je bij mij aan op Aura.',
+  'rewards.referrals.share_intro': 'Sluit je bij mij aan op Youma.',
   'rewards.referrals.share_code_line': 'Verwijzingscode: {code}',
-  'rewards.referrals.share_download_line': 'Downloaden Aura: {url}',
+  'rewards.referrals.share_download_line': 'Downloaden Youma: {url}',
   'rewards.referrals.apply_error': 'Kan verwijzingscode niet toepassen',
   'rewards.referrals.heading': 'Nodig vrienden uit, verdien credits',
   'rewards.referrals.description':
@@ -1309,22 +1309,22 @@ const nlNL: TranslationMap = {
   'skills.meeting_bots_card.platform_gmeet': 'Google Meet',
   'skills.meeting_bots_card.platform_zoom': 'Zoom',
   'skills.meeting_bots_card.platform_teams': 'Microsoft Teams',
-  'skills.meeting_bots_card.banner_title': 'Stuur Aura naar een vergadering',
+  'skills.meeting_bots_card.banner_title': 'Stuur Youma naar een vergadering',
   'skills.meeting_bots_card.new_badge': 'Nieuw',
   'skills.meeting_bots_card.banner_description':
-    'Plaats een Google Meet link en Aura wordt lid als gast, praat, luistert en zwaait terug.',
+    'Plaats een Google Meet link en Youma wordt lid als gast, praat, luistert en zwaait terug.',
   'skills.meeting_bots_card.coming_soon_error': 'Er komt binnenkort ondersteuning voor {platform}.',
-  'skills.meeting_bots_card.toast_joining_title': 'Aura neemt deel aan de vergadering',
+  'skills.meeting_bots_card.toast_joining_title': 'Youma neemt deel aan de vergadering',
   'skills.meeting_bots_card.toast_joining_message':
     'Het zou binnen een paar seconden als deelnemer moeten verschijnen.',
-  'skills.meeting_bots_card.toast_busy_title': 'Aura is bezet',
-  'skills.meeting_bots_card.toast_failed_title': 'Kon Aura niet starten',
-  'skills.meeting_bots_card.default_error_message': 'Kan Aura niet starten.',
-  'skills.meeting_bots_card.modal_aria_label': 'Stuur Aura naar een vergadering',
+  'skills.meeting_bots_card.toast_busy_title': 'Youma is bezet',
+  'skills.meeting_bots_card.toast_failed_title': 'Kon Youma niet starten',
+  'skills.meeting_bots_card.default_error_message': 'Kan Youma niet starten.',
+  'skills.meeting_bots_card.modal_aria_label': 'Stuur Youma naar een vergadering',
   'skills.meeting_bots_card.close_aria': 'Dichtbij',
-  'skills.meeting_bots_card.modal_title': 'Stuur Aura naar een vergadering',
+  'skills.meeting_bots_card.modal_title': 'Stuur Youma naar een vergadering',
   'skills.meeting_bots_card.modal_description':
-    'Aura neemt deel als anonieme gast, streamt de video naar het gesprek en antwoordt via de agent.',
+    'Youma neemt deel als anonieme gast, streamt de video naar het gesprek en antwoordt via de agent.',
   'skills.meeting_bots_card.soon_suffix': '· spoedig',
   'skills.meeting_bots_card.meeting_link_label': 'Vergaderlink',
   'skills.meeting_bots_card.display_name_label': 'Weergavenaam',
@@ -1468,14 +1468,14 @@ const nlNL: TranslationMap = {
   'settings.composio_panel.title': 'Composio',
   'settings.composio_panel.loading': 'Laden…',
   'settings.composio_panel.intro_prefix':
-    'Composio maakt integraties mogelijk met Gmail, Notion, Slack, GitHub en meer dan 1000 andere apps. Standaard regelt Aura dit voor u, u hoeft dus geen API sleutel mee te nemen. Wilt u liever rechtstreeks gebruik maken van uw eigen Composio-account, schakel dan over naar',
+    'Composio maakt integraties mogelijk met Gmail, Notion, Slack, GitHub en meer dan 1000 andere apps. Standaard regelt Youma dit voor u, u hoeft dus geen API sleutel mee te nemen. Wilt u liever rechtstreeks gebruik maken van uw eigen Composio-account, schakel dan over naar',
   'settings.composio_panel.direct_word': 'Direct',
   'settings.composio_panel.intro_suffix': 'modus en plak hieronder uw sleutel.',
   'settings.composio_panel.routing_mode_legend': 'Routeringsmodus',
-  'settings.composio_panel.managed_aria_label': 'Beheerd (Aura handelt het voor u af)',
-  'settings.composio_panel.managed_title': 'Beheerd (Aura handelt het voor u af)',
+  'settings.composio_panel.managed_aria_label': 'Beheerd (Youma handelt het voor u af)',
+  'settings.composio_panel.managed_title': 'Beheerd (Youma handelt het voor u af)',
   'settings.composio_panel.managed_description':
-    'Standaard. Aura beheert de Composio-verbinding voor u. Trigger-webhooks (real-time Gmail / Slack-evenementen) werken kant-en-klaar.',
+    'Standaard. Youma beheert de Composio-verbinding voor u. Trigger-webhooks (real-time Gmail / Slack-evenementen) werken kant-en-klaar.',
   'settings.composio_panel.direct_aria_label': 'Direct (eigen API sleutel meenemen)',
   'settings.composio_panel.direct_title': 'Direct (eigen API sleutel meenemen)',
   'settings.composio_panel.direct_description_prefix': 'Oproepen gaan naar',
@@ -1486,7 +1486,7 @@ const nlNL: TranslationMap = {
   'settings.composio_panel.api_key_label': 'Composio API-toets',
   'settings.composio_panel.api_key_help_prefix': 'Vind uw sleutel op',
   'settings.composio_panel.api_key_help_suffix':
-    'De sleutel wordt gecodeerd op dit apparaat opgeslagen en wordt nooit naar Aura verzonden.',
+    'De sleutel wordt gecodeerd op dit apparaat opgeslagen en wordt nooit naar Youma verzonden.',
   'settings.composio_panel.api_key_placeholder_stored':
     '•••••••••••• (sleutel opgeslagen - plak een nieuwe sleutel om te vervangen)',
   'settings.composio_panel.api_key_placeholder_empty': 'ck_live_xxxxxxxxxxxxxxxxxx',
@@ -1494,10 +1494,10 @@ const nlNL: TranslationMap = {
     'Op dit apparaat is momenteel een Composio API-sleutel opgeslagen.',
   'settings.composio_panel.confirm_title': '⚠️ Overschakelen naar de directe modus',
   'settings.composio_panel.confirm_integrations_prefix':
-    'Uw bestaande integraties (Gmail, Slack, GitHub, etc. gekoppeld via Aura)',
+    'Uw bestaande integraties (Gmail, Slack, GitHub, etc. gekoppeld via Youma)',
   'settings.composio_panel.wont_be_visible': 'zal niet zichtbaar zijn',
   'settings.composio_panel.confirm_integrations_suffix':
-    '— zij wonen in de door Aura beheerde Composio huurder.',
+    '— zij wonen in de door Youma beheerde Composio huurder.',
   'settings.composio_panel.confirm_needs_title': 'Je hebt nodig:',
   'settings.composio_panel.confirm_need_account_prefix': 'Een rekening bij',
   'settings.composio_panel.confirm_need_account_suffix': 'met een API-toets',
@@ -1516,7 +1516,7 @@ const nlNL: TranslationMap = {
     'Kan niet opslaan. Voor de directe modus is een niet-lege API-toets vereist.',
   'settings.model_status.ollama_unavailable_title': 'Ollama-runtime niet beschikbaar',
   'settings.model_status.ollama_unavailable_description':
-    'Aura behandelt Ollama nu als een externe inferentieruntime. Start uw eigen Ollama-server, haal de gewenste modellen op en wijs er werklastrouting op aan.',
+    'Youma behandelt Ollama nu als een externe inferentieruntime. Start uw eigen Ollama-server, haal de gewenste modellen op en wijs er werklastrouting op aan.',
   'settings.model_status.ollama_docs_link': 'Ollama-documenten',
   'settings.model_status.runtime_status_title': 'Runtimestatus',
   'settings.model_status.refresh': 'Vernieuwen',
@@ -1535,7 +1535,7 @@ const nlNL: TranslationMap = {
   'settings.model_status.hide_error_details': 'Foutdetails verbergen',
   'settings.model_status.show_error_details': 'Foutdetails weergeven',
   'settings.model_status.connect_only_prefix':
-    'Aura maakt alleen verbinding met een reeds actief Ollama-compatibel eindpunt. Zien',
+    'Youma maakt alleen verbinding met een reeds actief Ollama-compatibel eindpunt. Zien',
   'settings.model_status.connect_only_suffix':
     'voor installatie-instructies en probeer het opnieuw nadat uw runtime bereikbaar is.',
   'settings.model_status.ollama_diagnostics_title': 'Ollama-diagnostiek',
@@ -1560,7 +1560,7 @@ const nlNL: TranslationMap = {
   'settings.model_status.vision_model_line': 'Visie: {model}',
   'settings.model_status.issues_heading': 'Problemen',
   'settings.model_status.manage_ollama_footer':
-    'Beheer het Ollama-proces en de modeltrekkingen buiten Aura en voer vervolgens de diagnostiek opnieuw uit.',
+    'Beheer het Ollama-proces en de modeltrekkingen buiten Youma en voer vervolgens de diagnostiek opnieuw uit.',
   'settings.device_capability.model_tier_title': 'Modelniveau',
   'settings.device_capability.loading_device_info':
     'Apparaatinformatie en voorinstellingen laden...',
@@ -1864,7 +1864,7 @@ const nlNL: TranslationMap = {
   'composio.connect_modal.disconnecting': 'Verbinding verbreken…',
   'composio.connect_modal.dismiss': 'Afwijzen',
   'composio.connect_modal.expired_body':
-    'Maak opnieuw verbinding om {name}-tools opnieuw in te schakelen. Aura zorgt ervoor dat deze integratie niet beschikbaar is totdat u de toegang tot OAuth vernieuwt.',
+    'Maak opnieuw verbinding om {name}-tools opnieuw in te schakelen. Youma zorgt ervoor dat deze integratie niet beschikbaar is totdat u de toegang tot OAuth vernieuwt.',
   'composio.connect_modal.expired_title': 'Autorisatie {name} verlopen',
   'composio.connect_modal.generic_error': 'Er is iets misgegaan.',
   'composio.connect_modal.header_connect': 'Sluit {name} aan',
@@ -1880,7 +1880,7 @@ const nlNL: TranslationMap = {
   'composio.connect_modal.needs_subdomain_intro_suffix': ') en probeer het opnieuw.',
   'composio.connect_modal.permission_intro_prefix': '{name} kan blootleggen',
   'composio.connect_modal.permission_intro_suffix':
-    '. Nadat u verbinding heeft gemaakt, worden de eigen agentmachtigingen van Aura hieronder beheerd als lees-, schrijf- en beheerdersschakelaars.',
+    '. Nadat u verbinding heeft gemaakt, worden de eigen agentmachtigingen van Youma hieronder beheerd als lees-, schrijf- en beheerdersschakelaars.',
   'composio.connect_modal.permissions_default_hint': 'Lezen + schrijven is standaard ingeschakeld',
   'composio.connect_modal.permissions_heading': 'Machtigingen',
   'composio.connect_modal.poll_timeout':
@@ -1929,10 +1929,10 @@ const nlNL: TranslationMap = {
   'settings.ai_panel.local_runtime_disconnect_aria': 'Koppel {label} los',
   'settings.ai_panel.providers_heading': 'LLM Aanbieders',
   'settings.ai_panel.providers_subtitle':
-    'Verbind de taalmodel-backends die u door Aura wilt laten gebruiken. Schakel een provider in om de sleutel toe te voegen; schakel uit om de verbinding te verbreken.',
+    'Verbind de taalmodel-backends die u door Youma wilt laten gebruiken. Schakel een provider in om de sleutel toe te voegen; schakel uit om de verbinding te verbreken.',
   'settings.ai_panel.routing_heading': 'Routering',
   'settings.ai_panel.routing_subtitle':
-    'Kies hoe elke werklast wordt uitgevoerd. Standaard gebruikt Aura; Met Aangepast kunt u een werklast richten op een specifieke provider en een specifiek model.',
+    'Kies hoe elke werklast wordt uitgevoerd. Standaard gebruikt Youma; Met Aangepast kunt u een werklast richten op een specifieke provider en een specifiek model.',
   'settings.auto_recharge.add_card': '+ Kaart toevoegen aan Stripe',
   'settings.auto_recharge.amount_label': 'Voeg dit bedrag toe',
   'settings.auto_recharge.cancel': 'Annuleren',
@@ -1996,22 +1996,22 @@ const nlNL: TranslationMap = {
   'settings.mascot_panel.color_black': 'Zwart',
   'settings.mascot_panel.color_burgundy': 'Bourgondië',
   'settings.mascot_panel.color_footer_hint':
-    'De geselecteerde kleur wordt overal toegepast waar Aura verschijnt en wordt onthouden bij herstarts.',
+    'De geselecteerde kleur wordt overal toegepast waar Youma verschijnt en wordt onthouden bij herstarts.',
   'settings.mascot_panel.color_green': 'Groente',
   'settings.mascot_panel.color_heading': 'Kleur',
   'settings.mascot_panel.color_navy': 'Marine',
-  'settings.mascot_panel.color_radiogroup_aria': 'Aura kleur',
+  'settings.mascot_panel.color_radiogroup_aria': 'Youma kleur',
   'settings.mascot_panel.color_yellow': 'Geel',
-  'settings.mascot_panel.header_title': 'Aura',
-  'settings.mascot_panel.library_unavailable': 'Aura bibliotheek niet beschikbaar: {error}',
+  'settings.mascot_panel.header_title': 'Youma',
+  'settings.mascot_panel.library_unavailable': 'Youma bibliotheek niet beschikbaar: {error}',
   'settings.mascot_panel.load_library_error': 'Kan mascottebibliotheek niet laden.',
   'settings.mascot_panel.load_mascot_error': 'Kan mascotte niet laden.',
-  'settings.mascot_panel.loading_library': 'Bibliotheek Aura laden…',
-  'settings.mascot_panel.local_aura_default': 'Lokaal Aura (standaard)',
+  'settings.mascot_panel.loading_library': 'Bibliotheek Youma laden…',
+  'settings.mascot_panel.local_aura_default': 'Lokaal Youma (standaard)',
   'settings.mascot_panel.no_characters':
-    'Er zijn nog geen Aura-tekens beschikbaar. Lokale kleurvarianten hierboven zijn nog steeds actief.',
+    'Er zijn nog geen Youma-tekens beschikbaar. Lokale kleurvarianten hierboven zijn nog steeds actief.',
   'settings.mascot_panel.no_color_variants':
-    'Er zijn geen Aura kleurvarianten beschikbaar in deze build.',
+    'Er zijn geen Youma kleurvarianten beschikbaar in deze build.',
   'settings.mascot_panel.preview_label': 'Voorbeeld · {name}',
   'settings.mascot_panel.version_states': 'v{version} · {states} staten',
   'settings.mascot_panel.visemes_suffix': '· visemen',
@@ -2055,7 +2055,7 @@ const nlNL: TranslationMap = {
   'local_ai.download_snackbar.installing': 'Installeren...',
   'local_ai.download_snackbar.preparing': 'Voorbereiden...',
   'settings.cron_job_list.heading': 'Kerncronjobs',
-  'settings.cron_job_list.subheading': 'Taken bleven bestaan ​​in de kernplannerdatabase van Aura.',
+  'settings.cron_job_list.subheading': 'Taken bleven bestaan ​​in de kernplannerdatabase van Youma.',
   'settings.cron_job_list.loading': 'Cronjobs laden...',
   'settings.cron_job_list.empty': 'Er zijn geen kerncronjobs gevonden.',
   'settings.cron_job_list.status_enabled': 'Ingeschakeld',
@@ -2127,15 +2127,15 @@ const nlNL: TranslationMap = {
   'aura_link_modal.notifications_desktop_only':
     'Systeemeigen meldingen zijn alleen beschikbaar in de desktop-app (voer `pnpm dev:app` uit).',
   'aura_link_modal.notifications_permission_off':
-    'Toestemming voor meldingen is uitgeschakeld. Schakel Aura in Systeeminstellingen → Meldingen in en probeer het opnieuw.',
-  'aura_link_modal.notification_title': 'Aura is goed om te gebruiken',
+    'Toestemming voor meldingen is uitgeschakeld. Schakel Youma in Systeeminstellingen → Meldingen in en probeer het opnieuw.',
+  'aura_link_modal.notification_title': 'Youma is goed om te gebruiken',
   'aura_link_modal.notification_body': 'Je krijgt hier pings als iets je aandacht nodig heeft.',
   'aura_link_modal.notification_send_failed':
-    'Aura kon geen systeemmelding activeren. Controleer de meldingsinstellingen van het besturingssysteem en probeer het opnieuw.',
+    'Youma kon geen systeemmelding activeren. Controleer de meldingsinstellingen van het besturingssysteem en probeer het opnieuw.',
   'aura_link_modal.notifications_intro':
-    'Aura maakt gebruik van eigen meldingen, zodat het u kan pingen wanneer iets uw aandacht nodig heeft, zelfs als het chatvenster verborgen is.',
+    'Youma maakt gebruik van eigen meldingen, zodat het u kan pingen wanneer iets uw aandacht nodig heeft, zelfs als het chatvenster verborgen is.',
   'aura_link_modal.notifications_blocked_line1': 'Meldingen zijn momenteel geblokkeerd.',
-  'aura_link_modal.notifications_blocked_line2': '1. Open Systeeminstellingen → Meldingen → Aura',
+  'aura_link_modal.notifications_blocked_line2': '1. Open Systeeminstellingen → Meldingen → Youma',
   'aura_link_modal.notifications_blocked_line3': '2. Schakel Meldingen toestaan ​​in',
   'aura_link_modal.notifications_blocked_line4':
     '3. Keer hier terug en tik op Melding test opnieuw proberen',
@@ -2145,7 +2145,7 @@ const nlNL: TranslationMap = {
   'aura_link_modal.retry_test_notification': 'Testmelding opnieuw proberen',
   'aura_link_modal.send_test_notification': 'Testmelding verzenden',
   'aura_link_modal.notification_sent_success':
-    'Testmelding verzonden. Als u deze niet heeft ontvangen, gaat u naar Systeeminstellingen → Meldingen → Aura, schakelt u Meldingen toestaan ​​in en stelt u Bannerstijl in op Persistent.',
+    'Testmelding verzonden. Als u deze niet heeft ontvangen, gaat u naar Systeeminstellingen → Meldingen → Youma, schakelt u Meldingen toestaan ​​in en stelt u Bannerstijl in op Persistent.',
   'aura_link_modal.notification_send_error': 'Kan niet verzenden: {error}',
   'aura_link_modal.trial_credit_label': 'Proeftegoed',
   'aura_link_modal.trial_credit_amount': '$ 1,00',
@@ -2154,7 +2154,7 @@ const nlNL: TranslationMap = {
   'aura_link_modal.open_dashboard': 'Dashboard openen in browser',
   'aura_link_modal.stay_on_trial': 'Blijf op proef',
   'aura_link_modal.discord_intro':
-    'Ga naar onze Discord en koppel uw Aura-account. Je krijgt exclusieve vroege toegang tot functies, gratis credits om mee te spelen, een geweldige community om mee te nerden, en ja, gratis merchandise.',
+    'Ga naar onze Discord en koppel uw Youma-account. Je krijgt exclusieve vroege toegang tot functies, gratis credits om mee te spelen, een geweldige community om mee te nerden, en ja, gratis merchandise.',
   'aura_link_modal.discord_perk_feature_access': 'Exclusieve toegang tot functies',
   'aura_link_modal.discord_perk_free_credits': 'Gratis credits voor actieve leden',
   'aura_link_modal.discord_perk_community': 'Gemeenschap van bouwers en exploitanten',
@@ -2191,7 +2191,7 @@ const nlNL: TranslationMap = {
   'channels.discord_config.copy': 'Kopiëren',
   'channels.discord_config.link_instructions_prefix': 'In Discord, verzenden',
   'channels.discord_config.link_instructions_suffix':
-    'naar de Aura-bot. Token verloopt over 5 minuten.',
+    'naar de Youma-bot. Token verloopt over 5 minuten.',
   'channels.discord_config.link_token_warning':
     'Sla deze opdracht op: dit token wordt slechts één keer weergegeven.',
   'channels.discord_config.account_linked': 'Uw Discord-account is gekoppeld.',
@@ -2231,9 +2231,9 @@ const nlNL: TranslationMap = {
   'settings.memory_window_control.save_failed': 'Kan het geheugenvenster niet opslaan',
   'settings.memory_window_control.heading': 'Langetermijngeheugenvenster',
   'settings.memory_window_control.description':
-    'Hoeveel herinnerde context Aura injecteert in elke nieuwe agentrun. Grotere vensters voelen zich meer bewust van eerdere gesprekken, maar gebruiken bij elke run meer tokens (en kosten meer).',
+    'Hoeveel herinnerde context Youma injecteert in elke nieuwe agentrun. Grotere vensters voelen zich meer bewust van eerdere gesprekken, maar gebruiken bij elke run meer tokens (en kosten meer).',
   'home.banners.promo_credits': 'U beschikt over {amount} promotietegoed.',
-  'home.banners.promo_credits_prefix': 'Geef Aura een draai en als je klaar bent voor meer,',
+  'home.banners.promo_credits_prefix': 'Geef Youma een draai en als je klaar bent voor meer,',
   'home.banners.get_subscription': 'een abonnement nemen',
   'home.banners.promo_credits_suffix': 'en krijg 10x meer gebruik.',
   'home.banners.dismiss_early_bird': 'Sluit de vroege vogelbanner af',
@@ -2243,7 +2243,7 @@ const nlNL: TranslationMap = {
   'home.banners.first_subscription': 'eerste abonnement.',
   'home.banners.join_discord': 'Sluit u aan bij onze Discord',
   'home.banners.discord_description':
-    'Ontvang updates, gratis merchandise, credits, rapporteer bugs en maak deel uit van de Aura-community.',
+    'Ontvang updates, gratis merchandise, credits, rapporteer bugs en maak deel uit van de Youma-community.',
   'intelligence.memory_chunk_detail.copy_chunk_id': 'Kopieer chunk-ID',
   'intelligence.memory_chunk_detail.chunk_label': 'stuk {id}',
   'intelligence.memory_chunk_detail.copied': 'gekopieerd',
@@ -2268,7 +2268,7 @@ const nlNL: TranslationMap = {
     'Er is iets misgegaan. Probeer het opnieuw.\nDeze fout is gemeld. U kunt het ook melden op Discord.\n<aura-link path="community/discord">Rapporteer over Discord</aura-link>',
   'daemon.service_blocking_gate.retry_failed':
     'Opnieuw proberen mislukt. Download de nieuwste app-build en probeer het opnieuw.',
-  'daemon.service_blocking_gate.title': 'Aura kern is niet beschikbaar',
+  'daemon.service_blocking_gate.title': 'Youma kern is niet beschikbaar',
   'daemon.service_blocking_gate.description':
     'We konden de lokale kernservice na meerdere pogingen niet herstellen. Dit kan gebeuren na een kritieke crash of een binaire mismatch.',
   'daemon.service_blocking_gate.download_hint':
@@ -2422,17 +2422,17 @@ const nlNL: TranslationMap = {
   'chat.unsubscribe_approval_card.success_message': '✓ Afgemeld.',
   'chat.unsubscribe_approval_card.denied_message': '✕ Verzoek afgewezen.',
   'oauth.provider_button.twitter_startup_failure':
-    'Twitter/X-aanmelding kon niet starten. Controleer of de Twitter OAuth app callback URL, client-ID/geheim en aangevraagde bereiken overeenkomen met de Aura backend en probeer het vervolgens opnieuw.',
+    'Twitter/X-aanmelding kon niet starten. Controleer of de Twitter OAuth app callback URL, client-ID/geheim en aangevraagde bereiken overeenkomen met de Youma backend en probeer het vervolgens opnieuw.',
   'oauth.provider_button.generic_startup_failure':
     '{providerName} aanmelden kon niet starten. Probeer het opnieuw.',
   'oauth.provider_button.connecting': 'Verbinden...',
   'skills.search_bar.placeholder': 'Zoekvaardigheden...',
-  'common.persist_rehydration_screen.title': 'Het laden van Aura duurt langer dan normaal.',
+  'common.persist_rehydration_screen.title': 'Het laden van Youma duurt langer dan normaal.',
   'common.persist_rehydration_screen.description':
     'De lokale app-status is mogelijk beschadigd. Als u opnieuw instelt, wordt u afgemeld en worden de gegevens in de cache op dit apparaat gewist; Bij de volgende lancering koppelt u uw accounts opnieuw. Uw gegevens op de server worden niet beïnvloed.',
   'common.persist_rehydration_screen.resetting': 'Resetten…',
   'common.persist_rehydration_screen.reset_button': 'Lokale status resetten',
-  'common.route_loading_screen.initializing': 'Initialiseren van Aura...',
+  'common.route_loading_screen.initializing': 'Initialiseren van Youma...',
   'privacy.what_leaves_link.label': 'Wat verlaat mijn computer?',
   'settings.provider_key_dialog.api_key_required': 'Plak uw API-sleutel om door te gaan.',
   'settings.provider_key_dialog.connect_title': 'Sluit {label} aan',
@@ -2442,7 +2442,7 @@ const nlNL: TranslationMap = {
   'settings.provider_key_dialog.cancel_button': 'Annuleren',
   'settings.provider_key_dialog.saving': 'Besparing…',
   'settings.provider_key_dialog.save_button': 'Redden',
-  'settings.workload_row.aura_default': 'Aura (standaard)',
+  'settings.workload_row.aura_default': 'Youma (standaard)',
   'settings.workload_row.default_button': 'Standaard',
   'settings.workload_row.custom_button': 'Aangepast',
 };

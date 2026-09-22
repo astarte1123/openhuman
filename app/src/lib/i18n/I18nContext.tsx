@@ -79,6 +79,20 @@ const CATALOGS: Partial<Record<SupportedLocale, TranslationMap>> = {
   'sv-SE': svSE,
 };
 
+/**
+ * Non-hook translation lookup for call sites outside React (plain modules,
+ * store logic) that can't use `useT()`. Same fallback chain as the hook:
+ * locale catalog → en-GB → raw key. Callers read the current locale from
+ * `store.getState().locale.current` and pass it in explicitly.
+ */
+export function translateForLocale(
+  locale: SupportedLocale,
+  key: string,
+  params?: TranslationParams
+): string {
+  return renderTranslation(resolveKey(locale, key), locale, params);
+}
+
 function resolveKey(locale: SupportedLocale, key: string): string {
   const catalog = locale === DEFAULT_LOCALE ? resolveEn() : CATALOGS[locale];
   const value = catalog?.[key];

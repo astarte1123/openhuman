@@ -132,7 +132,7 @@ const ltLT: TranslationMap = {
   'clearData.failedLogout': 'Nepavyko atsijungti. Bandykite dar kartą.',
   'clearData.failedPersist':
     'Nepavyko išvalyti išliekančios programos būsenos. Bandykite dar kartą.',
-  'welcome.title': 'Sveiki atvykę į Aura',
+  'welcome.title': 'Sveiki atvykę į Youma',
   'welcome.subtitle':
     'Jūsų asmeninis AI super intelektas. Privatus, paprastas ir nepaprastai galingas.',
   'welcome.connectPrompt': 'Konfigūruoti RPC URL (išplėstinė)',
@@ -150,7 +150,7 @@ const ltLT: TranslationMap = {
   'home.statusBackendOnly':
     'Iš naujo prisijungiama prie užpakalinės programos... jūsų agentas netrukus vėl bus pasiekiamas.',
   'home.statusCoreUnreachable':
-    'Vietinė pagrindinė šoninė priekaba nereaguoja. Aura foninis procesas galėjo užstrigti arba nepavyko pradėti.',
+    'Vietinė pagrindinė šoninė priekaba nereaguoja. Youma foninis procesas galėjo užstrigti arba nepavyko pradėti.',
   'home.statusInternetOffline':
     'Jūsų įrenginys šiuo metu neprisijungęs. Patikrinkite tinklą arba iš naujo paleiskite programą, kad vėl prisijungtumėte.',
   'home.restartCore': 'Iš naujo paleiskite „Core“.',
@@ -200,7 +200,7 @@ const ltLT: TranslationMap = {
   'rewards.referralCode': 'Jūsų nukreipimo kodas',
   'rewards.copyCode': 'Nukopijuokite kodą',
   'rewards.share': 'Dalintis',
-  'onboarding.welcome': 'Sveiki. Man Aura.',
+  'onboarding.welcome': 'Sveiki. Man Youma.',
   'onboarding.welcomeDesc':
     'Itin išmanusis AI padėjėjas, veikiantis jūsų kompiuteryje. Privatus, paprastas ir nepaprastai galingas.',
   'onboarding.context': 'Konteksto surinkimas',
@@ -212,14 +212,14 @@ const ltLT: TranslationMap = {
   'onboarding.referral': 'Rekomendacija',
   'onboarding.referralDesc': 'Taikykite nukreipimo kodą, jei tokį turite.',
   'onboarding.finish': 'Baigti sąranką',
-  'onboarding.finishDesc': 'Viskas paruošta! Pradėkite naudoti Aura.',
+  'onboarding.finishDesc': 'Viskas paruošta! Pradėkite naudoti Youma.',
   'onboarding.skip': 'Praleisti',
   'onboarding.getStarted': 'Pradėkite',
-  'onboarding.runtimeChoice.title': 'Kaip norėtumėte bėgti Aura?',
+  'onboarding.runtimeChoice.title': 'Kaip norėtumėte bėgti Youma?',
   'onboarding.runtimeChoice.subtitle':
     'Pasirinkite jums tinkamiausią sąranką. Vėliau galėsite tai pakeisti nustatymuose.',
   'onboarding.runtimeChoice.cloud.title': 'Paprasta',
-  'onboarding.runtimeChoice.cloud.tagline': 'Leiskite Aura viską valdyti už jus.',
+  'onboarding.runtimeChoice.cloud.tagline': 'Leiskite Youma viską valdyti už jus.',
   'onboarding.runtimeChoice.cloud.f1': 'Integruota apsauga',
   'onboarding.runtimeChoice.cloud.f2': 'Žetonų suspaudimas, kad naudojimas būtų dar didesnis',
   'onboarding.runtimeChoice.cloud.f3': 'Viena prenumerata, įtrauktas kiekvienas modelis',
@@ -256,7 +256,7 @@ const ltLT: TranslationMap = {
   'onboarding.custom.stepperMemory': 'Atmintis',
   'onboarding.custom.stepCounter': '{n} veiksmas iš {total}',
   'onboarding.custom.defaultTitle': 'Numatytoji',
-  'onboarding.custom.defaultSubtitle': 'Leiskite Aura tai valdyti už jus.',
+  'onboarding.custom.defaultSubtitle': 'Leiskite Youma tai valdyti už jus.',
   'onboarding.custom.configureTitle': 'Konfigūruoti',
   'onboarding.custom.configureSubtitle': 'Aš pasirinksiu, ką naudoti.',
   'onboarding.custom.progressAriaLabel': 'Prisijungimo eiga',
@@ -270,33 +270,33 @@ const ltLT: TranslationMap = {
   'onboarding.custom.inference.subtitle':
     'Kuris kalbos modelis turėtų atsakyti į jūsų klausimus ir vadovauti jūsų agentams?',
   'onboarding.custom.inference.defaultDesc':
-    'Aura kiekvieną darbo krūvį nukreipia į protingą numatytąjį modelį. Nėra raktų, nėra sąrankos.',
+    'Youma kiekvieną darbo krūvį nukreipia į protingą numatytąjį modelį. Nėra raktų, nėra sąrankos.',
   'onboarding.custom.inference.configureDesc':
     'Atsineškite savo OpenAI arba Anthropic raktą. Mes naudojame jį kiekvienam teksto darbui.',
   'onboarding.custom.voice.title': 'Balsas',
   'onboarding.custom.voice.subtitle': 'Kalba į tekstą ir tekstas į kalbą balso režimui.',
   'onboarding.custom.voice.defaultDesc':
-    'Aura pristatomas su valdomu STT/TTS, kuris tiesiog veikia. Nėra ką surišti.',
+    'Youma pristatomas su valdomu STT/TTS, kuris tiesiog veikia. Nėra ką surišti.',
   'onboarding.custom.voice.configureDesc':
     'Naudokite savo ElevenLabs / OpenAI Whisper / tt. Konfigūruokite nustatymuose › Balsas.',
   'onboarding.custom.oauth.title': 'Jungtys (OAuth)',
   'onboarding.custom.oauth.subtitle':
     'Gmail, Slack, Notion ir kitos prijungtos paslaugos, kurioms reikia OAuth.',
   'onboarding.custom.oauth.defaultDesc':
-    'Aura vykdo valdomą Composio darbo sritį. Vienu paspaudimu galėsite prijungti kiekvieną paslaugą vėliau.',
+    'Youma vykdo valdomą Composio darbo sritį. Vienu paspaudimu galėsite prijungti kiekvieną paslaugą vėliau.',
   'onboarding.custom.oauth.configureDesc':
     'Atsineškite savo Composio paskyrą / API raktą. Konfigūruokite skiltyje Nustatymai › Ryšiai.',
   'onboarding.custom.search.title': 'Interneto paieška',
-  'onboarding.custom.search.subtitle': 'Kaip Aura ieško internete jūsų vardu.',
+  'onboarding.custom.search.subtitle': 'Kaip Youma ieško internete jūsų vardu.',
   'onboarding.custom.search.defaultDesc':
-    'Aura naudoja valdomą paieškos užpakalinę programą. Nereikia jokių raktų.',
+    'Youma naudoja valdomą paieškos užpakalinę programą. Nereikia jokių raktų.',
   'onboarding.custom.search.configureDesc':
     'Atsineškite savo paieškos teikėjo raktą (Tavily, Brave ir kt.). Konfigūruokite nustatymuose › Įrankiai.',
   'onboarding.custom.memory.title': 'Atmintis',
   'onboarding.custom.memory.subtitle':
-    'Kaip Aura prisimena jūsų kontekstą, nuostatas ir ankstesnius pokalbius.',
+    'Kaip Youma prisimena jūsų kontekstą, nuostatas ir ankstesnius pokalbius.',
   'onboarding.custom.memory.defaultDesc':
-    'Aura automatiškai valdo atminties saugojimą ir gavimą. Nėra ką nustatyti.',
+    'Youma automatiškai valdo atminties saugojimą ir gavimą. Nėra ką nustatyti.',
   'onboarding.custom.memory.configureDesc':
     'Patikrinkite, eksportuokite arba ištrinkite atmintį patys. Konfigūruokite nustatymuose › Atmintis.',
   'accounts.addAccount': 'Pridėti paskyrą',
@@ -357,7 +357,7 @@ const ltLT: TranslationMap = {
   'misc.downloading': 'Atsisiunčiama...',
   'misc.installing': 'Diegiama...',
   'misc.beta':
-    'Aura yra ankstyvoje beta versijoje. Nesivaržykite pasidalinti atsiliepimais arba pranešti apie klaidas, su kuriomis susidūrėte – kiekviena ataskaita padeda mums greičiau išsiųsti.',
+    'Youma yra ankstyvoje beta versijoje. Nesivaržykite pasidalinti atsiliepimais arba pranešti apie klaidas, su kuriomis susidūrėte – kiekviena ataskaita padeda mums greičiau išsiųsti.',
   'misc.betaFeedback': 'Siųsti atsiliepimą',
   'mnemonic.title': 'Atkūrimo frazė',
   'mnemonic.warning': 'Užrašykite šiuos žodžius eilės tvarka ir laikykite juos saugioje vietoje.',
@@ -380,11 +380,11 @@ const ltLT: TranslationMap = {
   'privacy.anonymizedAnalytics': 'Anonimizuota „Analytics“.',
   'privacy.shareAnonymizedData': 'Bendrinkite anoniminius naudojimo duomenis',
   'privacy.shareAnonymizedDataDesc':
-    'Padėkite tobulinti Aura bendrindami anonimines strigčių ataskaitas ir naudojimo analizę. Visi duomenys yra visiškai anonimizuoti – niekada nerenkami jokie asmeniniai duomenys, žinutės, piniginės raktai ar sesijos informacija.',
+    'Padėkite tobulinti Youma bendrindami anonimines strigčių ataskaitas ir naudojimo analizę. Visi duomenys yra visiškai anonimizuoti – niekada nerenkami jokie asmeniniai duomenys, žinutės, piniginės raktai ar sesijos informacija.',
   'privacy.meetingFollowUps': 'Tolesni susitikimai',
   'privacy.autoHandoffMeet': 'Automatinis Google Meet nuorašų perdavimas orkestrantui',
   'privacy.autoHandoffMeetDesc':
-    'Kai Google Meet skambutis baigiasi, Aura orkestrantas gali perskaityti stenogramą ir imtis veiksmų, pvz., rengti pranešimų juodraštį, suplanuoti tolesnius veiksmus arba paskelbti santraukas prijungtoje Slack darbo vietoje. Išjungta pagal numatytuosius nustatymus.',
+    'Kai Google Meet skambutis baigiasi, Youma orkestrantas gali perskaityti stenogramą ir imtis veiksmų, pvz., rengti pranešimų juodraštį, suplanuoti tolesnius veiksmus arba paskelbti santraukas prijungtoje Slack darbo vietoje. Išjungta pagal numatytuosius nustatymus.',
   'privacy.analyticsDisclaimer':
     'Visos analizės ir klaidų ataskaitos yra visiškai anoniminės. Kai įjungta, renkame tik informaciją apie gedimus, įrenginio tipą ir klaidų failo vietą. Niekada nepasiekiame jūsų pranešimų, seanso duomenų, piniginės raktų, API raktų ar bet kokios asmenį identifikuojančios informacijos. Šį nustatymą galite bet kada pakeisti.',
   'settings.about.version': 'Versija',
@@ -444,7 +444,7 @@ const ltLT: TranslationMap = {
   'settings.billing.browserOpenFailed':
     'Naršyklės nepavyko atidaryti automatiškai. Naudokite aukščiau esantį mygtuką.',
   'settings.tools.chooseCapabilities':
-    'Pasirinkite, kurias galimybes Aura gali naudoti jūsų vardu.',
+    'Pasirinkite, kurias galimybes Youma gali naudoti jūsų vardu.',
   'settings.tools.saveChanges': 'Išsaugoti pakeitimus',
   'settings.tools.preferencesSaved': 'Parinktys išsaugotos',
   'settings.tools.saveFailed': 'Nepavyko išsaugoti nuostatų. Bandykite dar kartą.',
@@ -913,9 +913,9 @@ const ltLT: TranslationMap = {
   'bootCheck.chooseCoreMode': 'Pasirinkite vykdymo laiką',
   'bootCheck.connectToCore': 'Prisijunkite prie savo vykdymo laiko',
   'bootCheck.desktopDescription':
-    'Aura reikia paleidimo laiko pagalvoti. Pasirinkite, kur jis turėtų gyventi.',
+    'Youma reikia paleidimo laiko pagalvoti. Pasirinkite, kur jis turėtų gyventi.',
   'bootCheck.webDescription':
-    'Žiniatinklyje Aura prisijungia prie jūsų valdomo vykdymo laiko. Įdėkite jo URL ir autentifikavimo prieigos raktą žemiau arba paimkite darbalaukio programą, kad ją paleistumėte tiesiai savo kompiuteryje.',
+    'Žiniatinklyje Youma prisijungia prie jūsų valdomo vykdymo laiko. Įdėkite jo URL ir autentifikavimo prieigos raktą žemiau arba paimkite darbalaukio programą, kad ją paleistumėte tiesiai savo kompiuteryje.',
   'bootCheck.preferDesktop': 'Verčiau viską laikyti savo įrenginyje?',
   'bootCheck.downloadDesktop': 'Gaukite darbalaukio programą',
   'bootCheck.localRecommended': 'Vykdyti vietoje (rekomenduojama)',
@@ -942,7 +942,7 @@ const ltLT: TranslationMap = {
   'bootCheck.quit': 'Išeik',
   'bootCheck.legacyDetected': 'Aptiktas senas fono vykdymo laikas',
   'bootCheck.legacyDescription':
-    'Šiame įrenginyje jau veikia atskirai įdiegtas Aura demonas. Turime jį išvalyti, kad integruotasis vykdymo laikas galėtų perimti.',
+    'Šiame įrenginyje jau veikia atskirai įdiegtas Youma demonas. Turime jį išvalyti, kad integruotasis vykdymo laikas galėtų perimti.',
   'bootCheck.removing': 'Pašalinama…',
   'bootCheck.removeContinue': 'Pašalinti ir tęsti',
   'bootCheck.localNeedsRestart': 'Vietinį vykdymo laiką reikia paleisti iš naujo',
@@ -1080,9 +1080,9 @@ const ltLT: TranslationMap = {
   'rewards.referrals.load_stats_error': 'Nepavyko įkelti persiuntimo statistikos',
   'rewards.referrals.copied': 'Nukopijuota',
   'rewards.referrals.copy_failed': 'Kopijuoti nepavyko',
-  'rewards.referrals.share_intro': 'Prisijunkite prie manęs Aura.',
+  'rewards.referrals.share_intro': 'Prisijunkite prie manęs Youma.',
   'rewards.referrals.share_code_line': 'Siuntimo kodas: {code}',
-  'rewards.referrals.share_download_line': 'Atsisiųsti Aura: {url}',
+  'rewards.referrals.share_download_line': 'Atsisiųsti Youma: {url}',
   'rewards.referrals.apply_error': 'Nepavyko pritaikyti persiuntimo kodo',
   'rewards.referrals.heading': 'Pakvieskite draugus, užsidirbkite kreditų',
   'rewards.referrals.description':
@@ -1316,22 +1316,22 @@ const ltLT: TranslationMap = {
   'skills.meeting_bots_card.platform_gmeet': 'Google Meet',
   'skills.meeting_bots_card.platform_zoom': 'Zoom',
   'skills.meeting_bots_card.platform_teams': 'Microsoft komandos',
-  'skills.meeting_bots_card.banner_title': 'Siųsti Aura į susitikimą',
+  'skills.meeting_bots_card.banner_title': 'Siųsti Youma į susitikimą',
   'skills.meeting_bots_card.new_badge': 'Nauja',
   'skills.meeting_bots_card.banner_description':
-    'Numeskite Google Meet nuorodą ir Aura prisijungia kaip svečias, kalbasi, klausosi ir mojuoja atgal.',
+    'Numeskite Google Meet nuorodą ir Youma prisijungia kaip svečias, kalbasi, klausosi ir mojuoja atgal.',
   'skills.meeting_bots_card.coming_soon_error': '{platform} palaikymas netrukus.',
-  'skills.meeting_bots_card.toast_joining_title': 'Aura prisijungia prie susitikimo',
+  'skills.meeting_bots_card.toast_joining_title': 'Youma prisijungia prie susitikimo',
   'skills.meeting_bots_card.toast_joining_message':
     'Po kelių sekundžių jis turėtų pasirodyti kaip dalyvis.',
-  'skills.meeting_bots_card.toast_busy_title': 'Aura užimtas',
-  'skills.meeting_bots_card.toast_failed_title': 'Nepavyko paleisti Aura',
-  'skills.meeting_bots_card.default_error_message': 'Nepavyko paleisti Aura.',
-  'skills.meeting_bots_card.modal_aria_label': 'Siųsti Aura į susitikimą',
+  'skills.meeting_bots_card.toast_busy_title': 'Youma užimtas',
+  'skills.meeting_bots_card.toast_failed_title': 'Nepavyko paleisti Youma',
+  'skills.meeting_bots_card.default_error_message': 'Nepavyko paleisti Youma.',
+  'skills.meeting_bots_card.modal_aria_label': 'Siųsti Youma į susitikimą',
   'skills.meeting_bots_card.close_aria': 'Uždaryti',
-  'skills.meeting_bots_card.modal_title': 'Siųsti Aura į susitikimą',
+  'skills.meeting_bots_card.modal_title': 'Siųsti Youma į susitikimą',
   'skills.meeting_bots_card.modal_description':
-    'Aura prisijungia kaip anoniminis svečias, transliuoja vaizdo įrašą į skambutį ir atsako per agentą.',
+    'Youma prisijungia kaip anoniminis svečias, transliuoja vaizdo įrašą į skambutį ir atsako per agentą.',
   'skills.meeting_bots_card.soon_suffix': '· netrukus',
   'skills.meeting_bots_card.meeting_link_label': 'Susitikimo nuoroda',
   'skills.meeting_bots_card.display_name_label': 'Rodomas vardas',
@@ -1477,14 +1477,14 @@ const ltLT: TranslationMap = {
   'settings.composio_panel.title': 'Composio',
   'settings.composio_panel.loading': 'Įkeliama…',
   'settings.composio_panel.intro_prefix':
-    'Composio suteikia galimybę integruoti su Gmail, Notion, Slack, GitHub ir daugiau nei 1000 kitų programų. Pagal numatytuosius nustatymus Aura jį tvarko už jus, todėl jums nereikia atsinešti API rakto. Jei norite tiesiogiai naudoti savo Composio paskyrą, perjunkite į',
+    'Composio suteikia galimybę integruoti su Gmail, Notion, Slack, GitHub ir daugiau nei 1000 kitų programų. Pagal numatytuosius nustatymus Youma jį tvarko už jus, todėl jums nereikia atsinešti API rakto. Jei norite tiesiogiai naudoti savo Composio paskyrą, perjunkite į',
   'settings.composio_panel.direct_word': 'Tiesioginis',
   'settings.composio_panel.intro_suffix': 'režimą ir įklijuokite raktą žemiau.',
   'settings.composio_panel.routing_mode_legend': 'Maršruto režimas',
-  'settings.composio_panel.managed_aria_label': 'Tvarkoma (Aura tvarko už jus)',
-  'settings.composio_panel.managed_title': 'Tvarkoma (Aura tvarko už jus)',
+  'settings.composio_panel.managed_aria_label': 'Tvarkoma (Youma tvarko už jus)',
+  'settings.composio_panel.managed_title': 'Tvarkoma (Youma tvarko už jus)',
   'settings.composio_panel.managed_description':
-    'Numatytoji. Aura tvarko Composio ryšį už jus. Suaktyvinkite žiniatinklio kabliukus (realaus laiko „Gmail“ / Slack įvykius) veikia iš karto.',
+    'Numatytoji. Youma tvarko Composio ryšį už jus. Suaktyvinkite žiniatinklio kabliukus (realaus laiko „Gmail“ / Slack įvykius) veikia iš karto.',
   'settings.composio_panel.direct_aria_label': 'Tiesioginis (atsineškite savo API klavišą)',
   'settings.composio_panel.direct_title': 'Tiesioginis (atsineškite savo API klavišą)',
   'settings.composio_panel.direct_description_prefix': 'Skambučiai eina į',
@@ -1495,7 +1495,7 @@ const ltLT: TranslationMap = {
   'settings.composio_panel.api_key_label': 'Composio API klavišas',
   'settings.composio_panel.api_key_help_prefix': 'Raskite savo raktą adresu',
   'settings.composio_panel.api_key_help_suffix':
-    'Raktas šiame įrenginyje saugomas užšifruotas ir niekada nesiunčiamas į Aura.',
+    'Raktas šiame įrenginyje saugomas užšifruotas ir niekada nesiunčiamas į Youma.',
   'settings.composio_panel.api_key_placeholder_stored':
     '•••••••••••• (raktas išsaugotas – įklijuokite naują raktą, kad jį pakeistumėte)',
   'settings.composio_panel.api_key_placeholder_empty': 'ck_live_xxxxxxxxxxxxxxxxx',
@@ -1503,10 +1503,10 @@ const ltLT: TranslationMap = {
     'Šiuo metu šiame įrenginyje yra išsaugotas klavišas Composio API.',
   'settings.composio_panel.confirm_title': '⚠️ Perjungimas į tiesioginį režimą',
   'settings.composio_panel.confirm_integrations_prefix':
-    'Jūsų esamos integracijos (Gmail, Slack, GitHub ir kt., susietos per Aura)',
+    'Jūsų esamos integracijos (Gmail, Slack, GitHub ir kt., susietos per Youma)',
   'settings.composio_panel.wont_be_visible': 'nebus matomas',
   'settings.composio_panel.confirm_integrations_suffix':
-    '— jie gyvena Aura valdomame Composio nuomininke.',
+    '— jie gyvena Youma valdomame Composio nuomininke.',
   'settings.composio_panel.confirm_needs_title': 'Jums reikės:',
   'settings.composio_panel.confirm_need_account_prefix': 'Sąskaita adresu',
   'settings.composio_panel.confirm_need_account_suffix': 'su API klavišu',
@@ -1525,7 +1525,7 @@ const ltLT: TranslationMap = {
     'Nepavyko išsaugoti. Tiesioginiam režimui reikalingas ne tuščias klavišas API.',
   'settings.model_status.ollama_unavailable_title': '„Ollama“ vykdymo laikas nepasiekiamas',
   'settings.model_status.ollama_unavailable_description':
-    'Aura dabar traktuoja Ollama kaip išorinės išvados vykdymo laiką. Paleiskite savo „Ollama“ serverį, ištraukite norimus modelius ir nukreipkite į jį darbo krūvio maršrutą.',
+    'Youma dabar traktuoja Ollama kaip išorinės išvados vykdymo laiką. Paleiskite savo „Ollama“ serverį, ištraukite norimus modelius ir nukreipkite į jį darbo krūvio maršrutą.',
   'settings.model_status.ollama_docs_link': 'Ollama doc',
   'settings.model_status.runtime_status_title': 'Vykdymo laiko būsena',
   'settings.model_status.refresh': 'Atnaujinti',
@@ -1544,7 +1544,7 @@ const ltLT: TranslationMap = {
   'settings.model_status.hide_error_details': 'Slėpti išsamią klaidos informaciją',
   'settings.model_status.show_error_details': 'Rodyti išsamią klaidos informaciją',
   'settings.model_status.connect_only_prefix':
-    'Aura jungiasi tik prie jau veikiančio su Ollama suderinamo galinio taško. Žr',
+    'Youma jungiasi tik prie jau veikiančio su Ollama suderinamo galinio taško. Žr',
   'settings.model_status.connect_only_suffix':
     'Norėdami gauti sąrankos instrukcijas, bandykite dar kartą, kai bus pasiekiamas vykdymo laikas.',
   'settings.model_status.ollama_diagnostics_title': 'Ollama diagnostika',
@@ -1570,7 +1570,7 @@ const ltLT: TranslationMap = {
   'settings.model_status.vision_model_line': 'Vizija: {model}',
   'settings.model_status.issues_heading': 'Problemos',
   'settings.model_status.manage_ollama_footer':
-    'Tvarkykite Ollama procesą ir modelio ištraukimus už Aura ribų, tada iš naujo paleiskite diagnostiką.',
+    'Tvarkykite Ollama procesą ir modelio ištraukimus už Youma ribų, tada iš naujo paleiskite diagnostiką.',
   'settings.device_capability.model_tier_title': 'Modelio pakopa',
   'settings.device_capability.loading_device_info':
     'Įkeliama įrenginio informacija ir išankstiniai nustatymai…',
@@ -1884,7 +1884,7 @@ const ltLT: TranslationMap = {
   'composio.connect_modal.disconnecting': 'Atsijungiama…',
   'composio.connect_modal.dismiss': 'Atsisakyti',
   'composio.connect_modal.expired_body':
-    'Prisijunkite iš naujo, kad vėl įgalintumėte {name} įrankius. Aura ši integracija bus nepasiekiama, kol neatnaujinsite OAuth prieigos.',
+    'Prisijunkite iš naujo, kad vėl įgalintumėte {name} įrankius. Youma ši integracija bus nepasiekiama, kol neatnaujinsite OAuth prieigos.',
   'composio.connect_modal.expired_title': '{name} įgaliojimas pasibaigęs',
   'composio.connect_modal.generic_error': 'Kažkas nutiko.',
   'composio.connect_modal.header_connect': 'Prijunkite {name}',
@@ -1900,7 +1900,7 @@ const ltLT: TranslationMap = {
   'composio.connect_modal.needs_subdomain_intro_suffix': ') ir bandykite dar kartą.',
   'composio.connect_modal.permission_intro_prefix': '{name} gali atskleisti',
   'composio.connect_modal.permission_intro_suffix':
-    '. Kai prisijungiate, toliau valdomi Aura agento leidimai kaip skaitymo, rašymo ir administratoriaus perjungimai.',
+    '. Kai prisijungiate, toliau valdomi Youma agento leidimai kaip skaitymo, rašymo ir administratoriaus perjungimai.',
   'composio.connect_modal.permissions_default_hint':
     'Skaitymas + rašymas įjungtas pagal numatytuosius nustatymus',
   'composio.connect_modal.permissions_heading': 'Leidimai',
@@ -1950,10 +1950,10 @@ const ltLT: TranslationMap = {
   'settings.ai_panel.local_runtime_disconnect_aria': 'Atjunkite {label}',
   'settings.ai_panel.providers_heading': 'LLM Teikėjai',
   'settings.ai_panel.providers_subtitle':
-    'Prijunkite kalbos modelio pagrindines programas, kurias norite naudoti Aura. Įjunkite teikėją, kad pridėtumėte jo raktą; išjunkite, kad atsijungtumėte.',
+    'Prijunkite kalbos modelio pagrindines programas, kurias norite naudoti Youma. Įjunkite teikėją, kad pridėtumėte jo raktą; išjunkite, kad atsijungtumėte.',
   'settings.ai_panel.routing_heading': 'Maršrutas',
   'settings.ai_panel.routing_subtitle':
-    'Pasirinkite, kaip aptarnaujamas kiekvienas darbo krūvis. Numatytieji naudoja Aura; Pasirinktinis leidžia nukreipti darbo krūvį į konkretų teikėją ir modelį.',
+    'Pasirinkite, kaip aptarnaujamas kiekvienas darbo krūvis. Numatytieji naudoja Youma; Pasirinktinis leidžia nukreipti darbo krūvį į konkretų teikėją ir modelį.',
   'settings.auto_recharge.add_card': '+ Pridėkite kortelę prie „Stripe“.',
   'settings.auto_recharge.amount_label': 'Pridėkite šią sumą',
   'settings.auto_recharge.cancel': 'Atšaukti',
@@ -2017,21 +2017,21 @@ const ltLT: TranslationMap = {
   'settings.mascot_panel.color_black': 'Juoda',
   'settings.mascot_panel.color_burgundy': 'Burgundija',
   'settings.mascot_panel.color_footer_hint':
-    'Pasirinkta spalva taikoma visur, kur pasirodo Aura, ir įsimenama paleidus iš naujo.',
+    'Pasirinkta spalva taikoma visur, kur pasirodo Youma, ir įsimenama paleidus iš naujo.',
   'settings.mascot_panel.color_green': 'Žalia',
   'settings.mascot_panel.color_heading': 'Spalva',
   'settings.mascot_panel.color_navy': 'Navy',
-  'settings.mascot_panel.color_radiogroup_aria': 'Aura spalva',
+  'settings.mascot_panel.color_radiogroup_aria': 'Youma spalva',
   'settings.mascot_panel.color_yellow': 'Geltona',
-  'settings.mascot_panel.header_title': 'Aura',
-  'settings.mascot_panel.library_unavailable': 'Aura biblioteka nepasiekiama: {error}',
+  'settings.mascot_panel.header_title': 'Youma',
+  'settings.mascot_panel.library_unavailable': 'Youma biblioteka nepasiekiama: {error}',
   'settings.mascot_panel.load_library_error': 'Nepavyko įkelti talismanų bibliotekos.',
   'settings.mascot_panel.load_mascot_error': 'Nepavyko įkelti talismano.',
-  'settings.mascot_panel.loading_library': 'Įkeliama Aura biblioteka…',
-  'settings.mascot_panel.local_aura_default': 'Vietinis Aura (numatytasis)',
+  'settings.mascot_panel.loading_library': 'Įkeliama Youma biblioteka…',
+  'settings.mascot_panel.local_aura_default': 'Vietinis Youma (numatytasis)',
   'settings.mascot_panel.no_characters':
-    'Dar nėra Aura simbolių. Aukščiau pateikti vietiniai spalvų variantai vis dar aktyvūs.',
-  'settings.mascot_panel.no_color_variants': 'Šioje konstrukcijoje nėra Aura spalvų variantų.',
+    'Dar nėra Youma simbolių. Aukščiau pateikti vietiniai spalvų variantai vis dar aktyvūs.',
+  'settings.mascot_panel.no_color_variants': 'Šioje konstrukcijoje nėra Youma spalvų variantų.',
   'settings.mascot_panel.preview_label': 'Peržiūra · {name}',
   'settings.mascot_panel.version_states': 'v{version} · {states} būsenos',
   'settings.mascot_panel.visemes_suffix': '· visemes',
@@ -2074,7 +2074,7 @@ const ltLT: TranslationMap = {
   'local_ai.download_snackbar.installing': 'Diegiama...',
   'local_ai.download_snackbar.preparing': 'Ruošiamasi...',
   'settings.cron_job_list.heading': 'Pagrindiniai Cron darbai',
-  'settings.cron_job_list.subheading': 'Darbai išliko Aura pagrindinėje planuotojo duomenų bazėje.',
+  'settings.cron_job_list.subheading': 'Darbai išliko Youma pagrindinėje planuotojo duomenų bazėje.',
   'settings.cron_job_list.loading': 'Įkeliami cron darbai...',
   'settings.cron_job_list.empty': 'Pagrindinių cron darbų nerasta.',
   'settings.cron_job_list.status_enabled': 'Įjungta',
@@ -2146,16 +2146,16 @@ const ltLT: TranslationMap = {
   'aura_link_modal.notifications_desktop_only':
     'Savieji pranešimai pasiekiami tik darbalaukio programoje (paleiskite „pnpm dev:app“).',
   'aura_link_modal.notifications_permission_off':
-    'Pranešimų leidimas išjungtas. Įjunkite Aura Sistemos nustatymai → Pranešimai, tada bandykite dar kartą.',
-  'aura_link_modal.notification_title': 'Aura jau gerai',
+    'Pranešimų leidimas išjungtas. Įjunkite Youma Sistemos nustatymai → Pranešimai, tada bandykite dar kartą.',
+  'aura_link_modal.notification_title': 'Youma jau gerai',
   'aura_link_modal.notification_body': 'Čia gausite pingus, kai kam reikės jūsų dėmesio.',
   'aura_link_modal.notification_send_failed':
-    'Aura nepavyko suaktyvinti sistemos pranešimo. Patikrinkite OS pranešimų nustatymus ir bandykite dar kartą.',
+    'Youma nepavyko suaktyvinti sistemos pranešimo. Patikrinkite OS pranešimų nustatymus ir bandykite dar kartą.',
   'aura_link_modal.notifications_intro':
-    'Aura naudoja vietinius pranešimus, kad galėtų siųsti jums žinutę, kai į ką nors reikia atkreipti dėmesį, net kai pokalbio langas paslėptas.',
+    'Youma naudoja vietinius pranešimus, kad galėtų siųsti jums žinutę, kai į ką nors reikia atkreipti dėmesį, net kai pokalbio langas paslėptas.',
   'aura_link_modal.notifications_blocked_line1': 'Pranešimai šiuo metu užblokuoti.',
   'aura_link_modal.notifications_blocked_line2':
-    '1. Atidarykite Sistemos nustatymai → Pranešimai → Aura',
+    '1. Atidarykite Sistemos nustatymai → Pranešimai → Youma',
   'aura_link_modal.notifications_blocked_line3': '2. Įjunkite Allow Notifications',
   'aura_link_modal.notifications_blocked_line4':
     '3. Grįžkite čia ir bakstelėkite Bandyti dar kartą pranešimą',
@@ -2165,7 +2165,7 @@ const ltLT: TranslationMap = {
   'aura_link_modal.retry_test_notification': 'Bandykite dar kartą pranešimą apie bandymą',
   'aura_link_modal.send_test_notification': 'Siųsti pranešimą apie bandymą',
   'aura_link_modal.notification_sent_success':
-    'Bandomasis pranešimas išsiųstas. Jei jo negavote, eikite į Sistemos nustatymai → Pranešimai → Aura, įjunkite Allow Notifications ir nustatykite reklamjuostės stilių į Nuolatinis.',
+    'Bandomasis pranešimas išsiųstas. Jei jo negavote, eikite į Sistemos nustatymai → Pranešimai → Youma, įjunkite Allow Notifications ir nustatykite reklamjuostės stilių į Nuolatinis.',
   'aura_link_modal.notification_send_error': 'Nepavyko išsiųsti: {error}',
   'aura_link_modal.trial_credit_label': 'Bandomasis kreditas',
   'aura_link_modal.trial_credit_amount': '1,00 USD',
@@ -2174,7 +2174,7 @@ const ltLT: TranslationMap = {
   'aura_link_modal.open_dashboard': 'Naršyklėje atidarykite prietaisų skydelį',
   'aura_link_modal.stay_on_trial': 'Būkite teisiami',
   'aura_link_modal.discord_intro':
-    'Užsukite į mūsų Discord ir susiekite savo Aura paskyrą. Gausite išskirtinę išankstinę prieigą prie funkcijų, nemokamų kreditų, su kuriais galėsite žaisti, puikią bendruomenę, su kuria galėsite leisti laiką, ir taip, nemokamų prekių.',
+    'Užsukite į mūsų Discord ir susiekite savo Youma paskyrą. Gausite išskirtinę išankstinę prieigą prie funkcijų, nemokamų kreditų, su kuriais galėsite žaisti, puikią bendruomenę, su kuria galėsite leisti laiką, ir taip, nemokamų prekių.',
   'aura_link_modal.discord_perk_feature_access': 'Išskirtinė prieiga prie funkcijų',
   'aura_link_modal.discord_perk_free_credits': 'Nemokami kreditai aktyviems nariams',
   'aura_link_modal.discord_perk_community': 'Statybininkų ir operatorių bendruomenė',
@@ -2212,7 +2212,7 @@ const ltLT: TranslationMap = {
   'channels.discord_config.copy': 'Kopijuoti',
   'channels.discord_config.link_instructions_prefix': 'Discord siųsk',
   'channels.discord_config.link_instructions_suffix':
-    'prie Aura boto. Žetonas baigiasi po 5 minučių.',
+    'prie Youma boto. Žetonas baigiasi po 5 minučių.',
   'channels.discord_config.link_token_warning':
     'Išsaugoti šią komandą – šis prieigos raktas rodomas tik vieną kartą.',
   'channels.discord_config.account_linked': 'Jūsų Discord paskyra susieta.',
@@ -2252,9 +2252,9 @@ const ltLT: TranslationMap = {
   'settings.memory_window_control.save_failed': 'Nepavyko išsaugoti atminties lango',
   'settings.memory_window_control.heading': 'Ilgalaikės atminties langas',
   'settings.memory_window_control.description':
-    'Kiek prisiminto konteksto Aura įpurškia į kiekvieną naują agento paleidimą. Didesniuose languose geriau suvokiami praeities pokalbiai, bet sunaudojama daugiau žetonų ir kainuoja daugiau.',
+    'Kiek prisiminto konteksto Youma įpurškia į kiekvieną naują agento paleidimą. Didesniuose languose geriau suvokiami praeities pokalbiai, bet sunaudojama daugiau žetonų ir kainuoja daugiau.',
   'home.banners.promo_credits': 'Turite {amount} reklaminių kreditų.',
-  'home.banners.promo_credits_prefix': 'Pasukite Aura ir, kai būsite pasiruošę daugiau,',
+  'home.banners.promo_credits_prefix': 'Pasukite Youma ir, kai būsite pasiruošę daugiau,',
   'home.banners.get_subscription': 'gauti prenumeratą',
   'home.banners.promo_credits_suffix': 'ir naudokitės 10 kartų daugiau.',
   'home.banners.dismiss_early_bird': 'Atsisakyti ankstyvo paukščio reklamjuostės',
@@ -2264,7 +2264,7 @@ const ltLT: TranslationMap = {
   'home.banners.first_subscription': 'pirmasis abonementas.',
   'home.banners.join_discord': 'Prisijunkite prie mūsų Discord',
   'home.banners.discord_description':
-    'Gaukite atnaujinimų, nemokamų prekių, kreditų, praneškite apie klaidas ir tapkite Aura bendruomenės dalimi.',
+    'Gaukite atnaujinimų, nemokamų prekių, kreditų, praneškite apie klaidas ir tapkite Youma bendruomenės dalimi.',
   'intelligence.memory_chunk_detail.copy_chunk_id': 'Nukopijuokite gabalo ID',
   'intelligence.memory_chunk_detail.chunk_label': 'gabalas {id}',
   'intelligence.memory_chunk_detail.copied': 'nukopijuota',
@@ -2289,7 +2289,7 @@ const ltLT: TranslationMap = {
     'Kažkas nutiko. Bandykite dar kartą.\nApie šią klaidą pranešta. Taip pat galite pranešti Discord.\n<aura-link path="community/discord">Pranešimas apie Discord</aura-link>',
   'daemon.service_blocking_gate.retry_failed':
     'Bandymas iš naujo nepavyko. Atsisiųskite naujausią programos versiją ir bandykite dar kartą.',
-  'daemon.service_blocking_gate.title': 'Aura branduolys nepasiekiamas',
+  'daemon.service_blocking_gate.title': 'Youma branduolys nepasiekiamas',
   'daemon.service_blocking_gate.description':
     'Po kelių bandymų nepavyko atkurti vietinės pagrindinės paslaugos. Tai gali nutikti po kritinės avarijos arba dvejetainio neatitikimo.',
   'daemon.service_blocking_gate.download_hint':
@@ -2449,17 +2449,17 @@ const ltLT: TranslationMap = {
   'chat.unsubscribe_approval_card.success_message': '✓ Prenumerata sėkmingai atšaukta.',
   'chat.unsubscribe_approval_card.denied_message': '✕ Prašymas atmestas.',
   'oauth.provider_button.twitter_startup_failure':
-    'Nepavyko pradėti „Twitter“ / X prisijungimo. Patikrinkite, ar „Twitter“ OAuth programos atgalinis skambutis URL, kliento ID / paslaptis ir prašomos apimties atitinka Aura foninę programą, tada bandykite dar kartą.',
+    'Nepavyko pradėti „Twitter“ / X prisijungimo. Patikrinkite, ar „Twitter“ OAuth programos atgalinis skambutis URL, kliento ID / paslaptis ir prašomos apimties atitinka Youma foninę programą, tada bandykite dar kartą.',
   'oauth.provider_button.generic_startup_failure':
     '{providerName} prisijungti nepavyko. Bandykite dar kartą.',
   'oauth.provider_button.connecting': 'Jungiamasi...',
   'skills.search_bar.placeholder': 'Paieškos įgūdžiai...',
-  'common.persist_rehydration_screen.title': 'Aura įkeliama ilgiau nei įprastai.',
+  'common.persist_rehydration_screen.title': 'Youma įkeliama ilgiau nei įprastai.',
   'common.persist_rehydration_screen.description':
     'Vietinės programos būsena gali būti sugadinta. Nustačius iš naujo būsite atsijungę ir išvalysite talpyklos duomenis šiame įrenginyje; kitą kartą paleidę paskyras iš naujo susiesite. Jūsų duomenys serveryje neturi įtakos.',
   'common.persist_rehydration_screen.resetting': 'Nustatoma iš naujo…',
   'common.persist_rehydration_screen.reset_button': 'Iš naujo nustatyti vietinę būseną',
-  'common.route_loading_screen.initializing': 'Inicijuojama Aura...',
+  'common.route_loading_screen.initializing': 'Inicijuojama Youma...',
   'privacy.what_leaves_link.label': 'Kas palieka mano kompiuterį?',
   'settings.provider_key_dialog.api_key_required': 'Norėdami tęsti, įklijuokite raktą API.',
   'settings.provider_key_dialog.connect_title': 'Prijunkite {label}',
@@ -2469,7 +2469,7 @@ const ltLT: TranslationMap = {
   'settings.provider_key_dialog.cancel_button': 'Atšaukti',
   'settings.provider_key_dialog.saving': 'Išsaugoma…',
   'settings.provider_key_dialog.save_button': 'Išsaugoti',
-  'settings.workload_row.aura_default': 'Aura (numatytasis)',
+  'settings.workload_row.aura_default': 'Youma (numatytasis)',
   'settings.workload_row.default_button': 'Numatytoji',
   'settings.workload_row.custom_button': 'Pasirinktinis',
 };

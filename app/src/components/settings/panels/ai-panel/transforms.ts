@@ -90,7 +90,7 @@ export function slugTone(slug: string): string {
 }
 
 export function describeProvider(ref: ProviderRef, providers: CloudProvider[]): string {
-  if (ref.kind === 'aura') return 'Aura';
+  if (ref.kind === 'aura') return 'Youma';
   if (ref.kind === 'local') return `Local ${ref.model}`;
   const provider = providers.find(p => p.slug === ref.providerSlug);
   return `${provider?.label ?? ref.providerSlug} ${ref.model || 'custom model'}`;

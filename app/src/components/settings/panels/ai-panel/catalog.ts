@@ -7,7 +7,7 @@ import type { AISettings, RoutingMap, Workload } from './types';
 // Slug-keyed display metadata for built-in provider slugs. Used only for
 // chip rendering (label, tone). Custom providers use `provider.label` directly.
 export const BUILTIN_PROVIDER_META: Record<string, { tone: string; label: string }> = {
-  aura: { label: 'Aura', tone: 'bg-primary-50 ring-primary-200 text-primary-900' },
+  aura: { label: 'Youma', tone: 'bg-primary-50 ring-primary-200 text-primary-900' },
   openai: { label: 'OpenAI', tone: 'bg-emerald-50 ring-emerald-200 text-emerald-900' },
   anthropic: { label: 'Anthropic', tone: 'bg-orange-50 ring-orange-200 text-orange-900' },
   openrouter: { label: 'OpenRouter', tone: 'bg-slate-100 ring-slate-300 text-slate-900' },

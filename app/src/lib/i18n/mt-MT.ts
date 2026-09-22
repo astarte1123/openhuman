@@ -129,7 +129,7 @@ const mtMT: TranslationMap = {
   'clearData.failedLogout': "Naqas milli jilloggja. Jekk jogħġbok erġa' pprova.",
   'clearData.failedPersist':
     "Naqas milli jitneħħa l-istat tal-app persistenti. Jekk jogħġbok erġa' pprova.",
-  'welcome.title': 'Merħba għal Aura',
+  'welcome.title': 'Merħba għal Youma',
   'welcome.subtitle':
     'Intelliġenza super AI personali tiegħek. Privat, sempliċi u estremament qawwi.',
   'welcome.connectPrompt': 'Ikkonfigura RPC URL (Avvanzat)',
@@ -147,7 +147,7 @@ const mtMT: TranslationMap = {
   'home.statusBackendOnly':
     "Erġa' tgħaqqad mal-backend... l-aġent tiegħek ser jerġa' jkun disponibbli dalwaqt.",
   'home.statusCoreUnreachable':
-    'Sidecar tal-qalba lokali mhux qed jirrispondi. Il-proċess fl-isfond Aura jista’ jkun iġġarraf jew naqas milli jibda.',
+    'Sidecar tal-qalba lokali mhux qed jirrispondi. Il-proċess fl-isfond Youma jista’ jkun iġġarraf jew naqas milli jibda.',
   'home.statusInternetOffline':
     "It-tagħmir tiegħek huwa offline bħalissa. Iċċekkja n-netwerk tiegħek jew ibda mill-ġdid l-app biex terġa 'tikkonnettja.",
   'home.restartCore': 'Ibda mill-ġdid Core',
@@ -197,7 +197,7 @@ const mtMT: TranslationMap = {
   'rewards.referralCode': "Il-kodiċi ta' riferiment tiegħek",
   'rewards.copyCode': 'Ikkopja kodiċi',
   'rewards.share': 'Aqsam',
-  'onboarding.welcome': 'Hi. Jien Aura.',
+  'onboarding.welcome': 'Hi. Jien Youma.',
   'onboarding.welcomeDesc':
     'L-assistent AI super-intelliġenti tiegħek li jaħdem fuq il-kompjuter tiegħek. Privat, sempliċi, u estremament qawwi.',
   'onboarding.context': 'Ġbir tal-Kuntest',
@@ -209,14 +209,14 @@ const mtMT: TranslationMap = {
   'onboarding.referral': 'Riferiment',
   'onboarding.referralDesc': "Applika kodiċi ta' riferiment jekk għandek wieħed.",
   'onboarding.finish': 'Tispiċċa Setup',
-  'onboarding.finishDesc': 'Inti kollox lest! Ibda uża Aura.',
+  'onboarding.finishDesc': 'Inti kollox lest! Ibda uża Youma.',
   'onboarding.skip': 'Aqbeż',
   'onboarding.getStarted': 'Ibda',
-  'onboarding.runtimeChoice.title': 'Kif tixtieq tmexxi Aura?',
+  'onboarding.runtimeChoice.title': 'Kif tixtieq tmexxi Youma?',
   'onboarding.runtimeChoice.subtitle':
     "Agħżel is-setup li taqbellek l-aħjar. Tista' tibdel dan aktar tard fis-Settings.",
   'onboarding.runtimeChoice.cloud.title': 'Sempliċi',
-  'onboarding.runtimeChoice.cloud.tagline': 'Ħalli Aura jimmaniġġja kollox għalik.',
+  'onboarding.runtimeChoice.cloud.tagline': 'Ħalli Youma jimmaniġġja kollox għalik.',
   'onboarding.runtimeChoice.cloud.f1': 'Sigurtà inkorporata',
   'onboarding.runtimeChoice.cloud.f2': 'Kompressjoni token biex tistira aktar l-użu tiegħek',
   'onboarding.runtimeChoice.cloud.f3': 'Abbonament wieħed, kull mudell inkluż',
@@ -253,7 +253,7 @@ const mtMT: TranslationMap = {
   'onboarding.custom.stepperMemory': 'Memorja',
   'onboarding.custom.stepCounter': 'Pass {n} ta’ {total}',
   'onboarding.custom.defaultTitle': 'Default',
-  'onboarding.custom.defaultSubtitle': 'Ħalli Aura jimmaniġġjaha għalik.',
+  'onboarding.custom.defaultSubtitle': 'Ħalli Youma jimmaniġġjaha għalik.',
   'onboarding.custom.configureTitle': 'Ikkonfigura',
   'onboarding.custom.configureSubtitle': "Jien nagħżel x'għandek nuża.",
   'onboarding.custom.progressAriaLabel': "Progress ta' l-imbark",
@@ -267,33 +267,33 @@ const mtMT: TranslationMap = {
   'onboarding.custom.inference.subtitle':
     'Liema mudell tal-lingwa għandu jwieġeb il-mistoqsijiet tiegħek u jmexxi l-aġenti tiegħek?',
   'onboarding.custom.inference.defaultDesc':
-    'Aura iwassal kull tagħbija tax-xogħol għal mudell default sensibbli. L-ebda ċwievet, l-ebda setup.',
+    'Youma iwassal kull tagħbija tax-xogħol għal mudell default sensibbli. L-ebda ċwievet, l-ebda setup.',
   'onboarding.custom.inference.configureDesc':
     'Ġib iċ-ċavetta OpenAI jew Anthropic tiegħek. Aħna nużawha għal kull xogħol ibbażat fuq test.',
   'onboarding.custom.voice.title': 'Leħen',
   'onboarding.custom.voice.subtitle': 'Speech-to-test u text-to-speech għall-modalità tal-vuċi.',
   'onboarding.custom.voice.defaultDesc':
-    'Aura vapuri bi STT/TTS immexxi li jaħdem biss. Xejn għal wire up.',
+    'Youma vapuri bi STT/TTS immexxi li jaħdem biss. Xejn għal wire up.',
   'onboarding.custom.voice.configureDesc':
     "Uża l-ElevenLabs tiegħek / OpenAI Whisper / eċċ. Ikkonfigura f'Settings › Voice.",
   'onboarding.custom.oauth.title': 'Konnessjonijiet (OAuth)',
   'onboarding.custom.oauth.subtitle':
     'Gmail, Slack, Notion, u servizzi oħra konnessi li jeħtieġu OAuth.',
   'onboarding.custom.oauth.defaultDesc':
-    'Aura imexxi spazju tax-xogħol Composio ġestit. Klikk waħda biex tgħaqqad kull servizz aktar tard.',
+    'Youma imexxi spazju tax-xogħol Composio ġestit. Klikk waħda biex tgħaqqad kull servizz aktar tard.',
   'onboarding.custom.oauth.configureDesc':
     "Ġib il-kont Composio tiegħek / ċavetta API. Ikkonfigura f'Settings › Konnessjonijiet.",
   'onboarding.custom.search.title': 'Fittex fuq il-Web',
-  'onboarding.custom.search.subtitle': 'Kif Aura tfittex fuq il-web f’ismek.',
+  'onboarding.custom.search.subtitle': 'Kif Youma tfittex fuq il-web f’ismek.',
   'onboarding.custom.search.defaultDesc':
-    'Aura juża backend ta’ tfittxija ġestita. Ebda ċwievet meħtieġa.',
+    'Youma juża backend ta’ tfittxija ġestita. Ebda ċwievet meħtieġa.',
   'onboarding.custom.search.configureDesc':
     "Ġib iċ-ċavetta tal-fornitur tat-tfittxija tiegħek stess (Tavily, Brave, eċċ.). Ikkonfigura f'Settings › Għodod.",
   'onboarding.custom.memory.title': 'Memorja',
   'onboarding.custom.memory.subtitle':
-    'Kif Aura jiftakar il-kuntest, il-preferenzi, u l-konversazzjonijiet preċedenti tiegħek.',
+    'Kif Youma jiftakar il-kuntest, il-preferenzi, u l-konversazzjonijiet preċedenti tiegħek.',
   'onboarding.custom.memory.defaultDesc':
-    "Aura jimmaniġġja l-ħażna u l-irkupru tal-memorja awtomatikament. Xejn x'jistabbilixxi.",
+    "Youma jimmaniġġja l-ħażna u l-irkupru tal-memorja awtomatikament. Xejn x'jistabbilixxi.",
   'onboarding.custom.memory.configureDesc':
     "Spezzjona, esporta, jew imsaħ il-memorja lilek innifsek. Ikkonfigura f'Settings › Memorja.",
   'accounts.addAccount': 'Żid Kont',
@@ -353,7 +353,7 @@ const mtMT: TranslationMap = {
   'misc.downloading': 'Niżżel...',
   'misc.installing': 'Installazzjoni...',
   'misc.beta':
-    'Aura tinsab fil-beta bikrija. Ħossok liberu li taqsam il-feedback jew tirrapporta kwalunkwe bug li tiffaċċja — kull rapport jgħinna nibgħatu aktar malajr.',
+    'Youma tinsab fil-beta bikrija. Ħossok liberu li taqsam il-feedback jew tirrapporta kwalunkwe bug li tiffaċċja — kull rapport jgħinna nibgħatu aktar malajr.',
   'misc.betaFeedback': 'Ibgħat feedback',
   'mnemonic.title': "Frażi ta' Irkupru",
   'mnemonic.warning': 'Ikteb dawn il-kliem fl-ordni u aħżinhom xi mkien sigur.',
@@ -376,11 +376,11 @@ const mtMT: TranslationMap = {
   'privacy.anonymizedAnalytics': 'Analytics anonimizzat',
   'privacy.shareAnonymizedData': 'Aqsam Dejta dwar l-Użu Anonimizzat',
   'privacy.shareAnonymizedDataDesc':
-    'Għin ittejjeb Aura billi taqsam rapporti anonimi tal-ħabtiet u analitiċi tal-użu. Id-dejta kollha hija kompletament anonimizzata — qatt ma tinġabar l-ebda dejta personali, messaġġi, ċwievet tal-kartiera, jew informazzjoni dwar is-sessjoni.',
+    'Għin ittejjeb Youma billi taqsam rapporti anonimi tal-ħabtiet u analitiċi tal-użu. Id-dejta kollha hija kompletament anonimizzata — qatt ma tinġabar l-ebda dejta personali, messaġġi, ċwievet tal-kartiera, jew informazzjoni dwar is-sessjoni.',
   'privacy.meetingFollowUps': 'Follow-ups tal-laqgħat',
   'privacy.autoHandoffMeet': 'Traskrizzjonijiet Google Meet awtomatika lill-orkestratur',
   'privacy.autoHandoffMeetDesc':
-    'Meta tispiċċa sejħa Google Meet, l-orkestratur ta’ Aura jista’ jaqra t-traskrizzjoni u jista’ jieħu azzjonijiet bħall-abbozzar ta’ messaġġi, l-iskedar ta’ segwitu, jew l-istazzjonar ta’ sommarji fl-ispazju tax-xogħol Slack konness tiegħek. Mitfi awtomatikament.',
+    'Meta tispiċċa sejħa Google Meet, l-orkestratur ta’ Youma jista’ jaqra t-traskrizzjoni u jista’ jieħu azzjonijiet bħall-abbozzar ta’ messaġġi, l-iskedar ta’ segwitu, jew l-istazzjonar ta’ sommarji fl-ispazju tax-xogħol Slack konness tiegħek. Mitfi awtomatikament.',
   'privacy.analyticsDisclaimer':
     "L-analiżi kollha u r-rapporti tal-bugs huma kompletament anonimizzati. Meta tkun attivata, aħna niġbru biss informazzjoni dwar il-ħabta, it-tip ta' apparat, u l-post tal-fajl tal-iżbalji. Qatt ma naċċessaw il-messaġġi tiegħek, id-dejta tas-sessjoni, iċ-ċwievet tal-kartiera, iċ-ċwievet API, jew kwalunkwe informazzjoni identifikabbli personalment. Tista' tibdel dan is-setting fi kwalunkwe ħin.",
   'settings.about.version': 'Verżjoni',
@@ -439,7 +439,7 @@ const mtMT: TranslationMap = {
     "Jekk il-browser tiegħek ma fetaħx, uża l-buttuna ta' hawn fuq.",
   'settings.billing.browserOpenFailed':
     'Il-browser ma setax jinfetaħ awtomatikament. Uża l-buttuna hawn fuq.',
-  'settings.tools.chooseCapabilities': "Agħżel liema kapaċitajiet Aura jista' juża f'ismek.",
+  'settings.tools.chooseCapabilities': "Agħżel liema kapaċitajiet Youma jista' juża f'ismek.",
   'settings.tools.saveChanges': 'Ħlief Bidliet',
   'settings.tools.preferencesSaved': 'Preferenzi salvati',
   'settings.tools.saveFailed': "Naqas milli ssalva l-preferenzi. Erġa' pprova.",
@@ -904,9 +904,9 @@ const mtMT: TranslationMap = {
   'bootCheck.tokenRequired': "Ikollna bżonn token ta' awtorizzazzjoni biex nikkonnettjaw.",
   'bootCheck.chooseCoreMode': 'Agħżel Runtime',
   'bootCheck.connectToCore': 'Qabbad mar-Runtime Tiegħek',
-  'bootCheck.desktopDescription': 'Aura teħtieġ runtime biex taħseb. Agħżel fejn għandha tgħix.',
+  'bootCheck.desktopDescription': 'Youma teħtieġ runtime biex taħseb. Agħżel fejn għandha tgħix.',
   'bootCheck.webDescription':
-    "Fuq il-web, Aura jgħaqqad ma’ runtime li tikkontrolla. Waqqa 'l-URL u t-token ta' awtorizzazzjoni tiegħu hawn taħt, jew aqbad l-app tad-desktop biex tħaddem waħda direttament fuq il-magna tiegħek.",
+    "Fuq il-web, Youma jgħaqqad ma’ runtime li tikkontrolla. Waqqa 'l-URL u t-token ta' awtorizzazzjoni tiegħu hawn taħt, jew aqbad l-app tad-desktop biex tħaddem waħda direttament fuq il-magna tiegħek.",
   'bootCheck.preferDesktop': 'Pjuttost żomm kollox fuq it-tagħmir tiegħek?',
   'bootCheck.downloadDesktop': 'Ikseb l-App tad-Desktop',
   'bootCheck.localRecommended': 'Mexxi lokalment (Rakkomandat)',
@@ -933,7 +933,7 @@ const mtMT: TranslationMap = {
   'bootCheck.quit': 'Nieqaf',
   'bootCheck.legacyDetected': "Ħin ta' Runtime Sfond Legat Individwat",
   'bootCheck.legacyDescription':
-    "Daemon Aura installat separatament diġà qed jaħdem fuq dan it-tagħmir. Irridu niċċarawha qabel ma r-runtime integrata tkun tista' tieħu f'idejha.",
+    "Daemon Youma installat separatament diġà qed jaħdem fuq dan it-tagħmir. Irridu niċċarawha qabel ma r-runtime integrata tkun tista' tieħu f'idejha.",
   'bootCheck.removing': 'Tneħħi...',
   'bootCheck.removeContinue': 'Neħħi u Kompli',
   'bootCheck.localNeedsRestart': 'Runtime Lokali Jeħtieġ Ristartja',
@@ -1072,9 +1072,9 @@ const mtMT: TranslationMap = {
   'rewards.referrals.load_stats_error': "Ma setgħetx tagħbija stats ta' riferiment",
   'rewards.referrals.copied': 'Ikkopjati',
   'rewards.referrals.copy_failed': 'Il-kopja falliet',
-  'rewards.referrals.share_intro': 'Ingħaqad miegħi fuq Aura.',
+  'rewards.referrals.share_intro': 'Ingħaqad miegħi fuq Youma.',
   'rewards.referrals.share_code_line': "Kodiċi ta' referenza: {code}",
-  'rewards.referrals.share_download_line': 'Niżżel Aura: {url}',
+  'rewards.referrals.share_download_line': 'Niżżel Youma: {url}',
   'rewards.referrals.apply_error': "Ma setgħetx tapplika kodiċi ta' referenza",
   'rewards.referrals.heading': 'Stieden ħbieb, jaqilgħu krediti',
   'rewards.referrals.description':
@@ -1308,22 +1308,22 @@ const mtMT: TranslationMap = {
   'skills.meeting_bots_card.platform_gmeet': 'Google Meet',
   'skills.meeting_bots_card.platform_zoom': 'Zoom',
   'skills.meeting_bots_card.platform_teams': 'Timijiet tal-Microsoft',
-  'skills.meeting_bots_card.banner_title': 'Ibgħat Aura għal laqgħa',
+  'skills.meeting_bots_card.banner_title': 'Ibgħat Youma għal laqgħa',
   'skills.meeting_bots_card.new_badge': 'Ġdid',
   'skills.meeting_bots_card.banner_description':
-    'Waqqa’ link Google Meet u Aura tingħaqad bħala mistieden, titkellem, tisma’, u tweġġa’ lura.',
+    'Waqqa’ link Google Meet u Youma tingħaqad bħala mistieden, titkellem, tisma’, u tweġġa’ lura.',
   'skills.meeting_bots_card.coming_soon_error': '{platform} appoġġ dalwaqt.',
-  'skills.meeting_bots_card.toast_joining_title': 'Aura qed jingħaqad mal-laqgħa',
+  'skills.meeting_bots_card.toast_joining_title': 'Youma qed jingħaqad mal-laqgħa',
   'skills.meeting_bots_card.toast_joining_message':
     'Għandu jidher bħala parteċipant fi ftit sekondi.',
-  'skills.meeting_bots_card.toast_busy_title': 'Aura hija okkupata',
-  'skills.meeting_bots_card.toast_failed_title': 'Ma setgħetx tibda Aura',
-  'skills.meeting_bots_card.default_error_message': 'Naqas milli jibda Aura.',
-  'skills.meeting_bots_card.modal_aria_label': 'Ibgħat Aura għal laqgħa',
+  'skills.meeting_bots_card.toast_busy_title': 'Youma hija okkupata',
+  'skills.meeting_bots_card.toast_failed_title': 'Ma setgħetx tibda Youma',
+  'skills.meeting_bots_card.default_error_message': 'Naqas milli jibda Youma.',
+  'skills.meeting_bots_card.modal_aria_label': 'Ibgħat Youma għal laqgħa',
   'skills.meeting_bots_card.close_aria': 'Agħlaq',
-  'skills.meeting_bots_card.modal_title': 'Ibgħat Aura għal laqgħa',
+  'skills.meeting_bots_card.modal_title': 'Ibgħat Youma għal laqgħa',
   'skills.meeting_bots_card.modal_description':
-    'Aura jingħaqad bħala mistieden anonimu, ixxandar il-vidjo tiegħu fis-sejħa, u jwieġeb permezz tal-aġent.',
+    'Youma jingħaqad bħala mistieden anonimu, ixxandar il-vidjo tiegħu fis-sejħa, u jwieġeb permezz tal-aġent.',
   'skills.meeting_bots_card.soon_suffix': '· dalwaqt',
   'skills.meeting_bots_card.meeting_link_label': 'Link tal-laqgħa',
   'skills.meeting_bots_card.display_name_label': 'Isem tal-wiri',
@@ -1471,14 +1471,14 @@ const mtMT: TranslationMap = {
   'settings.composio_panel.title': 'Composio',
   'settings.composio_panel.loading': 'Tagħbija...',
   'settings.composio_panel.intro_prefix':
-    "Composio isaħħaħ l-integrazzjoni mal-Gmail, Notion, Slack, GitHub, u 1000+ app oħra. B'mod awtomatiku Aura jimmaniġġjaha għalik, u għalhekk m'għandekx għalfejn iġġib ċavetta API. Jekk tippreferi tuża l-kont Composio tiegħek direttament, aqleb għal",
+    "Composio isaħħaħ l-integrazzjoni mal-Gmail, Notion, Slack, GitHub, u 1000+ app oħra. B'mod awtomatiku Youma jimmaniġġjaha għalik, u għalhekk m'għandekx għalfejn iġġib ċavetta API. Jekk tippreferi tuża l-kont Composio tiegħek direttament, aqleb għal",
   'settings.composio_panel.direct_word': 'Dirett',
   'settings.composio_panel.intro_suffix': 'mod u paste ċ-ċavetta tiegħek hawn taħt.',
   'settings.composio_panel.routing_mode_legend': 'Modalità tar-rotot',
-  'settings.composio_panel.managed_aria_label': 'Immexxi (Aura jimmaniġġjah għalik)',
-  'settings.composio_panel.managed_title': 'Immexxi (Aura jimmaniġġjah għalik)',
+  'settings.composio_panel.managed_aria_label': 'Immexxi (Youma jimmaniġġjah għalik)',
+  'settings.composio_panel.managed_title': 'Immexxi (Youma jimmaniġġjah għalik)',
   'settings.composio_panel.managed_description':
-    "Default. Aura jimmaniġġja l-konnessjoni Composio għalik. Trigger webhooks (Gmail f'ħin reali / avvenimenti Slack) jaħdmu barra mill-kaxxa.",
+    "Default. Youma jimmaniġġja l-konnessjoni Composio għalik. Trigger webhooks (Gmail f'ħin reali / avvenimenti Slack) jaħdmu barra mill-kaxxa.",
   'settings.composio_panel.direct_aria_label': 'Dirett (ġib iċ-ċavetta API tiegħek)',
   'settings.composio_panel.direct_title': 'Dirett (ġib iċ-ċavetta API tiegħek)',
   'settings.composio_panel.direct_description_prefix': 'Is-sejħiet imorru għand',
@@ -1490,7 +1490,7 @@ const mtMT: TranslationMap = {
   'settings.composio_panel.api_key_label': 'ċavetta Composio API',
   'settings.composio_panel.api_key_help_prefix': 'Sib iċ-ċavetta tiegħek fuq',
   'settings.composio_panel.api_key_help_suffix':
-    'Iċ-ċavetta hija maħżuna kriptata fuq dan l-apparat u qatt ma tintbagħat lil Aura.',
+    'Iċ-ċavetta hija maħżuna kriptata fuq dan l-apparat u qatt ma tintbagħat lil Youma.',
   'settings.composio_panel.api_key_placeholder_stored':
     '•••••••••••• (ċavetta maħżuna — waħħal ċavetta ġdida biex tissostitwixxi)',
   'settings.composio_panel.api_key_placeholder_empty': 'ck_live_xxxxxxxxxxxxxxxx',
@@ -1498,10 +1498,10 @@ const mtMT: TranslationMap = {
     'Ċavetta Composio API bħalissa hija maħżuna fuq dan l-apparat.',
   'settings.composio_panel.confirm_title': '⚠️ Qlib għall-modalità Diretta',
   'settings.composio_panel.confirm_integrations_prefix':
-    'L-integrazzjonijiet eżistenti tiegħek (Gmail, Slack, GitHub, eċċ. marbuta permezz ta’ Aura)',
+    'L-integrazzjonijiet eżistenti tiegħek (Gmail, Slack, GitHub, eċċ. marbuta permezz ta’ Youma)',
   'settings.composio_panel.wont_be_visible': 'mhux se jkun viżibbli',
   'settings.composio_panel.confirm_integrations_suffix':
-    '— joqogħdu fl-inkwilin Aura-managed Composio.',
+    '— joqogħdu fl-inkwilin Youma-managed Composio.',
   'settings.composio_panel.confirm_needs_title': 'Ikollok bżonn:',
   'settings.composio_panel.confirm_need_account_prefix': 'Kont fuq',
   'settings.composio_panel.confirm_need_account_suffix': 'b’ċavetta API',
@@ -1520,7 +1520,7 @@ const mtMT: TranslationMap = {
     'Naqas milli jiffranka. Il-mod dirett jeħtieġ ċavetta API mhux vojta.',
   'settings.model_status.ollama_unavailable_title': 'Ollama runtime mhux disponibbli',
   'settings.model_status.ollama_unavailable_description':
-    "Aura issa tittratta lil Ollama bħala runtime ta' inferenza esterna. Ibda s-server Ollama tiegħek stess, iġbed il-mudelli li trid, u indika r-rotta tal-piż tax-xogħol lejha.",
+    "Youma issa tittratta lil Ollama bħala runtime ta' inferenza esterna. Ibda s-server Ollama tiegħek stess, iġbed il-mudelli li trid, u indika r-rotta tal-piż tax-xogħol lejha.",
   'settings.model_status.ollama_docs_link': 'Ollama docs',
   'settings.model_status.runtime_status_title': 'Runtime Status',
   'settings.model_status.refresh': 'Aġġorna',
@@ -1539,7 +1539,7 @@ const mtMT: TranslationMap = {
   'settings.model_status.hide_error_details': 'Aħbi d-dettalji tal-iżball',
   'settings.model_status.show_error_details': 'Uri d-dettalji tal-iżball',
   'settings.model_status.connect_only_prefix':
-    "Aura jgħaqqad biss ma' endpoint kompatibbli ma' Ollama li diġà qed jaħdem. Ara",
+    "Youma jgħaqqad biss ma' endpoint kompatibbli ma' Ollama li diġà qed jaħdem. Ara",
   'settings.model_status.connect_only_suffix':
     "għall-istruzzjonijiet tas-setup, imbagħad ipprova mill-ġdid wara li l-runtime tiegħek ikun jista' jintlaħaq.",
   'settings.model_status.ollama_diagnostics_title': 'Dijanjostiċi Ollama',
@@ -1565,7 +1565,7 @@ const mtMT: TranslationMap = {
   'settings.model_status.vision_model_line': 'Viżjoni: {model}',
   'settings.model_status.issues_heading': 'Kwistjonijiet',
   'settings.model_status.manage_ollama_footer':
-    "Immaniġġja l-proċess Ollama u l-ġbid tal-mudell 'il barra minn Aura, imbagħad erġa' agħmel dijanjostika.",
+    "Immaniġġja l-proċess Ollama u l-ġbid tal-mudell 'il barra minn Youma, imbagħad erġa' agħmel dijanjostika.",
   'settings.device_capability.model_tier_title': 'Mudell Livell',
   'settings.device_capability.loading_device_info':
     'Tagħbija l-informazzjoni dwar l-apparat u s-settijiet minn qabel...',
@@ -1874,7 +1874,7 @@ const mtMT: TranslationMap = {
   'composio.connect_modal.disconnecting': 'Skonnettjar...',
   'composio.connect_modal.dismiss': 'Tkeċċi',
   'composio.connect_modal.expired_body':
-    "Erġa' qabbad biex terġa' tippermetti {name} għodod. Aura se żżomm din l-integrazzjoni mhux disponibbli sakemm taġġorna l-aċċess OAuth.",
+    "Erġa' qabbad biex terġa' tippermetti {name} għodod. Youma se żżomm din l-integrazzjoni mhux disponibbli sakemm taġġorna l-aċċess OAuth.",
   'composio.connect_modal.expired_title': '{name} awtorizzazzjoni skadiet',
   'composio.connect_modal.generic_error': 'Xi ħaġa marret ħażin.',
   'composio.connect_modal.header_connect': 'Qabbad {name}',
@@ -1890,7 +1890,7 @@ const mtMT: TranslationMap = {
   'composio.connect_modal.needs_subdomain_intro_suffix': ") u erġa' pprova.",
   'composio.connect_modal.permission_intro_prefix': '{name} jistgħu jesponu',
   'composio.connect_modal.permission_intro_suffix':
-    ". Wara li tikkonnettja, il-permessi tal-aġent ta' Aura stess huma kkontrollati hawn taħt bħala toggles tal-qari, tal-kitba u tal-amministrazzjoni.",
+    ". Wara li tikkonnettja, il-permessi tal-aġent ta' Youma stess huma kkontrollati hawn taħt bħala toggles tal-qari, tal-kitba u tal-amministrazzjoni.",
   'composio.connect_modal.permissions_default_hint': 'Aqra + Kitba ppermettiet awtomatikament',
   'composio.connect_modal.permissions_heading': 'Permessi',
   'composio.connect_modal.poll_timeout':
@@ -1940,10 +1940,10 @@ const mtMT: TranslationMap = {
   'settings.ai_panel.local_runtime_disconnect_aria': 'Skonnettja {label}',
   'settings.ai_panel.providers_heading': 'LLM Fornituri',
   'settings.ai_panel.providers_subtitle':
-    'Qabbad il-backends tal-mudell tal-lingwa li trid tuża Aura. Aqleb fornitur biex iżżid iċ-ċavetta tiegħu; toggle off biex skonnettja.',
+    'Qabbad il-backends tal-mudell tal-lingwa li trid tuża Youma. Aqleb fornitur biex iżżid iċ-ċavetta tiegħu; toggle off biex skonnettja.',
   'settings.ai_panel.routing_heading': 'Rotot',
   'settings.ai_panel.routing_subtitle':
-    'Agħżel kif kull ammont tax-xogħol jiġi moqdi. Default juża Aura; Custom iħallik tipponta tagħbija tax-xogħol lejn fornitur u mudell speċifiku.',
+    'Agħżel kif kull ammont tax-xogħol jiġi moqdi. Default juża Youma; Custom iħallik tipponta tagħbija tax-xogħol lejn fornitur u mudell speċifiku.',
   'settings.auto_recharge.add_card': '+ Żid il-karta fuq Stripe',
   'settings.auto_recharge.amount_label': 'Żid dan l-ammont',
   'settings.auto_recharge.cancel': 'Ikkanċella',
@@ -2008,22 +2008,22 @@ const mtMT: TranslationMap = {
   'settings.mascot_panel.color_black': 'Iswed',
   'settings.mascot_panel.color_burgundy': 'Burgundy',
   'settings.mascot_panel.color_footer_hint':
-    'Il-kulur magħżul jiġi applikat kullimkien Aura jidher u jiġi mfakkar matul il-bidu mill-ġdid.',
+    'Il-kulur magħżul jiġi applikat kullimkien Youma jidher u jiġi mfakkar matul il-bidu mill-ġdid.',
   'settings.mascot_panel.color_green': 'Aħdar',
   'settings.mascot_panel.color_heading': 'Kulur',
   'settings.mascot_panel.color_navy': 'Navy',
-  'settings.mascot_panel.color_radiogroup_aria': 'Aura kulur',
+  'settings.mascot_panel.color_radiogroup_aria': 'Youma kulur',
   'settings.mascot_panel.color_yellow': 'Isfar',
-  'settings.mascot_panel.header_title': 'Aura',
-  'settings.mascot_panel.library_unavailable': 'Aura librerija mhux disponibbli: {error}',
+  'settings.mascot_panel.header_title': 'Youma',
+  'settings.mascot_panel.library_unavailable': 'Youma librerija mhux disponibbli: {error}',
   'settings.mascot_panel.load_library_error': 'Ma setgħetx tagħbija librerija tal-mascot.',
   'settings.mascot_panel.load_mascot_error': 'Ma setgħetx tagħbija mascot.',
-  'settings.mascot_panel.loading_library': "Qiegħed qed itella' Aura librerija…",
-  'settings.mascot_panel.local_aura_default': 'Lokali Aura (default)',
+  'settings.mascot_panel.loading_library': "Qiegħed qed itella' Youma librerija…",
+  'settings.mascot_panel.local_aura_default': 'Lokali Youma (default)',
   'settings.mascot_panel.no_characters':
-    'L-ebda karattru Aura għadu disponibbli. Il-varjanti tal-kulur lokali hawn fuq għadhom attivi.',
+    'L-ebda karattru Youma għadu disponibbli. Il-varjanti tal-kulur lokali hawn fuq għadhom attivi.',
   'settings.mascot_panel.no_color_variants':
-    "L-ebda varjanti tal-kulur Aura mhuma disponibbli f'din il-bini.",
+    "L-ebda varjanti tal-kulur Youma mhuma disponibbli f'din il-bini.",
   'settings.mascot_panel.preview_label': 'Preview · {name}',
   'settings.mascot_panel.version_states': 'v{version} · {states} jiddikjara',
   'settings.mascot_panel.visemes_suffix': '· visemes',
@@ -2070,7 +2070,7 @@ const mtMT: TranslationMap = {
   'local_ai.download_snackbar.preparing': 'Nipprepara...',
   'settings.cron_job_list.heading': 'Core Impjiegi Cron',
   'settings.cron_job_list.subheading':
-    'L-impjiegi baqgħu jippersistu fid-database tal-iskedur ewlieni Aura.',
+    'L-impjiegi baqgħu jippersistu fid-database tal-iskedur ewlieni Youma.',
   'settings.cron_job_list.loading': 'Tagħbija cron jobs...',
   'settings.cron_job_list.empty': 'Ma nstab l-ebda impjieg cron ewlieni.',
   'settings.cron_job_list.status_enabled': 'Ippermettiet',
@@ -2142,16 +2142,16 @@ const mtMT: TranslationMap = {
   'aura_link_modal.notifications_desktop_only':
     'Notifiki indiġeni huma disponibbli biss fl-app tad-desktop (run `pnpm dev:app`).',
   'aura_link_modal.notifications_permission_off':
-    "Il-permess għan-notifika huwa mitfi. Attiva Aura f'Settings tas-Sistema → Notifiki, imbagħad erġa' pprova.",
-  'aura_link_modal.notification_title': 'Aura huwa tajjeb li tmur',
+    "Il-permess għan-notifika huwa mitfi. Attiva Youma f'Settings tas-Sistema → Notifiki, imbagħad erġa' pprova.",
+  'aura_link_modal.notification_title': 'Youma huwa tajjeb li tmur',
   'aura_link_modal.notification_body':
     'Inti se tikseb pings hawn meta xi ħaġa teħtieġ l-attenzjoni tiegħek.',
   'aura_link_modal.notification_send_failed':
-    'Aura ma setgħetx tagħti bidu għal notifika tas-sistema. Iċċekkja l-issettjar tan-notifika tal-OS u erġa pprova.',
+    'Youma ma setgħetx tagħti bidu għal notifika tas-sistema. Iċċekkja l-issettjar tan-notifika tal-OS u erġa pprova.',
   'aura_link_modal.notifications_intro':
-    'Aura juża notifiki indiġeni sabiex ikun jista’ jagħtik ping meta xi ħaġa teħtieġ l-attenzjoni tiegħek, anke meta t-tieqa taċ-chat tkun moħbija.',
+    'Youma juża notifiki indiġeni sabiex ikun jista’ jagħtik ping meta xi ħaġa teħtieġ l-attenzjoni tiegħek, anke meta t-tieqa taċ-chat tkun moħbija.',
   'aura_link_modal.notifications_blocked_line1': 'In-notifiki bħalissa huma mblukkati.',
-  'aura_link_modal.notifications_blocked_line2': '1. Iftaħ Settings tas-Sistema → Notifiki → Aura',
+  'aura_link_modal.notifications_blocked_line2': '1. Iftaħ Settings tas-Sistema → Notifiki → Youma',
   'aura_link_modal.notifications_blocked_line3': '2. Ixgħel Ħalli Notifiki',
   'aura_link_modal.notifications_blocked_line4':
     "3. Irritorna hawn u tektek Erġa' pprova n-notifika tat-test",
@@ -2161,7 +2161,7 @@ const mtMT: TranslationMap = {
   'aura_link_modal.retry_test_notification': "Erġa' pprova n-notifika tat-test",
   'aura_link_modal.send_test_notification': 'Ibgħat notifika tat-test',
   'aura_link_modal.notification_sent_success':
-    'Notifika tat-test mibgħuta. Jekk ma rċevejtx, mur Settings tas-Sistema → Notifiki → Aura, ixgħel Ħalli Notifiki, u ssettja l-Istil tal-Banner għal Persistenti.',
+    'Notifika tat-test mibgħuta. Jekk ma rċevejtx, mur Settings tas-Sistema → Notifiki → Youma, ixgħel Ħalli Notifiki, u ssettja l-Istil tal-Banner għal Persistenti.',
   'aura_link_modal.notification_send_error': 'Ma setgħetx tibgħat: {error}',
   'aura_link_modal.trial_credit_label': "Kreditu ta' prova",
   'aura_link_modal.trial_credit_amount': '$1.00',
@@ -2170,7 +2170,7 @@ const mtMT: TranslationMap = {
   'aura_link_modal.open_dashboard': 'Iftaħ dashboard fil-browser',
   'aura_link_modal.stay_on_trial': "Ibqa' taħt prova",
   'aura_link_modal.discord_intro':
-    "Hop fil-Discord tagħna u għaqqad il-kont Aura tiegħek. Int ser ikollok aċċess esklussiv bikri għall-karatteristiċi, krediti b'xejn biex tilgħab magħhom, komunità kbira biex tolqot biha, u iva, merch b'xejn.",
+    "Hop fil-Discord tagħna u għaqqad il-kont Youma tiegħek. Int ser ikollok aċċess esklussiv bikri għall-karatteristiċi, krediti b'xejn biex tilgħab magħhom, komunità kbira biex tolqot biha, u iva, merch b'xejn.",
   'aura_link_modal.discord_perk_feature_access': 'Aċċess għall-karatteristika esklussiva',
   'aura_link_modal.discord_perk_free_credits': "Krediti b'xejn għall-membri attivi",
   'aura_link_modal.discord_perk_community': "Komunità ta' bennejja u operaturi",
@@ -2205,7 +2205,7 @@ const mtMT: TranslationMap = {
   'channels.discord_config.copied': 'Ikkopjati!',
   'channels.discord_config.copy': 'Kopja',
   'channels.discord_config.link_instructions_prefix': 'Fi Discord, ibgħat',
-  'channels.discord_config.link_instructions_suffix': "lill-bot Aura. It-token jiskadi f'5 minuti.",
+  'channels.discord_config.link_instructions_suffix': "lill-bot Youma. It-token jiskadi f'5 minuti.",
   'channels.discord_config.link_token_warning':
     'Issejvja dan il-kmand — dan it-token jintwera darba biss.',
   'channels.discord_config.account_linked': 'Il-kont Discord tiegħek huwa marbut.',
@@ -2245,9 +2245,9 @@ const mtMT: TranslationMap = {
   'settings.memory_window_control.save_failed': 'Naqas milli tissejvja t-tieqa tal-memorja',
   'settings.memory_window_control.heading': 'Tieqa tal-memorja fit-tul',
   'settings.memory_window_control.description':
-    "Kemm jiftakar il-kuntest Aura jinjetta f’kull run ta’ aġent ġdid. Twieqi akbar iħossuhom aktar konxji tal-konversazzjonijiet tal-passat iżda jużaw aktar tokens - u jiswew aktar - f'kull ġirja.",
+    "Kemm jiftakar il-kuntest Youma jinjetta f’kull run ta’ aġent ġdid. Twieqi akbar iħossuhom aktar konxji tal-konversazzjonijiet tal-passat iżda jużaw aktar tokens - u jiswew aktar - f'kull ġirja.",
   'home.banners.promo_credits': 'Għandek {amount} ta’ krediti promozzjonali.',
-  'home.banners.promo_credits_prefix': 'Agħti dawra lil Aura, u meta tkun lest għal aktar,',
+  'home.banners.promo_credits_prefix': 'Agħti dawra lil Youma, u meta tkun lest għal aktar,',
   'home.banners.get_subscription': 'tikseb abbonament',
   'home.banners.promo_credits_suffix': 'u tikseb 10x aktar użu.',
   'home.banners.dismiss_early_bird': 'Tiċħad il-banner tal-għasafar kmieni',
@@ -2257,7 +2257,7 @@ const mtMT: TranslationMap = {
   'home.banners.first_subscription': 'l-ewwel abbonament.',
   'home.banners.join_discord': 'Ingħaqad mal-Discord tagħna',
   'home.banners.discord_description':
-    "Ikseb aġġornamenti, merkanzija b'xejn, krediti, irrapporta bugs, u kun parti mill-komunità Aura.",
+    "Ikseb aġġornamenti, merkanzija b'xejn, krediti, irrapporta bugs, u kun parti mill-komunità Youma.",
   'intelligence.memory_chunk_detail.copy_chunk_id': 'Ikkopja l-id tal-biċċa',
   'intelligence.memory_chunk_detail.chunk_label': 'biċċa {id}',
   'intelligence.memory_chunk_detail.copied': 'ikkupjat',
@@ -2282,7 +2282,7 @@ const mtMT: TranslationMap = {
     'Xi ħaġa marret ħażin. Jekk jogħġbok erġa\' pprova.\nDan l-iżball ġie rrappurtat. Tista\' tirrapportaha wkoll fuq Discord.\n<aura-link path="community/discord">Rapport dwar Discord</aura-link>',
   'daemon.service_blocking_gate.retry_failed':
     "Ipprova mill-ġdid falla. Niżżel l-aħħar app build u erġa' pprova.",
-  'daemon.service_blocking_gate.title': 'Aura qalba mhix disponibbli',
+  'daemon.service_blocking_gate.title': 'Youma qalba mhix disponibbli',
   'daemon.service_blocking_gate.description':
     "Ma stajniex nirkupraw is-servizz ewlieni lokali wara tentattivi multipli. Dan jista 'jiġri wara ħabta kritika jew nuqqas ta' qbil binarju.",
   'daemon.service_blocking_gate.download_hint':
@@ -2438,17 +2438,17 @@ const mtMT: TranslationMap = {
   'chat.unsubscribe_approval_card.success_message': "✓ Tneħħi l-abbonament b'suċċess.",
   'chat.unsubscribe_approval_card.denied_message': '✕ Talba miċħuda.',
   'oauth.provider_button.twitter_startup_failure':
-    "Id-dħul ta' Twitter/X ma setax jibda. Iċċekkja li r-callback tal-app Twitter OAuth URL, ID tal-klijent/sigriet, u ambiti mitluba jaqblu mal-backend Aura, imbagħad erġa' pprova.",
+    "Id-dħul ta' Twitter/X ma setax jibda. Iċċekkja li r-callback tal-app Twitter OAuth URL, ID tal-klijent/sigriet, u ambiti mitluba jaqblu mal-backend Youma, imbagħad erġa' pprova.",
   'oauth.provider_button.generic_startup_failure':
     "{providerName} sign-in ma setgħetx tibda. Jekk jogħġbok erġa' pprova.",
   'oauth.provider_button.connecting': 'Konnessjoni...',
   'skills.search_bar.placeholder': 'Fittex il-ħiliet...',
-  'common.persist_rehydration_screen.title': 'Aura qed tieħu aktar mis-soltu biex titgħabba.',
+  'common.persist_rehydration_screen.title': 'Youma qed tieħu aktar mis-soltu biex titgħabba.',
   'common.persist_rehydration_screen.description':
     "L-istat tal-app lokali jista' jkun korrotta. Ir-resetting se jiffirmak u ċara data cached fuq dan l-apparat; int ser terġa' tgħaqqad il-kontijiet tiegħek fit-tnedija li jmiss. Id-dejta tiegħek fuq is-server mhix affettwata.",
   'common.persist_rehydration_screen.resetting': 'Resetting...',
   'common.persist_rehydration_screen.reset_button': 'Irrisettja l-istat lokali',
-  'common.route_loading_screen.initializing': 'Inizjalizza Aura...',
+  'common.route_loading_screen.initializing': 'Inizjalizza Youma...',
   'privacy.what_leaves_link.label': 'Dak li jħalli l-kompjuter tiegħi?',
   'settings.provider_key_dialog.api_key_required':
     'Jekk jogħġbok waħħal iċ-ċavetta API tiegħek biex tkompli.',
@@ -2459,7 +2459,7 @@ const mtMT: TranslationMap = {
   'settings.provider_key_dialog.cancel_button': 'Ikkanċella',
   'settings.provider_key_dialog.saving': 'Insalva...',
   'settings.provider_key_dialog.save_button': 'Ħlief',
-  'settings.workload_row.aura_default': 'Aura (default)',
+  'settings.workload_row.aura_default': 'Youma (default)',
   'settings.workload_row.default_button': 'Default',
   'settings.workload_row.custom_button': 'Custom',
 };
