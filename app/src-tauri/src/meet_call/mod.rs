@@ -100,8 +100,21 @@ pub async fn meet_call_open_window<R: Runtime>(
     let request_id = sanitize_request_id(&args.request_id)?;
     let parsed = Url::parse(args.meet_url.trim())
         .map_err(|e| format!("[meet-call] invalid meet_url: {e}"))?;
-    if parsed.scheme() != "https" || parsed.host_str() != Some("meet.google.com") {
-        return Err("[meet-call] only https://meet.google.com URLs are accepted".into());
+    // This is a SECOND, independent host gate from the core's
+    // `ops::validate_meet_url` (already run by `aura.meet_join_call` before
+    // the frontend ever calls this command) — it exists so this Tauri
+    // command stays safe even if invoked directly (e.g. a future dev
+    // shortcut) without going through the RPC validation first. Any
+    // platform accepted by `detect_platform` must also be accepted here,
+    // or that platform's calls die at this second gate even with a
+    // correct RPC-layer allowlist and a working scanner.
+    if parsed.scheme() != "https" || aura_core::aura::meet::ops::detect_platform(&parsed).is_none()
+    {
+        return Err(
+            "[meet-call] only https://meet.google.com, https://teams.microsoft.com, or \
+             https://teams.live.com URLs are accepted"
+                .into(),
+        );
     }
 
     let label = window_label_for(&request_id);

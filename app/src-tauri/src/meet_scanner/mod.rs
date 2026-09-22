@@ -6,12 +6,13 @@
 //! it: connects to CEF's browser-level WebSocket, attaches to the new
 //! call target, and walks through that platform's join page.
 //!
-//! Today there is a single implementation, [`google_meet::GoogleMeetScanner`],
-//! which is the exact join automation this module used to hardcode
-//! directly. Its three phases (dismiss device-check, type display name,
-//! click join) live entirely inside that impl — the [`CallJoinScanner`]
-//! trait intentionally does not impose a fixed phase shape, since other
-//! platforms (Teams, Zoom) may need a different number/order of steps.
+//! Two implementations exist today: [`google_meet::GoogleMeetScanner`] and
+//! [`teams::TeamsScanner`]. Meet's three phases (dismiss device-check,
+//! type display name, click join) live entirely inside its impl; Teams
+//! adds an extra phase 0 (dismiss the "continue on this browser"
+//! interstitial) ahead of the same device-check/name/join shape — the
+//! [`CallJoinScanner`] trait intentionally does not impose a fixed phase
+//! shape, since each platform may need a different number/order of steps.
 //!
 //! All steps go through CDP from the scanner side — there is **no**
 //! init-script JS injected into the webview. `Runtime.evaluate` is used
@@ -38,6 +39,7 @@
 
 mod common;
 mod google_meet;
+mod teams;
 
 use tauri::{AppHandle, Runtime};
 
@@ -81,11 +83,12 @@ pub trait CallJoinScanner: Send + Sync {
 /// each attach to their own CEF target instead of cross-controlling.
 ///
 /// Platform selection goes through
-/// [`aura_core::aura::meet::ops::detect_platform`]. Today `meet_call`'s
-/// caller only ever hands us `meet.google.com` URLs (it rejects anything
-/// else before calling `spawn`), so this always resolves to
-/// [`google_meet::GoogleMeetScanner`] — the dispatch exists so future
-/// blocks can add match arms without touching this function's shape.
+/// [`aura_core::aura::meet::ops::detect_platform`]. `meet_call`'s caller
+/// rejects any URL that isn't `meet.google.com`, `teams.microsoft.com`,
+/// or `teams.live.com` before calling `spawn`, so this resolves to either
+/// [`google_meet::GoogleMeetScanner`] or [`teams::TeamsScanner`] in
+/// practice — the `None` fallback exists so future blocks can add match
+/// arms for new platforms without touching this function's shape.
 pub fn spawn<R: Runtime>(
     _app: AppHandle<R>,
     request_id: String,
@@ -128,6 +131,9 @@ fn select_scanner(call_url: &str) -> Box<dyn CallJoinScanner> {
         .ok()
         .and_then(|url| aura_core::aura::meet::ops::detect_platform(&url));
     match platform {
+        Some(aura_core::aura::meet::ops::CallPlatform::MicrosoftTeams) => {
+            Box::new(teams::TeamsScanner)
+        }
         Some(aura_core::aura::meet::ops::CallPlatform::GoogleMeet) | None => {
             Box::new(google_meet::GoogleMeetScanner)
         }
@@ -142,6 +148,18 @@ mod tests {
     fn select_scanner_resolves_google_meet() {
         let scanner = select_scanner("https://meet.google.com/abc-defg-hij");
         assert_eq!(scanner.provider_name(), "google-meet");
+    }
+
+    #[test]
+    fn select_scanner_resolves_teams_microsoft() {
+        let scanner = select_scanner("https://teams.microsoft.com/l/meetup-join/abc");
+        assert_eq!(scanner.provider_name(), "teams");
+    }
+
+    #[test]
+    fn select_scanner_resolves_teams_live() {
+        let scanner = select_scanner("https://teams.live.com/meet/abc");
+        assert_eq!(scanner.provider_name(), "teams");
     }
 
     #[test]
