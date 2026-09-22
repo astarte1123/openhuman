@@ -15,6 +15,25 @@
 //! ([`flush_and_transcribe`]) cannot be meaningfully unit tested here (it
 //! needs a loaded whisper model and a live meeting row) and needs
 //! hardware/integration verification instead.
+//!
+//! ## Turn-boundary heuristic (`system_audio` only) — not diarization
+//!
+//! `speaker` (see `TranscriptChunk::speaker` in `types.rs`) already carries
+//! the mic-vs-system-audio split end to end — that part of the
+//! meeting-capture design is fully wired and needs no change. What this
+//! module adds on top is [`CaptureSession::take_pause_boundary_ready`]: a
+//! pause/energy heuristic, scoped to the `system_audio` track only, that
+//! flushes a buffer early the moment a long-enough silence gap is observed
+//! instead of waiting for the periodic [`FLUSH_INTERVAL`] tick or
+//! [`MIN_FLUSH_SAMPLES`] threshold. This only changes *chunk boundaries* —
+//! it cannot tell which remote participant is speaking, so every chunk it
+//! produces is still labeled the single `"system_audio"` speaker. It exists
+//! purely so one long `system_audio` transcript chunk is less likely to
+//! silently merge two different remote speakers' turns together; real
+//! per-remote-speaker diarization (splitting `"system_audio"` into
+//! individually-clustered speakers) is a separate, later, explicitly
+//! scoped block — see the design doc's native-dependency discussion for why
+//! it isn't attempted here.
 
 use std::collections::HashMap;
 use std::time::Duration;
@@ -42,6 +61,41 @@ const FLUSH_INTERVAL: Duration = Duration::from_secs(4);
 /// flush actually transcribes a track — avoids firing whisper on a near-empty
 /// buffer right after a flush tick lands just after session start. 0.5s.
 const MIN_FLUSH_SAMPLES: usize = (WHISPER_SAMPLE_RATE / 2) as usize;
+
+/// Grep-friendly prefix for the turn-boundary heuristic's own logs, kept
+/// distinct from [`LOG_PREFIX`] (`[meetings-capture]`) so raw-capture noise
+/// and turn-splitting decisions can be filtered independently. Not
+/// diarization — see this module's doc comment.
+const DIARIZATION_LOG_PREFIX: &str = "[meetings-diarization]";
+
+/// Below this absolute sample amplitude, a resampled sample counts as
+/// "silence" for [`CaptureSession::take_pause_boundary_ready`]'s trailing-
+/// silence run. Deliberately conservative (near the noise floor rather than
+/// a perceptual loudness cutoff) — this only decides *where* to cut a
+/// buffer, never *whether* to transcribe it; whisper-guard's own
+/// empty-transcription filtering (see [`flush_and_transcribe`]) is what
+/// actually decides "was there speech".
+const SILENCE_AMPLITUDE_THRESHOLD: f32 = 0.01;
+
+/// How much trailing silence on the `system_audio` track counts as a likely
+/// turn boundary. 600ms sits comfortably above a normal mid-sentence
+/// breath/pause but well under a full flush cycle, so an early flush here
+/// actually shortens the amount of unrelated audio that can accumulate on
+/// either side of a turn change.
+const PAUSE_BOUNDARY_SILENCE_MS: u64 = 600;
+
+/// [`PAUSE_BOUNDARY_SILENCE_MS`] expressed in samples at
+/// [`WHISPER_SAMPLE_RATE`] (600ms @ 16kHz = 9_600 samples).
+const PAUSE_BOUNDARY_SILENCE_SAMPLES: usize = 9_600;
+
+/// Minimum non-trailing-silence ("voiced prefix") content required before
+/// [`CaptureSession::take_pause_boundary_ready`] honors a pause boundary.
+/// Without this floor, a `system_audio` buffer that is mostly or entirely
+/// silence (e.g. system audio muted for a long stretch) would trigger an
+/// early flush — and therefore a whisper call — roughly every
+/// [`PAUSE_BOUNDARY_SILENCE_MS`], instead of waiting for the much less
+/// frequent [`FLUSH_INTERVAL`] tick the way silent audio always has. 250ms.
+const MIN_VOICED_PREFIX_SAMPLES: usize = (WHISPER_SAMPLE_RATE / 4) as usize;
 
 /// Starts a capture backend and spawns the async consumer task that turns
 /// its output into persisted, event-published transcript chunks.
@@ -106,7 +160,21 @@ async fn run_consumer_loop(
         tokio::select! {
             maybe_chunk = rx.recv() => {
                 match maybe_chunk {
-                    Some(chunk) => session.push(chunk),
+                    Some(chunk) => {
+                        session.push(chunk);
+                        if let Some(ready) = session.take_pause_boundary_ready() {
+                            let (track, samples, chunk_start_ms) = &ready;
+                            debug!(
+                                "{DIARIZATION_LOG_PREFIX} pause boundary detected \
+                                 meeting_id={meeting_id} track={} samples={} \
+                                 start_ms={chunk_start_ms} — flushing early as a likely \
+                                 turn change (not per-speaker diarization)",
+                                track.as_str(),
+                                samples.len()
+                            );
+                            flush_batch(&meeting_id, &config, &whisper, vec![ready]).await;
+                        }
+                    }
                     None => {
                         debug!(
                             "{LOG_PREFIX} capture channel closed meeting_id={meeting_id}, \
@@ -217,6 +285,13 @@ struct TrackBuffer {
     /// `captured_at_ms` of the first sample currently buffered — becomes
     /// the persisted transcript chunk's `start_ms`.
     chunk_start_ms: i64,
+    /// Count of consecutive trailing samples at the end of `samples` whose
+    /// absolute amplitude is below [`SILENCE_AMPLITUDE_THRESHOLD`]. Only
+    /// maintained for the `system_audio` track (see
+    /// [`CaptureSession::push`]) — used by
+    /// [`CaptureSession::take_pause_boundary_ready`] to detect a likely turn
+    /// boundary. Reset to 0 whenever the buffer is drained or restarted.
+    trailing_silence_samples: usize,
 }
 
 /// Owns per-track audio buffering for one meeting's capture session.
@@ -257,11 +332,51 @@ impl CaptureSession {
         let buf = self.buffers.entry(track).or_insert_with(|| TrackBuffer {
             samples: Vec::new(),
             chunk_start_ms: captured_at_ms,
+            trailing_silence_samples: 0,
         });
         if buf.samples.is_empty() {
             buf.chunk_start_ms = captured_at_ms;
+            buf.trailing_silence_samples = 0;
         }
         buf.samples.extend_from_slice(&resampled);
+
+        // Trailing-silence tracking is only meaningful (and only used) for
+        // system_audio's turn-boundary heuristic — see this module's doc
+        // comment. Skipping it for microphone avoids pointless per-sample
+        // work on a track nothing reads it from.
+        if track == AudioTrack::SystemAudio {
+            for &sample in &resampled {
+                if sample.abs() < SILENCE_AMPLITUDE_THRESHOLD {
+                    buf.trailing_silence_samples += 1;
+                } else {
+                    buf.trailing_silence_samples = 0;
+                }
+            }
+        }
+    }
+
+    /// Turn-boundary heuristic for `system_audio` only — see this module's
+    /// doc comment. Returns `Some` (draining that buffer, resetting its
+    /// silence run) the moment the track has both a plausible amount of
+    /// voiced content ([`MIN_VOICED_PREFIX_SAMPLES`]) and a long-enough
+    /// trailing silence run ([`PAUSE_BOUNDARY_SILENCE_SAMPLES`]) to call it a
+    /// likely turn change. Returns `None` otherwise, including when the
+    /// buffer is silent from the start (nothing voiced to flush early) —
+    /// that case is left for the normal periodic [`CaptureSession::drain_ready`]
+    /// tick, so a muted `system_audio` track doesn't trigger a whisper call
+    /// roughly every [`PAUSE_BOUNDARY_SILENCE_MS`].
+    pub fn take_pause_boundary_ready(&mut self) -> Option<(AudioTrack, Vec<f32>, i64)> {
+        let buf = self.buffers.get_mut(&AudioTrack::SystemAudio)?;
+        let voiced_prefix = buf.samples.len().saturating_sub(buf.trailing_silence_samples);
+        if buf.trailing_silence_samples < PAUSE_BOUNDARY_SILENCE_SAMPLES
+            || voiced_prefix < MIN_VOICED_PREFIX_SAMPLES
+        {
+            return None;
+        }
+        let samples = std::mem::take(&mut buf.samples);
+        let chunk_start_ms = buf.chunk_start_ms;
+        buf.trailing_silence_samples = 0;
+        Some((AudioTrack::SystemAudio, samples, chunk_start_ms))
     }
 
     /// Drains every track whose buffer has at least [`MIN_FLUSH_SAMPLES`]
@@ -411,5 +526,138 @@ mod tests {
     fn meeting_id_accessor_returns_constructor_value() {
         let session = CaptureSession::new("meeting_42".into());
         assert_eq!(session.meeting_id(), "meeting_42");
+    }
+
+    // ── Turn-boundary heuristic (system_audio pause detection) ─────────
+
+    #[test]
+    fn pause_boundary_fires_after_voiced_audio_then_silence_gap() {
+        let mut session = CaptureSession::new("meeting_1".into());
+        // Enough "voiced" (loud) content to clear MIN_VOICED_PREFIX_SAMPLES.
+        session.push(chunk(
+            AudioTrack::SystemAudio,
+            vec![0.5; MIN_VOICED_PREFIX_SAMPLES],
+            WHISPER_SAMPLE_RATE,
+            0,
+        ));
+        assert!(session.take_pause_boundary_ready().is_none());
+
+        // Not quite enough trailing silence yet.
+        session.push(chunk(
+            AudioTrack::SystemAudio,
+            vec![0.0; PAUSE_BOUNDARY_SILENCE_SAMPLES - 1],
+            WHISPER_SAMPLE_RATE,
+            500,
+        ));
+        assert!(session.take_pause_boundary_ready().is_none());
+
+        // One more silent sample crosses the pause-boundary threshold.
+        session.push(chunk(AudioTrack::SystemAudio, vec![0.0], WHISPER_SAMPLE_RATE, 1_100));
+        let ready = session
+            .take_pause_boundary_ready()
+            .expect("pause boundary should fire once trailing silence threshold is crossed");
+        assert_eq!(ready.0, AudioTrack::SystemAudio);
+        assert_eq!(
+            ready.1.len(),
+            MIN_VOICED_PREFIX_SAMPLES + PAUSE_BOUNDARY_SILENCE_SAMPLES
+        );
+        assert_eq!(ready.2, 0);
+
+        // Buffer (and its silence run) was reset by the drain.
+        assert!(session.take_pause_boundary_ready().is_none());
+        assert!(session.drain_all().is_empty());
+    }
+
+    #[test]
+    fn pause_boundary_never_fires_for_microphone_track() {
+        let mut session = CaptureSession::new("meeting_1".into());
+        session.push(chunk(
+            AudioTrack::Microphone,
+            vec![0.5; MIN_VOICED_PREFIX_SAMPLES],
+            WHISPER_SAMPLE_RATE,
+            0,
+        ));
+        session.push(chunk(
+            AudioTrack::Microphone,
+            vec![0.0; PAUSE_BOUNDARY_SILENCE_SAMPLES + 100],
+            WHISPER_SAMPLE_RATE,
+            500,
+        ));
+        // Only system_audio is tracked — a microphone-only session has no
+        // system_audio buffer at all yet.
+        assert!(session.take_pause_boundary_ready().is_none());
+    }
+
+    #[test]
+    fn pause_boundary_does_not_fire_on_silence_alone() {
+        let mut session = CaptureSession::new("meeting_1".into());
+        // Entirely silent system_audio (e.g. nothing playing) should never
+        // trigger an early flush — that would call whisper roughly every
+        // PAUSE_BOUNDARY_SILENCE_MS on pure silence. It's left for the
+        // normal periodic drain_ready/FLUSH_INTERVAL cadence instead.
+        session.push(chunk(
+            AudioTrack::SystemAudio,
+            vec![0.0; PAUSE_BOUNDARY_SILENCE_SAMPLES * 3],
+            WHISPER_SAMPLE_RATE,
+            0,
+        ));
+        assert!(session.take_pause_boundary_ready().is_none());
+        // Still there for the periodic path.
+        let batch = session.drain_ready();
+        assert_eq!(batch.len(), 1);
+        assert_eq!(batch[0].0, AudioTrack::SystemAudio);
+    }
+
+    #[test]
+    fn pause_boundary_silence_run_resets_on_new_voiced_audio() {
+        let mut session = CaptureSession::new("meeting_1".into());
+        session.push(chunk(
+            AudioTrack::SystemAudio,
+            vec![0.5; MIN_VOICED_PREFIX_SAMPLES],
+            WHISPER_SAMPLE_RATE,
+            0,
+        ));
+        // Silence, but interrupted by more voiced audio before the pause
+        // threshold is reached — the trailing-silence run must reset rather
+        // than carry over from before the interruption.
+        session.push(chunk(
+            AudioTrack::SystemAudio,
+            vec![0.0; PAUSE_BOUNDARY_SILENCE_SAMPLES - 1],
+            WHISPER_SAMPLE_RATE,
+            500,
+        ));
+        session.push(chunk(AudioTrack::SystemAudio, vec![0.5; 10], WHISPER_SAMPLE_RATE, 1_100));
+        assert!(session.take_pause_boundary_ready().is_none());
+
+        session.push(chunk(
+            AudioTrack::SystemAudio,
+            vec![0.0; PAUSE_BOUNDARY_SILENCE_SAMPLES - 1],
+            WHISPER_SAMPLE_RATE,
+            1_200,
+        ));
+        // Still short of the threshold — the reset from the voiced
+        // interruption means this run hasn't crossed it yet.
+        assert!(session.take_pause_boundary_ready().is_none());
+    }
+
+    #[test]
+    fn pause_boundary_requires_minimum_voiced_prefix() {
+        let mut session = CaptureSession::new("meeting_1".into());
+        // A short burst of voiced audio, under MIN_VOICED_PREFIX_SAMPLES,
+        // followed by a long silence should not fire — there isn't enough
+        // real content to justify an early whisper call.
+        session.push(chunk(
+            AudioTrack::SystemAudio,
+            vec![0.5; MIN_VOICED_PREFIX_SAMPLES / 2],
+            WHISPER_SAMPLE_RATE,
+            0,
+        ));
+        session.push(chunk(
+            AudioTrack::SystemAudio,
+            vec![0.0; PAUSE_BOUNDARY_SILENCE_SAMPLES + 100],
+            WHISPER_SAMPLE_RATE,
+            500,
+        ));
+        assert!(session.take_pause_boundary_ready().is_none());
     }
 }
