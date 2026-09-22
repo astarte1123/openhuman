@@ -9,7 +9,7 @@ import type { TranslationMap } from './types';
 
 const nbNO: TranslationMap = {
   'nav.home': 'Hjem',
-  'nav.human': 'Menneskelig',
+  'nav.human': 'Youma',
   'nav.chat': 'Chat',
   'nav.connections': 'Tilkoblinger',
   'nav.memory': 'Intelligens',
@@ -205,6 +205,8 @@ const nbNO: TranslationMap = {
   'onboarding.referralDesc': 'Bruk en henvisningskode hvis du har en.',
   'onboarding.finish': 'Fullfør oppsettet',
   'onboarding.finishDesc': 'Du er klar! Begynn å bruke Youma.',
+  'onboarding.tourWelcomeMessage':
+    'Hei! Velkommen til Youma 👋 Du er akkurat ferdig med oppsettet, og jeg er her når du trenger meg. Spør meg om hva som helst, få sammendrag fra de tilkoblede appene dine, eller bare si hei — hva vil du utforske først?',
   'onboarding.skip': 'Hopp over',
   'onboarding.getStarted': 'Kom i gang',
   'onboarding.runtimeChoice.title': 'Hvordan vil du kjøre Youma?',

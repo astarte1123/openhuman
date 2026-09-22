@@ -9,7 +9,7 @@ import type { TranslationMap } from './types';
 
 const skSK: TranslationMap = {
   'nav.home': 'Domov',
-  'nav.human': 'Ľudské',
+  'nav.human': 'Youma',
   'nav.chat': 'Chat',
   'nav.connections': 'Spojenia',
   'nav.memory': 'inteligencia',
@@ -208,6 +208,8 @@ const skSK: TranslationMap = {
   'onboarding.referralDesc': 'Použite odporúčací kód, ak ho máte.',
   'onboarding.finish': 'Dokončiť nastavenie',
   'onboarding.finishDesc': 'Všetko je pripravené! Začnite používať Youma.',
+  'onboarding.tourWelcomeMessage':
+    'Ahoj! Vitaj na Youma 👋 Práve si dokončil nastavenie a som tu vždy, keď ma budeš potrebovať. Opýtaj sa ma na čokoľvek, získaj súhrny zo svojich pripojených aplikácií, alebo mi len pozdrav — čím by si chcel začať?',
   'onboarding.skip': 'Preskočiť',
   'onboarding.getStarted': 'Začíname',
   'onboarding.runtimeChoice.title': 'Ako by ste chceli bežať Youma?',

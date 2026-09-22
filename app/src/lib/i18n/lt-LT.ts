@@ -9,7 +9,7 @@ import type { TranslationMap } from './types';
 
 const ltLT: TranslationMap = {
   'nav.home': 'Pradžia',
-  'nav.human': 'Žmogaus',
+  'nav.human': 'Youma',
   'nav.chat': 'Pokalbis',
   'nav.connections': 'Jungtys',
   'nav.memory': 'Intelektas',
@@ -213,6 +213,8 @@ const ltLT: TranslationMap = {
   'onboarding.referralDesc': 'Taikykite nukreipimo kodą, jei tokį turite.',
   'onboarding.finish': 'Baigti sąranką',
   'onboarding.finishDesc': 'Viskas paruošta! Pradėkite naudoti Youma.',
+  'onboarding.tourWelcomeMessage':
+    'Sveiki! Sveiki atvykę į Youma 👋 Ką tik baigėte nustatymą, ir aš čia, kai tik manęs prireiks. Klauskite manęs bet ko, gaukite prijungtų programėlių santraukas arba tiesiog pasisveikinkite — nuo ko norėtumėte pradėti?',
   'onboarding.skip': 'Praleisti',
   'onboarding.getStarted': 'Pradėkite',
   'onboarding.runtimeChoice.title': 'Kaip norėtumėte bėgti Youma?',

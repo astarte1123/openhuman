@@ -9,7 +9,7 @@ import type { TranslationMap } from './types';
 
 const huHU: TranslationMap = {
   'nav.home': 'Otthon',
-  'nav.human': 'Emberi',
+  'nav.human': 'Youma',
   'nav.chat': 'Csevegés',
   'nav.connections': 'Kapcsolatok',
   'nav.memory': 'Intelligencia',
@@ -216,6 +216,8 @@ const huHU: TranslationMap = {
   'onboarding.referralDesc': 'Alkalmazzon ajánlókódot, ha van.',
   'onboarding.finish': 'Beállítás befejezése',
   'onboarding.finishDesc': 'Minden készen áll! Kezdje el a Youma használatát.',
+  'onboarding.tourWelcomeMessage':
+    'Szia! Üdvözlünk a Youma-ban 👋 Most fejezted be a beállítást, és itt vagyok, amikor csak szükséged van rám. Kérdezz bármit, kérj összefoglalókat a csatlakoztatott alkalmazásaidból, vagy csak köszönj — mit szeretnél először felfedezni?',
   'onboarding.skip': 'Kihagyás',
   'onboarding.getStarted': 'Kezdje el',
   'onboarding.runtimeChoice.title': 'Hogyan szeretnéd futni Youma?',

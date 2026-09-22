@@ -9,7 +9,7 @@ import type { TranslationMap } from './types';
 
 const roRO: TranslationMap = {
   'nav.home': 'Acasă',
-  'nav.human': 'Uman',
+  'nav.human': 'Youma',
   'nav.chat': 'Chat',
   'nav.connections': 'Conexiuni',
   'nav.memory': 'Inteligența',
@@ -213,6 +213,8 @@ const roRO: TranslationMap = {
   'onboarding.referralDesc': 'Aplicați un cod de recomandare dacă aveți unul.',
   'onboarding.finish': 'Finalizați configurarea',
   'onboarding.finishDesc': 'Sunteți gata! Începeți să utilizați Youma.',
+  'onboarding.tourWelcomeMessage':
+    'Salut! Bine ai venit pe Youma 👋 Tocmai ai terminat configurarea, iar eu sunt aici oricând ai nevoie de mine. Întreabă-mă orice, primește rezumate din aplicațiile tale conectate, sau spune-mi doar salut — cu ce ai vrea să începi?',
   'onboarding.skip': 'Sari peste',
   'onboarding.getStarted': 'Începeți',
   'onboarding.runtimeChoice.title': 'Cum ți-ar plăcea să alergi Youma?',

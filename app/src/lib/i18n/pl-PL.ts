@@ -9,7 +9,7 @@ import type { TranslationMap } from './types';
 
 const plPL: TranslationMap = {
   'nav.home': 'Dom',
-  'nav.human': 'Człowiek',
+  'nav.human': 'Youma',
   'nav.chat': 'Pogawędzić',
   'nav.connections': 'Znajomości',
   'nav.memory': 'Inteligencja',
@@ -210,6 +210,8 @@ const plPL: TranslationMap = {
   'onboarding.referralDesc': 'Zastosuj kod polecający, jeśli go posiadasz.',
   'onboarding.finish': 'Zakończ konfigurację',
   'onboarding.finishDesc': 'Wszystko gotowe! Zacznij używać Youma.',
+  'onboarding.tourWelcomeMessage':
+    'Cześć! Witaj w Youma 👋 Właśnie skończyłeś konfigurację, a ja jestem tu, kiedy tylko mnie potrzebujesz. Zapytaj mnie o cokolwiek, otrzymaj podsumowania z połączonych aplikacji, albo po prostu przywitaj się — od czego chcesz zacząć?',
   'onboarding.skip': 'Pominąć',
   'onboarding.getStarted': 'Rozpocznij',
   'onboarding.runtimeChoice.title': 'Jak chciałbyś przebiec Youma?',

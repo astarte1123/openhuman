@@ -9,7 +9,7 @@ import type { TranslationMap } from './types';
 
 const lvLV: TranslationMap = {
   'nav.home': 'Sākums',
-  'nav.human': 'Cilvēks',
+  'nav.human': 'Youma',
   'nav.chat': 'Tērzēšana',
   'nav.connections': 'Savienojumi',
   'nav.memory': 'Intelekts',
@@ -211,6 +211,8 @@ const lvLV: TranslationMap = {
   'onboarding.referralDesc': 'Lietojiet novirzīšanas kodu, ja jums tāds ir.',
   'onboarding.finish': 'Pabeidziet iestatīšanu',
   'onboarding.finishDesc': 'Viss ir gatavs! Sāciet lietot Youma.',
+  'onboarding.tourWelcomeMessage':
+    'Sveiki! Laipni lūdzam Youma 👋 Tikko pabeidzāt iestatīšanu, un es esmu šeit, kad vien man vajadzēsit. Jautājiet man jebko, saņemiet kopsavilkumus no savām savienotajām lietotnēm vai vienkārši sasveicinieties — ar ko vēlaties sākt?',
   'onboarding.skip': 'Izlaist',
   'onboarding.getStarted': 'Sāciet darbu',
   'onboarding.runtimeChoice.title': 'Kā jūs vēlētos noskriet Youma?',

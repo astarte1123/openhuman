@@ -9,7 +9,7 @@ import type { TranslationMap } from './types';
 
 const elGR: TranslationMap = {
   'nav.home': 'Σπίτι',
-  'nav.human': 'Ανθρώπινος',
+  'nav.human': 'Youma',
   'nav.chat': 'Κουβέντα',
   'nav.connections': 'Συνδέσεις',
   'nav.memory': 'Νοημοσύνη',
@@ -212,6 +212,8 @@ const elGR: TranslationMap = {
   'onboarding.referralDesc': 'Εφαρμόστε έναν κωδικό παραπομπής εάν έχετε.',
   'onboarding.finish': 'Ολοκληρώστε τη ρύθμιση',
   'onboarding.finishDesc': 'Είστε έτοιμοι! Ξεκινήστε να χρησιμοποιείτε το Youma.',
+  'onboarding.tourWelcomeMessage':
+    'Γεια! Καλώς ήρθες στο Youma 👋 Μόλις ολοκλήρωσες τη ρύθμιση και είμαι εδώ όποτε με χρειαστείς. Ρώτησέ με οτιδήποτε, πάρε περιλήψεις από τις συνδεδεμένες εφαρμογές σου, ή απλώς πες γεια — τι θα ήθελες να εξερευνήσεις πρώτα;',
   'onboarding.skip': 'Παραλείπω',
   'onboarding.getStarted': 'Ξεκινήστε',
   'onboarding.runtimeChoice.title': 'Πώς θα θέλατε να τρέξετε το Youma;',

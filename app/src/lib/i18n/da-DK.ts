@@ -9,7 +9,7 @@ import type { TranslationMap } from './types';
 
 const daDK: TranslationMap = {
   'nav.home': 'Hjem',
-  'nav.human': 'Human',
+  'nav.human': 'Youma',
   'nav.chat': 'Snak',
   'nav.connections': 'Forbindelser',
   'nav.memory': 'Intelligens',
@@ -205,6 +205,8 @@ const daDK: TranslationMap = {
   'onboarding.referralDesc': 'Anvend en henvisningskode, hvis du har en.',
   'onboarding.finish': 'Afslut opsætning',
   'onboarding.finishDesc': 'Du er klar! Begynd at bruge Youma.',
+  'onboarding.tourWelcomeMessage':
+    'Hej! Velkommen til Youma 👋 Du er lige blevet færdig med opsætningen, og jeg er her, når du har brug for mig. Spørg mig om hvad som helst, få opsummeringer fra dine forbundne apps, eller bare sig hej — hvad vil du udforske først?',
   'onboarding.skip': 'Springe',
   'onboarding.getStarted': 'Kom i gang',
   'onboarding.runtimeChoice.title': 'Hvordan vil du køre Youma?',

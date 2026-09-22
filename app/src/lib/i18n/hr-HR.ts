@@ -9,7 +9,7 @@ import type { TranslationMap } from './types';
 
 const hrHR: TranslationMap = {
   'nav.home': 'Dom',
-  'nav.human': 'ljudski',
+  'nav.human': 'Youma',
   'nav.chat': 'Razgovor',
   'nav.connections': 'Veze',
   'nav.memory': 'Inteligencija',
@@ -209,6 +209,8 @@ const hrHR: TranslationMap = {
   'onboarding.referralDesc': 'Primijenite referentni kod ako ga imate.',
   'onboarding.finish': 'Završi postavljanje',
   'onboarding.finishDesc': 'Sve je spremno! Počnite koristiti Youma.',
+  'onboarding.tourWelcomeMessage':
+    'Bok! Dobrodošao u Youma 👋 Upravo si završio postavljanje, a ja sam tu kad god me trebaš. Pitaj me bilo što, dobij sažetke iz svojih povezanih aplikacija, ili mi samo javi — što bi želio istražiti prvo?',
   'onboarding.skip': 'Preskočiti',
   'onboarding.getStarted': 'Započnite',
   'onboarding.runtimeChoice.title': 'Kako biste željeli trčati Youma?',

@@ -9,7 +9,7 @@ import type { TranslationMap } from './types';
 
 const slSI: TranslationMap = {
   'nav.home': 'domov',
-  'nav.human': 'Človek',
+  'nav.human': 'Youma',
   'nav.chat': 'Klepetajte',
   'nav.connections': 'Povezave',
   'nav.memory': 'Inteligenca',
@@ -207,6 +207,8 @@ const slSI: TranslationMap = {
   'onboarding.referralDesc': 'Uporabite referenčno kodo, če jo imate.',
   'onboarding.finish': 'Dokončajte nastavitev',
   'onboarding.finishDesc': 'Vse je pripravljeno! Začnite uporabljati Youma.',
+  'onboarding.tourWelcomeMessage':
+    'Živjo! Dobrodošel v Youma 👋 Pravkar si končal nastavitev, jaz pa sem tu, kadar koli me potrebuješ. Vprašaj me karkoli, pridobi povzetke iz povezanih aplikacij, ali pa mi preprosto reci živjo — s čim bi rad začel?',
   'onboarding.skip': 'Preskoči',
   'onboarding.getStarted': 'Začnite',
   'onboarding.runtimeChoice.title': 'Kako želite teči Youma?',

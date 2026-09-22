@@ -9,7 +9,7 @@ import type { TranslationMap } from './types';
 
 const etEE: TranslationMap = {
   'nav.home': 'Kodu',
-  'nav.human': 'Inimene',
+  'nav.human': 'Youma',
   'nav.chat': 'Vestlus',
   'nav.connections': 'Ühendused',
   'nav.memory': 'Intelligentsus',
@@ -205,6 +205,8 @@ const etEE: TranslationMap = {
   'onboarding.referralDesc': 'Kui teil on viitekood, kasutage seda.',
   'onboarding.finish': 'Lõpetage seadistamine',
   'onboarding.finishDesc': 'Kõik on valmis! Alustage Youma kasutamist.',
+  'onboarding.tourWelcomeMessage':
+    'Tere! Tere tulemast Youma 👋 Just lõpetasid seadistamise ja olen siin, kui mind vajad. Küsi minult ükskõik mida, saa kokkuvõtteid oma ühendatud rakendustest, või lihtsalt tervita — millega tahaksid alustada?',
   'onboarding.skip': 'Jäta vahele',
   'onboarding.getStarted': 'Alustage',
   'onboarding.runtimeChoice.title': 'Kuidas sa tahaksid Youma joosta?',

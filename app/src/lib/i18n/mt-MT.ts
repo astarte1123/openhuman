@@ -9,7 +9,7 @@ import type { TranslationMap } from './types';
 
 const mtMT: TranslationMap = {
   'nav.home': 'Dar',
-  'nav.human': 'Bniedem',
+  'nav.human': 'Youma',
   'nav.chat': 'Chat',
   'nav.connections': 'Konnessjonijiet',
   'nav.memory': 'Intelliġenza',
@@ -210,6 +210,8 @@ const mtMT: TranslationMap = {
   'onboarding.referralDesc': "Applika kodiċi ta' riferiment jekk għandek wieħed.",
   'onboarding.finish': 'Tispiċċa Setup',
   'onboarding.finishDesc': 'Inti kollox lest! Ibda uża Youma.',
+  'onboarding.tourWelcomeMessage':
+    'Hej! Merħba għal Youma 👋 Għadek kif spiċċajt tissettja, u jien hawn kull meta jkolli bżonnok. Staqsini kwalunkwe ħaġa, ikseb sommarji mill-apps konnessi tiegħek, jew sempliċement għidli hi — b\'xiex tixtieq tesplora l-ewwel?',
   'onboarding.skip': 'Aqbeż',
   'onboarding.getStarted': 'Ibda',
   'onboarding.runtimeChoice.title': 'Kif tixtieq tmexxi Youma?',

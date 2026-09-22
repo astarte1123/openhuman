@@ -9,7 +9,7 @@ import type { TranslationMap } from './types';
 
 const itIT: TranslationMap = {
   'nav.home': 'Home',
-  'nav.human': 'Umano',
+  'nav.human': 'Youma',
   'nav.chat': 'Chat',
   'nav.connections': 'Connessioni',
   'nav.memory': 'Intelligenza',

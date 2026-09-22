@@ -9,7 +9,7 @@ import type { TranslationMap } from './types';
 
 const gaIE: TranslationMap = {
   'nav.home': 'Baile',
-  'nav.human': 'Daonna',
+  'nav.human': 'Youma',
   'nav.chat': 'Comhrá',
   'nav.connections': 'Naisc',
   'nav.memory': 'Intleacht',
@@ -209,6 +209,8 @@ const gaIE: TranslationMap = {
   'onboarding.referralDesc': 'Cuir cód atreoraithe i bhfeidhm má tá ceann agat.',
   'onboarding.finish': 'Críochnaigh Socrú',
   'onboarding.finishDesc': "You're all set! Start using Youma.",
+  'onboarding.tourWelcomeMessage':
+    'Haigh! Fáilte go Youma 👋 Tá tú díreach críochnaithe leis an socrú, agus táim anseo aon uair a theastaíonn uait mé. Fiafraigh díom rud ar bith, faigh achoimrí ó do chuid aipeanna nasctha, nó abair haigh — cad ba mhaith leat a iniúchadh ar dtús?',
   'onboarding.skip': 'Scipeáil',
   'onboarding.getStarted': 'Faigh Tosaigh',
   'onboarding.runtimeChoice.title': 'Conas ar mhaith leat Youma a rith?',

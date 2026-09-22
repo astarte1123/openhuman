@@ -9,7 +9,7 @@ import type { TranslationMap } from './types';
 
 const fiFI: TranslationMap = {
   'nav.home': 'Kotiin',
-  'nav.human': 'Ihmisen',
+  'nav.human': 'Youma',
   'nav.chat': 'Chat',
   'nav.connections': 'Liitännät',
   'nav.memory': 'Älykkyys',
@@ -211,6 +211,8 @@ const fiFI: TranslationMap = {
   'onboarding.referralDesc': 'Käytä viittauskoodia, jos sinulla on sellainen.',
   'onboarding.finish': 'Viimeistele asennus',
   'onboarding.finishDesc': 'Kaikki on valmista! Aloita Youma käyttö.',
+  'onboarding.tourWelcomeMessage':
+    'Hei! Tervetuloa Youmaan 👋 Sait juuri asetukset valmiiksi, ja olen täällä aina kun tarvitset minua. Kysy mitä tahansa, saa yhteenvetoja yhdistetyistä sovelluksistasi, tai vain tervehdi — mistä haluaisit aloittaa?',
   'onboarding.skip': 'Ohita',
   'onboarding.getStarted': 'Aloita',
   'onboarding.runtimeChoice.title': 'Kuinka haluaisit juosta Youma?',

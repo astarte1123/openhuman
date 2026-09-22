@@ -9,7 +9,7 @@ import type { TranslationMap } from './types';
 
 const svSE: TranslationMap = {
   'nav.home': 'Hem',
-  'nav.human': 'Mänsklig',
+  'nav.human': 'Youma',
   'nav.chat': 'Chatta',
   'nav.connections': 'Anslutningar',
   'nav.memory': 'Intelligens',
@@ -206,6 +206,8 @@ const svSE: TranslationMap = {
   'onboarding.referralDesc': 'Använd en remisskod om du har en.',
   'onboarding.finish': 'Slutför installationen',
   'onboarding.finishDesc': 'Du är redo! Börja använda Youma.',
+  'onboarding.tourWelcomeMessage':
+    'Hej! Välkommen till Youma 👋 Du har precis blivit klar med installationen, och jag finns här när du behöver mig. Fråga mig vad som helst, få sammanfattningar från dina anslutna appar, eller säg bara hej — vad vill du utforska först?',
   'onboarding.skip': 'Hoppa',
   'onboarding.getStarted': 'Kom igång',
   'onboarding.runtimeChoice.title': 'Hur skulle du vilja köra Youma?',

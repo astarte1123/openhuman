@@ -9,7 +9,7 @@ import type { TranslationMap } from './types';
 
 const bgBG: TranslationMap = {
   'nav.home': 'Начало',
-  'nav.human': 'човешки',
+  'nav.human': 'Youma',
   'nav.chat': 'Чат',
   'nav.connections': 'Връзки',
   'nav.memory': 'Интелигентност',
@@ -211,6 +211,8 @@ const bgBG: TranslationMap = {
   'onboarding.referralDesc': 'Приложете реферален код, ако имате такъв.',
   'onboarding.finish': 'Завършете настройката',
   'onboarding.finishDesc': 'Всичко е готово! Започнете да използвате Youma.',
+  'onboarding.tourWelcomeMessage':
+    'Здравей! Добре дошъл в Youma 👋 Току-що завърши настройката и съм тук, когато имаш нужда от мен. Питай ме каквото искаш, получавай обобщения от свързаните си приложения или просто ме поздрави — с какво искаш да започнем?',
   'onboarding.skip': 'Пропускане',
   'onboarding.getStarted': 'Започнете',
   'onboarding.runtimeChoice.title': 'Как бихте искали да изпълните Youma?',

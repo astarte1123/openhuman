@@ -3,7 +3,7 @@ import type { TranslationMap } from './types';
 const en: TranslationMap = {
   // Navigation
   'nav.home': 'Home',
-  'nav.human': 'Human',
+  'nav.human': 'Youma',
   'nav.chat': 'Chat',
   'nav.connections': 'Connections',
   'nav.memory': 'Intelligence',
