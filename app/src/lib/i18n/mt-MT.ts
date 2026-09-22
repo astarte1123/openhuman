@@ -211,7 +211,7 @@ const mtMT: TranslationMap = {
   'onboarding.finish': 'Tispiċċa Setup',
   'onboarding.finishDesc': 'Inti kollox lest! Ibda uża Youma.',
   'onboarding.tourWelcomeMessage':
-    'Hej! Merħba għal Youma 👋 Għadek kif spiċċajt tissettja, u jien hawn kull meta jkolli bżonnok. Staqsini kwalunkwe ħaġa, ikseb sommarji mill-apps konnessi tiegħek, jew sempliċement għidli hi — b\'xiex tixtieq tesplora l-ewwel?',
+    "Hej! Merħba għal Youma 👋 Għadek kif spiċċajt tissettja, u jien hawn kull meta jkolli bżonnok. Staqsini kwalunkwe ħaġa, ikseb sommarji mill-apps konnessi tiegħek, jew sempliċement għidli hi — b'xiex tixtieq tesplora l-ewwel?",
   'onboarding.skip': 'Aqbeż',
   'onboarding.getStarted': 'Ibda',
   'onboarding.runtimeChoice.title': 'Kif tixtieq tmexxi Youma?',
@@ -789,11 +789,13 @@ const mtMT: TranslationMap = {
   'calls.couldNotStart': 'Ma setgħetx tibda sejħa',
   'calls.failedToClose': 'Naqset milli tagħlaq is-sejħa',
   'calls.couldNotClose': 'Ma setgħetx tagħlaq is-sejħa',
-  'calls.joinMeet': "Ingħaqad ma' sejħa Google Meet",
-  'calls.joinMeetDescription': 'Daħħal link Google Meet biex tissieħeb.',
-  'calls.meetLink': 'Meet Link',
+  'calls.joinMeet': "Ingħaqad ma' sejħa bil-vidjo",
+  'calls.joinMeetDescription':
+    "Waħħal link ta' Google Meet, Zoom jew Microsoft Teams biex tingħaqad.",
+  'calls.meetLink': 'Link tas-sejħa',
+  'calls.detectedPlatform': 'Identifikat: {platform}',
   'calls.displayName': 'Wiri Isem',
-  'calls.openingMeet': 'Ftuħ Meet...',
+  'calls.openingMeet': 'Qed tinfetaħ is-sejħa...',
   'calls.joinCall': 'Ingħaqad Sejħa',
   'calls.activeCalls': 'Sejħiet Attivi',
   'calls.leave': 'Ħalli',
@@ -2207,7 +2209,8 @@ const mtMT: TranslationMap = {
   'channels.discord_config.copied': 'Ikkopjati!',
   'channels.discord_config.copy': 'Kopja',
   'channels.discord_config.link_instructions_prefix': 'Fi Discord, ibgħat',
-  'channels.discord_config.link_instructions_suffix': "lill-bot Youma. It-token jiskadi f'5 minuti.",
+  'channels.discord_config.link_instructions_suffix':
+    "lill-bot Youma. It-token jiskadi f'5 minuti.",
   'channels.discord_config.link_token_warning':
     'Issejvja dan il-kmand — dan it-token jintwera darba biss.',
   'channels.discord_config.account_linked': 'Il-kont Discord tiegħek huwa marbut.',

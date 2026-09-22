@@ -436,7 +436,8 @@ const etEE: TranslationMap = {
   'settings.billing.browserNotOpen': 'Kui teie brauser ei avanenud, kasutage ülaltoodud nuppu.',
   'settings.billing.browserOpenFailed':
     'Brauserit ei saanud automaatselt avada. Kasutage ülaltoodud nuppu.',
-  'settings.tools.chooseCapabilities': 'Valige, milliseid võimalusi Youma saab teie nimel kasutada.',
+  'settings.tools.chooseCapabilities':
+    'Valige, milliseid võimalusi Youma saab teie nimel kasutada.',
   'settings.tools.saveChanges': 'Salvesta muudatused',
   'settings.tools.preferencesSaved': 'Eelistused salvestatud',
   'settings.tools.saveFailed': 'Eelistuste salvestamine ebaõnnestus. Proovi uuesti.',
@@ -782,11 +783,12 @@ const etEE: TranslationMap = {
   'calls.couldNotStart': 'Kõnet ei saanud alustada',
   'calls.failedToClose': 'Kõne sulgemine ebaõnnestus',
   'calls.couldNotClose': 'Kõnet ei saanud sulgeda',
-  'calls.joinMeet': 'Liituge Google Meet kõnega',
-  'calls.joinMeetDescription': 'Liitumiseks sisestage link Google Meet.',
-  'calls.meetLink': 'Meet Link',
+  'calls.joinMeet': 'Liitu videokõnega',
+  'calls.joinMeetDescription': 'Kleebi liitumiseks Google Meeti, Zoomi või Microsoft Teamsi link.',
+  'calls.meetLink': 'Kõne link',
+  'calls.detectedPlatform': 'Tuvastatud: {platform}',
   'calls.displayName': 'Kuvatav nimi',
-  'calls.openingMeet': 'Avamine Meet...',
+  'calls.openingMeet': 'Kõne avamine...',
   'calls.joinCall': 'Liitu kõnega',
   'calls.activeCalls': 'Aktiivsed kõned',
   'calls.leave': 'Lahku',
@@ -899,7 +901,8 @@ const etEE: TranslationMap = {
   'bootCheck.tokenRequired': 'Vajame ühenduse loomiseks autentimisluba.',
   'bootCheck.chooseCoreMode': 'Valige käitusaeg',
   'bootCheck.connectToCore': 'Ühendage oma käitusajaga',
-  'bootCheck.desktopDescription': 'Youma vajab mõtlemiseks käitusaega. Valige, kus see peaks elama.',
+  'bootCheck.desktopDescription':
+    'Youma vajab mõtlemiseks käitusaega. Valige, kus see peaks elama.',
   'bootCheck.webDescription':
     'Veebis loob Youma ühenduse teie juhitava käitusajaga. Sisestage selle URL ja autentimisluba allpool või haarake töölauarakendus, et käivitada see otse oma arvutis.',
   'bootCheck.preferDesktop': 'Kas soovite pigem hoida kõike oma seadmes?',
@@ -2185,7 +2188,8 @@ const etEE: TranslationMap = {
   'channels.discord_config.copied': 'Kopeeritud!',
   'channels.discord_config.copy': 'Kopeeri',
   'channels.discord_config.link_instructions_prefix': 'Discord, saatke',
-  'channels.discord_config.link_instructions_suffix': 'Youma robotile. Token aegub 5 minuti pärast.',
+  'channels.discord_config.link_instructions_suffix':
+    'Youma robotile. Token aegub 5 minuti pärast.',
   'channels.discord_config.link_token_warning':
     'Salvesta see käsk – seda märki näidatakse ainult üks kord.',
   'channels.discord_config.account_linked': 'Teie Discord konto on lingitud.',

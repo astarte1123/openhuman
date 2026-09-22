@@ -436,7 +436,8 @@ const csCZ: TranslationMap = {
   'settings.billing.browserNotOpen': 'Pokud se váš prohlížeč neotevřel, použijte tlačítko výše.',
   'settings.billing.browserOpenFailed':
     'Prohlížeč nelze automaticky otevřít. Použijte tlačítko výše.',
-  'settings.tools.chooseCapabilities': 'Vyberte, které schopnosti může Youma používat vaším jménem.',
+  'settings.tools.chooseCapabilities':
+    'Vyberte, které schopnosti může Youma používat vaším jménem.',
   'settings.tools.saveChanges': 'Uložit změny',
   'settings.tools.preferencesSaved': 'Předvolby uloženy',
   'settings.tools.saveFailed': 'Předvolby se nepodařilo uložit. Zkuste to znovu.',
@@ -783,11 +784,13 @@ const csCZ: TranslationMap = {
   'calls.couldNotStart': 'Hovor nelze zahájit',
   'calls.failedToClose': 'Hovor se nepodařilo ukončit',
   'calls.couldNotClose': 'Hovor se nepodařilo uzavřít',
-  'calls.joinMeet': 'Připojte se k Google Meet hovoru',
-  'calls.joinMeetDescription': 'Chcete-li se připojit, zadejte Google Meet odkaz.',
-  'calls.meetLink': 'Meet Odkaz',
+  'calls.joinMeet': 'Připojte se k videohovoru',
+  'calls.joinMeetDescription':
+    'Vložte odkaz na Google Meet, Zoom nebo Microsoft Teams a připojte se.',
+  'calls.meetLink': 'Odkaz na hovor',
+  'calls.detectedPlatform': 'Rozpoznáno: {platform}',
   'calls.displayName': 'Zobrazovaný název',
-  'calls.openingMeet': 'Otevírání Meet...',
+  'calls.openingMeet': 'Otevírání hovoru...',
   'calls.joinCall': 'Připojte se k hovoru',
   'calls.activeCalls': 'Aktivní hovory',
   'calls.leave': 'Dovolená',

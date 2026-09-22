@@ -796,11 +796,13 @@ const bgBG: TranslationMap = {
   'calls.couldNotStart': 'Обаждането не може да започне',
   'calls.failedToClose': 'Неуспешно затваряне на обаждането',
   'calls.couldNotClose': 'Обаждането не можа да се затвори',
-  'calls.joinMeet': 'Присъединете се към Google Meet разговор',
-  'calls.joinMeetDescription': 'Въведете връзка Google Meet, за да се присъедините.',
-  'calls.meetLink': 'Meet Връзка',
+  'calls.joinMeet': 'Присъединете се към видеоразговор',
+  'calls.joinMeetDescription':
+    'Поставете връзка към Google Meet, Zoom или Microsoft Teams, за да се присъедините.',
+  'calls.meetLink': 'Връзка към разговора',
+  'calls.detectedPlatform': 'Открито: {platform}',
   'calls.displayName': 'Екранно име',
-  'calls.openingMeet': 'Отваряне на Meet...',
+  'calls.openingMeet': 'Отваряне на разговора...',
   'calls.joinCall': 'Присъединете се към разговора',
   'calls.activeCalls': 'Активни разговори',
   'calls.leave': 'тръгвай',
@@ -2163,7 +2165,8 @@ const bgBG: TranslationMap = {
   'aura_link_modal.notifications_intro':
     'Youma използва собствени известия, за да може да ви пингва, когато нещо се нуждае от вашето внимание, дори когато прозорецът за чат е скрит.',
   'aura_link_modal.notifications_blocked_line1': 'Известията в момента са блокирани.',
-  'aura_link_modal.notifications_blocked_line2': '1. Отворете Системни настройки → Известия → Youma',
+  'aura_link_modal.notifications_blocked_line2':
+    '1. Отворете Системни настройки → Известия → Youma',
   'aura_link_modal.notifications_blocked_line3': '2. Включете Разрешаване на известия',
   'aura_link_modal.notifications_blocked_line4':
     '3. Върнете се тук и докоснете Повторно известие за тест',

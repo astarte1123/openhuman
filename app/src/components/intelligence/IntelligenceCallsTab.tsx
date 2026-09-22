@@ -1,8 +1,9 @@
 import { listen, type UnlistenFn } from '@tauri-apps/api/event';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useT } from '../../lib/i18n/I18nContext';
 import { closeMeetCall, joinMeetCall } from '../../services/meetCallService';
+import { callPlatformDisplayName, detectCallPlatform } from '../../utils/detectCallPlatform';
 
 type ActiveCall = { requestId: string; meetUrl: string; displayName: string };
 
@@ -19,11 +20,19 @@ const PLACEHOLDER_URL = 'https://meet.google.com/abc-defg-hij';
 /**
  * Calls tab on the Intelligence page.
  *
- * Lets the user paste a Google Meet link, choose a display name, and have
- * the agent join the call as an anonymous guest in a dedicated CEF
- * webview window. The window itself is opened by the Tauri shell — this
- * component just collects inputs, fires the RPC + invoke pair, and
- * tracks active calls so the user can close them from the same surface.
+ * Lets the user paste a Google Meet, Zoom, or Microsoft Teams link, choose
+ * a display name, and have the agent join the call as an anonymous guest
+ * in a dedicated CEF webview window. The window itself is opened by the
+ * Tauri shell — this component just collects inputs, fires the RPC +
+ * invoke pair, and tracks active calls so the user can close them from
+ * the same surface.
+ *
+ * Platform support (Meet/Teams/Zoom) is validated by the core
+ * (`aura.meet_join_call` -> `src/aura/meet/ops.rs::validate_meet_url`),
+ * which is the sole source of truth for accept/reject. The small "Detected:
+ * X" badge next to the link field is a purely cosmetic, client-side hint
+ * (`utils/detectCallPlatform.ts`) that matches only on hostname — it never
+ * blocks submission and an unmatched host just shows no badge.
  */
 export default function IntelligenceCallsTab({ onToast }: Props) {
   const { t } = useT();
@@ -32,6 +41,11 @@ export default function IntelligenceCallsTab({ onToast }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeCalls, setActiveCalls] = useState<ActiveCall[]>([]);
+
+  // Purely cosmetic, client-side hint — see detectCallPlatform.ts. Never
+  // blocks submission and never overrides the core's own validation; an
+  // unrecognized host just shows no badge.
+  const detectedPlatform = useMemo(() => detectCallPlatform(meetUrl), [meetUrl]);
 
   // Listen for shell-emitted close events so the in-flight list stays
   // accurate when the user closes a Meet window directly. Outside the
@@ -108,8 +122,15 @@ export default function IntelligenceCallsTab({ onToast }: Props) {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <label className="block">
-          <span className="text-xs font-medium uppercase tracking-wide text-stone-500">
+          <span className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-stone-500">
             {t('calls.meetLink')}
+            {detectedPlatform && (
+              <span className="rounded-full border border-primary-200 bg-primary-50 px-2 py-0.5 text-[10px] font-medium normal-case tracking-normal text-primary-700">
+                {t('calls.detectedPlatform', {
+                  platform: callPlatformDisplayName(detectedPlatform),
+                })}
+              </span>
+            )}
           </span>
           <input
             type="url"

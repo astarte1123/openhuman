@@ -787,11 +787,13 @@ const hrHR: TranslationMap = {
   'calls.couldNotStart': 'Nije moguće započeti poziv',
   'calls.failedToClose': 'Zatvaranje poziva nije uspjelo',
   'calls.couldNotClose': 'Nije moguće zatvoriti poziv',
-  'calls.joinMeet': 'Pridružite se pozivu Google Meet',
-  'calls.joinMeetDescription': 'Unesite poveznicu Google Meet za pridruživanje.',
-  'calls.meetLink': 'Meet Link',
+  'calls.joinMeet': 'Pridruži se videopozivu',
+  'calls.joinMeetDescription':
+    'Zalijepi vezu za Google Meet, Zoom ili Microsoft Teams za pridruživanje.',
+  'calls.meetLink': 'Veza poziva',
+  'calls.detectedPlatform': 'Otkriveno: {platform}',
   'calls.displayName': 'Ime za prikaz',
-  'calls.openingMeet': 'Otvaranje Meet...',
+  'calls.openingMeet': 'Otvaranje poziva...',
   'calls.joinCall': 'Pridružite se pozivu',
   'calls.activeCalls': 'Aktivni pozivi',
   'calls.leave': 'Otiđi',
@@ -2136,7 +2138,8 @@ const hrHR: TranslationMap = {
   'aura_link_modal.notifications_intro':
     'Youma koristi izvorne obavijesti kako bi vas mogao pingati kada nešto treba vašu pozornost, čak i kada je prozor za chat skriven.',
   'aura_link_modal.notifications_blocked_line1': 'Obavijesti su trenutno blokirane.',
-  'aura_link_modal.notifications_blocked_line2': '1. Otvorite Postavke sustava → Obavijesti → Youma',
+  'aura_link_modal.notifications_blocked_line2':
+    '1. Otvorite Postavke sustava → Obavijesti → Youma',
   'aura_link_modal.notifications_blocked_line3': '2. Uključite Dopusti obavijesti',
   'aura_link_modal.notifications_blocked_line4':
     '3. Vratite se ovdje i dodirnite Ponovi test obavijesti',

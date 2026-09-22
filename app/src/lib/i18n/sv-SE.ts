@@ -783,11 +783,13 @@ const svSE: TranslationMap = {
   'calls.couldNotStart': 'Kunde inte starta samtalet',
   'calls.failedToClose': 'Det gick inte att stänga samtalet',
   'calls.couldNotClose': 'Det gick inte att stänga samtalet',
-  'calls.joinMeet': 'Gå med i ett Google Meet samtal',
-  'calls.joinMeetDescription': 'Ange en Google Meet-länk för att gå med.',
-  'calls.meetLink': 'Meet Länk',
+  'calls.joinMeet': 'Gå med i ett videosamtal',
+  'calls.joinMeetDescription':
+    'Klistra in en Google Meet-, Zoom- eller Microsoft Teams-länk för att gå med.',
+  'calls.meetLink': 'Samtalslänk',
+  'calls.detectedPlatform': 'Identifierad: {platform}',
   'calls.displayName': 'Visningsnamn',
-  'calls.openingMeet': 'Öppnar Meet...',
+  'calls.openingMeet': 'Öppnar samtal...',
   'calls.joinCall': 'Gå med i Call',
   'calls.activeCalls': 'Aktiva samtal',
   'calls.leave': 'Lämna',
@@ -2188,7 +2190,8 @@ const svSE: TranslationMap = {
   'channels.discord_config.copied': 'Kopierade!',
   'channels.discord_config.copy': 'Kopiera',
   'channels.discord_config.link_instructions_prefix': 'I Discord, skicka',
-  'channels.discord_config.link_instructions_suffix': 'till Youma boten. Token går ut om 5 minuter.',
+  'channels.discord_config.link_instructions_suffix':
+    'till Youma boten. Token går ut om 5 minuter.',
   'channels.discord_config.link_token_warning':
     'Spara detta kommando — denna token visas bara en gång.',
   'channels.discord_config.account_linked': 'Ditt Discord-konto är länkat.',

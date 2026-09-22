@@ -793,11 +793,13 @@ const ptPT: TranslationMap = {
   'calls.couldNotStart': 'Não foi possível iniciar a chamada',
   'calls.failedToClose': 'Falha ao encerrar a chamada',
   'calls.couldNotClose': 'Não foi possível encerrar a chamada',
-  'calls.joinMeet': 'Participe de uma chamada Google Meet',
-  'calls.joinMeetDescription': 'Digite um link Google Meet para participar.',
-  'calls.meetLink': 'Meet Link',
+  'calls.joinMeet': 'Participar numa videochamada',
+  'calls.joinMeetDescription':
+    'Cole uma ligação do Google Meet, Zoom ou Microsoft Teams para participar.',
+  'calls.meetLink': 'Ligação da chamada',
+  'calls.detectedPlatform': 'Detetado: {platform}',
   'calls.displayName': 'Nome de exibição',
-  'calls.openingMeet': 'Abrindo Meet...',
+  'calls.openingMeet': 'A abrir chamada...',
   'calls.joinCall': 'Junte-se à chamada',
   'calls.activeCalls': 'Chamadas ativas',
   'calls.leave': 'Deixar',
@@ -2462,7 +2464,8 @@ const ptPT: TranslationMap = {
     '{providerName} o login não pôde ser iniciado. Por favor, tente novamente.',
   'oauth.provider_button.connecting': 'Conectando...',
   'skills.search_bar.placeholder': 'Habilidades de pesquisa...',
-  'common.persist_rehydration_screen.title': 'Youma está demorando mais que o normal para carregar.',
+  'common.persist_rehydration_screen.title':
+    'Youma está demorando mais que o normal para carregar.',
   'common.persist_rehydration_screen.description':
     'O estado do aplicativo local pode estar corrompido. A redefinição desconectará você e limpará os dados armazenados em cache neste dispositivo; você reconectará suas contas no próximo lançamento. Seus dados no servidor não são afetados.',
   'common.persist_rehydration_screen.resetting': 'Redefinindo…',

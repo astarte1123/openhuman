@@ -25,20 +25,75 @@ describe('IntelligenceCallsTab', () => {
   it('renders form with URL + display name inputs and a disabled join button', () => {
     render(<IntelligenceCallsTab />);
 
-    expect(screen.getByRole('heading', { name: /Join a Google Meet call/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Join a video call/i })).toBeInTheDocument();
     const urlInput = screen.getByPlaceholderText(/meet\.google\.com/i);
     expect(urlInput).toBeInTheDocument();
+    // No platform detected yet (empty URL) — no badge.
+    expect(screen.queryByText(/Detected:/i)).not.toBeInTheDocument();
     // Display name has a default value, so the join button is enabled only
     // once the URL field is also non-empty. With an empty URL it stays
     // disabled.
     expect(screen.getByRole('button', { name: /Join call/i })).toBeDisabled();
   });
 
+  it('shows a platform-detection badge once the URL matches a known host', () => {
+    render(<IntelligenceCallsTab />);
+
+    const urlInput = screen.getByPlaceholderText(/meet\.google\.com/i);
+
+    fireEvent.change(urlInput, { target: { value: VALID_URL } });
+    expect(screen.getByText('Detected: Google Meet')).toBeInTheDocument();
+
+    fireEvent.change(urlInput, { target: { value: 'https://zoom.us/j/123456789' } });
+    expect(screen.getByText('Detected: Zoom')).toBeInTheDocument();
+
+    fireEvent.change(urlInput, { target: { value: 'https://example.com/meeting' } });
+    expect(screen.queryByText(/Detected:/i)).not.toBeInTheDocument();
+  });
+
+  it('shows a platform-neutral submitting label, not "Opening Meet", when joining a Zoom link', async () => {
+    let resolveJoin: (value: {
+      requestId: string;
+      meetUrl: string;
+      displayName: string;
+      windowLabel: string;
+    }) => void = () => undefined;
+    vi.mocked(joinMeetCall).mockImplementationOnce(
+      () =>
+        new Promise(resolve => {
+          resolveJoin = resolve;
+        })
+    );
+
+    render(<IntelligenceCallsTab />);
+
+    const zoomUrl = 'https://zoom.us/j/123456789';
+    fireEvent.change(screen.getByPlaceholderText(/meet\.google\.com/i), {
+      target: { value: zoomUrl },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /Join call/i }));
+
+    // While the RPC is in flight, the label must not falsely claim "Meet"
+    // for a Zoom link — it should read a platform-neutral "Opening call...".
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /Opening call/i })).toBeInTheDocument()
+    );
+    expect(screen.queryByRole('button', { name: /Opening Meet/i })).not.toBeInTheDocument();
+
+    resolveJoin({
+      requestId: 'req-zoom',
+      meetUrl: zoomUrl,
+      displayName: 'Youma Agent',
+      windowLabel: 'meet-call-req-zoom',
+    });
+    await screen.findByText('Youma Agent');
+  });
+
   it('calls joinMeetCall on submit and adds the result to the active-call list', async () => {
     vi.mocked(joinMeetCall).mockResolvedValueOnce({
       requestId: 'req-1',
       meetUrl: VALID_URL,
-      displayName: 'Aura Agent',
+      displayName: 'Youma Agent',
       windowLabel: 'meet-call-req-1',
     });
 
@@ -51,13 +106,10 @@ describe('IntelligenceCallsTab', () => {
     fireEvent.click(screen.getByRole('button', { name: /Join call/i }));
 
     await waitFor(() => expect(joinMeetCall).toHaveBeenCalledTimes(1));
-    expect(joinMeetCall).toHaveBeenCalledWith({
-      meetUrl: VALID_URL,
-      displayName: 'Aura Agent',
-    });
+    expect(joinMeetCall).toHaveBeenCalledWith({ meetUrl: VALID_URL, displayName: 'Youma Agent' });
 
     // Active call appears with a Leave button.
-    await screen.findByText('Aura Agent');
+    await screen.findByText('Youma Agent');
     expect(screen.getByRole('button', { name: /Leave/i })).toBeInTheDocument();
     expect(onToast).toHaveBeenCalledWith(
       expect.objectContaining({ type: 'success', title: 'Joining call' })
@@ -100,7 +152,7 @@ describe('IntelligenceCallsTab', () => {
     vi.mocked(joinMeetCall).mockResolvedValueOnce({
       requestId: 'req-2',
       meetUrl: VALID_URL,
-      displayName: 'Aura Agent',
+      displayName: 'Youma Agent',
       windowLabel: 'meet-call-req-2',
     });
     vi.mocked(closeMeetCall).mockResolvedValueOnce(true);
@@ -124,7 +176,7 @@ describe('IntelligenceCallsTab', () => {
     vi.mocked(joinMeetCall).mockResolvedValueOnce({
       requestId: 'req-3',
       meetUrl: VALID_URL,
-      displayName: 'Aura Agent',
+      displayName: 'Youma Agent',
       windowLabel: 'meet-call-req-3',
     });
     vi.mocked(closeMeetCall).mockResolvedValueOnce(false);

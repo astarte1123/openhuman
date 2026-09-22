@@ -4,8 +4,15 @@
 // the backend mascot bot (PR tinyhumansai/backend#773). Joining a
 // Google Meet kicks off the Camoufox-driven mascot in the backend,
 // which streams the mascot's WebRTC video into the call as an
-// anonymous guest. Zoom and Teams are shown as "coming soon" — the
+// anonymous guest. Zoom and Teams are shown as "coming soon" here — the
 // backend already routes them but returns 400 "not yet supported".
+//
+// This is NOT the only way to join a Zoom/Teams call from Aura: the
+// Calls tab on the Intelligence page (`IntelligenceCallsTab.tsx`) opens
+// Meet/Teams/Zoom links directly in a local CEF webview via the core RPC
+// `aura.meet_join_call`, with no dependency on this backend mascot-bot
+// path or its "coming soon" gate. The two mechanisms are unrelated —
+// don't assume this card is the only Teams/Zoom join surface.
 
 import { useEffect, useState } from 'react';
 
