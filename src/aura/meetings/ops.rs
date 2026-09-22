@@ -752,6 +752,24 @@ pub async fn meetings_index_to_knowledge_base(
     let meeting_id = meeting_id.trim();
 
     let meeting = store::get_meeting(config, meeting_id).map_err(|e| e.to_string())?;
+
+    // Guard against permanently locking in a partial snapshot: ingest_document
+    // is append-only, keyed purely on source_id ("meeting:{id}") — it has no
+    // notion of "content changed, please refresh." Indexing a still-Recording
+    // meeting would claim that source_id with a partial transcript, and every
+    // later call (including the auto-trigger at the end of
+    // meetings_summarize_structured, once the meeting actually finishes and
+    // has a real summary) would then silently no-op as "already indexed,"
+    // never capturing the final content. Only Completed meetings may be
+    // indexed.
+    if meeting.status != MeetingStatus::Completed {
+        return Err(format!(
+            "meeting is not completed (status: {}) — index it after calling meetings_finish, \
+             not while still recording",
+            meeting.status.as_str()
+        ));
+    }
+
     let chunks = store::list_transcript_chunks(config, meeting_id).map_err(|e| e.to_string())?;
 
     let body = render_meeting_knowledge_markdown(&meeting, &chunks);

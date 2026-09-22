@@ -1099,3 +1099,43 @@ async fn meetings_index_to_knowledge_base_is_idempotent() {
     assert_eq!(second.value["already_ingested"], serde_json::json!(true));
     assert_eq!(second.value["chunks_written"], serde_json::json!(0));
 }
+
+/// Regression test for a real bug caught in manual review: without this
+/// guard, indexing a still-`Recording` meeting would permanently claim its
+/// `source_id` in the (append-only, idempotent-by-source_id)
+/// `ingest_document` path with a partial transcript — the later, correct
+/// call after `meetings_finish` would then silently no-op as
+/// "already indexed," and the final content would never make it into the
+/// knowledge base.
+#[tokio::test]
+async fn meetings_index_to_knowledge_base_rejects_a_recording_meeting() {
+    let tmp = TempDir::new().unwrap();
+    let config = knowledge_base_test_config(&tmp);
+    let created = meetings_create(&config, Some("Standup".to_string()), Some("local".to_string()))
+        .await
+        .unwrap()
+        .value;
+    assert_eq!(created.status, MeetingStatus::Recording);
+    store::append_transcript_chunk(
+        &config,
+        &created.id,
+        0,
+        2_000,
+        Some("microphone"),
+        "Partial content while still recording.",
+    )
+    .unwrap();
+
+    let err = meetings_index_to_knowledge_base(&config, &created.id)
+        .await
+        .unwrap_err();
+    assert!(err.contains("not completed"));
+
+    // Confirm the rejection didn't claim the source_id: indexing after
+    // properly finishing the meeting must still succeed.
+    meetings_finish(&config, &created.id, 2_000).await.unwrap();
+    let outcome = meetings_index_to_knowledge_base(&config, &created.id)
+        .await
+        .unwrap();
+    assert_eq!(outcome.value["already_ingested"], serde_json::json!(false));
+}
