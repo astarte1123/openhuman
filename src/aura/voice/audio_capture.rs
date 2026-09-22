@@ -493,7 +493,10 @@ pub fn list_input_devices() -> Result<Vec<String>, String> {
 }
 
 /// Convert interleaved multi-channel samples to mono by averaging channels.
-fn to_mono(samples: &[f32], channels: usize) -> Vec<f32> {
+///
+/// `pub(crate)` so [`crate::aura::meetings::capture`] can reuse it for
+/// meeting audio capture instead of duplicating channel-mixdown logic.
+pub(crate) fn to_mono(samples: &[f32], channels: usize) -> Vec<f32> {
     if channels <= 1 {
         return samples.to_vec();
     }
@@ -504,14 +507,19 @@ fn to_mono(samples: &[f32], channels: usize) -> Vec<f32> {
         .collect()
 }
 
-/// Resample mono f32 samples from `source_rate` to `TARGET_SAMPLE_RATE` using
-/// linear interpolation. Good enough for voice dictation quality.
-fn resample(samples: &[f32], source_rate: u32) -> Vec<f32> {
-    if source_rate == TARGET_SAMPLE_RATE {
+/// Resample mono f32 samples from `source_rate` to `target_rate` using
+/// linear interpolation. Good enough for voice dictation / meeting-transcript
+/// quality (not audiophile-grade, but whisper doesn't need it to be).
+///
+/// `pub(crate)` so [`crate::aura::meetings::capture::pipeline`] can reuse
+/// this instead of reimplementing linear-interpolation resampling — see the
+/// meeting-capture design's "hoist resample" note.
+pub(crate) fn resample(samples: &[f32], source_rate: u32, target_rate: u32) -> Vec<f32> {
+    if source_rate == target_rate {
         return samples.to_vec();
     }
 
-    let ratio = source_rate as f64 / TARGET_SAMPLE_RATE as f64;
+    let ratio = source_rate as f64 / target_rate as f64;
     let output_len = (samples.len() as f64 / ratio).ceil() as usize;
     let mut output = Vec::with_capacity(output_len);
 
@@ -566,7 +574,7 @@ fn finalize_recording(
         return Err("no audio samples captured".to_string());
     }
 
-    let resampled = resample(&raw_samples, source_sample_rate);
+    let resampled = resample(&raw_samples, source_sample_rate, TARGET_SAMPLE_RATE);
     let sample_count = resampled.len();
     let duration_secs = sample_count as f32 / TARGET_SAMPLE_RATE as f32;
 

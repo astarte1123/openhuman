@@ -26,7 +26,7 @@ fn to_mono_averages_multichannel_frames() {
 #[test]
 fn resample_same_rate_passthrough() {
     let input = vec![0.1, 0.2, 0.3];
-    let output = resample(&input, TARGET_SAMPLE_RATE);
+    let output = resample(&input, TARGET_SAMPLE_RATE, TARGET_SAMPLE_RATE);
     assert_eq!(output, input);
 }
 
@@ -34,7 +34,7 @@ fn resample_same_rate_passthrough() {
 fn resample_downsamples() {
     // 32kHz -> 16kHz should roughly halve the samples.
     let input: Vec<f32> = (0..3200).map(|i| (i as f32 / 3200.0).sin()).collect();
-    let output = resample(&input, 32_000);
+    let output = resample(&input, 32_000, TARGET_SAMPLE_RATE);
     // Should be approximately 1600 samples.
     assert!(output.len() >= 1590 && output.len() <= 1610);
 }
@@ -42,11 +42,23 @@ fn resample_downsamples() {
 #[test]
 fn resample_upsamples() {
     let input = vec![0.0, 1.0, 0.0, -1.0];
-    let output = resample(&input, 8_000);
+    let output = resample(&input, 8_000, TARGET_SAMPLE_RATE);
     assert_eq!(output.len(), 8);
     assert!((output[0] - 0.0).abs() < 1e-6);
     assert!((output[1] - 0.5).abs() < 1e-6);
     assert!((output[2] - 1.0).abs() < 1e-6);
+}
+
+#[test]
+fn resample_supports_non_default_target_rate() {
+    // Exercises the now-parameterized `target_rate` (meetings::capture reuses
+    // this with whisper's fixed 16kHz target while voice capture still uses
+    // TARGET_SAMPLE_RATE) with an arbitrary target unrelated to either.
+    let input = vec![0.0, 2.0, 4.0, 6.0];
+    let output = resample(&input, 4_000, 2_000);
+    assert_eq!(output.len(), 2);
+    assert!((output[0] - 0.0).abs() < 1e-6);
+    assert!((output[1] - 4.0).abs() < 1e-6);
 }
 
 #[test]

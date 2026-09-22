@@ -190,6 +190,18 @@ block2 = "0.6"
 landlock = { version = "0.4", optional = true }
 rppal = { version = "0.22", optional = true }
 
+[target.'cfg(target_os = "windows")'.dependencies]
+# WASAPI loopback capture for local meeting recording (src/aura/meetings/capture/windows.rs).
+# cpal 0.15 has no first-class WASAPI loopback mode (only regular input-device
+# capture), so system-audio capture goes through this crate directly:
+# `Device::get_iaudioclient()` on a *Render*-direction device, then
+# `AudioClient::initialize_client(&fmt, &Direction::Capture, &mode)` — the
+# crate sets `AUDCLNT_STREAMFLAGS_LOOPBACK` automatically for that
+# Render-device/Capture-direction combination. Microphone capture stays on
+# cpal (reuses `voice::audio_capture`'s idioms) — only the loopback track
+# needs this Windows-only dependency.
+wasapi = "0.24"
+
 [dev-dependencies]
 # Enable sentry's TestTransport for runtime smoke of the observability
 # before_send filter (see tests/observability_smoke.rs). `default-features

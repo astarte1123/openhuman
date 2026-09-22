@@ -38,6 +38,8 @@ pub fn all_controller_schemas() -> Vec<ControllerSchema> {
         schemas("summarize"),
         schemas("search"),
         schemas("export"),
+        schemas("start_local_capture"),
+        schemas("stop_local_capture"),
     ]
 }
 
@@ -86,6 +88,14 @@ pub fn all_registered_controllers() -> Vec<RegisteredController> {
         RegisteredController {
             schema: schemas("export"),
             handler: handle_export,
+        },
+        RegisteredController {
+            schema: schemas("start_local_capture"),
+            handler: handle_start_local_capture,
+        },
+        RegisteredController {
+            schema: schemas("stop_local_capture"),
+            handler: handle_stop_local_capture,
         },
     ]
 }
@@ -378,6 +388,49 @@ pub fn schemas(function: &str) -> ControllerSchema {
                 required: true,
             }],
         },
+        "start_local_capture" => ControllerSchema {
+            namespace: "meetings",
+            function: "start_local_capture",
+            description:
+                "Start local live audio capture (microphone + best-effort system-audio loopback) for a recording meeting, streaming transcript chunks in as they're transcribed.",
+            inputs: vec![meeting_id_input(
+                "Identifier of the recording meeting to capture audio for.",
+            )],
+            outputs: vec![FieldSchema {
+                name: "result",
+                ty: TypeSchema::Object {
+                    fields: vec![FieldSchema {
+                        name: "capturing",
+                        ty: TypeSchema::Bool,
+                        comment: "True once the capture backend has started.",
+                        required: true,
+                    }],
+                },
+                comment: "Capture start result payload.",
+                required: true,
+            }],
+        },
+        "stop_local_capture" => ControllerSchema {
+            namespace: "meetings",
+            function: "stop_local_capture",
+            description: "Stop an in-flight local audio capture session for a meeting, if one is running.",
+            inputs: vec![meeting_id_input(
+                "Identifier of the meeting whose local capture should stop.",
+            )],
+            outputs: vec![FieldSchema {
+                name: "result",
+                ty: TypeSchema::Object {
+                    fields: vec![FieldSchema {
+                        name: "stopped",
+                        ty: TypeSchema::Bool,
+                        comment: "True when an active capture session was found and stopped; false when none was running.",
+                        required: true,
+                    }],
+                },
+                comment: "Capture stop result payload.",
+                required: true,
+            }],
+        },
         _other => ControllerSchema {
             namespace: "meetings",
             function: "unknown",
@@ -513,6 +566,22 @@ fn handle_export(params: Map<String, Value>) -> ControllerFuture {
     })
 }
 
+fn handle_start_local_capture(params: Map<String, Value>) -> ControllerFuture {
+    Box::pin(async move {
+        let config = config_rpc::load_config_with_timeout().await?;
+        let meeting_id = read_required::<String>(&params, "meeting_id")?;
+        to_json(ops::meetings_start_local_capture(&config, meeting_id.trim()).await?)
+    })
+}
+
+fn handle_stop_local_capture(params: Map<String, Value>) -> ControllerFuture {
+    Box::pin(async move {
+        let config = config_rpc::load_config_with_timeout().await?;
+        let meeting_id = read_required::<String>(&params, "meeting_id")?;
+        to_json(ops::meetings_stop_local_capture(&config, meeting_id.trim()).await?)
+    })
+}
+
 fn read_required<T: DeserializeOwned>(params: &Map<String, Value>, key: &str) -> Result<T, String> {
     let value = params
         .get(key)
@@ -562,6 +631,8 @@ mod tests {
                 "summarize",
                 "search",
                 "export",
+                "start_local_capture",
+                "stop_local_capture",
             ]
         );
     }
@@ -569,7 +640,7 @@ mod tests {
     #[test]
     fn all_registered_controllers_has_handler_per_schema() {
         let controllers = all_registered_controllers();
-        assert_eq!(controllers.len(), 11);
+        assert_eq!(controllers.len(), 13);
         let names: Vec<_> = controllers.iter().map(|c| c.schema.function).collect();
         assert_eq!(
             names,
@@ -585,6 +656,8 @@ mod tests {
                 "summarize",
                 "search",
                 "export",
+                "start_local_capture",
+                "stop_local_capture",
             ]
         );
     }
@@ -628,6 +701,22 @@ mod tests {
         let names: Vec<_> = s.inputs.iter().map(|f| f.name).collect();
         assert!(names.contains(&"meeting_id"));
         assert!(names.contains(&"format"));
+    }
+
+    #[test]
+    fn schemas_start_local_capture_requires_meeting_id() {
+        let s = schemas("start_local_capture");
+        assert!(s.inputs.iter().all(|f| f.required));
+        assert_eq!(s.inputs[0].name, "meeting_id");
+        assert_eq!(s.outputs[0].name, "result");
+    }
+
+    #[test]
+    fn schemas_stop_local_capture_requires_meeting_id() {
+        let s = schemas("stop_local_capture");
+        assert!(s.inputs.iter().all(|f| f.required));
+        assert_eq!(s.inputs[0].name, "meeting_id");
+        assert_eq!(s.outputs[0].name, "result");
     }
 
     #[test]

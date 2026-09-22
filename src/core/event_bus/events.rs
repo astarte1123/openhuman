@@ -447,6 +447,31 @@ pub enum DomainEvent {
     /// detection (already redacted by the call site) — surfaced to logs,
     /// never to Sentry or the UI verbatim.
     SessionExpired { source: String, reason: String },
+
+    // ── Meetings ────────────────────────────────────────────────────────
+    /// One transcript chunk from a local live meeting capture was
+    /// transcribed and durably persisted.
+    ///
+    /// Published by `aura::meetings::bus::publish_transcript_chunk`, called
+    /// from `aura::meetings::capture::pipeline` right after
+    /// `meetings::ops::meetings_append_transcript_chunk` succeeds — so this
+    /// event always reflects a chunk that's already in SQLite, never a
+    /// speculative in-flight one. This is the meetings domain's first event
+    /// producer (Block 1 of the local-meeting-capture design); no internal
+    /// subscriber exists yet (see `aura::meetings::bus`'s module doc), but
+    /// the shape already matches what a future dual-socket frontend
+    /// subscriber would want to render a live transcript.
+    MeetingTranscriptChunkReceived {
+        meeting_id: String,
+        chunk_id: i64,
+        start_ms: i64,
+        end_ms: i64,
+        text: String,
+        speaker: Option<String>,
+        /// `"microphone"` or `"system_audio"` — see
+        /// `aura::meetings::capture::AudioTrack::as_str`.
+        track: String,
+    },
 }
 
 impl DomainEvent {
@@ -519,6 +544,8 @@ impl DomainEvent {
             | Self::HealthRestarted { .. } => "system",
 
             Self::SessionExpired { .. } => "auth",
+
+            Self::MeetingTranscriptChunkReceived { .. } => "meetings",
         }
     }
 }

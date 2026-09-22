@@ -453,6 +453,19 @@ fn all_variants_have_correct_domain() {
             },
             "auth",
         ),
+        // Meetings
+        (
+            DomainEvent::MeetingTranscriptChunkReceived {
+                meeting_id: "meeting_1".into(),
+                chunk_id: 1,
+                start_ms: 0,
+                end_ms: 4_000,
+                text: "hello team".into(),
+                speaker: Some("microphone".into()),
+                track: "microphone".into(),
+            },
+            "meetings",
+        ),
     ];
 
     for (event, expected_domain) in cases {

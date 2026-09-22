@@ -7,6 +7,8 @@
 //! `cron_update` / etc.
 
 use crate::aura::config::Config;
+use crate::aura::inference::local as local_ai;
+use crate::aura::meetings::capture;
 use crate::aura::meetings::export;
 use crate::aura::meetings::ocr;
 use crate::aura::meetings::store;
@@ -16,8 +18,157 @@ use crate::aura::meetings::types::{
 };
 use crate::rpc::RpcOutcome;
 use base64::{engine::general_purpose::STANDARD as BASE64, Engine as _};
+use once_cell::sync::Lazy;
 use serde::Serialize;
 use serde_json::json;
+use std::collections::HashMap;
+use std::sync::{Mutex, OnceLock};
+
+const LOG_PREFIX: &str = "[meetings-capture]";
+
+/// One slot in [`ACTIVE_CAPTURES`]: either a reservation for a session
+/// that's still starting, or a fully started, running session.
+///
+/// [`meetings_start_local_capture`] inserts `Starting` *before* doing the
+/// slow async start work (device/permission setup, which cannot happen
+/// while holding this registry's lock — see that function). Reserving the
+/// slot up front closes the check-then-insert race where two concurrent
+/// calls for the same `meeting_id` could both pass the "already capturing"
+/// check and race to insert, silently overwriting (and thus leaking, per
+/// [`capture::CaptureHandle`]'s doc comment) the loser's capture threads.
+enum CaptureSlot {
+    Starting,
+    Active(capture::CaptureHandle),
+}
+
+/// Process-wide registry of in-flight local capture sessions, keyed by
+/// `meeting_id`. This is genuinely new shared mutable state for this domain
+/// — every other function here is stateless per-call SQLite I/O — needed so
+/// [`meetings_stop_local_capture`] (and [`meetings_finish`] /
+/// [`meetings_delete`] force-stopping an active session) can find and tear
+/// down the right capture session. Lives at process scope (not per-`Config`)
+/// because there's exactly one in-process core per launch (`CoreProcessHandle`,
+/// no sidecar) — see `CLAUDE.md`'s "Core is in-process" note.
+static ACTIVE_CAPTURES: Lazy<Mutex<HashMap<String, CaptureSlot>>> =
+    Lazy::new(|| Mutex::new(HashMap::new()));
+
+/// Guards one-time registration of the graceful-shutdown hook that stops
+/// every in-flight local capture on process exit — see
+/// [`register_shutdown_hook_once`].
+static SHUTDOWN_HOOK_REGISTERED: OnceLock<()> = OnceLock::new();
+
+/// Removes and stops any *fully started* in-flight local capture session for
+/// `meeting_id`, if one exists. Shared by [`meetings_stop_local_capture`]
+/// (explicit stop) and [`meetings_finish`] / [`meetings_delete`] (implicit
+/// force-stop) so a capture thread is never left running past its meeting's
+/// lifecycle.
+///
+/// A `Starting` reservation (a concurrent [`meetings_start_local_capture`]
+/// call still mid-flight) is left untouched — there's no capture handle to
+/// stop yet — and this returns `Ok(false)` for it, same as "nothing active".
+fn force_stop_capture(meeting_id: &str) -> Result<bool, String> {
+    let mut registry = ACTIVE_CAPTURES
+        .lock()
+        .map_err(|e| format!("capture registry lock poisoned: {e}"))?;
+    match registry.get(meeting_id) {
+        Some(CaptureSlot::Starting) => {
+            log::warn!(
+                "{LOG_PREFIX} force_stop_capture: meeting_id={meeting_id} capture is still \
+                 starting, nothing to stop yet"
+            );
+            Ok(false)
+        }
+        Some(CaptureSlot::Active(_)) => {
+            let handle = match registry.remove(meeting_id) {
+                Some(CaptureSlot::Active(h)) => h,
+                _ => unreachable!("checked Active above under the same lock guard"),
+            };
+            drop(registry);
+            log::debug!("{LOG_PREFIX} force_stop_capture: stopping active session meeting_id={meeting_id}");
+            handle.stop()?;
+            Ok(true)
+        }
+        None => Ok(false),
+    }
+}
+
+/// Removes this meeting's `Starting` reservation after a failed start
+/// attempt (whisper load failure or backend start failure), so a retried
+/// [`meetings_start_local_capture`] call isn't permanently blocked by a
+/// stale reservation. Only ever removes a `Starting` entry — an `Active`
+/// one belongs to a session that actually started and must be torn down via
+/// [`force_stop_capture`] instead.
+fn release_capture_reservation(meeting_id: &str) {
+    match ACTIVE_CAPTURES.lock() {
+        Ok(mut registry) => {
+            if matches!(registry.get(meeting_id), Some(CaptureSlot::Starting)) {
+                registry.remove(meeting_id);
+            }
+        }
+        Err(e) => {
+            log::warn!(
+                "{LOG_PREFIX} release_capture_reservation: capture registry lock poisoned \
+                 meeting_id={meeting_id}: {e}"
+            );
+        }
+    }
+}
+
+/// Registers a `core::shutdown` hook, once per process, that force-stops
+/// every in-flight local capture session on graceful shutdown (SIGINT /
+/// SIGTERM). Without this, the mic/loopback OS capture threads behind an
+/// active [`ACTIVE_CAPTURES`] entry are never signalled to stop during
+/// shutdown — only the explicit [`meetings_stop_local_capture`] /
+/// [`meetings_finish`] / [`meetings_delete`] paths call
+/// [`force_stop_capture`]. Mirrors the idempotent-registration pattern used
+/// by `http_host::ops::register_shutdown_hook_once` and
+/// `channels::providers::whatsapp_web`. Called from
+/// [`meetings_start_local_capture`] so the hook only exists once a capture
+/// has actually been attempted.
+fn register_shutdown_hook_once() {
+    SHUTDOWN_HOOK_REGISTERED.get_or_init(|| {
+        crate::core::shutdown::register(|| async {
+            stop_all_active_captures().await;
+        });
+    });
+}
+
+/// Drains [`ACTIVE_CAPTURES`] and stops every session found — used by the
+/// shutdown hook registered in [`register_shutdown_hook_once`]. Unlike
+/// [`force_stop_capture`], this also drops any `Starting` reservation found
+/// (there's nothing more to wait for at shutdown).
+async fn stop_all_active_captures() {
+    let slots: Vec<(String, CaptureSlot)> = match ACTIVE_CAPTURES.lock() {
+        Ok(mut registry) => registry.drain().collect(),
+        Err(e) => {
+            log::warn!(
+                "{LOG_PREFIX} shutdown hook: capture registry lock poisoned, cannot stop \
+                 in-flight captures: {e}"
+            );
+            return;
+        }
+    };
+    for (meeting_id, slot) in slots {
+        match slot {
+            CaptureSlot::Active(handle) => {
+                log::debug!(
+                    "{LOG_PREFIX} shutdown hook: stopping active local capture meeting_id={meeting_id}"
+                );
+                if let Err(e) = handle.stop() {
+                    log::warn!(
+                        "{LOG_PREFIX} shutdown hook: failed to stop capture meeting_id={meeting_id} error={e}"
+                    );
+                }
+            }
+            CaptureSlot::Starting => {
+                log::warn!(
+                    "{LOG_PREFIX} shutdown hook: meeting_id={meeting_id} capture was still \
+                     starting at shutdown, nothing to stop"
+                );
+            }
+        }
+    }
+}
 
 /// Combined payload for `meetings_get`: the meeting row plus its ordered
 /// transcript chunks and captured slide screenshots.
@@ -110,6 +261,16 @@ pub async fn meetings_delete(
         return Err("Missing 'meeting_id' parameter".to_string());
     }
     let meeting_id = meeting_id.trim();
+
+    match force_stop_capture(meeting_id) {
+        Ok(true) => log::debug!(
+            "{LOG_PREFIX} meetings_delete: force-stopped active local capture meeting_id={meeting_id}"
+        ),
+        Ok(false) => {}
+        Err(e) => log::warn!(
+            "{LOG_PREFIX} meetings_delete: failed to force-stop capture meeting_id={meeting_id} error={e}"
+        ),
+    }
 
     let deleted = store::delete_meeting(config, meeting_id).map_err(|e| e.to_string())?;
     Ok(RpcOutcome::new(
@@ -252,6 +413,16 @@ pub async fn meetings_finish(
     let meeting = store::get_meeting(config, meeting_id).map_err(|e| e.to_string())?;
     if meeting.status != MeetingStatus::Recording {
         return Err("meeting is not recording".to_string());
+    }
+
+    match force_stop_capture(meeting_id) {
+        Ok(true) => log::debug!(
+            "{LOG_PREFIX} meetings_finish: force-stopped active local capture meeting_id={meeting_id}"
+        ),
+        Ok(false) => {}
+        Err(e) => log::warn!(
+            "{LOG_PREFIX} meetings_finish: failed to force-stop capture meeting_id={meeting_id} error={e}"
+        ),
     }
 
     let finished =
@@ -417,6 +588,152 @@ async fn summarize_transcript(config: &Config, transcript: &str) -> Result<Strin
         .chat_with_system(Some(system_prompt), transcript, &model, 0.3)
         .await
         .map_err(|e| format!("LLM summarization failed: {e}"))
+}
+
+/// Starts local live audio capture (microphone + best-effort system-audio
+/// loopback, see [`capture::windows`](crate::aura::meetings::capture::windows)
+/// on Windows) for a `recording` meeting, streaming transcript chunks in as
+/// they're transcribed via [`capture::pipeline::run_capture_session`].
+///
+/// Mirrors [`meetings_append_transcript_chunk`]'s validation: the meeting
+/// must exist and be `recording`. Rejects a second concurrent capture for
+/// the same meeting rather than silently replacing it — call
+/// [`meetings_stop_local_capture`] first.
+pub async fn meetings_start_local_capture(
+    config: &Config,
+    meeting_id: &str,
+) -> Result<RpcOutcome<serde_json::Value>, String> {
+    if meeting_id.trim().is_empty() {
+        return Err("Missing 'meeting_id' parameter".to_string());
+    }
+    let meeting_id = meeting_id.trim();
+
+    register_shutdown_hook_once();
+
+    log::debug!("{LOG_PREFIX} meetings_start_local_capture: start meeting_id={meeting_id}");
+
+    let meeting = store::get_meeting(config, meeting_id).map_err(|e| e.to_string())?;
+    if meeting.status != MeetingStatus::Recording {
+        let msg = "meeting is not recording".to_string();
+        log::warn!(
+            "{LOG_PREFIX} meetings_start_local_capture: rejected meeting_id={meeting_id} reason={msg}"
+        );
+        return Err(msg);
+    }
+
+    // Reserve this meeting_id's slot *before* the slow async work below
+    // (whisper load + backend start) runs, so a second concurrent call for
+    // the same meeting_id sees the reservation and is rejected instead of
+    // racing to insert its own session — see `CaptureSlot`'s doc comment.
+    {
+        let mut registry = ACTIVE_CAPTURES
+            .lock()
+            .map_err(|e| format!("capture registry lock poisoned: {e}"))?;
+        if registry.contains_key(meeting_id) {
+            let msg = format!("meeting {meeting_id} already has an active local capture session");
+            log::warn!("{LOG_PREFIX} meetings_start_local_capture: {msg}");
+            return Err(msg);
+        }
+        registry.insert(meeting_id.to_string(), CaptureSlot::Starting);
+    }
+
+    let local_ai_service = local_ai::global(config);
+    // Meeting capture calls `whisper_engine::transcribe_pcm_f32` directly
+    // from the pipeline's consumer loop, with no CLI-subprocess fallback —
+    // unlike dictation, it needs the in-process engine loaded *before* any
+    // audio starts flowing, or every chunk for the whole meeting fails
+    // transcription silently (see `ensure_whisper_loaded`'s doc comment).
+    if let Err(e) = local_ai_service.ensure_whisper_loaded(config).await {
+        log::warn!(
+            "{LOG_PREFIX} meetings_start_local_capture: whisper engine not ready meeting_id={meeting_id} error={e}"
+        );
+        release_capture_reservation(meeting_id);
+        return Err(format!("failed to prepare local transcription engine: {e}"));
+    }
+    let whisper = local_ai_service.whisper.clone();
+    let backend = capture::default_backend();
+
+    let start_result = capture::pipeline::run_capture_session(
+        meeting_id.to_string(),
+        config.clone(),
+        whisper,
+        backend,
+    )
+    .await;
+
+    let capture_handle = match start_result {
+        Ok(h) => h,
+        Err(e) => {
+            log::warn!(
+                "{LOG_PREFIX} meetings_start_local_capture: backend failed meeting_id={meeting_id} error={e}"
+            );
+            release_capture_reservation(meeting_id);
+            return Err(format!("failed to start local capture: {e}"));
+        }
+    };
+
+    match ACTIVE_CAPTURES.lock() {
+        Ok(mut registry) => {
+            registry.insert(meeting_id.to_string(), CaptureSlot::Active(capture_handle));
+        }
+        Err(e) => {
+            // Registry lock poisoned — can't safely record this session in
+            // the map. Explicitly stop the capture threads we just started
+            // instead of letting `capture_handle` drop unstopped, which
+            // would leak them (see `capture::CaptureHandle`'s doc comment).
+            log::warn!(
+                "{LOG_PREFIX} meetings_start_local_capture: capture registry lock poisoned \
+                 while finalizing meeting_id={meeting_id}, stopping the session we just started: {e}"
+            );
+            if let Err(stop_err) = capture_handle.stop() {
+                log::warn!(
+                    "{LOG_PREFIX} meetings_start_local_capture: failed to stop capture after \
+                     poisoned-lock finalize meeting_id={meeting_id} error={stop_err}"
+                );
+            }
+            return Err(format!("capture registry lock poisoned: {e}"));
+        }
+    }
+
+    log::debug!("{LOG_PREFIX} meetings_start_local_capture: capturing meeting_id={meeting_id}");
+
+    Ok(RpcOutcome::new(
+        json!({ "capturing": true }),
+        vec![format!("local capture started for meeting: {meeting_id}")],
+    ))
+}
+
+/// Stops an in-flight local capture session for a meeting, if one is
+/// running. Returns `stopped: false` (not an error) when no capture is
+/// active for `meeting_id` — calling stop when nothing is capturing is not
+/// exceptional (e.g. a UI that always calls stop on unmount).
+pub async fn meetings_stop_local_capture(
+    config: &Config,
+    meeting_id: &str,
+) -> Result<RpcOutcome<serde_json::Value>, String> {
+    if meeting_id.trim().is_empty() {
+        return Err("Missing 'meeting_id' parameter".to_string());
+    }
+    let meeting_id = meeting_id.trim();
+
+    log::debug!("{LOG_PREFIX} meetings_stop_local_capture: start meeting_id={meeting_id}");
+
+    // Validate the meeting exists so a typo'd meeting_id surfaces a clear
+    // "not found" error instead of a silent stopped=false.
+    store::get_meeting(config, meeting_id).map_err(|e| e.to_string())?;
+
+    let stopped = force_stop_capture(meeting_id)?;
+
+    log::debug!(
+        "{LOG_PREFIX} meetings_stop_local_capture: done meeting_id={meeting_id} stopped={stopped}"
+    );
+
+    Ok(RpcOutcome::new(
+        json!({ "stopped": stopped }),
+        vec![format!(
+            "local capture stop requested for meeting: {meeting_id} (stopped={stopped})"
+        )],
+    ))
 }
 
 #[cfg(test)]

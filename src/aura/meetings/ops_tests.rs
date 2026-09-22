@@ -457,3 +457,199 @@ async fn meetings_search_finds_matching_chunk() {
     assert!(out.value[0].snippet.contains("<mark>"));
     assert!(out.logs.iter().any(|l| l.contains("1 result")));
 }
+
+// ── local capture (start/stop) ──────────────────────────────────────────
+//
+// These cover the validation branches only — anything that would reach
+// `capture::default_backend()` needs real audio hardware and can't be
+// exercised in a unit test (see the module doc comment on
+// `capture::windows` for why, and CLAUDE.md's debug-logging rule for how
+// failures there are meant to be diagnosed instead: verbose `[meetings-capture]`
+// logs plus manual verification).
+
+#[tokio::test]
+async fn meetings_start_local_capture_rejects_empty_meeting_id() {
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+
+    let err = meetings_start_local_capture(&config, "   ")
+        .await
+        .unwrap_err();
+    assert!(err.contains("Missing 'meeting_id'"));
+}
+
+#[tokio::test]
+async fn meetings_start_local_capture_errors_when_meeting_missing() {
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+
+    let err = meetings_start_local_capture(&config, "does-not-exist")
+        .await
+        .unwrap_err();
+    assert!(err.contains("not found"));
+}
+
+#[tokio::test]
+async fn meetings_start_local_capture_errors_when_meeting_not_recording() {
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+    let created = meetings_create(&config, None, None).await.unwrap().value;
+    meetings_finish(&config, &created.id, 1_000).await.unwrap();
+
+    let err = meetings_start_local_capture(&config, &created.id)
+        .await
+        .unwrap_err();
+    assert!(err.contains("meeting is not recording"));
+}
+
+#[tokio::test]
+async fn meetings_stop_local_capture_rejects_empty_meeting_id() {
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+
+    let err = meetings_stop_local_capture(&config, "  ")
+        .await
+        .unwrap_err();
+    assert!(err.contains("Missing 'meeting_id'"));
+}
+
+#[tokio::test]
+async fn meetings_stop_local_capture_errors_when_meeting_missing() {
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+
+    let err = meetings_stop_local_capture(&config, "does-not-exist")
+        .await
+        .unwrap_err();
+    assert!(err.contains("not found"));
+}
+
+#[tokio::test]
+async fn meetings_stop_local_capture_reports_false_when_nothing_active() {
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+    let created = meetings_create(&config, None, None).await.unwrap().value;
+
+    let out = meetings_stop_local_capture(&config, &created.id)
+        .await
+        .unwrap();
+    assert_eq!(out.value["stopped"], serde_json::json!(false));
+}
+
+#[test]
+fn force_stop_capture_returns_false_when_registry_empty() {
+    let stopped = force_stop_capture("no-such-meeting").unwrap();
+    assert!(!stopped);
+}
+
+// ── capture reservation / TOCTOU-race regression coverage ───────────────
+//
+// `ACTIVE_CAPTURES` is a process-wide static, so these tests manipulate it
+// directly with distinctive, test-scoped keys and clean up after
+// themselves so they don't bleed into other tests sharing the registry.
+// They can't exercise the `CaptureSlot::Active` branch without real audio
+// hardware to produce a `capture::CaptureHandle` (its constructor is
+// private outside `capture`) — see the module doc comment atop this file's
+// "local capture" section.
+
+#[tokio::test]
+async fn meetings_start_local_capture_rejects_when_reservation_already_starting() {
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+    let created = meetings_create(&config, None, None).await.unwrap().value;
+
+    // Simulate a concurrent `meetings_start_local_capture` call that has
+    // already reserved this meeting_id's slot (see `CaptureSlot::Starting`'s
+    // doc comment on the check-then-insert race this closes) — without
+    // needing real audio hardware to actually start a session.
+    {
+        let mut registry = ACTIVE_CAPTURES.lock().unwrap();
+        registry.insert(created.id.clone(), CaptureSlot::Starting);
+    }
+
+    let err = meetings_start_local_capture(&config, &created.id)
+        .await
+        .unwrap_err();
+    assert!(err.contains("already has an active local capture session"));
+
+    ACTIVE_CAPTURES.lock().unwrap().remove(&created.id);
+}
+
+#[test]
+fn force_stop_capture_leaves_starting_reservation_untouched() {
+    let meeting_id = "force-stop-starting-test-meeting";
+    ACTIVE_CAPTURES
+        .lock()
+        .unwrap()
+        .insert(meeting_id.to_string(), CaptureSlot::Starting);
+
+    let stopped = force_stop_capture(meeting_id).unwrap();
+    assert!(!stopped, "a Starting reservation has no handle to stop yet");
+    assert!(
+        matches!(
+            ACTIVE_CAPTURES.lock().unwrap().get(meeting_id),
+            Some(CaptureSlot::Starting)
+        ),
+        "force_stop_capture must not remove a Starting slot it can't stop"
+    );
+
+    ACTIVE_CAPTURES.lock().unwrap().remove(meeting_id);
+}
+
+#[test]
+fn release_capture_reservation_removes_starting_slot() {
+    let meeting_id = "release-reservation-test-meeting";
+    ACTIVE_CAPTURES
+        .lock()
+        .unwrap()
+        .insert(meeting_id.to_string(), CaptureSlot::Starting);
+
+    release_capture_reservation(meeting_id);
+
+    assert!(ACTIVE_CAPTURES.lock().unwrap().get(meeting_id).is_none());
+}
+
+#[test]
+fn release_capture_reservation_is_a_no_op_when_nothing_reserved() {
+    // Just asserts this doesn't panic when the key is absent.
+    release_capture_reservation("no-such-meeting-for-release-test");
+}
+
+#[tokio::test]
+async fn stop_all_active_captures_drains_starting_reservations() {
+    let meeting_id = "shutdown-hook-starting-test-meeting";
+    ACTIVE_CAPTURES
+        .lock()
+        .unwrap()
+        .insert(meeting_id.to_string(), CaptureSlot::Starting);
+
+    stop_all_active_captures().await;
+
+    assert!(ACTIVE_CAPTURES.lock().unwrap().get(meeting_id).is_none());
+}
+
+#[test]
+fn register_shutdown_hook_once_is_idempotent() {
+    // Calling this more than once (e.g. two overlapping
+    // `meetings_start_local_capture` calls) must not panic or double-register
+    // the hook.
+    register_shutdown_hook_once();
+    register_shutdown_hook_once();
+}
+
+#[tokio::test]
+async fn meetings_finish_and_delete_tolerate_no_active_capture() {
+    // meetings_finish / meetings_delete both call force_stop_capture()
+    // unconditionally now — this exercises that path with nothing
+    // registered, i.e. the overwhelmingly common case (most meetings finish
+    // without ever using local capture).
+    let tmp = TempDir::new().unwrap();
+    let config = test_config(&tmp);
+    let created = meetings_create(&config, None, None).await.unwrap().value;
+
+    let finished = meetings_finish(&config, &created.id, 1_000).await.unwrap();
+    assert_eq!(finished.value.status, MeetingStatus::Completed);
+
+    let deleted = meetings_delete(&config, &created.id).await.unwrap();
+    assert_eq!(deleted.value["deleted"], serde_json::json!(true));
+}
