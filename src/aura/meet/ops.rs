@@ -3,6 +3,29 @@
 //! Validation lives here so it can be unit-tested without standing up the
 //! full RPC machinery.
 
+/// A call platform the shell knows how to open a CEF window for and (for
+/// some platforms) drive a CDP-based join automation against.
+///
+/// Only `GoogleMeet` exists today — `validate_meet_url` still only
+/// accepts `meet.google.com`, so [`detect_platform`] is not yet wired
+/// into the join RPC. It exists so `app/src-tauri`'s
+/// `meet_scanner::spawn` has a domain-owned dispatch point to select a
+/// `CallJoinScanner` implementation, ready for Teams/Zoom variants to be
+/// added in later work without another round of shell-side URL parsing.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CallPlatform {
+    GoogleMeet,
+}
+
+/// Detect which [`CallPlatform`] a call URL belongs to, purely from its
+/// host. Returns `None` for any host we don't yet recognise.
+pub fn detect_platform(url: &url::Url) -> Option<CallPlatform> {
+    match url.host_str() {
+        Some("meet.google.com") => Some(CallPlatform::GoogleMeet),
+        _ => None,
+    }
+}
+
 /// Validate that a string is a Google Meet call URL we're willing to hand
 /// to the embedded webview.
 ///
@@ -90,6 +113,29 @@ mod ops_tests;
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn detect_platform_recognizes_google_meet() {
+        let url = url::Url::parse("https://meet.google.com/abc-defg-hij").unwrap();
+        assert_eq!(detect_platform(&url), Some(CallPlatform::GoogleMeet));
+    }
+
+    #[test]
+    fn detect_platform_returns_none_for_other_hosts() {
+        for raw in [
+            "https://zoom.us/j/123456789",
+            "https://teams.microsoft.com/l/meetup-join/abc",
+            "https://teams.live.com/meet/abc",
+            "https://example.com/abc-defg-hij",
+        ] {
+            let url = url::Url::parse(raw).unwrap();
+            assert_eq!(
+                detect_platform(&url),
+                None,
+                "expected no platform match for {raw}"
+            );
+        }
+    }
 
     #[test]
     fn accepts_canonical_meet_code_url() {

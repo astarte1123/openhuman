@@ -1,74 +1,91 @@
-//! CDP-driven Meet join automation.
+//! CDP-driven call-join automation, dispatched per platform.
 //!
-//! Runs once per call, after `meet_call::meet_call_open_window` has
-//! successfully built the dedicated CEF webview. Connects to CEF's
-//! browser-level WebSocket, attaches to the new Meet target, and walks
-//! through the join page in three phases:
+//! Runs once per call, after the shell has successfully built the
+//! dedicated CEF webview for the call URL. [`spawn`] picks a
+//! [`CallJoinScanner`] implementation for the URL's platform and drives
+//! it: connects to CEF's browser-level WebSocket, attaches to the new
+//! call target, and walks through that platform's join page.
 //!
-//!  1. Dismiss the device-check ("Continue without microphone and camera").
-//!  2. Type the supplied guest display name into the "Your name" input.
-//!  3. Click "Ask to join".
+//! Today there is a single implementation, [`google_meet::GoogleMeetScanner`],
+//! which is the exact join automation this module used to hardcode
+//! directly. Its three phases (dismiss device-check, type display name,
+//! click join) live entirely inside that impl — the [`CallJoinScanner`]
+//! trait intentionally does not impose a fixed phase shape, since other
+//! platforms (Teams, Zoom) may need a different number/order of steps.
 //!
-//! All steps go through CDP from this scanner side — there is **no**
+//! All steps go through CDP from the scanner side — there is **no**
 //! init-script JS injected into the webview. `Runtime.evaluate` is used
 //! to find candidate elements by visible text / aria-label, and
 //! `Input.insertText` to inject the display name as a synthetic IME
-//! event so Meet's React-controlled `<input>` actually picks it up.
+//! event so a React-controlled `<input>` actually picks it up.
 //!
-//! The whole sequence is best-effort: if any phase times out we log and
-//! bail without crashing the window — the user can finish joining
-//! manually. Future work: emit lifecycle events back to the frontend so
-//! the UI can show "asking host…" / "joined" status.
+//! Every implementation's join sequence is best-effort: if any phase
+//! times out, it logs and bails without crashing the window — the user
+//! can finish joining manually. Future work: emit lifecycle events back
+//! to the frontend so the UI can show "asking host…" / "joined" status.
 //!
 //! ## Cancellation
 //!
 //! [`spawn`] returns a [`tokio::task::AbortHandle`] that the caller must
-//! store and abort when the associated Meet window is closing. Without
-//! cancellation the scanner's CDP polling loops (NAME_INPUT_BUDGET +
-//! JOIN_BUTTON_BUDGET, up to 60 s total) keep WebSocket connections open
-//! to the CEF debugging endpoint. CEF waits for all active CDP sessions
-//! to detach before completing renderer shutdown, so an un-cancelled
-//! scanner delays the [`tauri::WindowEvent::Destroyed`] event — and
-//! therefore the `meet-call:closed` frontend event — by up to 60 s.
-//! See [`crate::meet_call::meet_call_close_window`] for the abort site.
+//! store and abort when the associated call window is closing. Without
+//! cancellation the scanner's CDP polling loops keep WebSocket
+//! connections open to the CEF debugging endpoint. CEF waits for all
+//! active CDP sessions to detach before completing renderer shutdown, so
+//! an un-cancelled scanner delays the [`tauri::WindowEvent::Destroyed`]
+//! event — and therefore the `meet-call:closed` frontend event — by up
+//! to the scanner's full budget. See
+//! [`crate::meet_call::meet_call_close_window`] for the abort site.
 
-use std::time::Duration;
+mod common;
+mod google_meet;
 
-use serde_json::{json, Value};
 use tauri::{AppHandle, Runtime};
 
-use crate::cdp::{self, CdpConn};
+/// Per-call context handed to a [`CallJoinScanner::run`] implementation.
+///
+/// Replaces the loose `(request_id, meet_url, display_name)` positional
+/// args the pre-generalisation `run()` free function took.
+pub struct JoinContext {
+    pub request_id: String,
+    pub call_url: String,
+    pub display_name: String,
+}
 
-/// Wait at most this long for CEF to surface the new Meet page target
-/// after `WebviewWindowBuilder::build()` returns. CEF lazy-creates the
-/// renderer-side target a few hundred ms after the host-side window is
-/// ready.
-const TARGET_DISCOVERY_BUDGET: Duration = Duration::from_secs(20);
-const TARGET_DISCOVERY_INTERVAL: Duration = Duration::from_millis(500);
+/// A platform-specific CDP-driven join automation.
+///
+/// Deliberately a single entry point (`run`) rather than fixed lifecycle
+/// methods like `dismiss_device_check()` / `enter_name()` / `click_join()`
+/// — that would impose Google Meet's exact 3-phase shape on every future
+/// provider. Each implementation owns its own internal phase sequencing,
+/// calling into the shared [`common`] CDP helpers as needed.
+#[async_trait::async_trait]
+pub trait CallJoinScanner: Send + Sync {
+    /// Short identifier used in log lines, e.g. `"google-meet"`.
+    fn provider_name(&self) -> &'static str;
 
-/// Per-phase polling budgets. With the mascot fake-camera flag set
-/// process-wide in `lib.rs`, Meet sees a "real" webcam and does NOT
-/// show the "Continue without microphone and camera" screen at all,
-/// so the device-check phase becomes a quick best-effort probe rather
-/// than a meaningful wait. We still keep the phase in case a future
-/// build runs without the fake-camera flag (or the Y4M failed to
-/// rasterize), but cap it tight so the join flow doesn't stall.
-const DEVICE_CHECK_BUDGET: Duration = Duration::from_secs(6);
-const NAME_INPUT_BUDGET: Duration = Duration::from_secs(30);
-const JOIN_BUTTON_BUDGET: Duration = Duration::from_secs(30);
-const POLL_INTERVAL: Duration = Duration::from_millis(500);
+    /// Drive the join automation for this platform. Best-effort: an
+    /// `Err` is logged by the caller and does not crash the call window.
+    async fn run(&self, ctx: &JoinContext) -> Result<(), String>;
+}
 
-/// Spawn the CDP-driven join automation and return an abort handle.
+/// Spawn the CDP-driven join automation for `meet_url`'s platform and
+/// return an abort handle.
 ///
 /// The caller **must** call [`tokio::task::AbortHandle::abort`] on the
-/// returned handle when the Meet window is being torn down. Without
+/// returned handle when the call window is being torn down. Without
 /// cancellation the scanner's polling loops hold CDP connections open and
-/// delay CEF renderer shutdown by up to `NAME_INPUT_BUDGET +
-/// JOIN_BUTTON_BUDGET` (60 s). See the module-level doc for details.
+/// delay CEF renderer shutdown. See the module-level doc for details.
 ///
 /// `meet_url` is the exact normalised URL the window was navigated to;
-/// the scanner uses it as a target-URL prefix so two concurrent calls
+/// implementations use it as a target-URL prefix so two concurrent calls
 /// each attach to their own CEF target instead of cross-controlling.
+///
+/// Platform selection goes through
+/// [`aura_core::aura::meet::ops::detect_platform`]. Today `meet_call`'s
+/// caller only ever hands us `meet.google.com` URLs (it rejects anything
+/// else before calling `spawn`), so this always resolves to
+/// [`google_meet::GoogleMeetScanner`] — the dispatch exists so future
+/// blocks can add match arms without touching this function's shape.
 pub fn spawn<R: Runtime>(
     _app: AppHandle<R>,
     request_id: String,
@@ -78,209 +95,43 @@ pub fn spawn<R: Runtime>(
     // Use tokio::spawn (not tauri::async_runtime::spawn) so we get a
     // JoinHandle whose abort_handle() we can return to the caller.
     let handle = tokio::spawn(async move {
-        match run(&request_id, &meet_url, &display_name).await {
-            Ok(()) => log::info!("[meet-scanner] join sequence completed request_id={request_id}"),
-            Err(err) => {
-                log::warn!("[meet-scanner] join sequence aborted request_id={request_id} err={err}")
-            }
+        let scanner = select_scanner(&meet_url);
+        let provider = scanner.provider_name();
+        let ctx = JoinContext {
+            request_id: request_id.clone(),
+            call_url: meet_url,
+            display_name,
+        };
+        match scanner.run(&ctx).await {
+            Ok(()) => log::info!(
+                "[meet-scanner] join sequence completed provider={provider} request_id={request_id}"
+            ),
+            Err(err) => log::warn!(
+                "[meet-scanner] join sequence aborted provider={provider} request_id={request_id} err={err}"
+            ),
         }
     });
     handle.abort_handle()
 }
 
-async fn run(request_id: &str, meet_url: &str, display_name: &str) -> Result<(), String> {
-    let (mut cdp, session) = wait_for_meet_target(meet_url).await?;
-    log::info!("[meet-scanner] attached to meet target request_id={request_id} session={session}");
-
-    // `Runtime.enable` is required before `Runtime.evaluate` returns
-    // structured results in some CEF builds. `Page.enable` is harmless
-    // and gives us frame-lifecycle events for free if a future PR wants
-    // them. Both are best-effort — if they fail we still try to evaluate.
-    let _ = cdp.call("Page.enable", json!({}), Some(&session)).await;
-    let _ = cdp.call("Runtime.enable", json!({}), Some(&session)).await;
-
-    // Phase 1 — dismiss the device-check screen.
-    //
-    // Meet's exact copy varies by region/A-B test; we try the canonical
-    // English variants. The button is usually `[role="button"]` not
-    // `<button>`, so `wait_and_click_text` looks at both.
-    if let Err(err) = wait_and_click_text(
-        &mut cdp,
-        &session,
-        &[
-            "Continue without microphone and camera",
-            "Continue without microphone",
-            "Continue without camera",
-        ],
-        DEVICE_CHECK_BUDGET,
-    )
-    .await
-    {
-        log::info!("[meet-scanner] device-check dismissal not needed or unavailable: {err}");
-    }
-
-    // Phase 2 — type the display name.
-    type_into_named_input(&mut cdp, &session, "Your name", display_name).await?;
-
-    // Phase 3 — request to join.
-    wait_and_click_text(
-        &mut cdp,
-        &session,
-        &["Ask to join", "Join now"],
-        JOIN_BUTTON_BUDGET,
-    )
-    .await?;
-
-    Ok(())
-}
-
-/// Poll CEF's target list until a page whose URL starts with `meet_url`
-/// shows up, then attach a CDP session to it. Filtering by the full
-/// per-call URL prefix (rather than just the host) keeps two concurrent
-/// Meet calls from cross-controlling each other when both are open.
-async fn wait_for_meet_target(meet_url: &str) -> Result<(CdpConn, String), String> {
-    let deadline = tokio::time::Instant::now() + TARGET_DISCOVERY_BUDGET;
-    let mut last_err = String::new();
-    while tokio::time::Instant::now() < deadline {
-        match cdp::connect_and_attach_matching(|t| t.url.starts_with(meet_url)).await {
-            Ok(pair) => return Ok(pair),
-            Err(err) => {
-                last_err = err;
-                tokio::time::sleep(TARGET_DISCOVERY_INTERVAL).await;
-            }
+/// Pick the [`CallJoinScanner`] for `call_url`'s platform.
+///
+/// Delegates host/scheme detection to the core (`src/aura/meet/ops.rs`)
+/// so URL-shape knowledge lives in the domain, not the shell. Falls back
+/// to [`google_meet::GoogleMeetScanner`] for an unrecognised URL rather
+/// than panicking — `meet_call::meet_call_open_window` already rejects
+/// non-`meet.google.com` URLs before `spawn` is ever called, so this
+/// fallback is unreachable in practice today, but keeps `spawn` infallible
+/// (no `Option`/`Result` in its signature) for future callers.
+fn select_scanner(call_url: &str) -> Box<dyn CallJoinScanner> {
+    let platform = url::Url::parse(call_url)
+        .ok()
+        .and_then(|url| aura_core::aura::meet::ops::detect_platform(&url));
+    match platform {
+        Some(aura_core::aura::meet::ops::CallPlatform::GoogleMeet) | None => {
+            Box::new(google_meet::GoogleMeetScanner)
         }
     }
-    Err(format!(
-        "timeout waiting for meet.google.com target: {last_err}"
-    ))
-}
-
-/// Repeatedly evaluate a click-by-text helper in the page until either
-/// a click lands or `budget` elapses.
-async fn wait_and_click_text(
-    cdp: &mut CdpConn,
-    session: &str,
-    labels: &[&str],
-    budget: Duration,
-) -> Result<(), String> {
-    let labels_js = serde_json::to_string(labels).map_err(|e| format!("labels json: {e}"))?;
-    let expression = format!(
-        r#"
-        (() => {{
-          const labels = {labels_js};
-          const want = labels.map(l => l.toLowerCase());
-          const candidates = document.querySelectorAll(
-            'button, [role="button"], a[role="button"]'
-          );
-          for (const el of candidates) {{
-            if (el.disabled || el.getAttribute('aria-disabled') === 'true') continue;
-            const text = ((el.innerText || el.textContent) || '').trim().toLowerCase();
-            if (!text) continue;
-            if (!want.some(w => text.includes(w))) continue;
-            const rect = el.getBoundingClientRect();
-            if (rect.width === 0 || rect.height === 0) continue;
-            el.scrollIntoView({{ block: 'center', inline: 'center' }});
-            el.click();
-            return text;
-          }}
-          return null;
-        }})()
-        "#
-    );
-
-    let deadline = tokio::time::Instant::now() + budget;
-    let mut last_value = Value::Null;
-    while tokio::time::Instant::now() < deadline {
-        let res = cdp
-            .call(
-                "Runtime.evaluate",
-                json!({
-                    "expression": expression,
-                    "returnByValue": true,
-                    "awaitPromise": false,
-                }),
-                Some(session),
-            )
-            .await?;
-        let value = res
-            .get("result")
-            .and_then(|r| r.get("value"))
-            .cloned()
-            .unwrap_or(Value::Null);
-        if value.is_string() {
-            log::info!(
-                "[meet-scanner] clicked element matching {labels:?} text={}",
-                value.as_str().unwrap_or("")
-            );
-            return Ok(());
-        }
-        last_value = value;
-        tokio::time::sleep(POLL_INTERVAL).await;
-    }
-    Err(format!(
-        "timeout waiting for clickable element matching {labels:?} (last={last_value})"
-    ))
-}
-
-/// Focus an `<input>` whose `aria-label` or `placeholder` contains
-/// `hint`, then dispatch the supplied text via `Input.insertText` so
-/// Meet's React-controlled input picks it up as a real keystroke.
-async fn type_into_named_input(
-    cdp: &mut CdpConn,
-    session: &str,
-    hint: &str,
-    text: &str,
-) -> Result<(), String> {
-    let hint_js = serde_json::to_string(hint).map_err(|e| format!("hint json: {e}"))?;
-    let focus_expr = format!(
-        r#"
-        (() => {{
-          const hint = {hint_js}.toLowerCase();
-          const inputs = document.querySelectorAll('input');
-          for (const inp of inputs) {{
-            const t = (inp.getAttribute('type') || 'text').toLowerCase();
-            if (t !== 'text' && t !== 'search') continue;
-            const aria = (inp.getAttribute('aria-label') || '').toLowerCase();
-            const ph = (inp.placeholder || '').toLowerCase();
-            if (!aria.includes(hint) && !ph.includes(hint)) continue;
-            inp.focus();
-            inp.click();
-            // Clear any value already there so we don't append to a
-            // half-typed name from a previous attempt.
-            try {{ inp.select(); }} catch (_) {{}}
-            return true;
-          }}
-          return false;
-        }})()
-        "#
-    );
-
-    let deadline = tokio::time::Instant::now() + NAME_INPUT_BUDGET;
-    while tokio::time::Instant::now() < deadline {
-        let res = cdp
-            .call(
-                "Runtime.evaluate",
-                json!({ "expression": focus_expr, "returnByValue": true }),
-                Some(session),
-            )
-            .await?;
-        let focused = res
-            .get("result")
-            .and_then(|r| r.get("value"))
-            .and_then(|v| v.as_bool())
-            .unwrap_or(false);
-        if focused {
-            cdp.call("Input.insertText", json!({ "text": text }), Some(session))
-                .await?;
-            log::info!(
-                "[meet-scanner] inserted display name (hint={hint} chars={})",
-                text.chars().count()
-            );
-            return Ok(());
-        }
-        tokio::time::sleep(POLL_INTERVAL).await;
-    }
-    Err(format!("timeout waiting for input matching hint={hint}"))
 }
 
 #[cfg(test)]
@@ -288,16 +139,18 @@ mod tests {
     use super::*;
 
     #[test]
-    fn budget_constants_are_sane() {
-        // The total scanner budget (discovery + phases) should stay well
-        // under 120 s so it never outlasts a full meet session or a build
-        // timeout. This assertion catches accidental inflation.
-        let total =
-            TARGET_DISCOVERY_BUDGET + DEVICE_CHECK_BUDGET + NAME_INPUT_BUDGET + JOIN_BUTTON_BUDGET;
-        assert!(
-            total <= Duration::from_secs(120),
-            "total scanner budget {total:?} exceeds 120 s — check if constants were accidentally inflated"
-        );
+    fn select_scanner_resolves_google_meet() {
+        let scanner = select_scanner("https://meet.google.com/abc-defg-hij");
+        assert_eq!(scanner.provider_name(), "google-meet");
+    }
+
+    #[test]
+    fn select_scanner_falls_back_to_google_meet_for_unrecognised_url() {
+        // meet_call rejects non-meet.google.com URLs before spawn() is
+        // ever called, so this path is unreachable today — but spawn()
+        // must stay infallible, so the fallback must not panic.
+        let scanner = select_scanner("https://example.com/whatever");
+        assert_eq!(scanner.provider_name(), "google-meet");
     }
 
     #[tokio::test]
@@ -308,6 +161,7 @@ mod tests {
             atomic::{AtomicBool, Ordering},
             Arc,
         };
+        use std::time::Duration;
 
         let completed = Arc::new(AtomicBool::new(false));
         let completed_clone = completed.clone();
