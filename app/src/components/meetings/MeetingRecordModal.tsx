@@ -20,7 +20,7 @@ interface Props {
  * (device selects + title) rather than a yes/no prompt.
  */
 export default function MeetingRecordModal({ onClose, onStarted }: Props) {
-  const { t } = useT();
+  const { t, locale } = useT();
 
   const [devices, setDevices] = useState<AudioDeviceInfo[]>([]);
   const [loadingDevices, setLoadingDevices] = useState(true);
@@ -74,7 +74,8 @@ export default function MeetingRecordModal({ onClose, onStarted }: Props) {
         micDeviceName || undefined,
         systemDeviceName || undefined,
         title.trim() || undefined,
-        participants
+        participants,
+        locale.split('-')[0]
       );
       onStarted(meetingId);
     } catch (err) {

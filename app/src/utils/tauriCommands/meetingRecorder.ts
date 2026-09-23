@@ -36,7 +36,8 @@ export async function meetingRecorderStart(
   micDeviceName?: string,
   systemDeviceName?: string,
   title?: string,
-  participants?: string[]
+  participants?: string[],
+  language?: string
 ): Promise<string> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
@@ -46,6 +47,7 @@ export async function meetingRecorderStart(
     systemDeviceName: systemDeviceName ?? null,
     title: title ?? null,
     participants: participants && participants.length > 0 ? participants : null,
+    language: language ?? null,
   });
 }
 

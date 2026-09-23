@@ -79,12 +79,12 @@ impl From<AudioDevice> for AudioDeviceInfo {
 struct ActiveSession {
     meeting_id: String,
     started_at: Instant,
-    stop_flag: Arc<AtomicBool>,
-    pipeline_task: tauri::async_runtime::JoinHandle<()>,
+    /// Live transcription, delegated to the Minutes CLI engine (see
+    /// `minutes_engine` module doc for why).
+    minutes: super::minutes_engine::MinutesSession,
     /// Periodic primary-monitor screenshot capture for slide OCR (see
-    /// `screenshot` module doc). Same start/stop lifecycle as
-    /// `pipeline_task`: spawned in `meeting_recorder_start`, `.abort()`-ed
-    /// in `meeting_recorder_stop`.
+    /// `screenshot` module doc). Spawned in `meeting_recorder_start`,
+    /// `.abort()`-ed in `meeting_recorder_stop`.
     screenshot_task: tauri::async_runtime::JoinHandle<()>,
 }
 
@@ -118,6 +118,7 @@ pub async fn meeting_recorder_start<R: Runtime>(
     system_device_name: Option<String>,
     title: Option<String>,
     participants: Option<Vec<String>>,
+    language: Option<String>,
 ) -> Result<String, String> {
     {
         let guard = state.inner.lock().unwrap();
@@ -127,27 +128,13 @@ pub async fn meeting_recorder_start<R: Runtime>(
     }
 
     log::info!(
-        "{LOG_PREFIX} start requested mic={mic_device_name:?} system={system_device_name:?}"
+        "{LOG_PREFIX} start requested mic={mic_device_name:?} system={system_device_name:?} \
+         language={language:?}"
     );
+    let _ = &app;
 
-    // 1) Resolve devices. On unsupported platforms this fails immediately
-    // with a clear "not yet implemented" error — nothing below runs.
-    let host = cpal::default_host();
-    let available = devices::configure_platform_audio(&host).map_err(|e| e.to_string())?;
-
-    let mic_device = pick_device(&available, DeviceType::Input, mic_device_name.as_deref())
-        .ok_or_else(|| "no microphone device available".to_string())?;
-    let system_device = pick_device(
-        &available,
-        DeviceType::Output,
-        system_device_name.as_deref(),
-    )
-    .ok_or_else(|| "no system-audio (loopback) device available".to_string())?;
-
-    let (mic_cpal_device, mic_config) =
-        devices::get_device(&mic_device).map_err(|e| e.to_string())?;
-    let (system_cpal_device, system_config) =
-        devices::get_device(&system_device).map_err(|e| e.to_string())?;
+    // 1) Fail fast before creating a meeting row if the engine is missing.
+    super::minutes_engine::minutes_binary()?;
 
     // 2) Create the meeting via core RPC first, so the very first
     // transcript-chunk push can't race an unfinished create.
@@ -173,54 +160,32 @@ pub async fn meeting_recorder_start<R: Runtime>(
         .to_string();
     log::info!("{LOG_PREFIX} created meeting_id={meeting_id}");
 
-    // 3) Resolve (downloading if needed) the whisper model before
-    // starting capture, so the first speech segment doesn't stall behind
-    // a multi-hundred-MB download. On non-Windows this is harmless to run
-    // (just stages a file), even though `WhisperEngine::load` afterwards
-    // will refuse to actually use it.
-    let workspace_dir = app
-        .path()
-        .app_local_data_dir()
-        .map_err(|e| format!("app_local_data_dir: {e}"))?;
-    let model_path = whisper_engine::ensure_model_downloaded(&workspace_dir)
-        .await
-        .map_err(|e| format!("whisper model setup failed: {e}"))?;
-    let engine = Arc::new(
-        WhisperEngine::load(&model_path).map_err(|e| format!("whisper load failed: {e}"))?,
-    );
+    // 3) Start live transcription via the Minutes engine.
+    let minutes = match super::minutes_engine::start(
+        meeting_id.clone(),
+        language,
+        mic_device_name,
+    )
+    .await
+    {
+        Ok(s) => s,
+        Err(err) => {
+            let _ = rpc_call(
+                "aura.meetings_finish",
+                serde_json::json!({ "meeting_id": meeting_id, "duration_ms": 0 }),
+            )
+            .await;
+            return Err(err);
+        }
+    };
 
-    // 4) Spawn capture threads (mic + system loopback).
-    let stop_flag = Arc::new(AtomicBool::new(false));
-    let (tx, rx) = tokio::sync::mpsc::unbounded_channel::<CapturedChunk>();
-
-    spawn_capture_thread(
-        mic_cpal_device,
-        mic_config,
-        DeviceType::Input,
-        tx.clone(),
-        stop_flag.clone(),
-    );
-    spawn_capture_thread(
-        system_cpal_device,
-        system_config,
-        DeviceType::Output,
-        tx,
-        stop_flag.clone(),
-    );
-
-    // 5) Spawn the async pipeline: mixer -> resample -> VAD -> whisper -> RPC push.
-    let pipeline_meeting_id = meeting_id.clone();
-    let pipeline_handle =
-        tauri::async_runtime::spawn(run_pipeline(rx, engine, pipeline_meeting_id));
-
-    // 6) Spawn the sibling periodic screenshot-capture task (slide OCR).
+    // 4) Spawn the sibling periodic screenshot-capture task (slide OCR).
     let screenshot_handle = screenshot::spawn_capture_task(meeting_id.clone());
 
     *state.inner.lock().unwrap() = Some(ActiveSession {
         meeting_id: meeting_id.clone(),
         started_at: Instant::now(),
-        stop_flag,
-        pipeline_task: pipeline_handle,
+        minutes,
         screenshot_task: screenshot_handle,
     });
 
@@ -236,16 +201,9 @@ pub async fn meeting_recorder_stop(
         return Err("no meeting recording in progress".to_string());
     };
 
-    session.stop_flag.store(true, Ordering::SeqCst);
-    // Give the capture threads a moment to unwind (each polls its stop
-    // flag every 20ms — see `stream::run_capture_thread`) so any audio
-    // already in flight gets one last chance to reach the mixer/VAD
-    // before we abort the pipeline task.
-    tokio::time::sleep(Duration::from_millis(200)).await;
-    session.pipeline_task.abort();
     session.screenshot_task.abort();
-
     let duration_ms = session.started_at.elapsed().as_millis() as i64;
+    super::minutes_engine::stop(session.minutes).await;
     rpc_call(
         "aura.meetings_finish",
         serde_json::json!({
@@ -374,6 +332,12 @@ async fn run_pipeline(
 
             match vad_mic.process(&mic_window) {
                 Ok(segments) => {
+                    if !segments.is_empty() {
+                        log::info!(
+                            "{LOG_PREFIX} mic VAD detected {} speech segment(s)",
+                            segments.len()
+                        );
+                    }
                     for segment in segments {
                         transcribe_and_push(&engine, &meeting_id, segment, SPEAKER_MIC).await;
                     }
@@ -383,6 +347,12 @@ async fn run_pipeline(
 
             match vad_system.process(&system_window) {
                 Ok(segments) => {
+                    if !segments.is_empty() {
+                        log::info!(
+                            "{LOG_PREFIX} system VAD detected {} speech segment(s)",
+                            segments.len()
+                        );
+                    }
                     for segment in segments {
                         transcribe_and_push(&engine, &meeting_id, segment, SPEAKER_SYSTEM).await;
                     }
@@ -404,11 +374,15 @@ async fn transcribe_and_push(
     // Whisper inference is CPU-bound and synchronous — run it off the
     // async runtime thread so the pipeline keeps draining the capture
     // channel while transcription is in flight.
+    let sample_count = segment.samples.len();
     let text = match tokio::task::spawn_blocking(move || engine.transcribe(&segment.samples)).await
     {
         Ok(Ok(text)) => text,
         Ok(Err(err)) => {
-            log::warn!("{LOG_PREFIX} whisper transcription failed: {err}");
+            log::warn!(
+                "{LOG_PREFIX} whisper transcription failed speaker={speaker} \
+                 sample_count={sample_count}: {err}"
+            );
             return;
         }
         Err(join_err) => {
@@ -417,9 +391,20 @@ async fn transcribe_and_push(
         }
     };
     if text.trim().is_empty() {
+        log::info!(
+            "{LOG_PREFIX} whisper returned empty text for speaker={speaker} \
+             sample_count={sample_count} (segment discarded — likely silence/noise \
+             misclassified as speech by VAD)"
+        );
         return;
     }
-    if let Err(err) = rpc_call(
+    log::info!(
+        "{LOG_PREFIX} transcribed speaker={speaker} sample_count={sample_count} \
+         text_chars={} preview={:?}",
+        text.len(),
+        text.chars().take(60).collect::<String>()
+    );
+    match rpc_call(
         "aura.meetings_append_transcript_chunk",
         serde_json::json!({
             "meeting_id": meeting_id,
@@ -431,7 +416,8 @@ async fn transcribe_and_push(
     )
     .await
     {
-        log::warn!("{LOG_PREFIX} append_transcript_chunk failed: {err}");
+        Ok(_) => log::info!("{LOG_PREFIX} pushed transcript chunk speaker={speaker}"),
+        Err(err) => log::warn!("{LOG_PREFIX} append_transcript_chunk failed: {err}"),
     }
 }
 
@@ -452,7 +438,7 @@ fn resample_chunk(
 /// rather than importing `meet_audio`'s, matching the existing project
 /// convention of each shell feature module owning its own small RPC
 /// helper (see also `telegram_scanner::mod.rs`).
-async fn rpc_call(method: &str, params: serde_json::Value) -> Result<serde_json::Value, String> {
+pub(super) async fn rpc_call(method: &str, params: serde_json::Value) -> Result<serde_json::Value, String> {
     let body = serde_json::json!({
         "jsonrpc": "2.0",
         "id": 1,

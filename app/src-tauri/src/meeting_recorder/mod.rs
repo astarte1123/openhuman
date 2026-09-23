@@ -32,6 +32,7 @@
 //! - [`recorder`] — orchestration, Tauri command surface, core RPC push.
 
 mod devices;
+mod minutes_engine;
 mod mixer;
 pub mod recorder;
 mod resample;
