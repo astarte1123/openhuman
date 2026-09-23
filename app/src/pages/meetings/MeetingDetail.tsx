@@ -277,6 +277,7 @@ const MeetingDetail = () => {
           <MeetingSummaryPanel
             meetingId={meeting.id}
             summary={meeting.summary}
+            structuredSummary={meeting.summary_structured}
             hasTranscript={chunks.length > 0}
             onSummarized={() => void loadMeeting()}
           />

@@ -1068,6 +1068,8 @@ const plPL: TranslationMap = {
   'meetings.detail.generateSummary': 'Wygeneruj podsumowanie',
   'meetings.detail.regenerateSummary': 'Regeneruj podsumowanie',
   'meetings.detail.summarizing': 'Zreasumowanie…',
+  'meetings.detail.decisions': 'Decyzje',
+  'meetings.detail.actionItems': 'Zadania',
   'meetings.detail.recordFirst': 'Najpierw coś nagraj',
   'meetings.detail.slides': 'Slajdy',
   'meetings.detail.noSlides': 'Nie przechwycono jeszcze żadnych slajdów',

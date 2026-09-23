@@ -36,7 +36,7 @@ export default function MeetingExportPanel({ meetingId, hasTranscript }: Props) 
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-sm font-semibold text-stone-900">{t('meetings.detail.export')}</h2>
         <div className="flex gap-2">
-          {(['pdf', 'docx'] as const).map(format => (
+          {(['pdf', 'docx', 'pptx'] as const).map(format => (
             <button
               key={format}
               type="button"

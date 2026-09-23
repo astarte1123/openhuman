@@ -1056,6 +1056,8 @@ const slSI: TranslationMap = {
   'meetings.detail.generateSummary': 'Ustvari povzetek',
   'meetings.detail.regenerateSummary': 'Ponovno ustvari povzetek',
   'meetings.detail.summarizing': 'Povzemanje ...',
+  'meetings.detail.decisions': 'Odločitve',
+  'meetings.detail.actionItems': 'Naloge',
   'meetings.detail.recordFirst': 'Najprej nekaj posnemi',
   'meetings.detail.slides': 'Diapozitivi',
   'meetings.detail.noSlides': 'Ni še posnetih diapozitivov',

@@ -1071,6 +1071,8 @@ const huHU: TranslationMap = {
   'meetings.detail.generateSummary': 'Összegzés létrehozása',
   'meetings.detail.regenerateSummary': 'Összegzés újragenerálása',
   'meetings.detail.summarizing': 'Összegzés…',
+  'meetings.detail.decisions': 'Döntések',
+  'meetings.detail.actionItems': 'Teendők',
   'meetings.detail.recordFirst': 'Először rögzítsen valamit',
   'meetings.detail.slides': 'Diák',
   'meetings.detail.noSlides': 'Még nem készült dia',

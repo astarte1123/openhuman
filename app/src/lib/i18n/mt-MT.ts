@@ -1060,6 +1060,8 @@ const mtMT: TranslationMap = {
   'meetings.detail.generateSummary': 'Iġġenera sommarju',
   'meetings.detail.regenerateSummary': 'Riġenera sommarju',
   'meetings.detail.summarizing': 'Fil-qosor...',
+  'meetings.detail.decisions': 'Deċiżjonijiet',
+  'meetings.detail.actionItems': 'Azzjonijiet',
   'meetings.detail.recordFirst': 'Irreġistra xi ħaġa l-ewwel',
   'meetings.detail.slides': 'Slajds',
   'meetings.detail.noSlides': "S'issa ma nqabadx slides",

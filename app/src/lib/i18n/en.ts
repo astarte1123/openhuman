@@ -1216,6 +1216,8 @@ const en: TranslationMap = {
   'meetings.detail.generateSummary': 'Generate summary',
   'meetings.detail.regenerateSummary': 'Regenerate summary',
   'meetings.detail.summarizing': 'Summarizing…',
+  'meetings.detail.decisions': 'Decisions',
+  'meetings.detail.actionItems': 'Action items',
   'meetings.detail.recordFirst': 'Record something first',
   'meetings.detail.slides': 'Slides',
   'meetings.detail.noSlides': 'No slides captured yet',

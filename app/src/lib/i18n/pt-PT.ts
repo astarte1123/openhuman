@@ -1065,6 +1065,8 @@ const ptPT: TranslationMap = {
   'meetings.detail.generateSummary': 'Gerar resumo',
   'meetings.detail.regenerateSummary': 'Regenerar resumo',
   'meetings.detail.summarizing': 'Resumindo…',
+  'meetings.detail.decisions': 'Decisões',
+  'meetings.detail.actionItems': 'Itens de ação',
   'meetings.detail.recordFirst': 'Grave algo primeiro',
   'meetings.detail.slides': 'Apresentações',
   'meetings.detail.noSlides': 'Nenhum slide capturado ainda',

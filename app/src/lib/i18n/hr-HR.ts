@@ -1060,6 +1060,8 @@ const hrHR: TranslationMap = {
   'meetings.detail.generateSummary': 'Generiraj sažetak',
   'meetings.detail.regenerateSummary': 'Ponovno generiraj sažetak',
   'meetings.detail.summarizing': 'Sažimanje...',
+  'meetings.detail.decisions': 'Odluke',
+  'meetings.detail.actionItems': 'Zadaci',
   'meetings.detail.recordFirst': 'Prvo nešto snimi',
   'meetings.detail.slides': 'Slajdovi',
   'meetings.detail.noSlides': 'Još nema snimljenih slajdova',

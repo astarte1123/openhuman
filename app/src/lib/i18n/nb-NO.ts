@@ -1050,6 +1050,8 @@ const nbNO: TranslationMap = {
   'meetings.detail.generateSummary': 'Generer sammendrag',
   'meetings.detail.regenerateSummary': 'Regenerer sammendrag',
   'meetings.detail.summarizing': 'Oppsummerer …',
+  'meetings.detail.decisions': 'Beslutninger',
+  'meetings.detail.actionItems': 'Handlingspunkter',
   'meetings.detail.recordFirst': 'Ta opp noe først',
   'meetings.detail.slides': 'Lysbilder',
   'meetings.detail.noSlides': 'Ingen lysbilder er tatt ennå',

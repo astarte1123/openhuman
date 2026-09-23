@@ -1059,6 +1059,8 @@ const gaIE: TranslationMap = {
   'meetings.detail.generateSummary': 'Gin achoimre',
   'meetings.detail.regenerateSummary': 'Achoimre a athghiniúint',
   'meetings.detail.summarizing': 'Ag achoimre…',
+  'meetings.detail.decisions': 'Cinntí',
+  'meetings.detail.actionItems': 'Míreanna gníomhaíochta',
   'meetings.detail.recordFirst': 'Taifead rud éigin ar dtús',
   'meetings.detail.slides': 'Sleamhnáin',
   'meetings.detail.noSlides': 'Níor gabhadh aon sleamhnáin fós',

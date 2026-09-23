@@ -10,6 +10,7 @@ use crate::aura::config::Config;
 use crate::aura::inference::local as local_ai;
 use crate::aura::meetings::capture;
 use crate::aura::meetings::export;
+use crate::aura::meetings::export_pptx;
 use crate::aura::meetings::ocr;
 use crate::aura::meetings::store;
 use crate::aura::meetings::store::SearchResult;
@@ -1049,9 +1050,10 @@ pub async fn meetings_search(
     ))
 }
 
-/// Renders a meeting's transcript (+ summary, if any) to PDF or DOCX and
-/// writes it under `<workspace_dir>/meetings/exports/<meeting_id>.<format>`,
-/// returning that absolute path. `format` must be `"pdf"` or `"docx"` —
+/// Renders a meeting's transcript (+ summary, if any) to PDF, DOCX, or
+/// PPTX and writes it under
+/// `<workspace_dir>/meetings/exports/<meeting_id>.<format>`, returning
+/// that absolute path. `format` must be `"pdf"`, `"docx"`, or `"pptx"` —
 /// anything else is rejected before any rendering work happens.
 pub async fn meetings_export(
     config: &Config,
@@ -1066,19 +1068,19 @@ pub async fn meetings_export(
 
     log::debug!("[meetings] meetings_export: start meeting_id={meeting_id} format={format:?}");
 
-    if format != "pdf" && format != "docx" {
+    if format != "pdf" && format != "docx" && format != "pptx" {
         return Err(format!(
-            "unsupported export format '{format}': expected 'pdf' or 'docx'"
+            "unsupported export format '{format}': expected 'pdf', 'docx', or 'pptx'"
         ));
     }
 
     let meeting = store::get_meeting(config, meeting_id).map_err(|e| e.to_string())?;
     let chunks = store::list_transcript_chunks(config, meeting_id).map_err(|e| e.to_string())?;
 
-    let bytes = if format == "pdf" {
-        export::render_pdf(&meeting, &chunks).map_err(|e| e.to_string())?
-    } else {
-        export::render_docx(&meeting, &chunks).map_err(|e| e.to_string())?
+    let bytes = match format.as_str() {
+        "pdf" => export::render_pdf(&meeting, &chunks).map_err(|e| e.to_string())?,
+        "docx" => export::render_docx(&meeting, &chunks).map_err(|e| e.to_string())?,
+        _ => export_pptx::render_pptx(&meeting, &chunks).map_err(|e| e.to_string())?,
     };
 
     let exports_dir = config.workspace_dir.join("meetings").join("exports");

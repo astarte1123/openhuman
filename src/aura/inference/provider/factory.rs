@@ -99,12 +99,8 @@ pub fn create_chat_provider_from_string(
     );
 
     // Empty / legacy "cloud" sentinel → Aura backend.
-    if p.is_empty() || p == "cloud" {
-        return make_aura_backend(config);
-    }
-
-    if p == PROVIDER_AURA {
-        return make_aura_backend(config);
+    if p.is_empty() || p == "cloud" || p == PROVIDER_AURA {
+        return make_aura_backend_or_openai_fallback(role, config);
     }
 
     if let Some(model) = p.strip_prefix(OLLAMA_PROVIDER_PREFIX) {
@@ -154,6 +150,44 @@ pub fn create_chat_provider_from_string(
 }
 
 // ── Internal helpers ──────────────────────────────────────────────────────────
+
+/// Every non-`reasoning` role (`memory`/`summarization`, `embeddings`,
+/// `heartbeat`, `learning`, `subconscious`, `agentic`, `coding`) defaults to
+/// the Aura-managed backend when its `*_provider` config field is unset.
+/// This fork ships with no hosted backend configured by default (see
+/// `api/config.rs` module docs — `DEFAULT_API_BASE_URL = ""`), so every one
+/// of those roles fails outright for any user who hasn't got a real Aura
+/// account, even when they have a perfectly good `reasoning_provider =
+/// "openai:...".` set and a stored `provider:openai` key.
+///
+/// Falls back to that stored OpenAI key (model `gpt-4o-mini`) when there is
+/// no authenticated Aura session, so `summarize_transcript` and friends
+/// don't die on "Invalid API base URL" the same way the STT/TTS and
+/// embeddings paths did. When there's genuinely no OpenAI key either, this
+/// falls through to the normal (failing) Aura backend path so the original
+/// error still surfaces — no new silent failure mode.
+fn make_aura_backend_or_openai_fallback(
+    role: &str,
+    config: &Config,
+) -> anyhow::Result<(Box<dyn Provider>, String)> {
+    let has_aura_session = crate::aura::credentials::session_support::get_session_token(config)
+        .ok()
+        .flatten()
+        .is_some_and(|t| !t.trim().is_empty());
+    if !has_aura_session && config.cloud_providers.iter().any(|e| e.slug == "openai") {
+        if let Ok(key) = lookup_key_for_slug("openai", config) {
+            if !key.trim().is_empty() {
+                log::warn!(
+                    "[providers][chat-factory] role={} resolved to unconfigured Aura backend \
+                     but no authenticated session — falling back to stored OpenAI key",
+                    role
+                );
+                return make_cloud_provider_by_slug(role, "openai", "gpt-4o-mini", config);
+            }
+        }
+    }
+    make_aura_backend(config)
+}
 
 /// Build the Aura backend provider (session-JWT auth).
 fn make_aura_backend(config: &Config) -> anyhow::Result<(Box<dyn Provider>, String)> {

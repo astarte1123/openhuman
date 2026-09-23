@@ -1079,6 +1079,8 @@ const frFR: TranslationMap = {
   'meetings.detail.generateSummary': 'Générer un résumé',
   'meetings.detail.regenerateSummary': 'Régénérer le résumé',
   'meetings.detail.summarizing': 'Résumer…',
+  'meetings.detail.decisions': 'Décisions',
+  'meetings.detail.actionItems': 'Actions à mener',
   'meetings.detail.recordFirst': "Enregistrez d'abord quelque chose",
   'meetings.detail.slides': 'Diapositives',
   'meetings.detail.noSlides': "Aucune diapositive capturée pour l'instant",

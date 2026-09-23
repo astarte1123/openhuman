@@ -1054,6 +1054,8 @@ const csCZ: TranslationMap = {
   'meetings.detail.generateSummary': 'Vygenerovat souhrn',
   'meetings.detail.regenerateSummary': 'Obnovit souhrn',
   'meetings.detail.summarizing': 'Shrnutí…',
+  'meetings.detail.decisions': 'Rozhodnutí',
+  'meetings.detail.actionItems': 'Úkoly',
   'meetings.detail.recordFirst': 'Nejprve něco nahrajte',
   'meetings.detail.slides': 'Snímky',
   'meetings.detail.noSlides': 'Dosud nebyly zachyceny žádné snímky',

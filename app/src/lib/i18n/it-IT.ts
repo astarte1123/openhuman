@@ -1060,6 +1060,8 @@ const itIT: TranslationMap = {
   'meetings.detail.generateSummary': 'Genera riepilogo',
   'meetings.detail.regenerateSummary': 'Rigenera il riepilogo',
   'meetings.detail.summarizing': 'Riassumendo...',
+  'meetings.detail.decisions': 'Decisioni',
+  'meetings.detail.actionItems': 'Azioni da fare',
   'meetings.detail.recordFirst': 'Prima registra qualcosa',
   'meetings.detail.slides': 'Diapositive',
   'meetings.detail.noSlides': 'Nessuna diapositiva ancora acquisita',

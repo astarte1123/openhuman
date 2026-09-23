@@ -1070,6 +1070,8 @@ const bgBG: TranslationMap = {
   'meetings.detail.generateSummary': 'Генериране на резюме',
   'meetings.detail.regenerateSummary': 'Повторно генериране на резюме',
   'meetings.detail.summarizing': 'Обобщаване...',
+  'meetings.detail.decisions': 'Решения',
+  'meetings.detail.actionItems': 'Задачи за изпълнение',
   'meetings.detail.recordFirst': 'Първо запишете нещо',
   'meetings.detail.slides': 'Слайдове',
   'meetings.detail.noSlides': 'Все още няма заснети слайдове',

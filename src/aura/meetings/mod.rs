@@ -45,6 +45,7 @@ pub mod capture;
 #[cfg(feature = "diarize")]
 mod diarize;
 mod export;
+mod export_pptx;
 mod ocr;
 pub mod ops;
 mod schemas;

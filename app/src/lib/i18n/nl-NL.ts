@@ -1060,6 +1060,8 @@ const nlNL: TranslationMap = {
   'meetings.detail.generateSummary': 'Samenvatting genereren',
   'meetings.detail.regenerateSummary': 'Samenvatting opnieuw genereren',
   'meetings.detail.summarizing': 'Samenvattend…',
+  'meetings.detail.decisions': 'Besluiten',
+  'meetings.detail.actionItems': 'Actiepunten',
   'meetings.detail.recordFirst': 'Neem eerst iets op',
   'meetings.detail.slides': "Dia's",
   'meetings.detail.noSlides': "Er zijn nog geen dia's vastgelegd",

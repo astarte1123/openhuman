@@ -1079,6 +1079,8 @@ const deDE: TranslationMap = {
   'meetings.detail.generateSummary': 'Zusammenfassung erstellen',
   'meetings.detail.regenerateSummary': 'Zusammenfassung neu generieren',
   'meetings.detail.summarizing': 'Zusammenfassend…',
+  'meetings.detail.decisions': 'Entscheidungen',
+  'meetings.detail.actionItems': 'Aufgaben',
   'meetings.detail.recordFirst': 'Nehmen Sie zuerst etwas auf',
   'meetings.detail.slides': 'Folien',
   'meetings.detail.noSlides': 'Es wurden noch keine Folien aufgenommen',

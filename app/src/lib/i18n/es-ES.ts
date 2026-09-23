@@ -1069,6 +1069,8 @@ const esES: TranslationMap = {
   'meetings.detail.generateSummary': 'Generar resumen',
   'meetings.detail.regenerateSummary': 'Regenerar resumen',
   'meetings.detail.summarizing': 'Resumiendo…',
+  'meetings.detail.decisions': 'Decisiones',
+  'meetings.detail.actionItems': 'Elementos de acción',
   'meetings.detail.recordFirst': 'Graba algo primero',
   'meetings.detail.slides': 'Diapositivas',
   'meetings.detail.noSlides': 'Aún no se han capturado diapositivas',

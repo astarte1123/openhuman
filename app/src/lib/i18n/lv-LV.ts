@@ -1067,6 +1067,8 @@ const lvLV: TranslationMap = {
   'meetings.detail.generateSummary': 'Izveidojiet kopsavilkumu',
   'meetings.detail.regenerateSummary': 'Atjaunot kopsavilkumu',
   'meetings.detail.summarizing': 'Notiek apkopošana…',
+  'meetings.detail.decisions': 'Lēmumi',
+  'meetings.detail.actionItems': 'Uzdevumi',
   'meetings.detail.recordFirst': 'Vispirms ierakstiet kaut ko',
   'meetings.detail.slides': 'Slaidi',
   'meetings.detail.noSlides': 'Vēl nav uzņemts neviens slaids',

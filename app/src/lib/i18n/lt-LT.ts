@@ -1068,6 +1068,8 @@ const ltLT: TranslationMap = {
   'meetings.detail.generateSummary': 'Sukurti santrauką',
   'meetings.detail.regenerateSummary': 'Atkurti santrauką',
   'meetings.detail.summarizing': 'Apibendrinant…',
+  'meetings.detail.decisions': 'Sprendimai',
+  'meetings.detail.actionItems': 'Veiksmai',
   'meetings.detail.recordFirst': 'Pirmiausia ką nors įrašykite',
   'meetings.detail.slides': 'Skaidrės',
   'meetings.detail.noSlides': 'Dar neužfiksuota jokių skaidrių',

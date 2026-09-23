@@ -1068,6 +1068,8 @@ const roRO: TranslationMap = {
   'meetings.detail.generateSummary': 'Generați un rezumat',
   'meetings.detail.regenerateSummary': 'Regenerează rezumatul',
   'meetings.detail.summarizing': 'Rezumând…',
+  'meetings.detail.decisions': 'Decizii',
+  'meetings.detail.actionItems': 'Acțiuni',
   'meetings.detail.recordFirst': 'Înregistrați ceva mai întâi',
   'meetings.detail.slides': 'Diapozitive',
   'meetings.detail.noSlides': 'Încă nu au fost capturate diapozitive',

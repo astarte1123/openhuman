@@ -1053,6 +1053,8 @@ const svSE: TranslationMap = {
   'meetings.detail.generateSummary': 'Skapa en sammanfattning',
   'meetings.detail.regenerateSummary': 'Återskapa sammanfattning',
   'meetings.detail.summarizing': 'Sammanfattar...',
+  'meetings.detail.decisions': 'Beslut',
+  'meetings.detail.actionItems': 'Åtgärder',
   'meetings.detail.recordFirst': 'Spela in något först',
   'meetings.detail.slides': 'Bilder',
   'meetings.detail.noSlides': 'Inga bilder har tagits ännu',

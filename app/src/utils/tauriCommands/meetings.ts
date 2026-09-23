@@ -188,7 +188,7 @@ export async function auraMeetingsSearch(
   });
 }
 
-export type MeetingExportFormat = 'pdf' | 'docx';
+export type MeetingExportFormat = 'pdf' | 'docx' | 'pptx';
 
 /** Renders a meeting's transcript + summary to disk and returns its path. */
 export async function auraMeetingsExport(

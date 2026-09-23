@@ -1052,6 +1052,8 @@ const daDK: TranslationMap = {
   'meetings.detail.generateSummary': 'Generer oversigt',
   'meetings.detail.regenerateSummary': 'Gendan oversigt',
   'meetings.detail.summarizing': 'Opsummerer...',
+  'meetings.detail.decisions': 'Beslutninger',
+  'meetings.detail.actionItems': 'Handlingspunkter',
   'meetings.detail.recordFirst': 'Optag først noget',
   'meetings.detail.slides': 'Dias',
   'meetings.detail.noSlides': 'Ingen dias fanget endnu',

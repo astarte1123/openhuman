@@ -1053,6 +1053,8 @@ const skSK: TranslationMap = {
   'meetings.detail.generateSummary': 'Vytvorte súhrn',
   'meetings.detail.regenerateSummary': 'Obnoviť súhrn',
   'meetings.detail.summarizing': 'Zhrnutie…',
+  'meetings.detail.decisions': 'Rozhodnutia',
+  'meetings.detail.actionItems': 'Úlohy',
   'meetings.detail.recordFirst': 'Najprv niečo nahrajte',
   'meetings.detail.slides': 'Snímky',
   'meetings.detail.noSlides': 'Zatiaľ nie sú zachytené žiadne snímky',

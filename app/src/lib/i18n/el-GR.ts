@@ -1071,6 +1071,8 @@ const elGR: TranslationMap = {
   'meetings.detail.generateSummary': 'Δημιουργία περίληψης',
   'meetings.detail.regenerateSummary': 'Αναγέννηση περίληψης',
   'meetings.detail.summarizing': 'Συνοψίζοντας…',
+  'meetings.detail.decisions': 'Αποφάσεις',
+  'meetings.detail.actionItems': 'Ενέργειες',
   'meetings.detail.recordFirst': 'Καταγράψτε κάτι πρώτα',
   'meetings.detail.slides': 'Διαφάνειες',
   'meetings.detail.noSlides': 'Δεν έχουν ληφθεί ακόμη διαφάνειες',

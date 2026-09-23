@@ -1053,6 +1053,8 @@ const etEE: TranslationMap = {
   'meetings.detail.generateSummary': 'Loo kokkuvõte',
   'meetings.detail.regenerateSummary': 'Loo kokkuvõte uuesti',
   'meetings.detail.summarizing': 'Kokkuvõtete tegemine…',
+  'meetings.detail.decisions': 'Otsused',
+  'meetings.detail.actionItems': 'Tegevused',
   'meetings.detail.recordFirst': 'Salvestage kõigepealt midagi',
   'meetings.detail.slides': 'Slaidid',
   'meetings.detail.noSlides': 'Ühtegi slaidi pole veel jäädvustatud',

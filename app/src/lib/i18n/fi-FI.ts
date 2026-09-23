@@ -1058,6 +1058,8 @@ const fiFI: TranslationMap = {
   'meetings.detail.generateSummary': 'Luo yhteenveto',
   'meetings.detail.regenerateSummary': 'Luo yhteenveto uudelleen',
   'meetings.detail.summarizing': 'Yhteenvetoa…',
+  'meetings.detail.decisions': 'Päätökset',
+  'meetings.detail.actionItems': 'Toimenpiteet',
   'meetings.detail.recordFirst': 'Nauhoita ensin jotain',
   'meetings.detail.slides': 'Diat',
   'meetings.detail.noSlides': 'Ei vielä otettu dioja',
