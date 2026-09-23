@@ -752,22 +752,52 @@ fn validate_tts_provider(provider: &str) -> Result<(), String> {
 /// Read the user-selected STT provider from config. Defaults to `"cloud"`
 /// for fresh installs — keeps the existing renderer behaviour unchanged
 /// until the user opts into the local stack.
+///
+/// Auto-degrades `"cloud"` to `"whisper"` when there's no authenticated
+/// backend session: `cloud_transcribe::transcribe_cloud` unconditionally
+/// requires a JWT from the hosted backend (`get_session_token`) — it has
+/// no BYOK/direct-provider path, so selecting "cloud" pre-login always
+/// hard-fails with an opaque "authentication issue" error, indistinguishable
+/// from a real outage. A device that has local whisper/piper installed
+/// should transparently use them instead of surfacing that error on every
+/// single voice interaction — the user can still explicitly re-select
+/// "cloud" once they've logged in, at which point a real session token
+/// exists and this function stops overriding their choice.
 fn effective_stt_provider(config: &crate::aura::config::Config) -> String {
     let raw = config.local_ai.stt_provider.trim();
-    if raw.is_empty() {
-        "cloud".to_string()
-    } else {
-        raw.to_string()
+    let selected = if raw.is_empty() { "cloud" } else { raw };
+    if selected == "cloud" && !has_authenticated_session(config) {
+        log::warn!(
+            "[voice-factory] stt_provider='cloud' but no authenticated backend session — \
+             falling back to local whisper instead of failing every request"
+        );
+        return "whisper".to_string();
     }
+    selected.to_string()
 }
 
 fn effective_tts_provider(config: &crate::aura::config::Config) -> String {
     let raw = config.local_ai.tts_provider.trim();
-    if raw.is_empty() {
-        "cloud".to_string()
-    } else {
-        raw.to_string()
+    let selected = if raw.is_empty() { "cloud" } else { raw };
+    if selected == "cloud" && !has_authenticated_session(config) {
+        log::warn!(
+            "[voice-factory] tts_provider='cloud' but no authenticated backend session — \
+             falling back to local piper instead of failing every request"
+        );
+        return "piper".to_string();
     }
+    selected.to_string()
+}
+
+/// `true` iff a hosted-backend session token is actually available.
+/// `get_session_token` returns `Ok(None)` (not an error) for the common
+/// "never logged in" case, so both the error and empty-token cases mean
+/// "not authenticated" here.
+fn has_authenticated_session(config: &crate::aura::config::Config) -> bool {
+    matches!(
+        crate::aura::credentials::session_support::get_session_token(config),
+        Ok(Some(token)) if !token.trim().is_empty()
+    )
 }
 
 fn handle_voice_server_start(params: Map<String, Value>) -> ControllerFuture {
