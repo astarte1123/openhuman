@@ -221,6 +221,11 @@ const MeetingDetail = () => {
                   </span>
                 )}
               </div>
+              {meeting.participants.length > 0 && (
+                <p className="mt-1 truncate text-xs text-stone-500">
+                  {t('meetings.detail.participants')}: {meeting.participants.join(', ')}
+                </p>
+              )}
             </div>
             <button
               type="button"

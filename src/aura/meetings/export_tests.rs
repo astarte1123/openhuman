@@ -12,6 +12,7 @@ fn sample_meeting() -> Meeting {
         duration_ms: Some(9_000),
         summary: Some("We reviewed the backlog and assigned tickets.".into()),
         summary_structured: None,
+        participants: Vec::new(),
     }
 }
 

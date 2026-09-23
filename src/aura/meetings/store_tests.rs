@@ -20,7 +20,7 @@ fn create_and_get_roundtrip() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
 
-    let created = create_meeting(&config, "Standup", "manual").unwrap();
+    let created = create_meeting(&config, "Standup", "manual", &[]).unwrap();
     assert_eq!(created.title, "Standup");
     assert_eq!(created.source, "manual");
     assert_eq!(created.status, MeetingStatus::Recording);
@@ -49,9 +49,9 @@ fn list_orders_by_created_at_desc() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
 
-    let first = create_meeting(&config, "First", "manual").unwrap();
+    let first = create_meeting(&config, "First", "manual", &[]).unwrap();
     std::thread::sleep(std::time::Duration::from_millis(5));
-    let second = create_meeting(&config, "Second", "manual").unwrap();
+    let second = create_meeting(&config, "Second", "manual", &[]).unwrap();
 
     let listed = list_meetings(&config).unwrap();
     assert_eq!(listed.len(), 2);
@@ -75,7 +75,7 @@ fn list_is_empty_for_fresh_workspace() {
 fn append_transcript_chunk_and_list_orders_by_start_ms() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let meeting = create_meeting(&config, "Planning", "manual").unwrap();
+    let meeting = create_meeting(&config, "Planning", "manual", &[]).unwrap();
 
     // Insert out of order to prove the read path sorts by start_ms, not insertion order.
     let second = append_transcript_chunk(
@@ -104,7 +104,7 @@ fn append_transcript_chunk_and_list_orders_by_start_ms() {
 fn append_transcript_chunk_touches_meeting_updated_at() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let meeting = create_meeting(&config, "Sync", "manual").unwrap();
+    let meeting = create_meeting(&config, "Sync", "manual", &[]).unwrap();
 
     std::thread::sleep(std::time::Duration::from_millis(5));
     append_transcript_chunk(&config, &meeting.id, 0, 1_000, None, "hi").unwrap();
@@ -120,7 +120,7 @@ fn append_transcript_chunk_touches_meeting_updated_at() {
 fn list_transcript_chunks_is_empty_for_meeting_with_no_chunks() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let meeting = create_meeting(&config, "Quiet meeting", "manual").unwrap();
+    let meeting = create_meeting(&config, "Quiet meeting", "manual", &[]).unwrap();
 
     assert!(list_transcript_chunks(&config, &meeting.id)
         .unwrap()
@@ -133,7 +133,7 @@ fn list_transcript_chunks_is_empty_for_meeting_with_no_chunks() {
 fn delete_meeting_cascades_transcript_chunks() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let meeting = create_meeting(&config, "Retro", "manual").unwrap();
+    let meeting = create_meeting(&config, "Retro", "manual", &[]).unwrap();
     append_transcript_chunk(&config, &meeting.id, 0, 1_000, None, "hello").unwrap();
 
     let deleted = delete_meeting(&config, &meeting.id).unwrap();
@@ -152,7 +152,7 @@ fn delete_meeting_cascades_transcript_chunks() {
 fn delete_meeting_cascades_screenshots() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let meeting = create_meeting(&config, "Slides retro", "manual").unwrap();
+    let meeting = create_meeting(&config, "Slides retro", "manual", &[]).unwrap();
     insert_screenshot(&config, &meeting.id, 20_000, "/tmp/20000.png", "Slide text").unwrap();
 
     let deleted = delete_meeting(&config, &meeting.id).unwrap();
@@ -170,7 +170,7 @@ fn delete_meeting_cascades_screenshots() {
 fn insert_screenshot_and_list_orders_by_captured_at_ms() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let meeting = create_meeting(&config, "Slide deck review", "manual").unwrap();
+    let meeting = create_meeting(&config, "Slide deck review", "manual", &[]).unwrap();
 
     // Insert out of order to prove the read path sorts by captured_at_ms,
     // not insertion order.
@@ -204,7 +204,7 @@ fn insert_screenshot_and_list_orders_by_captured_at_ms() {
 fn list_screenshots_is_empty_for_meeting_with_no_screenshots() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let meeting = create_meeting(&config, "Quiet meeting", "manual").unwrap();
+    let meeting = create_meeting(&config, "Quiet meeting", "manual", &[]).unwrap();
 
     assert!(list_screenshots(&config, &meeting.id).unwrap().is_empty());
 }
@@ -224,7 +224,7 @@ fn delete_missing_meeting_returns_false() {
 fn update_title_changes_title() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let meeting = create_meeting(&config, "Old title", "manual").unwrap();
+    let meeting = create_meeting(&config, "Old title", "manual", &[]).unwrap();
 
     let updated = update_title(&config, &meeting.id, "New title").unwrap();
     assert_eq!(updated.id, meeting.id);
@@ -249,7 +249,7 @@ fn update_title_missing_meeting_errors() {
 fn finish_meeting_sets_completed_status_and_duration() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let meeting = create_meeting(&config, "Standup", "manual").unwrap();
+    let meeting = create_meeting(&config, "Standup", "manual", &[]).unwrap();
     assert_eq!(meeting.status, MeetingStatus::Recording);
 
     let finished = finish_meeting(&config, &meeting.id, 42_000).unwrap();
@@ -272,7 +272,7 @@ fn finish_missing_meeting_errors() {
 fn update_summary_persists_summary_text() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let meeting = create_meeting(&config, "Deep dive", "manual").unwrap();
+    let meeting = create_meeting(&config, "Deep dive", "manual", &[]).unwrap();
 
     update_summary(&config, &meeting.id, "Key takeaway: ship it.").unwrap();
 
@@ -295,7 +295,7 @@ fn update_summary_missing_meeting_errors() {
 fn update_summary_structured_persists_both_plain_and_structured_summary() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let meeting = create_meeting(&config, "Planning", "manual").unwrap();
+    let meeting = create_meeting(&config, "Planning", "manual", &[]).unwrap();
 
     let structured = MeetingSummary {
         overview: "We planned the release.".into(),
@@ -339,7 +339,7 @@ fn update_summary_structured_overwrites_a_prior_plain_summary() {
     // left over from before.
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let meeting = create_meeting(&config, "Retro", "manual").unwrap();
+    let meeting = create_meeting(&config, "Retro", "manual", &[]).unwrap();
     update_summary(&config, &meeting.id, "old plain summary").unwrap();
 
     let structured = MeetingSummary {
@@ -404,7 +404,7 @@ fn get_meeting_reads_pre_block4_row_with_only_plain_summary() {
     // `summary` column is populated.
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let meeting = create_meeting(&config, "Legacy meeting", "manual").unwrap();
+    let meeting = create_meeting(&config, "Legacy meeting", "manual", &[]).unwrap();
     update_summary(&config, &meeting.id, "legacy prose summary").unwrap();
 
     let fetched = get_meeting(&config, &meeting.id).unwrap();
@@ -479,7 +479,7 @@ fn with_connection_migrates_a_pre_block4_database_missing_the_column() {
 fn search_transcripts_finds_only_the_matching_chunk() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let meeting = create_meeting(&config, "Roadmap sync", "manual").unwrap();
+    let meeting = create_meeting(&config, "Roadmap sync", "manual", &[]).unwrap();
 
     let roadmap_chunk = append_transcript_chunk(
         &config,
@@ -537,7 +537,7 @@ fn search_transcripts_finds_only_the_matching_chunk() {
 fn search_transcripts_blank_query_returns_no_results_without_error() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let meeting = create_meeting(&config, "Blank query test", "manual").unwrap();
+    let meeting = create_meeting(&config, "Blank query test", "manual", &[]).unwrap();
     append_transcript_chunk(&config, &meeting.id, 0, 1_000, None, "some content").unwrap();
 
     let results = search_transcripts(&config, "   ", 50).unwrap();
@@ -548,7 +548,7 @@ fn search_transcripts_blank_query_returns_no_results_without_error() {
 fn search_transcripts_malformed_query_degrades_to_zero_results_instead_of_erroring() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let meeting = create_meeting(&config, "Punctuation test", "manual").unwrap();
+    let meeting = create_meeting(&config, "Punctuation test", "manual", &[]).unwrap();
     append_transcript_chunk(
         &config,
         &meeting.id,
@@ -576,7 +576,7 @@ fn search_transcripts_malformed_query_degrades_to_zero_results_instead_of_errori
 fn search_transcripts_backfills_rows_missing_from_fts_index() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let meeting = create_meeting(&config, "Backfill check", "manual").unwrap();
+    let meeting = create_meeting(&config, "Backfill check", "manual", &[]).unwrap();
     let chunk = append_transcript_chunk(
         &config,
         &meeting.id,

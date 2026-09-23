@@ -244,6 +244,7 @@ pub async fn meetings_create(
     config: &Config,
     title: Option<String>,
     source: Option<String>,
+    participants: Option<Vec<String>>,
 ) -> Result<RpcOutcome<Meeting>, String> {
     let title = title
         .map(|t| t.trim().to_string())
@@ -253,8 +254,15 @@ pub async fn meetings_create(
         .map(|s| s.trim().to_string())
         .filter(|s| !s.is_empty())
         .unwrap_or_else(|| "manual".to_string());
+    let participants: Vec<String> = participants
+        .unwrap_or_default()
+        .into_iter()
+        .map(|p| p.trim().to_string())
+        .filter(|p| !p.is_empty())
+        .collect();
 
-    let meeting = store::create_meeting(config, &title, &source).map_err(|e| e.to_string())?;
+    let meeting = store::create_meeting(config, &title, &source, &participants)
+        .map_err(|e| e.to_string())?;
     log::debug!(
         "[meetings] meetings_create id={} source={source}",
         meeting.id

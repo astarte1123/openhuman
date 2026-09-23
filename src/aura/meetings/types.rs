@@ -62,6 +62,13 @@ pub struct Meeting {
     /// `store::parse_summary_structured_column`) — both cases fall back to
     /// treating the meeting as if it only ever had a plain-text `summary`.
     pub summary_structured: Option<MeetingSummary>,
+    /// Planned attendee names, entered by the user when creating the
+    /// meeting (before or independent of who the recorder's per-channel
+    /// speaker tagging actually attributes text to — see
+    /// `app/src-tauri/src/meeting_recorder/recorder.rs`'s `SPEAKER_MIC` /
+    /// `SPEAKER_SYSTEM`). This is a roster, not automatic voice-to-name
+    /// attribution; empty when the user didn't fill it in.
+    pub participants: Vec<String>,
 }
 
 /// One action item extracted from a meeting's structured summary: what needs
@@ -174,6 +181,7 @@ mod tests {
             duration_ms: None,
             summary: None,
             summary_structured: None,
+            participants: Vec::new(),
         };
         let v = serde_json::to_value(&meeting).unwrap();
         assert_eq!(v["status"], "recording");
@@ -202,6 +210,7 @@ mod tests {
                     owner: Some("Alex".into()),
                 }],
             }),
+            participants: vec!["Alex".into()],
         };
         let v = serde_json::to_value(&meeting).unwrap();
         let back: Meeting = serde_json::from_value(v).unwrap();

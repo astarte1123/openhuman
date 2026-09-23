@@ -29,6 +29,7 @@ export default function MeetingRecordModal({ onClose, onStarted }: Props) {
   const [micDeviceName, setMicDeviceName] = useState('');
   const [systemDeviceName, setSystemDeviceName] = useState('');
   const [title, setTitle] = useState('');
+  const [participantsInput, setParticipantsInput] = useState('');
 
   const [starting, setStarting] = useState(false);
   const [startError, setStartError] = useState<string | null>(null);
@@ -65,10 +66,15 @@ export default function MeetingRecordModal({ onClose, onStarted }: Props) {
     setStarting(true);
     setStartError(null);
     try {
+      const participants = participantsInput
+        .split(',')
+        .map(name => name.trim())
+        .filter(name => name.length > 0);
       const meetingId = await meetingRecorderStart(
         micDeviceName || undefined,
         systemDeviceName || undefined,
-        title.trim() || undefined
+        title.trim() || undefined,
+        participants
       );
       onStarted(meetingId);
     } catch (err) {
@@ -142,6 +148,19 @@ export default function MeetingRecordModal({ onClose, onStarted }: Props) {
                   value={title}
                   onChange={e => setTitle(e.target.value)}
                   placeholder={t('meetings.recordModal.titlePlaceholder')}
+                  className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs font-medium text-stone-600">
+                  {t('meetings.recordModal.participantsLabel')}
+                </label>
+                <input
+                  type="text"
+                  value={participantsInput}
+                  onChange={e => setParticipantsInput(e.target.value)}
+                  placeholder={t('meetings.recordModal.participantsPlaceholder')}
                   className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900"
                 />
               </div>

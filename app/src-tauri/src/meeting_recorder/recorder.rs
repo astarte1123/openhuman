@@ -117,6 +117,7 @@ pub async fn meeting_recorder_start<R: Runtime>(
     mic_device_name: Option<String>,
     system_device_name: Option<String>,
     title: Option<String>,
+    participants: Option<Vec<String>>,
 ) -> Result<String, String> {
     {
         let guard = state.inner.lock().unwrap();
@@ -152,7 +153,11 @@ pub async fn meeting_recorder_start<R: Runtime>(
     // transcript-chunk push can't race an unfinished create.
     let create_result = rpc_call(
         "aura.meetings_create",
-        serde_json::json!({ "title": title, "source": "meeting_recorder" }),
+        serde_json::json!({
+            "title": title,
+            "source": "meeting_recorder",
+            "participants": participants,
+        }),
     )
     .await
     .map_err(|e| format!("meetings_create failed: {e}"))?;

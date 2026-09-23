@@ -1199,6 +1199,8 @@ const en: TranslationMap = {
   'meetings.recordModal.noDevices': 'No microphone found',
   'meetings.recordModal.titleLabel': 'Title (optional)',
   'meetings.recordModal.titlePlaceholder': 'Untitled meeting',
+  'meetings.recordModal.participantsLabel': 'Participants',
+  'meetings.recordModal.participantsPlaceholder': 'Jane Doe, John Smith, ...',
   'meetings.recordModal.start': 'Start',
   'meetings.recordModal.starting': 'Starting…',
 
@@ -1216,6 +1218,7 @@ const en: TranslationMap = {
   'meetings.detail.generateSummary': 'Generate summary',
   'meetings.detail.regenerateSummary': 'Regenerate summary',
   'meetings.detail.summarizing': 'Summarizing…',
+  'meetings.detail.participants': 'Participants',
   'meetings.detail.decisions': 'Decisions',
   'meetings.detail.actionItems': 'Action items',
   'meetings.detail.recordFirst': 'Record something first',

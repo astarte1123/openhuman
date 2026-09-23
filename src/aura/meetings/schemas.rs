@@ -143,6 +143,15 @@ pub fn schemas(function: &str) -> ControllerSchema {
                     comment: "Origin of the meeting recording; defaults to 'manual'.",
                     required: false,
                 },
+                FieldSchema {
+                    name: "participants",
+                    ty: TypeSchema::Option(Box::new(TypeSchema::Array(Box::new(
+                        TypeSchema::String,
+                    )))),
+                    comment: "Planned attendee names entered at creation time; empty entries \
+                              are dropped, defaults to an empty roster.",
+                    required: false,
+                },
             ],
             outputs: vec![FieldSchema {
                 name: "meeting",
@@ -591,7 +600,8 @@ fn handle_create(params: Map<String, Value>) -> ControllerFuture {
         let config = config_rpc::load_config_with_timeout().await?;
         let title = read_optional::<String>(&params, "title")?;
         let source = read_optional::<String>(&params, "source")?;
-        to_json(ops::meetings_create(&config, title, source).await?)
+        let participants = read_optional::<Vec<String>>(&params, "participants")?;
+        to_json(ops::meetings_create(&config, title, source, participants).await?)
     })
 }
 

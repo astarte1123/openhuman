@@ -43,13 +43,21 @@ pub fn render_pptx(meeting: &Meeting, chunks: &[TranscriptChunk]) -> Result<Vec<
         chunks.len()
     );
 
-    let participants = distinct_speakers(chunks);
     let mut slide_bodies: Vec<Vec<String>> = Vec::new();
 
-    // Title slide body: metadata + participants, no summary text.
+    // Title slide body: metadata + participants, no summary text. Prefer
+    // the planned attendee roster the user entered at meeting creation;
+    // fall back to the distinct speaker labels actually seen in the
+    // transcript (e.g. "You"/"Others" from per-channel tagging) when no
+    // roster was entered.
     let mut title_body = vec![format_meta_line(meeting)];
-    if !participants.is_empty() {
-        title_body.push(format!("Participants: {}", participants.join(", ")));
+    if !meeting.participants.is_empty() {
+        title_body.push(format!("Participants: {}", meeting.participants.join(", ")));
+    } else {
+        let participants = distinct_speakers(chunks);
+        if !participants.is_empty() {
+            title_body.push(format!("Participants: {}", participants.join(", ")));
+        }
     }
     slide_bodies.push(title_body);
 

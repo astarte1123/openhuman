@@ -47,6 +47,8 @@ export interface Meeting {
    * `summary` always stays populated and readable regardless.
    */
   summary_structured: MeetingSummary | null;
+  /** Planned attendee roster entered at creation time; empty if not filled in. */
+  participants: string[];
 }
 
 /** One action item extracted from a meeting's structured summary. */

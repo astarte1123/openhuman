@@ -22,17 +22,31 @@ use uuid::Uuid;
 const LOG_PREFIX: &str = "[meetings-summary]";
 
 /// Creates a new meeting row in `recording` status and returns it.
-pub fn create_meeting(config: &Config, title: &str, source: &str) -> Result<Meeting> {
+/// `participants` is the planned attendee roster entered at creation time
+/// (may be empty — not every caller collects it, e.g. the meeting recorder's
+/// quick-start flow).
+pub fn create_meeting(
+    config: &Config,
+    title: &str,
+    source: &str,
+    participants: &[String],
+) -> Result<Meeting> {
     let now = Utc::now().to_rfc3339();
     let id = format!("meeting_{}", Uuid::new_v4());
+    let participants_json =
+        serde_json::to_string(participants).context("Failed to serialize participants")?;
 
-    log::debug!("[meetings] creating meeting id={id} title={title} source={source}");
+    log::debug!(
+        "[meetings] creating meeting id={id} title={title} source={source} \
+         participant_count={}",
+        participants.len()
+    );
 
     with_connection(config, |conn| {
         conn.execute(
-            "INSERT INTO meetings (id, title, source, status, created_at, updated_at, duration_ms, summary, summary_structured)
-             VALUES (?1, ?2, ?3, 'recording', ?4, ?4, NULL, NULL, NULL)",
-            params![id, title, source, now],
+            "INSERT INTO meetings (id, title, source, status, created_at, updated_at, duration_ms, summary, summary_structured, participants)
+             VALUES (?1, ?2, ?3, 'recording', ?4, ?4, NULL, NULL, NULL, ?5)",
+            params![id, title, source, now, participants_json],
         )
         .context("Failed to insert meeting")?;
         Ok(())
@@ -45,7 +59,7 @@ pub fn create_meeting(config: &Config, title: &str, source: &str) -> Result<Meet
 pub fn list_meetings(config: &Config) -> Result<Vec<Meeting>> {
     with_connection(config, |conn| {
         let mut stmt = conn.prepare(
-            "SELECT id, title, source, status, created_at, updated_at, duration_ms, summary, summary_structured
+            "SELECT id, title, source, status, created_at, updated_at, duration_ms, summary, summary_structured, participants
              FROM meetings ORDER BY created_at DESC",
         )?;
 
@@ -62,7 +76,7 @@ pub fn list_meetings(config: &Config) -> Result<Vec<Meeting>> {
 pub fn get_meeting(config: &Config, meeting_id: &str) -> Result<Meeting> {
     with_connection(config, |conn| {
         let mut stmt = conn.prepare(
-            "SELECT id, title, source, status, created_at, updated_at, duration_ms, summary, summary_structured
+            "SELECT id, title, source, status, created_at, updated_at, duration_ms, summary, summary_structured, participants
              FROM meetings WHERE id = ?1",
         )?;
 
@@ -494,6 +508,7 @@ pub fn update_transcript_chunk_speakers(
 fn map_meeting_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<Meeting> {
     let id: String = row.get(0)?;
     let summary_structured_raw: Option<String> = row.get(8)?;
+    let participants_raw: Option<String> = row.get(9)?;
     Ok(Meeting {
         title: row.get(1)?,
         source: row.get(2)?,
@@ -503,8 +518,30 @@ fn map_meeting_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<Meeting> {
         duration_ms: row.get(6)?,
         summary: row.get(7)?,
         summary_structured: parse_summary_structured_column(&id, summary_structured_raw),
+        participants: parse_participants_column(&id, participants_raw),
         id,
     })
+}
+
+/// Parses the `participants` JSON column. Predates this column (rows
+/// created before the migration) or a corrupt/unparseable value both
+/// degrade to an empty roster rather than failing the whole row read —
+/// same "never let stored metadata brick the read path" philosophy as
+/// `parse_summary_structured_column`.
+fn parse_participants_column(meeting_id: &str, raw: Option<String>) -> Vec<String> {
+    let Some(raw) = raw.as_deref().map(str::trim).filter(|s| !s.is_empty()) else {
+        return Vec::new();
+    };
+    match serde_json::from_str::<Vec<String>>(raw) {
+        Ok(list) => list,
+        Err(err) => {
+            log::warn!(
+                "{LOG_PREFIX} meeting_id={meeting_id} failed to parse participants column, \
+                 treating as empty: {err}"
+            );
+            Vec::new()
+        }
+    }
 }
 
 fn map_chunk_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<TranscriptChunk> {
@@ -552,7 +589,8 @@ fn with_connection<T>(config: &Config, f: impl FnOnce(&Connection) -> Result<T>)
             updated_at  TEXT NOT NULL,
             duration_ms INTEGER,
             summary     TEXT,
-            summary_structured TEXT
+            summary_structured TEXT,
+            participants TEXT
         );
         CREATE INDEX IF NOT EXISTS idx_meetings_created_at ON meetings(created_at);
 
@@ -612,6 +650,9 @@ fn with_connection<T>(config: &Config, f: impl FnOnce(&Connection) -> Result<T>)
     // freshly created table (column already present, no-op) and an old one
     // (column added once, then a no-op forever after).
     add_column_if_missing(&conn, "meetings", "summary_structured", "TEXT")?;
+    // Migration for databases created before attendee planning: same idiom
+    // as the `summary_structured` migration above.
+    add_column_if_missing(&conn, "meetings", "participants", "TEXT")?;
 
     backfill_missing_fts_rows(&conn)?;
 

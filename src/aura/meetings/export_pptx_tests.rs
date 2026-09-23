@@ -12,6 +12,7 @@ fn sample_meeting(summary: Option<&str>) -> Meeting {
         duration_ms: Some(1_830_000),
         summary: summary.map(str::to_string),
         summary_structured: None,
+        participants: Vec::new(),
     }
 }
 

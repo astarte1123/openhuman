@@ -35,7 +35,8 @@ export async function meetingRecorderListDevices(): Promise<AudioDeviceInfo[]> {
 export async function meetingRecorderStart(
   micDeviceName?: string,
   systemDeviceName?: string,
-  title?: string
+  title?: string,
+  participants?: string[]
 ): Promise<string> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
@@ -44,6 +45,7 @@ export async function meetingRecorderStart(
     micDeviceName: micDeviceName ?? null,
     systemDeviceName: systemDeviceName ?? null,
     title: title ?? null,
+    participants: participants && participants.length > 0 ? participants : null,
   });
 }
 
