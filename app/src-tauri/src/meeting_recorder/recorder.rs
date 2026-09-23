@@ -46,7 +46,7 @@ use tauri::{AppHandle, Manager, Runtime};
 use tokio::sync::mpsc::UnboundedReceiver;
 
 use super::devices::{self, AudioDevice, DeviceType};
-use super::mixer::{AudioMixerRingBuffer, SimpleAudioMixer};
+use super::mixer::AudioMixerRingBuffer;
 use super::resample::Resampler16k;
 use super::screenshot;
 use super::stream::{self, CapturedChunk};
@@ -298,21 +298,46 @@ fn spawn_capture_thread(
     }
 }
 
+/// Speaker label attached to transcript chunks captured from the
+/// microphone device (i.e. this machine's user).
+const SPEAKER_MIC: &str = "You";
+/// Speaker label attached to transcript chunks captured from the
+/// system-loopback device (i.e. everyone else on the call).
+const SPEAKER_SYSTEM: &str = "Others";
+
 /// Drives one recording session end-to-end: drains captured chunks,
 /// resamples each device stream to 16kHz independently (mic and
-/// system-loopback devices aren't guaranteed to share a sample rate),
-/// mixes, runs VAD, and transcribes+pushes each detected speech segment.
+/// system-loopback devices aren't guaranteed to share a sample rate), then
+/// runs VAD and transcription **per source** rather than summing mic +
+/// system-loopback into one mono stream first.
+///
+/// Two independent `SileroVad` instances are used (VAD carries per-stream
+/// state) so each source's speech segments are detected and transcribed on
+/// their own — this both avoids the audio-quality loss from summing two
+/// simultaneous speakers into one waveform (whisper does markedly worse on
+/// overlapping-speech mixes) and gives real, non-heuristic 2-way speaker
+/// attribution for free: mic segments are tagged [`SPEAKER_MIC`] ("You"),
+/// system-loopback segments [`SPEAKER_SYSTEM`] ("Others"). This does not
+/// distinguish between multiple *other* participants on the same call —
+/// that needs true multi-speaker diarization (see
+/// `src/aura/meetings/diarize`, not yet wired into this pipeline).
 async fn run_pipeline(
     mut rx: UnboundedReceiver<CapturedChunk>,
     engine: Arc<WhisperEngine>,
     meeting_id: String,
 ) {
     let mut mixer = AudioMixerRingBuffer::new(VAD_SAMPLE_RATE);
-    let mut simple_mixer = SimpleAudioMixer;
-    let mut vad = match SileroVad::new() {
+    let mut vad_mic = match SileroVad::new() {
         Ok(v) => v,
         Err(err) => {
-            log::error!("{LOG_PREFIX} failed to initialize VAD, pipeline stopping: {err}");
+            log::error!("{LOG_PREFIX} failed to initialize mic VAD, pipeline stopping: {err}");
+            return;
+        }
+    };
+    let mut vad_system = match SileroVad::new() {
+        Ok(v) => v,
+        Err(err) => {
+            log::error!("{LOG_PREFIX} failed to initialize system VAD, pipeline stopping: {err}");
             return;
         }
     };
@@ -341,18 +366,23 @@ async fn run_pipeline(
 
         while mixer.can_mix() {
             let (mic_window, system_window) = mixer.extract_window();
-            let mixed = simple_mixer.mix_window(&mic_window, &system_window);
 
-            let segments = match vad.process(&mixed) {
-                Ok(segments) => segments,
-                Err(err) => {
-                    log::warn!("{LOG_PREFIX} vad process failed: {err}");
-                    continue;
+            match vad_mic.process(&mic_window) {
+                Ok(segments) => {
+                    for segment in segments {
+                        transcribe_and_push(&engine, &meeting_id, segment, SPEAKER_MIC).await;
+                    }
                 }
-            };
+                Err(err) => log::warn!("{LOG_PREFIX} mic vad process failed: {err}"),
+            }
 
-            for segment in segments {
-                transcribe_and_push(&engine, &meeting_id, segment).await;
+            match vad_system.process(&system_window) {
+                Ok(segments) => {
+                    for segment in segments {
+                        transcribe_and_push(&engine, &meeting_id, segment, SPEAKER_SYSTEM).await;
+                    }
+                }
+                Err(err) => log::warn!("{LOG_PREFIX} system vad process failed: {err}"),
             }
         }
     }
@@ -363,6 +393,7 @@ async fn transcribe_and_push(
     engine: &Arc<WhisperEngine>,
     meeting_id: &str,
     segment: super::vad::SpeechSegment,
+    speaker: &str,
 ) {
     let engine = engine.clone();
     // Whisper inference is CPU-bound and synchronous — run it off the
@@ -390,7 +421,7 @@ async fn transcribe_and_push(
             "start_ms": segment.start_timestamp_ms as i64,
             "end_ms": segment.end_timestamp_ms as i64,
             "text": text,
-            "speaker": Option::<String>::None,
+            "speaker": speaker,
         }),
     )
     .await

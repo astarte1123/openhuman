@@ -79,6 +79,20 @@ const MeetingDetail = () => {
     void loadMeeting();
   }, [loadMeeting]);
 
+  // While a recording is in progress, the backend appends transcript chunks
+  // (and screenshots) as they're captured, but `loadMeeting` only runs once
+  // on mount — so the page would otherwise sit frozen on whatever was
+  // captured in the first RPC round-trip until the user manually navigates
+  // away and back. Poll while `status === 'recording'` so the transcript
+  // fills in live; stop as soon as the meeting is no longer recording.
+  useEffect(() => {
+    if (meeting?.status !== 'recording') return;
+    const id = window.setInterval(() => {
+      void loadMeeting();
+    }, 2000);
+    return () => window.clearInterval(id);
+  }, [meeting?.status, loadMeeting]);
+
   const handleStartEditTitle = () => {
     if (!meeting) return;
     setTitleDraft(meeting.title);
