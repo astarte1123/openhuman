@@ -19,6 +19,61 @@ use crate::aura::embeddings::{
     self, EmbeddingProvider, DEFAULT_CLOUD_EMBEDDING_DIMENSIONS, DEFAULT_CLOUD_EMBEDDING_MODEL,
     DEFAULT_OLLAMA_DIMENSIONS, DEFAULT_OLLAMA_MODEL,
 };
+
+/// OpenAI's `text-embedding-3-small` dimensionality — the model this factory
+/// falls back to when auto-degrading from the unconfigured Aura backend.
+const OPENAI_FALLBACK_EMBEDDING_MODEL: &str = "text-embedding-3-small";
+const OPENAI_FALLBACK_EMBEDDING_DIMENSIONS: usize = 1536;
+
+/// When the intended embedding provider is `"cloud"` (Aura backend) but this
+/// build has no hosted backend configured (see `api/config.rs` module docs —
+/// this fork ships with `DEFAULT_API_BASE_URL = ""` by design) and no
+/// authenticated Aura session exists, every embed call fails with
+/// "Invalid API base URL: relative URL without a base" — silently breaking
+/// RAG context retrieval, chat, and meeting/memory summarization.
+///
+/// If the user has a stored OpenAI API key (the same `provider:openai`
+/// credential used for `reasoning_provider = "openai:..."`), degrade to it
+/// instead of failing outright. Returns `None` when no such key is stored,
+/// so the caller keeps the original "cloud" behavior (and its error) when
+/// there is genuinely nothing to fall back to.
+fn openai_embedding_fallback_if_unauthenticated(
+    workspace_dir: &Path,
+) -> Option<(String, String, usize, String)> {
+    let auth = crate::aura::credentials::AuthService::new(workspace_dir, true);
+    let has_aura_session = auth
+        .get_provider_bearer_token(crate::aura::credentials::APP_SESSION_PROVIDER, None)
+        .ok()
+        .flatten()
+        .is_some_and(|t| !t.trim().is_empty());
+    if has_aura_session {
+        return None;
+    }
+    let key = auth
+        .get_provider_bearer_token(
+            &crate::aura::inference::provider::factory::auth_key_for_slug("openai"),
+            None,
+        )
+        .ok()
+        .flatten()
+        .filter(|k| !k.trim().is_empty())
+        .or_else(|| {
+            auth.get_provider_bearer_token("openai", None)
+                .ok()
+                .flatten()
+                .filter(|k| !k.trim().is_empty())
+        })?;
+    log::warn!(
+        "[memory::factory] embedding_provider='cloud' but no authenticated Aura session — \
+         falling back to stored OpenAI key instead of failing every embed call"
+    );
+    Some((
+        "openai".to_string(),
+        OPENAI_FALLBACK_EMBEDDING_MODEL.to_string(),
+        OPENAI_FALLBACK_EMBEDDING_DIMENSIONS,
+        key,
+    ))
+}
 use crate::aura::memory::store::agentmemory::AgentMemoryBackend;
 use crate::aura::memory::store::unified::UnifiedMemory;
 use crate::aura::memory::traits::Memory;
@@ -419,6 +474,25 @@ fn create_memory_full(
         intended
     };
 
+    // 2b. Same backend-unavailability problem as the Ollama gate above, but
+    //     for the "cloud" (Aura-managed backend) path itself: this fork ships
+    //     with no hosted backend configured by default (see
+    //     `openai_embedding_fallback_if_unauthenticated` doc comment). Without
+    //     this, every embed call — and therefore RAG context retrieval and
+    //     summarization — fails outright when the user has no Aura session.
+    let mut api_key = String::new();
+    let (provider, model, dims) = if provider == "cloud" {
+        match openai_embedding_fallback_if_unauthenticated(workspace_dir) {
+            Some((p, m, d, key)) => {
+                api_key = key;
+                (p, m, d)
+            }
+            None => (provider, model, dims),
+        }
+    } else {
+        (provider, model, dims)
+    };
+
     log::debug!(
         "[memory::factory] effective embedding settings: provider={provider} model={model} dims={dims} \
          (local_ai_opt_in={local_ai_opt_in} gate_triggered={gate_triggered})",
@@ -426,11 +500,12 @@ fn create_memory_full(
 
     // 3. Create the embedding provider.
     let embedder: Arc<dyn EmbeddingProvider> = Arc::from(
-        embeddings::create_embedding_provider(&provider, &model, dims).inspect_err(|err| {
-            log::warn!(
-                "[memory::factory] create_embedding_provider failed provider={provider} model={model} dims={dims}: {err}",
-            );
-        })?,
+        embeddings::create_embedding_provider_with_key(&provider, &model, dims, &api_key)
+            .inspect_err(|err| {
+                log::warn!(
+                    "[memory::factory] create_embedding_provider failed provider={provider} model={model} dims={dims}: {err}",
+                );
+            })?,
     );
 
     // 4. Instantiate UnifiedMemory which handles SQLite and vector storage.

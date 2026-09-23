@@ -23,7 +23,8 @@ pub use cloud::{
     AuraCloudEmbedding, DEFAULT_CLOUD_EMBEDDING_DIMENSIONS, DEFAULT_CLOUD_EMBEDDING_MODEL,
 };
 pub use factory::{
-    create_embedding_provider, default_embedding_provider, default_local_embedding_provider,
+    create_embedding_provider, create_embedding_provider_with_key, default_embedding_provider,
+    default_local_embedding_provider,
 };
 pub use noop::NoopEmbedding;
 pub use ollama::{OllamaEmbedding, DEFAULT_OLLAMA_DIMENSIONS, DEFAULT_OLLAMA_MODEL};

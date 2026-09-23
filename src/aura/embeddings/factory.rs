@@ -25,6 +25,19 @@ pub fn create_embedding_provider(
     model: &str,
     dims: usize,
 ) -> anyhow::Result<Box<dyn EmbeddingProvider>> {
+    create_embedding_provider_with_key(provider, model, dims, "")
+}
+
+/// Same as [`create_embedding_provider`] but lets the caller supply an API
+/// key for the `"openai"` provider (the plain function always passes an
+/// empty key, which silently produces unauthenticated — and thus failing —
+/// requests). Other provider kinds ignore `api_key`.
+pub fn create_embedding_provider_with_key(
+    provider: &str,
+    model: &str,
+    dims: usize,
+    api_key: &str,
+) -> anyhow::Result<Box<dyn EmbeddingProvider>> {
     match provider {
         "cloud" => Ok(Box::new(AuraCloudEmbedding::new(
             None, None, true, model, dims,
@@ -35,7 +48,7 @@ pub fn create_embedding_provider(
         }
         "openai" => Ok(Box::new(OpenAiEmbedding::new(
             "https://api.openai.com",
-            "",
+            api_key,
             model,
             dims,
         ))),
