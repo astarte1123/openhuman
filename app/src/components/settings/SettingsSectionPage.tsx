@@ -31,7 +31,7 @@ const SettingsSectionPage = ({ title, description, items }: SettingsSectionPageP
       />
 
       <div>
-        {description && <p className="mt-1 text-xs text-stone-500 px-5 pb-3">{description}</p>}
+        {description && <p className="mt-1 px-5 pb-3 text-xs text-ink-secondary">{description}</p>}
 
         <div>
           {items.map((item, index) => (

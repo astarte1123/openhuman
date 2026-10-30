@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
 
+import { cn } from '../../ui/cn';
+
 interface SettingsMenuItemProps {
   icon: ReactNode;
   title: string;
@@ -21,43 +23,46 @@ const SettingsMenuItem = ({
   isLast = false,
   rightElement,
 }: SettingsMenuItemProps) => {
-  // Color variations for dangerous items (like logout/delete)
-  const titleColor = dangerous ? 'text-amber-600' : 'text-stone-900';
-  const iconColor = dangerous ? 'text-amber-600' : 'text-stone-900';
-  const borderColor = 'border-stone-200'; // Use consistent border color for all items
-
-  // Border classes for first/last items
-  const borderClasses = isLast ? '' : `border-b ${borderColor}`;
-  const roundedClasses = isFirst ? 'first:rounded-t-3xl' : isLast ? 'last:rounded-b-3xl' : '';
-
   const content = (
     <>
-      <div className={`w-5 h-5 opacity-60 flex-shrink-0 mr-3 ${iconColor}`}>{icon}</div>
-      <div className="flex-1">
-        <div className={`font-medium text-sm mb-1 ${titleColor}`}>{title}</div>
-        {description && <p className="opacity-70 text-xs">{description}</p>}
+      <div
+        className={cn(
+          'mr-3 flex h-5 w-5 flex-shrink-0 items-center justify-center opacity-60',
+          dangerous ? 'text-coral-600' : 'text-ink-primary'
+        )}>
+        {icon}
       </div>
-      {rightElement && <div className="flex-shrink-0 ml-3">{rightElement}</div>}
+      <div className="flex-1">
+        <div
+          className={cn(
+            'mb-1 text-sm font-medium',
+            dangerous ? 'text-coral-600' : 'text-ink-primary'
+          )}>
+          {title}
+        </div>
+        {description && <p className="text-xs text-ink-secondary">{description}</p>}
+      </div>
+      {rightElement && <div className="ml-3 flex-shrink-0">{rightElement}</div>}
     </>
+  );
+
+  const rowClasses = cn(
+    'flex w-full items-center justify-between px-4 py-3 text-left transition-colors duration-fast ease-standard',
+    !isLast && 'border-b border-line-default',
+    isFirst && 'first:rounded-t-3xl',
+    isLast && 'last:rounded-b-3xl',
+    onClick && 'cursor-pointer hover:bg-surface-raised active:scale-[0.99]'
   );
 
   if (onClick) {
     return (
-      <button
-        type="button"
-        onClick={onClick}
-        className={`w-full flex items-center justify-between py-3 px-4 bg-white ${borderClasses} hover:bg-stone-50 transition-all duration-200 text-left ${roundedClasses} focus:outline-none focus:ring-0 focus:border-inherit`}>
+      <button type="button" onClick={onClick} className={rowClasses}>
         {content}
       </button>
     );
   }
 
-  return (
-    <div
-      className={`w-full flex items-center justify-between py-3 px-4 bg-white ${borderClasses} ${roundedClasses}`}>
-      {content}
-    </div>
-  );
+  return <div className={rowClasses}>{content}</div>;
 };
 
 export default SettingsMenuItem;

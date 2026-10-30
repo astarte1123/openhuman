@@ -1,4 +1,7 @@
+import { ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon } from 'lucide-react';
+
 import { useT } from '../../../lib/i18n/I18nContext';
+import Icon from '../../ui/Icon';
 
 interface BreadcrumbItem {
   label: string;
@@ -29,20 +32,9 @@ const SettingsHeader = ({
         {showBackButton && onBack && (
           <button
             onClick={onBack}
-            className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-stone-100 transition-colors mr-2"
+            className="mr-2 flex h-6 w-6 items-center justify-center rounded-full text-ink-secondary transition-colors duration-fast hover:bg-surface-sunken hover:text-ink-primary"
             aria-label={t('common.back')}>
-            <svg
-              className="w-4 h-4 text-stone-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
+            <Icon icon={ChevronLeftIcon} size="sm" />
           </button>
         )}
 
@@ -55,25 +47,18 @@ const SettingsHeader = ({
                   {crumb.onClick ? (
                     <button
                       onClick={crumb.onClick}
-                      className="text-xs text-stone-400 hover:text-stone-600 transition-colors">
+                      className="text-xs text-ink-tertiary transition-colors duration-fast hover:text-ink-primary">
                       {crumb.label}
                     </button>
                   ) : (
-                    <span className="text-xs text-stone-400">{crumb.label}</span>
+                    <span className="text-xs text-ink-tertiary">{crumb.label}</span>
                   )}
-                  <svg
-                    aria-hidden="true"
-                    className="w-3 h-3 text-stone-300"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
+                  <Icon
+                    icon={ChevronRightIcon}
+                    size="xs"
+                    className="text-line-strong"
+                    aria-hidden
+                  />
                 </li>
               ))}
             </ol>
@@ -81,7 +66,9 @@ const SettingsHeader = ({
         )}
 
         {/* Title */}
-        <h2 className="text-sm font-semibold text-stone-900">{title ?? t('nav.settings')}</h2>
+        <h2 className="font-display text-sm font-semibold text-ink-primary">
+          {title ?? t('nav.settings')}
+        </h2>
       </div>
     </div>
   );
