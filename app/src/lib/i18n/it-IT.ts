@@ -742,6 +742,49 @@ const itIT: TranslationMap = {
   'mic.reviewHint': 'Invio per inviare · Esc per scartare',
   'mic.discardTranscription': 'Scartare',
   'mic.sendTranscription': 'Inviare',
+  'mic.deviceUnavailable':
+    'Il microfono selezionato non è disponibile: prova un altro dispositivo.',
+  'mic.inUseByAnotherApp': "Il microfono è utilizzato da un'altra applicazione.",
+  'mic.errorWithMessage': 'Errore del microfono: {message}',
+  'welcome.signingIn': 'Ti sto facendo accedere...',
+  'welcome.clearAppData': "Cancella i dati dell'app e riavvia",
+  'welcome.clearAppDataHint':
+    'Verranno cancellati i segreti e gli account archiviati localmente su questo dispositivo. Il tuo account cloud non sarà interessato: potrai accedere nuovamente subito dopo.',
+  'settings.nav.recovery_phrase': 'Frase di recupero',
+  'settings.nav.recovery_phrase.desc':
+    "Gestisci la tua frase di ripristino BIP39 per la crittografia e l'accesso al portafoglio",
+  'settings.nav.team': 'Squadra',
+  'settings.nav.team.desc': 'Gestisci il tuo team, i membri e gli inviti',
+  'settings.nav.connections': 'Connessioni',
+  'settings.nav.connections.desc': 'Esaminare e gestire le connessioni degli account collegati',
+  'settings.nav.privacy': 'Privacy',
+  'settings.nav.privacy.desc':
+    'Gestisci la condivisione dei dati e le preferenze di utilizzo anonime',
+  'settings.nav.screen_intelligence': 'Consapevolezza dello schermo',
+  'settings.nav.screen_intelligence.desc':
+    "Autorizzazioni per l'acquisizione di schermate, policy di monitoraggio e controlli della sessione",
+  'settings.nav.messaging': 'Canali di messaggistica',
+  'settings.nav.messaging.desc':
+    'Configura le modalità di autenticazione Telegram/Discord e il routing dei canali predefinito',
+  'settings.nav.notifications': 'Notifiche',
+  'settings.nav.notifications.desc': 'Scegli quali categorie visualizzare nel centro notifiche',
+  'settings.nav.tools': 'Utensili',
+  'settings.nav.tools.desc':
+    'Abilita o disabilita le funzionalità che Aura può utilizzare per tuo conto',
+  'settings.nav.llm': 'LLM',
+  'settings.nav.llm.desc':
+    'Provider cloud, modelli Ollama locali e routing per carico di lavoro (ragionamento, agente, memoria, ...)',
+  'settings.nav.voice': 'Voce',
+  'settings.nav.voice.desc':
+    'Sintesi vocale (Whisper) e sintesi vocale (Piper): selezione del provider cloud o locale',
+  'voice.loadSettingsFailed': 'Impossibile caricare le impostazioni vocali',
+  'voice.saveSettingsFailed': 'Impossibile salvare le impostazioni vocali',
+  'voice.startServerFailed': 'Impossibile avviare il server vocale',
+  'voice.stopServerFailed': 'Impossibile arrestare il server vocale',
+  'voice.saveProvidersFailed': 'Impossibile salvare i fornitori di servizi vocali',
+  'voice.previewFailed': 'Anteprima vocale non riuscita',
+  'voice.defaultVoiceInUse': 'Stai già utilizzando la voce predefinita fornita',
+  'voice.restoreDefaultVoice': 'Ripristina la voce predefinita della mascotte spedita',
   'token.usageLimitReached': 'Limite di utilizzo raggiunto',
   'token.approachingLimit': 'Limite in avvicinamento',
   'token.planClickForDetails': 'piano - clicca per i dettagli',

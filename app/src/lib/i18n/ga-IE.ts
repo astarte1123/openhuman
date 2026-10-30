@@ -381,7 +381,7 @@ const gaIE: TranslationMap = {
   'privacy.shareAnonymizedDataDesc':
     'Help improve Youma by sharing anonymous crash reports and usage analytics. All data is fully anonymized — no personal data, messages, wallet keys, or session information is ever collected.',
   'privacy.meetingFollowUps': 'Cruinnithe leantacha',
-  'privacy.autoHandoffMeet': 'Trascríbhinní uathoibríocha GoogleMeet chuig an gceolfhoireann',
+  'privacy.autoHandoffMeet': 'Tras-scríbhinní uathoibríocha GoogleMeet chuig an gceolfhoireann',
   'privacy.autoHandoffMeetDesc':
     "When a Google Meet call ends, Youma's orchestrator can read the transcript and may take actions like drafting messages, scheduling follow-ups, or posting summaries to your connected Slack workspace. Off by default.",
   'privacy.analyticsDisclaimer':
@@ -741,6 +741,46 @@ const gaIE: TranslationMap = {
   'mic.reviewHint': 'Cuir isteach chun a sheoladh · Esc chun é a chaitheamh amach',
   'mic.discardTranscription': 'Caith amach',
   'mic.sendTranscription': 'Seol',
+  'mic.deviceUnavailable': 'Níl an micreafón roghnaithe ar fáil - bain triail as gléas eile.',
+  'mic.inUseByAnotherApp': 'Tá micreafón in úsáid ag feidhmchlár eile.',
+  'mic.errorWithMessage': 'Microphone error: {message}',
+  'welcome.signingIn': 'Ag síniú isteach tú...',
+  'welcome.clearAppData': 'Glan sonraí aipe & atosú',
+  'welcome.clearAppDataHint':
+    'Scriosann sé seo rúin agus cuntais atá stóráilte go háitiúil ar an ngléas seo. Níl aon tionchar ar do chuntas néil - is féidir leat síniú isteach arís díreach ina dhiaidh sin.',
+  'settings.nav.recovery_phrase': 'Frása Aisghabhála',
+  'settings.nav.recovery_phrase.desc':
+    "Bainistigh d'fhrása athshlánaithe BIP39 le haghaidh criptithe agus rochtain sparán",
+  'settings.nav.team': 'Foireann',
+  'settings.nav.team.desc': "Bainistigh d'fhoireann, baill agus cuirí",
+  'settings.nav.connections': 'Naisc',
+  'settings.nav.connections.desc': 'Athbhreithnigh agus bainistigh naisc chuntais nasctha',
+  'settings.nav.privacy': 'Príobháideacht',
+  'settings.nav.privacy.desc': 'Bainistigh comhroinnt sonraí agus sainroghanna úsáide gan ainm',
+  'settings.nav.screen_intelligence': 'Feasacht Scáileáin',
+  'settings.nav.screen_intelligence.desc':
+    'Ceadanna gabhála scáileáin, beartas monatóireachta, agus rialuithe seisiúin',
+  'settings.nav.messaging': 'Cainéil Teachtaireachtaí',
+  'settings.nav.messaging.desc':
+    'Configure Telegram/Discord auth modes and default channel routing',
+  'settings.nav.notifications': 'Fógraí',
+  'settings.nav.notifications.desc': 'Roghnaigh cé na catagóirí atá dromchla san ionad fógraí',
+  'settings.nav.tools': 'Uirlisí',
+  'settings.nav.tools.desc': 'Cumasaigh nó díchumasaigh cumais is féidir Aura a úsáid ar do shon',
+  'settings.nav.llm': 'LLM',
+  'settings.nav.llm.desc':
+    'Soláthraithe néal, samhlacha Ollama áitiúla, agus ródú in aghaidh an ualaigh oibre (réasúnú, gníomhaireach, cuimhne, ...)',
+  'settings.nav.voice': 'Guth',
+  'settings.nav.voice.desc':
+    'Óráid go téacs (Whisper) agus téacs-go-hurlabhra (Piper) — roghnú scamall vs soláthraí áitiúil',
+  'voice.loadSettingsFailed': 'Theip ar lódáil na socruithe gutha',
+  'voice.saveSettingsFailed': 'Theip ar shábháil socruithe gutha',
+  'voice.startServerFailed': 'Theip ar an bhfreastalaí gutha a thosú',
+  'voice.stopServerFailed': 'Theip ar an bhfreastalaí gutha a stopadh',
+  'voice.saveProvidersFailed': 'Theip ar shábháil soláthraithe gutha',
+  'voice.previewFailed': 'Theip ar réamhamharc gutha',
+  'voice.defaultVoiceInUse': 'Ag baint úsáide as an guth réamhshocraithe seolta cheana féin',
+  'voice.restoreDefaultVoice': 'Athchóirigh an guth mascot réamhshocraithe seolta',
   'token.usageLimitReached': 'Teorainn úsáide bainte amach',
   'token.approachingLimit': 'Ag druidim teorainn',
   'token.planClickForDetails': 'plean - cliceáil le haghaidh sonraí',

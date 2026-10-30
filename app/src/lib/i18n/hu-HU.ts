@@ -753,6 +753,49 @@ const huHU: TranslationMap = {
   'mic.reviewHint': 'Enter az elküldéshez · Esc az elvetéshez',
   'mic.discardTranscription': 'Eldobni',
   'mic.sendTranscription': 'Elküld',
+  'mic.deviceUnavailable': 'A kiválasztott mikrofon nem érhető el – próbálkozzon másik eszközzel.',
+  'mic.inUseByAnotherApp': 'A mikrofont egy másik alkalmazás használja.',
+  'mic.errorWithMessage': 'Mikrofonhiba: {message}',
+  'welcome.signingIn': 'Bejelentkezéskor...',
+  'welcome.clearAppData': 'Alkalmazásadatok törlése és újraindítás',
+  'welcome.clearAppDataHint':
+    'Ezzel törli a helyileg tárolt titkokat és fiókokat ezen az eszközön. Ez nem érinti felhőfiókját – azonnal újra bejelentkezhet.',
+  'settings.nav.recovery_phrase': 'Helyreállítási kifejezés',
+  'settings.nav.recovery_phrase.desc':
+    'Kezelje BIP39 helyreállítási kifejezését a titkosításhoz és a pénztárca eléréséhez',
+  'settings.nav.team': 'Csapat',
+  'settings.nav.team.desc': 'Kezelje csapatát, tagjait és meghívásait',
+  'settings.nav.connections': 'Kapcsolatok',
+  'settings.nav.connections.desc': 'Az összekapcsolt fiókkapcsolatok áttekintése és kezelése',
+  'settings.nav.privacy': 'Magánélet',
+  'settings.nav.privacy.desc':
+    'Kezelje az adatmegosztást és az anonimizált használati beállításokat',
+  'settings.nav.screen_intelligence': 'Képernyő tudatosság',
+  'settings.nav.screen_intelligence.desc':
+    'Képernyőfelvételi engedélyek, megfigyelési szabályzat és munkamenet-vezérlők',
+  'settings.nav.messaging': 'Üzenetküldő csatornák',
+  'settings.nav.messaging.desc':
+    'Telegram/Discord hitelesítési módok és alapértelmezett csatornaútválasztás konfigurálása',
+  'settings.nav.notifications': 'Értesítések',
+  'settings.nav.notifications.desc':
+    'Válassza ki, hogy mely kategóriák jelenjenek meg az értesítési központban',
+  'settings.nav.tools': 'Eszközök',
+  'settings.nav.tools.desc':
+    'Engedélyezze vagy tiltsa le azokat a képességeket, amelyeket Aura használhat az Ön nevében',
+  'settings.nav.llm': 'LLM',
+  'settings.nav.llm.desc':
+    'Felhőszolgáltatók, helyi Ollama-modellek és terhelésenkénti útválasztás (okoskodás, ügynök, memória stb.)',
+  'settings.nav.voice': 'Hang',
+  'settings.nav.voice.desc':
+    'Beszédből szöveggé (Whisper) és szövegfelolvasóvá (Piper) – felhő és helyi szolgáltató kiválasztása',
+  'voice.loadSettingsFailed': 'Nem sikerült betölteni a hangbeállításokat',
+  'voice.saveSettingsFailed': 'Nem sikerült menteni a hangbeállításokat',
+  'voice.startServerFailed': 'Nem sikerült elindítani a hangszervert',
+  'voice.stopServerFailed': 'Nem sikerült leállítani a hangszervert',
+  'voice.saveProvidersFailed': 'Nem sikerült menteni a hangszolgáltatókat',
+  'voice.previewFailed': 'A hangos előnézet nem sikerült',
+  'voice.defaultVoiceInUse': 'Már a szállított alapértelmezett hangot használja',
+  'voice.restoreDefaultVoice': 'Állítsa vissza a szállított alapértelmezett kabalahangot',
   'token.usageLimitReached': 'Elérte a használati korlátot',
   'token.approachingLimit': 'Határhoz közeledik',
   'token.planClickForDetails': 'terv - kattintson a részletekért',

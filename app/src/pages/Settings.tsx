@@ -51,83 +51,81 @@ import { APP_VERSION } from '../utils/config';
 import Intelligence from './Intelligence';
 import Webhooks from './Webhooks';
 
-const accountSettingsItems = [
+const buildAccountSettingsItems = (t: (key: string) => string) => [
   {
     id: 'recovery-phrase',
-    title: 'Recovery Phrase',
-    description: 'Manage your BIP39 recovery phrase for encryption and wallet access',
+    title: t('settings.nav.recovery_phrase'),
+    description: t('settings.nav.recovery_phrase.desc'),
     route: 'recovery-phrase',
     icon: <Icon icon={KeyRoundIcon} size="md" />,
   },
   {
     id: 'team',
-    title: 'Team',
-    description: 'Manage your team, members, and invites',
+    title: t('settings.nav.team'),
+    description: t('settings.nav.team.desc'),
     route: 'team',
     icon: <Icon icon={UsersIcon} size="md" />,
   },
   {
     id: 'connections',
-    title: 'Connections',
-    description: 'Review and manage linked account connections',
+    title: t('settings.nav.connections'),
+    description: t('settings.nav.connections.desc'),
     route: 'connections',
     icon: <Icon icon={Link2Icon} size="md" />,
   },
   {
     id: 'privacy',
-    title: 'Privacy',
-    description: 'Manage data sharing and anonymized usage preferences',
+    title: t('settings.nav.privacy'),
+    description: t('settings.nav.privacy.desc'),
     route: 'privacy',
     icon: <Icon icon={ShieldCheckIcon} size="md" />,
   },
 ];
 
-const featuresSettingsItems = [
+const buildFeaturesSettingsItems = (t: (key: string) => string) => [
   {
     id: 'screen-intelligence',
-    title: 'Screen Awareness',
-    description: 'Screen capture permissions, monitoring policy, and session controls',
+    title: t('settings.nav.screen_intelligence'),
+    description: t('settings.nav.screen_intelligence.desc'),
     route: 'screen-intelligence',
     icon: <Icon icon={MonitorIcon} size="md" />,
   },
   // Autocomplete + Voice Dictation hidden per #717 (routes retained for re-enable).
   {
     id: 'messaging',
-    title: 'Messaging Channels',
-    description: 'Configure Telegram/Discord auth modes and default channel routing',
+    title: t('settings.nav.messaging'),
+    description: t('settings.nav.messaging.desc'),
     route: 'messaging',
     icon: <Icon icon={MessagesSquareIcon} size="md" />,
   },
   {
     id: 'notifications',
-    title: 'Notifications',
-    description: 'Choose which categories surface in the notification center',
+    title: t('settings.nav.notifications'),
+    description: t('settings.nav.notifications.desc'),
     route: 'notifications',
     icon: <Icon icon={BellIcon} size="md" />,
   },
   {
     id: 'tools',
-    title: 'Tools',
-    description: 'Enable or disable capabilities Aura can use on your behalf',
+    title: t('settings.nav.tools'),
+    description: t('settings.nav.tools.desc'),
     route: 'tools',
     icon: <Icon icon={SlidersHorizontalIcon} size="md" />,
   },
 ];
 
-const aiSettingsItems = [
+const buildAiSettingsItems = (t: (key: string) => string) => [
   {
     id: 'llm',
-    title: 'LLM',
-    description:
-      'Cloud providers, local Ollama models, and per-workload routing (reasoning, agentic, memory, …)',
+    title: t('settings.nav.llm'),
+    description: t('settings.nav.llm.desc'),
     route: 'llm',
     icon: <Icon icon={CpuIcon} size="md" />,
   },
   {
     id: 'voice',
-    title: 'Voice',
-    description:
-      'Speech-to-text (Whisper) and text-to-speech (Piper) — cloud vs local provider selection',
+    title: t('settings.nav.voice'),
+    description: t('settings.nav.voice.desc'),
     route: 'voice',
     icon: <Icon icon={MicIcon} size="md" />,
   },
@@ -156,6 +154,9 @@ function wrapSettingsPage(element: ReactNode, footerText: string) {
 
 const Settings = () => {
   const { t } = useT();
+  const accountSettingsItems = buildAccountSettingsItems(t);
+  const featuresSettingsItems = buildFeaturesSettingsItems(t);
+  const aiSettingsItems = buildAiSettingsItems(t);
   const footerText = t('settings.page.footer_beta_build', { version: APP_VERSION });
   const wrap = (element: ReactNode) => wrapSettingsPage(element, footerText);
   return (

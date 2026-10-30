@@ -746,6 +746,48 @@ const ptPT: TranslationMap = {
   'mic.reviewHint': 'Enter para enviar · Esc para descartar',
   'mic.discardTranscription': 'Descartar',
   'mic.sendTranscription': 'Enviar',
+  'mic.deviceUnavailable':
+    'O microfone selecionado não está disponível. Experimente um dispositivo diferente.',
+  'mic.inUseByAnotherApp': 'O microfone está sendo usado por outro aplicativo.',
+  'mic.errorWithMessage': 'Erro de microfone: {message}',
+  'welcome.signingIn': 'Fazendo seu login...',
+  'welcome.clearAppData': 'Limpe os dados do aplicativo e reinicie',
+  'welcome.clearAppDataHint':
+    'Isso apaga segredos e contas armazenados localmente neste dispositivo. Sua conta na nuvem não será afetada – você poderá fazer login novamente logo em seguida.',
+  'settings.nav.recovery_phrase': 'Frase de Recuperação',
+  'settings.nav.recovery_phrase.desc':
+    'Gerencie sua frase de recuperação BIP39 para criptografia e acesso à carteira',
+  'settings.nav.team': 'Equipe',
+  'settings.nav.team.desc': 'Gerencie sua equipe, membros e convites',
+  'settings.nav.connections': 'Conexões',
+  'settings.nav.connections.desc': 'Revise e gerencie conexões de contas vinculadas',
+  'settings.nav.privacy': 'Privacidade',
+  'settings.nav.privacy.desc':
+    'Gerencie o compartilhamento de dados e preferências de uso anonimizadas',
+  'settings.nav.screen_intelligence': 'Conscientização da tela',
+  'settings.nav.screen_intelligence.desc':
+    'Permissões de captura de tela, política de monitoramento e controles de sessão',
+  'settings.nav.messaging': 'Canais de mensagens',
+  'settings.nav.messaging.desc':
+    'Configurar modos de autenticação Telegram/Discord e roteamento de canal padrão',
+  'settings.nav.notifications': 'Notificações',
+  'settings.nav.notifications.desc': 'Escolha quais categorias aparecem na central de notificações',
+  'settings.nav.tools': 'Ferramentas',
+  'settings.nav.tools.desc': 'Ativar ou desativar recursos que Aura pode usar em seu nome',
+  'settings.nav.llm': 'LLM',
+  'settings.nav.llm.desc':
+    'Provedores de nuvem, modelos Ollama locais e roteamento por carga de trabalho (raciocínio, agente, memória,…)',
+  'settings.nav.voice': 'Voz',
+  'settings.nav.voice.desc':
+    'Conversão de fala para texto (Whisper) e conversão de texto para fala (Piper) — seleção de provedor na nuvem versus local',
+  'voice.loadSettingsFailed': 'Falha ao carregar as configurações de voz',
+  'voice.saveSettingsFailed': 'Falha ao salvar as configurações de voz',
+  'voice.startServerFailed': 'Falha ao iniciar o servidor de voz',
+  'voice.stopServerFailed': 'Falha ao parar o servidor de voz',
+  'voice.saveProvidersFailed': 'Falha ao salvar provedores de voz',
+  'voice.previewFailed': 'Falha na visualização de voz',
+  'voice.defaultVoiceInUse': 'Já usando a voz padrão enviada',
+  'voice.restoreDefaultVoice': 'Restaure a voz padrão do mascote enviada',
   'token.usageLimitReached': 'Limite de uso atingido',
   'token.approachingLimit': 'Aproximando-se do limite',
   'token.planClickForDetails': 'plano - clique para detalhes',

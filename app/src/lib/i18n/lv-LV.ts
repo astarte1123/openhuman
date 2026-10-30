@@ -748,6 +748,49 @@ const lvLV: TranslationMap = {
   'mic.reviewHint': 'Ievadiet, lai nosūtītu · Esc, lai atmestu',
   'mic.discardTranscription': 'Izmest',
   'mic.sendTranscription': 'Sūtīt',
+  'mic.deviceUnavailable': 'Atlasītais mikrofons nav pieejams — izmēģiniet citu ierīci.',
+  'mic.inUseByAnotherApp': 'Mikrofonu izmanto cita lietojumprogramma.',
+  'mic.errorWithMessage': 'Mikrofona kļūda: {message}',
+  'welcome.signingIn': 'Notiek pierakstīšanās...',
+  'welcome.clearAppData': 'Notīrīt lietotnes datus un restartēt',
+  'welcome.clearAppDataHint':
+    'Tas dzēš šajā ierīcē lokāli saglabātos noslēpumus un kontus. Jūsu mākoņa konts netiek ietekmēts — tūlīt pēc tam varat pierakstīties vēlreiz.',
+  'settings.nav.recovery_phrase': 'Atkopšanas frāze',
+  'settings.nav.recovery_phrase.desc':
+    'Pārvaldiet savu BIP39 atkopšanas frāzi šifrēšanai un piekļuvei makam',
+  'settings.nav.team': 'Komanda',
+  'settings.nav.team.desc': 'Pārvaldiet savu komandu, dalībniekus un ielūgumus',
+  'settings.nav.connections': 'Savienojumi',
+  'settings.nav.connections.desc': 'Pārskatiet un pārvaldiet saistīto kontu savienojumus',
+  'settings.nav.privacy': 'Privātums',
+  'settings.nav.privacy.desc':
+    'Pārvaldiet datu koplietošanu un anonimizētas lietošanas preferences',
+  'settings.nav.screen_intelligence': 'Ekrāna izpratne',
+  'settings.nav.screen_intelligence.desc':
+    'Ekrāna tveršanas atļaujas, uzraudzības politika un sesijas vadīklas',
+  'settings.nav.messaging': 'Ziņapmaiņas kanāli',
+  'settings.nav.messaging.desc':
+    'Konfigurējiet Telegram/Discord autentifikācijas režīmus un noklusējuma kanālu maršrutēšanu',
+  'settings.nav.notifications': 'Paziņojumi',
+  'settings.nav.notifications.desc':
+    'Izvēlieties, kuras kategorijas tiek rādītas paziņojumu centrā',
+  'settings.nav.tools': 'Rīki',
+  'settings.nav.tools.desc':
+    'Iespējojiet vai atspējojiet iespējas, ko Aura var izmantot jūsu vārdā',
+  'settings.nav.llm': 'LLM',
+  'settings.nav.llm.desc':
+    'Mākoņu pakalpojumu sniedzēji, vietējie Ollama modeļi un maršrutēšana atkarībā no darba slodzes (sadomāšana, aģents, atmiņa utt.)',
+  'settings.nav.voice': 'Balss',
+  'settings.nav.voice.desc':
+    'Runa pārvēršana tekstā (Whisper) un teksta pārvēršana runā (Piper) — mākoņa un vietējā pakalpojumu sniedzēja atlase',
+  'voice.loadSettingsFailed': 'Neizdevās ielādēt balss iestatījumus',
+  'voice.saveSettingsFailed': 'Neizdevās saglabāt balss iestatījumus',
+  'voice.startServerFailed': 'Neizdevās palaist balss serveri',
+  'voice.stopServerFailed': 'Neizdevās apturēt balss serveri',
+  'voice.saveProvidersFailed': 'Neizdevās saglabāt balss pakalpojumu sniedzējus',
+  'voice.previewFailed': 'Balss priekšskatījums neizdevās',
+  'voice.defaultVoiceInUse': 'Jau tiek izmantota piegādātā noklusējuma balss',
+  'voice.restoreDefaultVoice': 'Atjaunojiet piegādāto noklusējuma talismana balsi',
   'token.usageLimitReached': 'Sasniegts lietošanas ierobežojums',
   'token.approachingLimit': 'Tuvojas robežai',
   'token.planClickForDetails': 'plāns - noklikšķiniet, lai iegūtu sīkāku informāciju',
@@ -1304,7 +1347,7 @@ const lvLV: TranslationMap = {
   'skills.install_dialog.url_invalid_suffix': 'saite.',
   'skills.install_dialog.url_hint_prefix': 'Tieša saite uz a',
   'skills.install_dialog.url_hint_middle': 'failu.',
-  'skills.install_dialog.url_hint_suffix': 'URL tiek automātiski pārrakstīti uz',
+  'skills.install_dialog.url_hint_suffix': 'URL automātiski pārrakstīt uz',
   'skills.install_dialog.timeout_label': 'Taimauts',
   'skills.install_dialog.timeout_unit_hint': '(sekundes, pēc izvēles)',
   'skills.install_dialog.timeout_invalid': 'Jābūt veselam skaitlim no 1 līdz 600.',

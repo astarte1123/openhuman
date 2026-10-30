@@ -94,12 +94,11 @@ const Welcome = () => {
                           Clearing app data...
                         </span>
                       ) : (
-                        'Clear app data & restart'
+                        t('welcome.clearAppData')
                       )}
                     </button>
                     <p className="text-[11px] leading-4 text-coral-600/80">
-                      This wipes locally stored secrets and accounts on this device. Your cloud
-                      account is unaffected — you can sign in again right after.
+                      {t('welcome.clearAppDataHint')}
                     </p>
                     {resetError ? (
                       <p className="text-[11px] leading-4 font-medium text-coral-700">
@@ -121,7 +120,7 @@ const Welcome = () => {
                   <div className="h-4 animate-pulse rounded-md bg-surface-sunken" />
                   <div className="h-4 w-2/3 animate-pulse rounded-md bg-surface-sunken" />
                 </div>
-                <p className="text-sm font-medium text-ink-secondary">Signing you in...</p>
+                <p className="text-sm font-medium text-ink-secondary">{t('welcome.signingIn')}</p>
               </div>
             ) : (
               <>

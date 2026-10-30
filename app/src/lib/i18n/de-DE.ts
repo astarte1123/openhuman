@@ -757,6 +757,50 @@ const deDE: TranslationMap = {
   'mic.reviewHint': 'Enter zum Senden · Esc zum Verwerfen',
   'mic.discardTranscription': 'Verwerfen',
   'mic.sendTranscription': 'Schicken',
+  'mic.deviceUnavailable':
+    'Das ausgewählte Mikrofon ist nicht verfügbar. Versuchen Sie es mit einem anderen Gerät.',
+  'mic.inUseByAnotherApp': 'Das Mikrofon wird von einer anderen Anwendung verwendet.',
+  'mic.errorWithMessage': 'Mikrofonfehler: {message}',
+  'welcome.signingIn': 'Ich melde Sie an...',
+  'welcome.clearAppData': 'App-Daten löschen und neu starten',
+  'welcome.clearAppDataHint':
+    'Dadurch werden lokal gespeicherte Geheimnisse und Konten auf diesem Gerät gelöscht. Ihr Cloud-Konto ist davon nicht betroffen – Sie können sich direkt danach erneut anmelden.',
+  'settings.nav.recovery_phrase': 'Wiederherstellungssatz',
+  'settings.nav.recovery_phrase.desc':
+    'Verwalten Sie Ihre BIP39-Wiederherstellungsphrase für Verschlüsselung und Wallet-Zugriff',
+  'settings.nav.team': 'Team',
+  'settings.nav.team.desc': 'Verwalten Sie Ihr Team, Ihre Mitglieder und Einladungen',
+  'settings.nav.connections': 'Verbindungen',
+  'settings.nav.connections.desc': 'Überprüfen und verwalten Sie verknüpfte Kontoverbindungen',
+  'settings.nav.privacy': 'Privatsphäre',
+  'settings.nav.privacy.desc':
+    'Verwalten Sie die Datenfreigabe und anonymisierte Nutzungspräferenzen',
+  'settings.nav.screen_intelligence': 'Bildschirmbewusstsein',
+  'settings.nav.screen_intelligence.desc':
+    'Bildschirmaufnahmeberechtigungen, Überwachungsrichtlinien und Sitzungskontrollen',
+  'settings.nav.messaging': 'Messaging-Kanäle',
+  'settings.nav.messaging.desc':
+    'Konfigurieren Sie die Authentifizierungsmodi Telegram/Discord und das Standardkanalrouting',
+  'settings.nav.notifications': 'Benachrichtigungen',
+  'settings.nav.notifications.desc':
+    'Wählen Sie aus, welche Kategorien im Benachrichtigungscenter angezeigt werden sollen',
+  'settings.nav.tools': 'Werkzeuge',
+  'settings.nav.tools.desc':
+    'Aktivieren oder deaktivieren Sie Funktionen, die Aura in Ihrem Namen nutzen kann',
+  'settings.nav.llm': 'LLM',
+  'settings.nav.llm.desc':
+    'Cloud-Anbieter, lokale Ollama-Modelle und Routing pro Workload (Begründung, Agent, Speicher usw.)',
+  'settings.nav.voice': 'Stimme',
+  'settings.nav.voice.desc':
+    'Speech-to-Text (Whisper) und Text-to-Speech (Piper) – Cloud- oder lokale Anbieterauswahl',
+  'voice.loadSettingsFailed': 'Die Spracheinstellungen konnten nicht geladen werden',
+  'voice.saveSettingsFailed': 'Spracheinstellungen konnten nicht gespeichert werden',
+  'voice.startServerFailed': 'Der Sprachserver konnte nicht gestartet werden',
+  'voice.stopServerFailed': 'Der Sprachserver konnte nicht gestoppt werden',
+  'voice.saveProvidersFailed': 'Sprachanbieter konnten nicht gespeichert werden',
+  'voice.previewFailed': 'Die Sprachvorschau ist fehlgeschlagen',
+  'voice.defaultVoiceInUse': 'Ich verwende bereits die mitgelieferte Standardstimme',
+  'voice.restoreDefaultVoice': 'Stellen Sie die standardmäßige Maskottchenstimme wieder her',
   'token.usageLimitReached': 'Nutzungslimit erreicht',
   'token.approachingLimit': 'Annäherung an die Grenze',
   'token.planClickForDetails': 'Plan – klicken Sie für Details',

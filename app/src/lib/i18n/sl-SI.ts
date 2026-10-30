@@ -738,6 +738,49 @@ const slSI: TranslationMap = {
   'mic.reviewHint': 'Enter za pošiljanje · Esc za zavrženje',
   'mic.discardTranscription': 'Zavrzi',
   'mic.sendTranscription': 'Pošlji',
+  'mic.deviceUnavailable': 'Izbrani mikrofon ni na voljo — poskusite z drugo napravo.',
+  'mic.inUseByAnotherApp': 'Mikrofon uporablja druga aplikacija.',
+  'mic.errorWithMessage': 'Napaka mikrofona: {message}',
+  'welcome.signingIn': 'Prijavljanje ...',
+  'welcome.clearAppData': 'Počisti podatke aplikacije in znova zaženi',
+  'welcome.clearAppDataHint':
+    'S tem se izbrišejo lokalno shranjene skrivnosti in računi v tej napravi. To ne vpliva na vaš račun v oblaku – takoj zatem se lahko znova prijavite.',
+  'settings.nav.recovery_phrase': 'Fraza za obnovitev',
+  'settings.nav.recovery_phrase.desc':
+    'Upravljajte svojo obnovitveno frazo BIP39 za šifriranje in dostop do denarnice',
+  'settings.nav.team': 'Ekipa',
+  'settings.nav.team.desc': 'Upravljajte svojo ekipo, člane in povabila',
+  'settings.nav.connections': 'Povezave',
+  'settings.nav.connections.desc': 'Pregledujte in upravljajte povezave povezanih računov',
+  'settings.nav.privacy': 'Zasebnost',
+  'settings.nav.privacy.desc':
+    'Upravljajte nastavitve skupne rabe podatkov in anonimizirane uporabe',
+  'settings.nav.screen_intelligence': 'Zavedanje zaslona',
+  'settings.nav.screen_intelligence.desc':
+    'Dovoljenja za zajem zaslona, ​​pravilnik o spremljanju in nadzor seje',
+  'settings.nav.messaging': 'Kanali za sporočanje',
+  'settings.nav.messaging.desc':
+    'Konfigurirajte načine avtifikacije Telegram/Discord in privzeto usmerjanje kanalov',
+  'settings.nav.notifications': 'Obvestila',
+  'settings.nav.notifications.desc':
+    'Izberite, katere kategorije se prikažejo v centru za obvestila',
+  'settings.nav.tools': 'Orodja',
+  'settings.nav.tools.desc':
+    'Omogočite ali onemogočite zmožnosti, ki jih Aura lahko uporablja v vašem imenu',
+  'settings.nav.llm': 'LLM',
+  'settings.nav.llm.desc':
+    'Ponudniki v oblaku, lokalni modeli Ollama in usmerjanje glede na delovno obremenitev (utemeljitev, posredništvo, spomin, …)',
+  'settings.nav.voice': 'Glas',
+  'settings.nav.voice.desc':
+    'Pretvorba govora v besedilo (Whisper) in besedilo v govor (Piper) — izbira v oblaku proti lokalnemu ponudniku',
+  'voice.loadSettingsFailed': 'Glasovnih nastavitev ni bilo mogoče naložiti',
+  'voice.saveSettingsFailed': 'Glasovnih nastavitev ni bilo mogoče shraniti',
+  'voice.startServerFailed': 'Glasovnega strežnika ni bilo mogoče zagnati',
+  'voice.stopServerFailed': 'Glasovnega strežnika ni bilo mogoče zaustaviti',
+  'voice.saveProvidersFailed': 'Ponudnikov govora ni bilo mogoče shraniti',
+  'voice.previewFailed': 'Glasovni predogled ni uspel',
+  'voice.defaultVoiceInUse': 'Že uporablja poslani privzeti glas',
+  'voice.restoreDefaultVoice': 'Obnovi poslani privzeti glas maskote',
   'token.usageLimitReached': 'Omejitev uporabe je dosežena',
   'token.approachingLimit': 'Približuje se meji',
   'token.planClickForDetails': 'načrt - kliknite za podrobnosti',

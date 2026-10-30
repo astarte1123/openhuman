@@ -751,6 +751,50 @@ const elGR: TranslationMap = {
   'mic.reviewHint': 'Enter για αποστολή · Esc για απόρριψη',
   'mic.discardTranscription': 'Απορρίπτω',
   'mic.sendTranscription': 'Στέλνω',
+  'mic.deviceUnavailable':
+    'Το επιλεγμένο μικρόφωνο δεν είναι διαθέσιμο — δοκιμάστε μια διαφορετική συσκευή.',
+  'mic.inUseByAnotherApp': 'Το μικρόφωνο χρησιμοποιείται από άλλη εφαρμογή.',
+  'mic.errorWithMessage': 'Σφάλμα μικροφώνου: {message}',
+  'welcome.signingIn': 'Σύνδεσή σας...',
+  'welcome.clearAppData': 'Διαγραφή δεδομένων εφαρμογής και επανεκκίνηση',
+  'welcome.clearAppDataHint':
+    'Αυτό διαγράφει τοπικά αποθηκευμένα μυστικά και λογαριασμούς σε αυτήν τη συσκευή. Ο λογαριασμός σας στο cloud δεν επηρεάζεται — μπορείτε να συνδεθείτε ξανά αμέσως μετά.',
+  'settings.nav.recovery_phrase': 'Φράση ανάκτησης',
+  'settings.nav.recovery_phrase.desc':
+    'Διαχειριστείτε τη φράση ανάκτησης BIP39 για κρυπτογράφηση και πρόσβαση στο πορτοφόλι',
+  'settings.nav.team': 'Ομάδα',
+  'settings.nav.team.desc': 'Διαχειριστείτε την ομάδα, τα μέλη και τις προσκλήσεις σας',
+  'settings.nav.connections': 'Συνδέσεις',
+  'settings.nav.connections.desc':
+    'Ελέγξτε και διαχειριστείτε τις συνδέσεις συνδεδεμένων λογαριασμών',
+  'settings.nav.privacy': 'Μυστικότητα',
+  'settings.nav.privacy.desc':
+    'Διαχειριστείτε την κοινή χρήση δεδομένων και τις ανώνυμες προτιμήσεις χρήσης',
+  'settings.nav.screen_intelligence': 'Επίγνωση οθόνης',
+  'settings.nav.screen_intelligence.desc':
+    'Δικαιώματα λήψης οθόνης, πολιτική παρακολούθησης και στοιχεία ελέγχου περιόδου λειτουργίας',
+  'settings.nav.messaging': 'Κανάλια ανταλλαγής μηνυμάτων',
+  'settings.nav.messaging.desc':
+    'Διαμόρφωση λειτουργιών ελέγχου ταυτότητας Telegram/Discord και προεπιλεγμένης δρομολόγησης καναλιών',
+  'settings.nav.notifications': 'Ειδοποιήσεις',
+  'settings.nav.notifications.desc':
+    'Επιλέξτε ποιες κατηγορίες εμφανίζονται στο κέντρο ειδοποιήσεων',
+  'settings.nav.tools': 'Εργαλεία',
+  'settings.nav.tools.desc': 'Enable or disable capabilities Aura can use on your behalf',
+  'settings.nav.llm': 'LLM',
+  'settings.nav.llm.desc':
+    'Παροχείς cloud, τοπικά μοντέλα Ollama και δρομολόγηση ανά φόρτο εργασίας (συλλογισμός, agent, μνήμη,…)',
+  'settings.nav.voice': 'Φωνή',
+  'settings.nav.voice.desc':
+    'Ομιλία σε κείμενο (Whisper) και κείμενο σε ομιλία (Piper) — σύννεφο έναντι επιλογής τοπικού παρόχου',
+  'voice.loadSettingsFailed': 'Η φόρτωση των ρυθμίσεων φωνής απέτυχε',
+  'voice.saveSettingsFailed': 'Αποτυχία αποθήκευσης ρυθμίσεων φωνής',
+  'voice.startServerFailed': 'Η εκκίνηση του διακομιστή φωνής απέτυχε',
+  'voice.stopServerFailed': 'Η διακοπή του διακομιστή φωνής απέτυχε',
+  'voice.saveProvidersFailed': 'Αποτυχία αποθήκευσης παρόχων φωνής',
+  'voice.previewFailed': 'Η προεπισκόπηση φωνής απέτυχε',
+  'voice.defaultVoiceInUse': 'Χρησιμοποιείται ήδη η προεπιλεγμένη φωνή που αποστέλλεται',
+  'voice.restoreDefaultVoice': 'Επαναφέρετε την προεπιλεγμένη φωνή μασκότ που αποστέλλεται',
   'token.usageLimitReached': 'Συμπληρώθηκε το όριο χρήσης',
   'token.approachingLimit': 'Πλησιάζει το όριο',
   'token.planClickForDetails': 'σχέδιο - κάντε κλικ για λεπτομέρειες',

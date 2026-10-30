@@ -741,6 +741,48 @@ const nlNL: TranslationMap = {
   'mic.reviewHint': 'Enter om te verzenden · Esc om te verwijderen',
   'mic.discardTranscription': 'Weggooien',
   'mic.sendTranscription': 'Versturen',
+  'mic.deviceUnavailable':
+    'De geselecteerde microfoon is niet beschikbaar. Probeer een ander apparaat.',
+  'mic.inUseByAnotherApp': 'De microfoon wordt gebruikt door een andere toepassing.',
+  'mic.errorWithMessage': 'Microfoonfout: {message}',
+  'welcome.signingIn': 'U wordt aangemeld...',
+  'welcome.clearAppData': 'App-gegevens wissen en opnieuw opstarten',
+  'welcome.clearAppDataHint':
+    'Hiermee worden lokaal opgeslagen geheimen en accounts op dit apparaat gewist. Uw cloudaccount blijft onaangetast; u kunt zich direct daarna opnieuw aanmelden.',
+  'settings.nav.recovery_phrase': 'Herstelzin',
+  'settings.nav.recovery_phrase.desc':
+    'Beheer uw BIP39-herstelzin voor codering en portemonnee-toegang',
+  'settings.nav.team': 'Team',
+  'settings.nav.team.desc': 'Beheer uw team, leden en uitnodigingen',
+  'settings.nav.connections': 'Verbindingen',
+  'settings.nav.connections.desc': 'Bekijk en beheer gekoppelde accountverbindingen',
+  'settings.nav.privacy': 'Privacy',
+  'settings.nav.privacy.desc':
+    'Beheer het delen van gegevens en geanonimiseerde gebruiksvoorkeuren',
+  'settings.nav.screen_intelligence': 'Schermbewustzijn',
+  'settings.nav.screen_intelligence.desc':
+    'Machtigingen voor schermopnamen, monitoringbeleid en sessiecontroles',
+  'settings.nav.messaging': 'Berichtenkanalen',
+  'settings.nav.messaging.desc':
+    'Configureer de Telegram/Discord-authenticatiemodi en standaard kanaalrouting',
+  'settings.nav.notifications': 'Meldingen',
+  'settings.nav.notifications.desc': 'Kies welke categorieën in het meldingscentrum verschijnen',
+  'settings.nav.tools': 'Hulpmiddelen',
+  'settings.nav.tools.desc': 'Schakel mogelijkheden in of uit die Aura namens u kan gebruiken',
+  'settings.nav.llm': 'LLM',
+  'settings.nav.llm.desc':
+    'Cloudproviders, lokale Ollama-modellen en routering per workload (redenering, agentic, geheugen, ...)',
+  'settings.nav.voice': 'Stem',
+  'settings.nav.voice.desc':
+    'Spraak-naar-tekst (Whisper) en tekst-naar-spraak (Piper) – selectie uit de cloud versus lokale provider',
+  'voice.loadSettingsFailed': 'Kan steminstellingen niet laden',
+  'voice.saveSettingsFailed': 'Kan steminstellingen niet opslaan',
+  'voice.startServerFailed': 'Kan de spraakserver niet starten',
+  'voice.stopServerFailed': 'Kan de voiceserver niet stoppen',
+  'voice.saveProvidersFailed': 'Kan spraakproviders niet opslaan',
+  'voice.previewFailed': 'Spraakvoorbeeld mislukt',
+  'voice.defaultVoiceInUse': 'Gebruikt al de meegeleverde standaardstem',
+  'voice.restoreDefaultVoice': 'Herstel de standaard geleverde mascottestem',
   'token.usageLimitReached': 'Gebruikslimiet bereikt',
   'token.approachingLimit': 'Grens nadert',
   'token.planClickForDetails': 'plan - klik voor details',

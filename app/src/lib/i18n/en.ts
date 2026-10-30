@@ -835,6 +835,46 @@ const en: TranslationMap = {
   'mic.reviewHint': 'Enter to send · Esc to discard',
   'mic.discardTranscription': 'Discard',
   'mic.sendTranscription': 'Send',
+  'mic.deviceUnavailable': 'Selected microphone is unavailable — try a different device.',
+  'mic.inUseByAnotherApp': 'Microphone is in use by another application.',
+  'mic.errorWithMessage': 'Microphone error: {message}',
+  'welcome.signingIn': 'Signing you in...',
+  'welcome.clearAppData': 'Clear app data & restart',
+  'welcome.clearAppDataHint':
+    'This wipes locally stored secrets and accounts on this device. Your cloud account is unaffected — you can sign in again right after.',
+  'settings.nav.recovery_phrase': 'Recovery Phrase',
+  'settings.nav.recovery_phrase.desc':
+    'Manage your BIP39 recovery phrase for encryption and wallet access',
+  'settings.nav.team': 'Team',
+  'settings.nav.team.desc': 'Manage your team, members, and invites',
+  'settings.nav.connections': 'Connections',
+  'settings.nav.connections.desc': 'Review and manage linked account connections',
+  'settings.nav.privacy': 'Privacy',
+  'settings.nav.privacy.desc': 'Manage data sharing and anonymized usage preferences',
+  'settings.nav.screen_intelligence': 'Screen Awareness',
+  'settings.nav.screen_intelligence.desc':
+    'Screen capture permissions, monitoring policy, and session controls',
+  'settings.nav.messaging': 'Messaging Channels',
+  'settings.nav.messaging.desc':
+    'Configure Telegram/Discord auth modes and default channel routing',
+  'settings.nav.notifications': 'Notifications',
+  'settings.nav.notifications.desc': 'Choose which categories surface in the notification center',
+  'settings.nav.tools': 'Tools',
+  'settings.nav.tools.desc': 'Enable or disable capabilities Aura can use on your behalf',
+  'settings.nav.llm': 'LLM',
+  'settings.nav.llm.desc':
+    'Cloud providers, local Ollama models, and per-workload routing (reasoning, agentic, memory, …)',
+  'settings.nav.voice': 'Voice',
+  'settings.nav.voice.desc':
+    'Speech-to-text (Whisper) and text-to-speech (Piper) — cloud vs local provider selection',
+  'voice.loadSettingsFailed': 'Failed to load voice settings',
+  'voice.saveSettingsFailed': 'Failed to save voice settings',
+  'voice.startServerFailed': 'Failed to start voice server',
+  'voice.stopServerFailed': 'Failed to stop voice server',
+  'voice.saveProvidersFailed': 'Failed to save voice providers',
+  'voice.previewFailed': 'Voice preview failed',
+  'voice.defaultVoiceInUse': 'Already using the shipped default voice',
+  'voice.restoreDefaultVoice': 'Restore the shipped default mascot voice',
 
   // Token
   'token.usageLimitReached': 'Usage limit reached',

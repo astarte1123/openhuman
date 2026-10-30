@@ -750,6 +750,49 @@ const plPL: TranslationMap = {
   'mic.reviewHint': 'Enter, aby wysłać · Esc, aby odrzucić',
   'mic.discardTranscription': 'Wyrzucać',
   'mic.sendTranscription': 'Wysłać',
+  'mic.deviceUnavailable': 'Wybrany mikrofon jest niedostępny — wypróbuj inne urządzenie.',
+  'mic.inUseByAnotherApp': 'Mikrofon jest używany przez inną aplikację.',
+  'mic.errorWithMessage': 'Błąd mikrofonu: {message}',
+  'welcome.signingIn': 'Loguję Cię...',
+  'welcome.clearAppData': 'Wyczyść dane aplikacji i uruchom ponownie',
+  'welcome.clearAppDataHint':
+    'Spowoduje to usunięcie lokalnie przechowywanych sekretów i kont na tym urządzeniu. Nie ma to wpływu na Twoje konto w chmurze — zaraz potem możesz zalogować się ponownie.',
+  'settings.nav.recovery_phrase': 'Fraza odzyskiwania',
+  'settings.nav.recovery_phrase.desc':
+    'Zarządzaj frazą odzyskiwania BIP39 w celu szyfrowania i dostępu do portfela',
+  'settings.nav.team': 'Zespół',
+  'settings.nav.team.desc': 'Zarządzaj swoim zespołem, członkami i zaproszeniami',
+  'settings.nav.connections': 'Znajomości',
+  'settings.nav.connections.desc': 'Przeglądaj i zarządzaj połączeniami połączonych kont',
+  'settings.nav.privacy': 'Prywatność',
+  'settings.nav.privacy.desc':
+    'Zarządzaj udostępnianiem danych i anonimowymi preferencjami użytkowania',
+  'settings.nav.screen_intelligence': 'Świadomość ekranu',
+  'settings.nav.screen_intelligence.desc':
+    'Uprawnienia do przechwytywania ekranu, zasady monitorowania i kontrola sesji',
+  'settings.nav.messaging': 'Kanały wiadomości',
+  'settings.nav.messaging.desc':
+    'Skonfiguruj tryby autoryzacji Telegram/Discord i domyślny routing kanałów',
+  'settings.nav.notifications': 'Powiadomienia',
+  'settings.nav.notifications.desc':
+    'Wybierz, które kategorie będą wyświetlane w centrum powiadomień',
+  'settings.nav.tools': 'Narzędzia',
+  'settings.nav.tools.desc':
+    'Włącz lub wyłącz możliwości, których Aura może używać w Twoim imieniu',
+  'settings.nav.llm': 'LLM',
+  'settings.nav.llm.desc':
+    'Dostawcy usług w chmurze, lokalne modele Ollama i routing według obciążenia (rozumowanie, agentyczność, pamięć itp.)',
+  'settings.nav.voice': 'Głos',
+  'settings.nav.voice.desc':
+    'Zamiana mowy na tekst (Whisper) i zamiana tekstu na mowę (Piper) — wybór dostawcy w chmurze lub lokalnego',
+  'voice.loadSettingsFailed': 'Nie udało się załadować ustawień głosu',
+  'voice.saveSettingsFailed': 'Nie udało się zapisać ustawień głosu',
+  'voice.startServerFailed': 'Nie udało się uruchomić serwera głosowego',
+  'voice.stopServerFailed': 'Nie udało się zatrzymać serwera głosowego',
+  'voice.saveProvidersFailed': 'Nie udało się zapisać dostawców usług głosowych',
+  'voice.previewFailed': 'Podgląd głosu nie powiódł się',
+  'voice.defaultVoiceInUse': 'Używasz już dostarczonego domyślnego głosu',
+  'voice.restoreDefaultVoice': 'Przywróć dostarczony domyślny głos maskotki',
   'token.usageLimitReached': 'Osiągnięto limit wykorzystania',
   'token.approachingLimit': 'Zbliża się limit',
   'token.planClickForDetails': 'plan - kliknij po szczegóły',

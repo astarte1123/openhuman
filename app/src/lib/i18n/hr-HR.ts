@@ -741,6 +741,49 @@ const hrHR: TranslationMap = {
   'mic.reviewHint': 'Unesite za slanje · Esc za odbacivanje',
   'mic.discardTranscription': 'Odbaciti',
   'mic.sendTranscription': 'Poslati',
+  'mic.deviceUnavailable': 'Odabrani mikrofon nije dostupan — pokušajte s drugim uređajem.',
+  'mic.inUseByAnotherApp': 'Druga aplikacija koristi mikrofon.',
+  'mic.errorWithMessage': 'Greška mikrofona: {message}',
+  'welcome.signingIn': 'Prijavljujem se...',
+  'welcome.clearAppData': 'Izbrišite podatke aplikacije i ponovno pokrenite',
+  'welcome.clearAppDataHint':
+    'Time se brišu lokalno pohranjene tajne i računi na ovom uređaju. To ne utječe na vaš račun u oblaku — možete se ponovno prijaviti odmah nakon toga.',
+  'settings.nav.recovery_phrase': 'Fraza za oporavak',
+  'settings.nav.recovery_phrase.desc':
+    'Upravljajte svojom frazom za oporavak BIP39 za enkripciju i pristup novčaniku',
+  'settings.nav.team': 'Momčad',
+  'settings.nav.team.desc': 'Upravljajte svojim timom, članovima i pozivnicama',
+  'settings.nav.connections': 'Veze',
+  'settings.nav.connections.desc': 'Pregledajte veze povezanih računa i upravljajte njima',
+  'settings.nav.privacy': 'Privatnost',
+  'settings.nav.privacy.desc':
+    'Upravljajte postavkama dijeljenja podataka i anonimiziranog korištenja',
+  'settings.nav.screen_intelligence': 'Svijest o ekranu',
+  'settings.nav.screen_intelligence.desc':
+    'Dopuštenja za snimanje zaslona, ​​pravila nadzora i kontrole sesije',
+  'settings.nav.messaging': 'Kanali za slanje poruka',
+  'settings.nav.messaging.desc':
+    'Konfigurirajte Telegram/Discord načine autentifikacije i zadano usmjeravanje kanala',
+  'settings.nav.notifications': 'Obavijesti',
+  'settings.nav.notifications.desc':
+    'Odaberite koje se kategorije pojavljuju u centru za obavijesti',
+  'settings.nav.tools': 'Alati',
+  'settings.nav.tools.desc':
+    'Omogućite ili onemogućite mogućnosti koje Aura može koristiti u vaše ime',
+  'settings.nav.llm': 'LLM',
+  'settings.nav.llm.desc':
+    'Pružatelji usluga u oblaku, lokalni Ollama modeli i usmjeravanje po radnom opterećenju (rezoniranje, agenti, memorija, …)',
+  'settings.nav.voice': 'Glas',
+  'settings.nav.voice.desc':
+    'Govor u tekst (Whisper) i tekst u govor (Piper) — odabir oblaka nasuprot lokalnom pružatelju usluga',
+  'voice.loadSettingsFailed': 'Učitavanje glasovnih postavki nije uspjelo',
+  'voice.saveSettingsFailed': 'Spremanje glasovnih postavki nije uspjelo',
+  'voice.startServerFailed': 'Pokretanje glasovnog poslužitelja nije uspjelo',
+  'voice.stopServerFailed': 'Zaustavljanje glasovnog poslužitelja nije uspjelo',
+  'voice.saveProvidersFailed': 'Spremanje davatelja glasovnih usluga nije uspjelo',
+  'voice.previewFailed': 'Glasovni pregled nije uspio',
+  'voice.defaultVoiceInUse': 'Već se koristi isporučeni zadani glas',
+  'voice.restoreDefaultVoice': 'Vratite isporučeni zadani glas maskote',
   'token.usageLimitReached': 'Dosegnuto je ograničenje upotrebe',
   'token.approachingLimit': 'Približava se granici',
   'token.planClickForDetails': 'plan - kliknite za detalje',

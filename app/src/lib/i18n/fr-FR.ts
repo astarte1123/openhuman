@@ -756,6 +756,50 @@ const frFR: TranslationMap = {
   'mic.reviewHint': 'Entrée pour envoyer · Echap pour rejeter',
   'mic.discardTranscription': 'Jeter',
   'mic.sendTranscription': 'Envoyer',
+  'mic.deviceUnavailable':
+    'Le microphone sélectionné n’est pas disponible : essayez un autre appareil.',
+  'mic.inUseByAnotherApp': 'Le microphone est utilisé par une autre application.',
+  'mic.errorWithMessage': 'Erreur du microphone : {message}',
+  'welcome.signingIn': 'Vous connecter...',
+  'welcome.clearAppData': "Effacer les données de l'application et redémarrer",
+  'welcome.clearAppDataHint':
+    "Cela efface les secrets et les comptes stockés localement sur cet appareil. Votre compte cloud n'est pas affecté : vous pouvez vous reconnecter juste après.",
+  'settings.nav.recovery_phrase': 'Phrase de récupération',
+  'settings.nav.recovery_phrase.desc':
+    "Gérez votre phrase de récupération BIP39 pour le cryptage et l'accès au portefeuille",
+  'settings.nav.team': 'Équipe',
+  'settings.nav.team.desc': 'Gérez votre équipe, vos membres et vos invitations',
+  'settings.nav.connections': 'Relations',
+  'settings.nav.connections.desc': 'Examiner et gérer les connexions aux comptes liés',
+  'settings.nav.privacy': 'Confidentialité',
+  'settings.nav.privacy.desc':
+    "Gérer le partage de données et les préférences d'utilisation anonymisées",
+  'settings.nav.screen_intelligence': 'Conscience des écrans',
+  'settings.nav.screen_intelligence.desc':
+    "Autorisations de capture d'écran, stratégie de surveillance et contrôles de session",
+  'settings.nav.messaging': 'Canaux de messagerie',
+  'settings.nav.messaging.desc':
+    "Configurer les modes d'authentification Telegram/Discord et le routage des canaux par défaut",
+  'settings.nav.notifications': 'Notifications',
+  'settings.nav.notifications.desc':
+    'Choisissez les catégories qui apparaissent dans le centre de notification',
+  'settings.nav.tools': 'Outils',
+  'settings.nav.tools.desc':
+    'Activer ou désactiver les fonctionnalités que Aura peut utiliser en votre nom',
+  'settings.nav.llm': 'LLM',
+  'settings.nav.llm.desc':
+    'Fournisseurs cloud, modèles Ollama locaux et routage par charge de travail (raisonnement, agent, mémoire, …)',
+  'settings.nav.voice': 'Voix',
+  'settings.nav.voice.desc':
+    'Synthèse vocale (Whisper) et synthèse vocale (Piper) — sélection du fournisseur cloud ou local',
+  'voice.loadSettingsFailed': 'Échec du chargement des paramètres vocaux',
+  'voice.saveSettingsFailed': "Échec de l'enregistrement des paramètres vocaux",
+  'voice.startServerFailed': 'Échec du démarrage du serveur vocal',
+  'voice.stopServerFailed': "Échec de l'arrêt du serveur vocal",
+  'voice.saveProvidersFailed': "Échec de l'enregistrement des fournisseurs de voix",
+  'voice.previewFailed': "L'aperçu vocal a échoué",
+  'voice.defaultVoiceInUse': 'Vous utilisez déjà la voix par défaut fournie',
+  'voice.restoreDefaultVoice': 'Restaurer la voix de la mascotte par défaut expédiée',
   'token.usageLimitReached': "Limite d'utilisation atteinte",
   'token.approachingLimit': 'Approche de la limite',
   'token.planClickForDetails': 'plan - cliquez pour plus de détails',

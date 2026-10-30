@@ -190,7 +190,7 @@ const VoicePanel = ({ embedded = false }: VoicePanelProps = {}) => {
       setSttReady(sttAssetOk && voiceResponse.stt_available);
       setError(null);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to load voice settings';
+      const message = err instanceof Error ? err.message : t('voice.loadSettingsFailed');
       setError(message);
     } finally {
       setIsLoading(false);
@@ -243,7 +243,7 @@ const VoicePanel = ({ embedded = false }: VoicePanelProps = {}) => {
 
       await loadData(true);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to save voice settings';
+      const message = err instanceof Error ? err.message : t('voice.saveSettingsFailed');
       setError(message);
     } finally {
       setIsSaving(false);
@@ -274,7 +274,7 @@ const VoicePanel = ({ embedded = false }: VoicePanelProps = {}) => {
       setNotice(t('voice.serverStarted'));
       await loadData(true);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to start voice server';
+      const message = err instanceof Error ? err.message : t('voice.startServerFailed');
       setError(message);
     } finally {
       setIsStarting(false);
@@ -290,7 +290,7 @@ const VoicePanel = ({ embedded = false }: VoicePanelProps = {}) => {
       setNotice(t('voice.serverStopped'));
       await loadData(true);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to stop voice server';
+      const message = err instanceof Error ? err.message : t('voice.stopServerFailed');
       setError(message);
     } finally {
       setIsStopping(false);
@@ -324,7 +324,7 @@ const VoicePanel = ({ embedded = false }: VoicePanelProps = {}) => {
       // Force a reload so the rest of the panel reflects the new state.
       await loadData(true);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to save voice providers';
+      const message = err instanceof Error ? err.message : t('voice.saveProvidersFailed');
       setError(message);
     } finally {
       setIsSavingProviders(false);
@@ -417,7 +417,7 @@ const VoicePanel = ({ embedded = false }: VoicePanelProps = {}) => {
       previewAudioRef.current = audio;
       await audio.play();
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Voice preview failed';
+      const message = err instanceof Error ? err.message : t('voice.previewFailed');
       setMascotVoicePreviewError(message);
     } finally {
       setIsPreviewingMascotVoice(false);
@@ -814,8 +814,8 @@ const VoicePanel = ({ embedded = false }: VoicePanelProps = {}) => {
                   disabled={storedMascotVoiceId == null}
                   title={
                     storedMascotVoiceId == null
-                      ? 'Already using the shipped default voice'
-                      : 'Restore the shipped default mascot voice'
+                      ? t('voice.defaultVoiceInUse')
+                      : t('voice.restoreDefaultVoice')
                   }
                   className="px-3 py-1.5 text-xs rounded-md border border-stone-300 hover:border-stone-400 disabled:opacity-60 text-stone-700">
                   Reset to default

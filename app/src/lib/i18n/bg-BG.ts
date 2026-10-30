@@ -749,6 +749,49 @@ const bgBG: TranslationMap = {
   'mic.reviewHint': 'Въведете за изпращане · Esc за отхвърляне',
   'mic.discardTranscription': 'Изхвърлете',
   'mic.sendTranscription': 'Изпратете',
+  'mic.deviceUnavailable': 'Избраният микрофон не е наличен — опитайте с друго устройство.',
+  'mic.inUseByAnotherApp': 'Микрофонът се използва от друго приложение.',
+  'mic.errorWithMessage': 'Грешка на микрофона: {message}',
+  'welcome.signingIn': 'Вписвам ви...',
+  'welcome.clearAppData': 'Изчистете данните на приложението и рестартирайте',
+  'welcome.clearAppDataHint':
+    'Това изтрива локално съхранени тайни и акаунти на това устройство. Вашият облачен акаунт не е засегнат — можете да влезете отново веднага след това.',
+  'settings.nav.recovery_phrase': 'Фраза за възстановяване',
+  'settings.nav.recovery_phrase.desc':
+    'Управлявайте своята фраза за възстановяване на BIP39 за криптиране и достъп до портфейла',
+  'settings.nav.team': 'Екип',
+  'settings.nav.team.desc': 'Управлявайте своя екип, членове и покани',
+  'settings.nav.connections': 'Връзки',
+  'settings.nav.connections.desc': 'Преглеждайте и управлявайте връзките на свързани акаунти',
+  'settings.nav.privacy': 'Поверителност',
+  'settings.nav.privacy.desc':
+    'Управлявайте споделянето на данни и предпочитанията за анонимно използване',
+  'settings.nav.screen_intelligence': 'Разпознаване на екрана',
+  'settings.nav.screen_intelligence.desc':
+    'Разрешения за заснемане на екрана, политика за наблюдение и контроли на сесията',
+  'settings.nav.messaging': 'Канали за съобщения',
+  'settings.nav.messaging.desc':
+    'Конфигурирайте Telegram/Discord режими за удостоверяване и маршрутизиране на канала по подразбиране',
+  'settings.nav.notifications': 'Известия',
+  'settings.nav.notifications.desc':
+    'Изберете кои категории да се показват в центъра за уведомяване',
+  'settings.nav.tools': 'Инструменти',
+  'settings.nav.tools.desc':
+    'Активиране или деактивиране на възможности, които Aura може да използва от ваше име',
+  'settings.nav.llm': 'LLM',
+  'settings.nav.llm.desc':
+    'Облачни доставчици, локални модели Ollama и маршрутизиране за работно натоварване (разсъждение, агент, памет, …)',
+  'settings.nav.voice': 'глас',
+  'settings.nav.voice.desc':
+    'Реч към текст (Whisper) и текст към говор (Piper) — избор на облак срещу локален доставчик',
+  'voice.loadSettingsFailed': 'Неуспешно зареждане на гласовите настройки',
+  'voice.saveSettingsFailed': 'Неуспешно запазване на гласовите настройки',
+  'voice.startServerFailed': 'Неуспешно стартиране на гласов сървър',
+  'voice.stopServerFailed': 'Неуспешно спиране на гласовия сървър',
+  'voice.saveProvidersFailed': 'Неуспешно запазване на гласови доставчици',
+  'voice.previewFailed': 'Гласовият преглед не бе успешен',
+  'voice.defaultVoiceInUse': 'Вече използвате изпратения глас по подразбиране',
+  'voice.restoreDefaultVoice': 'Възстановете изпратения глас на талисмана по подразбиране',
   'token.usageLimitReached': 'Лимитът за използване е достигнат',
   'token.approachingLimit': 'Наближава границата',
   'token.planClickForDetails': 'план - щракнете за подробности',

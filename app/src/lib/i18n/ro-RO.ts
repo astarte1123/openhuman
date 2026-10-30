@@ -748,6 +748,48 @@ const roRO: TranslationMap = {
   'mic.reviewHint': 'Introduceți pentru a trimite · Esc pentru a renunța',
   'mic.discardTranscription': 'Aruncă',
   'mic.sendTranscription': 'Trimite',
+  'mic.deviceUnavailable': 'Microfonul selectat nu este disponibil — încercați un alt dispozitiv.',
+  'mic.inUseByAnotherApp': 'Microfonul este utilizat de o altă aplicație.',
+  'mic.errorWithMessage': 'Eroare la microfon: {message}',
+  'welcome.signingIn': 'Te conectez...',
+  'welcome.clearAppData': 'Ștergeți datele aplicației și reporniți',
+  'welcome.clearAppDataHint':
+    'Acest lucru șterge secretele și conturile stocate local pe acest dispozitiv. Contul dvs. cloud nu este afectat - vă puteți conecta din nou imediat după.',
+  'settings.nav.recovery_phrase': 'Expresie de recuperare',
+  'settings.nav.recovery_phrase.desc':
+    'Gestionați-vă fraza de recuperare BIP39 pentru criptare și acces la portofel',
+  'settings.nav.team': 'Echipă',
+  'settings.nav.team.desc': 'Gestionați-vă echipa, membrii și invitațiile',
+  'settings.nav.connections': 'Conexiuni',
+  'settings.nav.connections.desc': 'Examinați și gestionați conexiunile contului conectat',
+  'settings.nav.privacy': 'Confidențialitate',
+  'settings.nav.privacy.desc':
+    'Gestionați partajarea datelor și preferințele de utilizare anonimizate',
+  'settings.nav.screen_intelligence': 'Conștientizarea ecranului',
+  'settings.nav.screen_intelligence.desc':
+    'Permisiuni de captură de ecran, politica de monitorizare și controale de sesiune',
+  'settings.nav.messaging': 'Canale de mesagerie',
+  'settings.nav.messaging.desc':
+    'Configurați modurile de autentificare Telegram/Discord și rutarea implicită a canalului',
+  'settings.nav.notifications': 'Notificări',
+  'settings.nav.notifications.desc': 'Alegeți ce categorii apar în centrul de notificări',
+  'settings.nav.tools': 'Instrumente',
+  'settings.nav.tools.desc':
+    'Activați sau dezactivați capabilitățile pe care Aura le poate folosi în numele dvs',
+  'settings.nav.llm': 'LLM',
+  'settings.nav.llm.desc':
+    'Furnizori de cloud, modele locale Ollama și rutare pe sarcină de lucru (raționament, agentic, memorie etc.)',
+  'settings.nav.voice': 'Voce',
+  'settings.nav.voice.desc':
+    'Conversie vorbire în text (Whisper) și text în vorbire (Piper) – selecție cloud vs furnizor local',
+  'voice.loadSettingsFailed': 'Nu s-au încărcat setările de voce',
+  'voice.saveSettingsFailed': 'Nu s-au salvat setările vocale',
+  'voice.startServerFailed': 'Nu s-a pornit serverul de voce',
+  'voice.stopServerFailed': 'Nu s-a oprit serverul de voce',
+  'voice.saveProvidersFailed': 'Nu s-au salvat furnizorii de voce',
+  'voice.previewFailed': 'Previzualizarea vocală a eșuat',
+  'voice.defaultVoiceInUse': 'Utilizați deja vocea implicită livrată',
+  'voice.restoreDefaultVoice': 'Restabiliți vocea implicită a mascotei livrate',
   'token.usageLimitReached': 'Limita de utilizare a fost atinsă',
   'token.approachingLimit': 'Se apropie de limită',
   'token.planClickForDetails': 'plan - faceți clic pentru detalii',
