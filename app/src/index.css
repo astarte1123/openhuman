@@ -1,6 +1,45 @@
 /* Import Google Fonts for trust and professionalism */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+/* Cabinet Grotesk (display face) — Fontshare, NOT on Google Fonts; without
+   this the `font-display` token silently fell back to Inter. */
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700&display=swap');
+
+/* Design tokens — semantic surface/ink/line vocabulary consumed by the
+   Tailwind `surface.*` / `ink.*` / `line.*` color scales (see
+   tailwind.config.js). Light theme today; the `.dark` block is the future
+   dark palette placeholder — components must read tokens, never raw hex. */
+:root {
+  /* Surfaces */
+  --surface-app: #f5f5f5; /* app background (canvas-100) */
+  --surface-base: #ffffff; /* cards, sheets */
+  --surface-raised: #fafafa; /* hover, inset regions */
+  --surface-sunken: #efefef; /* wells, input backgrounds */
+  --surface-overlay: rgb(10 10 10 / 0.44); /* modal scrims */
+  /* Text */
+  --ink-primary: #171717;
+  --ink-secondary: #525252;
+  --ink-tertiary: #737373;
+  --ink-inverse: #ffffff;
+  /* Borders */
+  --line-default: #e5e5e5;
+  --line-strong: #d4d4d4;
+}
+
+.dark {
+  /* Dark palette placeholder — wired when the dark theme ships. */
+  --surface-app: #0a0a0a;
+  --surface-base: #171717;
+  --surface-raised: #1f1f1f;
+  --surface-sunken: #262626;
+  --surface-overlay: rgb(0 0 0 / 0.6);
+  --ink-primary: #f5f5f5;
+  --ink-secondary: #d4d4d4;
+  --ink-tertiary: #a3a3a3;
+  --ink-inverse: #171717;
+  --line-default: #2b2b2b;
+  --line-strong: #404040;
+}
 
 /* Tailwind CSS imports */
 @tailwind base;
@@ -61,6 +100,31 @@
     to {
       opacity: 1;
       transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Toast enter/exit — consumed by components/ui/Toast. */
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.97);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes toast-out {
+    from {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    to {
+      opacity: 0;
+      transform: translateY(4px) scale(0.98);
     }
   }
 

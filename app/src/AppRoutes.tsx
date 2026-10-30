@@ -6,6 +6,7 @@ import PublicRoute from './components/PublicRoute';
 import HumanPage from './features/human/HumanPage';
 import Accounts from './pages/Accounts';
 import Channels from './pages/Channels';
+import DesignSystem from './pages/dev/DesignSystem';
 import Home from './pages/Home';
 import Intelligence from './pages/Intelligence';
 import Invites from './pages/Invites';
@@ -144,6 +145,20 @@ const AppRoutes = () => {
       />
 
       <Route path="/webhooks" element={<Navigate to="/settings/webhooks-triggers" replace />} />
+
+      {/* UI kit showcase — dev builds only (the page is inert dead weight in
+          prod bundles but never routable; dynamic imports are banned by
+          project convention, so gating happens at route registration). */}
+      {import.meta.env.DEV && (
+        <Route
+          path="/design-system"
+          element={
+            <ProtectedRoute requireAuth={false}>
+              <DesignSystem />
+            </ProtectedRoute>
+          }
+        />
+      )}
 
       <Route
         path="/settings/*"

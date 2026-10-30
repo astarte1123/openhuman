@@ -114,6 +114,29 @@ module.exports = {
           950: '#450A0A',
         },
 
+        // Semantic surface/ink/line tokens — the ONE vocabulary for
+        // backgrounds, text and borders. Values resolve through CSS
+        // variables so a future dark theme swaps at :root without touching
+        // components. Prefer these over the raw stone/neutral/canvas scales
+        // in new code (legacy scales stay for backward compat).
+        surface: {
+          app: 'var(--surface-app)',
+          base: 'var(--surface-base)',
+          raised: 'var(--surface-raised)',
+          sunken: 'var(--surface-sunken)',
+          overlay: 'var(--surface-overlay)',
+        },
+        ink: {
+          primary: 'var(--ink-primary)',
+          secondary: 'var(--ink-secondary)',
+          tertiary: 'var(--ink-tertiary)',
+          inverse: 'var(--ink-inverse)',
+        },
+        line: {
+          default: 'var(--line-default)',
+          strong: 'var(--line-strong)',
+        },
+
         // Stone - Neutral scale (keeping for backward compat, mapped to neutral)
         stone: {
           50: '#FAFAFA',
@@ -225,6 +248,16 @@ module.exports = {
         'float': '0 12px 32px -8px rgba(0, 0, 0, 0.12), 0 24px 48px -12px rgba(0, 0, 0, 0.12)',
         'crisp': '0 0 0 1px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.08)',
         'cmd-palette': 'var(--cmd-shadow-palette)',
+      },
+
+      // Layering scale — the only z-index vocabulary. New code must use
+      // these (z-nav, z-overlay, z-modal, z-toast) instead of ad-hoc values.
+      zIndex: {
+        sticky: '40',
+        nav: '50',
+        overlay: '80',
+        modal: '90',
+        toast: '100',
       },
 
       // Premium animations for polished interactions

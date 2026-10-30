@@ -17,15 +17,15 @@ describe('Button', () => {
   it('applies secondary variant classes', () => {
     render(<Button variant="secondary">Cancel</Button>);
     const btn = screen.getByRole('button', { name: 'Cancel' });
-    expect(btn.className).toMatch(/border-neutral-300/);
-    expect(btn.className).toMatch(/bg-neutral-0/);
+    expect(btn.className).toMatch(/border-line-default/);
+    expect(btn.className).toMatch(/bg-surface-base/);
   });
 
   it('applies ghost variant classes', () => {
     render(<Button variant="ghost">Skip</Button>);
     const btn = screen.getByRole('button', { name: 'Skip' });
     expect(btn.className).toMatch(/bg-transparent/);
-    expect(btn.className).toMatch(/text-neutral-700/);
+    expect(btn.className).toMatch(/text-ink-secondary/);
   });
 
   it('applies danger variant classes', () => {
