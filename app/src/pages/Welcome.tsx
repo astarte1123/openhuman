@@ -1,6 +1,7 @@
 import createDebug from 'debug';
 import { useState } from 'react';
 
+import MeshGradient from '../components/MeshGradient';
 import OAuthProviderButton from '../components/oauth/OAuthProviderButton';
 import { oauthProviderConfigs } from '../components/oauth/providerConfigs';
 import RotatingTetrahedronCanvas from '../components/RotatingTetrahedronCanvas';
@@ -53,91 +54,102 @@ const Welcome = () => {
   };
 
   return (
-    <div className="min-h-full flex flex-col items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        <div className="bg-white rounded-2xl shadow-soft border border-stone-200 p-8 animate-fade-up">
-          <div className="flex justify-center mb-6">
-            <div className="h-20 w-20">
-              <RotatingTetrahedronCanvas />
+    <div className="relative min-h-full overflow-hidden">
+      {/* Ambient animated gradient behind the glass card. */}
+      <div className="absolute inset-0">
+        <MeshGradient />
+      </div>
+      <div className="relative flex min-h-full flex-col items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <div className="rounded-2xl border border-line-default bg-surface-base/80 p-8 shadow-float backdrop-blur-xl animate-fade-up">
+            <div className="mb-6 flex justify-center">
+              <div className="h-20 w-20">
+                <RotatingTetrahedronCanvas />
+              </div>
             </div>
+
+            <h1 className="mb-2 text-center font-display text-3xl font-medium tracking-tight text-ink-primary">
+              {t('welcome.title')}
+            </h1>
+
+            <p className="mb-6 text-sm leading-relaxed text-center text-ink-secondary">
+              {t('welcome.subtitle')}
+            </p>
+
+            {errorMessage ? (
+              <div
+                role="alert"
+                className="mb-5 rounded-lg border border-coral-200 bg-coral-50 px-3 py-2 text-sm text-coral-700">
+                <p>{errorMessage}</p>
+                {requiresAppDataReset ? (
+                  <div className="mt-3 space-y-2">
+                    <button
+                      type="button"
+                      onClick={handleClearAppData}
+                      disabled={isClearingAppData}
+                      className="w-full rounded-lg bg-coral-600 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-coral-700 disabled:cursor-not-allowed disabled:opacity-60">
+                      {isClearingAppData ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <span className="h-3 w-3 animate-spin rounded-full border border-white border-t-transparent" />
+                          Clearing app data...
+                        </span>
+                      ) : (
+                        'Clear app data & restart'
+                      )}
+                    </button>
+                    <p className="text-[11px] leading-4 text-coral-600/80">
+                      This wipes locally stored secrets and accounts on this device. Your cloud
+                      account is unaffected — you can sign in again right after.
+                    </p>
+                    {resetError ? (
+                      <p className="text-[11px] leading-4 font-medium text-coral-700">
+                        {resetError}
+                      </p>
+                    ) : null}
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+
+            {isProcessing ? (
+              <div
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+                className="mb-5 flex flex-col items-center justify-center gap-3 py-2">
+                <div className="w-full space-y-2">
+                  <div className="h-4 animate-pulse rounded-md bg-surface-sunken" />
+                  <div className="h-4 w-2/3 animate-pulse rounded-md bg-surface-sunken" />
+                </div>
+                <p className="text-sm font-medium text-ink-secondary">Signing you in...</p>
+              </div>
+            ) : (
+              <>
+                {/* Real OAuth: click → system browser → backend → deep link back to app. */}
+                <div className="flex flex-col items-stretch gap-2">
+                  {oauthProviderConfigs
+                    .filter(provider => provider.showOnWelcome)
+                    .map(provider => (
+                      <OAuthProviderButton
+                        key={provider.id}
+                        provider={provider}
+                        className="w-full"
+                      />
+                    ))}
+                </div>
+              </>
+            )}
           </div>
 
-          <h1 className="text-2xl font-bold text-stone-900 text-center mb-2">
-            {t('welcome.title')}
-          </h1>
-
-          <p className="text-sm text-stone-500 text-center mb-6 leading-relaxed">
-            {t('welcome.subtitle')}
-          </p>
-
-          {errorMessage ? (
-            <div
-              role="alert"
-              className="mb-5 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-              <p>{errorMessage}</p>
-              {requiresAppDataReset ? (
-                <div className="mt-3 space-y-2">
-                  <button
-                    type="button"
-                    onClick={handleClearAppData}
-                    disabled={isClearingAppData}
-                    className="w-full rounded-lg bg-red-600 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60">
-                    {isClearingAppData ? (
-                      <span className="flex items-center justify-center gap-2">
-                        <span className="h-3 w-3 animate-spin rounded-full border border-white border-t-transparent" />
-                        Clearing app data...
-                      </span>
-                    ) : (
-                      'Clear app data & restart'
-                    )}
-                  </button>
-                  <p className="text-[11px] leading-4 text-red-600/80">
-                    This wipes locally stored secrets and accounts on this device. Your cloud
-                    account is unaffected — you can sign in again right after.
-                  </p>
-                  {resetError ? (
-                    <p className="text-[11px] leading-4 font-medium text-red-700">{resetError}</p>
-                  ) : null}
-                </div>
-              ) : null}
-            </div>
-          ) : null}
-
-          {isProcessing ? (
-            <div
-              role="status"
-              aria-live="polite"
-              aria-atomic="true"
-              className="mb-5 flex flex-col items-center justify-center gap-3 py-2">
-              <div className="h-6 w-6 animate-spin rounded-full border-2 border-stone-300 border-t-primary-500" />
-              <p className="text-sm font-medium text-stone-700">Signing you in...</p>
-            </div>
-          ) : (
-            <>
-              {/* Real OAuth: click → system browser → backend → deep link back to app. */}
-              <div className="flex items-center justify-center gap-3">
-                {oauthProviderConfigs
-                  .filter(provider => provider.showOnWelcome)
-                  .map(provider => (
-                    <OAuthProviderButton
-                      key={provider.id}
-                      provider={provider}
-                      className="!rounded-full !px-4 !py-2"
-                    />
-                  ))}
-              </div>
-            </>
-          )}
-        </div>
-
-        <div className="mt-4 px-2">
-          <Button
-            variant="secondary"
-            size="md"
-            onClick={handleSelectRuntime}
-            className="w-full py-3">
-            {t('welcome.selectRuntime')}
-          </Button>
+          <div className="mt-4 px-2">
+            <Button
+              variant="secondary"
+              size="md"
+              onClick={handleSelectRuntime}
+              className="w-full py-3">
+              {t('welcome.selectRuntime')}
+            </Button>
+          </div>
         </div>
       </div>
     </div>

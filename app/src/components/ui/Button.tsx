@@ -15,7 +15,9 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const BASE =
-  'inline-flex items-center justify-center gap-2 font-medium transition-colors duration-150 ' +
+  'inline-flex items-center justify-center gap-2 font-medium select-none ' +
+  'transition-all duration-fast ease-standard ' +
+  'active:scale-[0.98] ' +
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/25 ' +
   'focus-visible:ring-offset-2 disabled:opacity-40 disabled:pointer-events-none';
 

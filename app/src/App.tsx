@@ -1,3 +1,4 @@
+import * as RadixTooltip from '@radix-ui/react-tooltip';
 import * as Sentry from '@sentry/react';
 import { useEffect } from 'react';
 import { Provider } from 'react-redux';
@@ -16,6 +17,7 @@ import DictationHotkeyManager from './components/DictationHotkeyManager';
 import ErrorFallbackScreen from './components/ErrorFallbackScreen';
 import LocalAIDownloadSnackbar from './components/LocalAIDownloadSnackbar';
 import PersistRehydrationScreen from './components/PersistRehydrationScreen';
+import { ToastProvider } from './components/ui/Toast';
 import GlobalUpsellBanner from './components/upsell/GlobalUpsellBanner';
 import AppWalkthrough from './components/walkthrough/AppWalkthrough';
 import { MascotFrameProducer } from './features/meet/MascotFrameProducer';
@@ -180,32 +182,36 @@ function AppShell() {
   // }, [welcomeLocked, isBootstrapping, onboardingPending, location.pathname, navigate]);
 
   return (
-    <div className="relative h-screen flex flex-col overflow-hidden">
-      <AppBackground />
-      <div className="relative z-10 flex-1 flex flex-col overflow-hidden">
-        <div
-          className={`flex-1 overflow-y-auto ${
-            // [#1123] welcomeLocked removed — welcome-agent onboarding replaced by Joyride walkthrough
-            fullscreen || onOnboardingRoute ? '' : 'pb-16'
-          }`}>
-          <GlobalUpsellBanner />
-          <AppRoutes />
-        </div>
-        {!onOnboardingRoute && <BottomTabBar />}
-      </div>
-      <AuraLinkModal />
-      {/* Hidden Remotion-driven producer for the Meet camera. Mounts a
+    <RadixTooltip.Provider delayDuration={400}>
+      <ToastProvider>
+        <div className="relative h-screen flex flex-col overflow-hidden">
+          <AppBackground />
+          <div className="relative z-10 flex-1 flex flex-col overflow-hidden">
+            <div
+              className={`flex-1 overflow-y-auto ${
+                // [#1123] welcomeLocked removed — welcome-agent onboarding replaced by Joyride walkthrough
+                fullscreen || onOnboardingRoute ? '' : 'pb-16'
+              }`}>
+              <GlobalUpsellBanner />
+              <AppRoutes />
+            </div>
+            {!onOnboardingRoute && <BottomTabBar />}
+          </div>
+          <AuraLinkModal />
+          {/* Hidden Remotion-driven producer for the Meet camera. Mounts a
           640×480 JPEG frame stream to the Rust frame bus while a meet
           call is active; idle no-op otherwise. See
           features/meet/MascotFrameProducer.tsx. */}
-      <MascotFrameProducer />
-      {/* Post-onboarding Joyride walkthrough — mounted here (outside routes) so
+          <MascotFrameProducer />
+          {/* Post-onboarding Joyride walkthrough — mounted here (outside routes) so
           it persists across tab navigations. Joyride targets span Home + BottomTabBar
           tabs so it must stay mounted while the user moves between routes. */}
-      {!isBootstrapping && !onOnboardingRoute && (
-        <AppWalkthrough onboarded={!!snapshot.onboardingCompleted} />
-      )}
-    </div>
+          {!isBootstrapping && !onOnboardingRoute && (
+            <AppWalkthrough onboarded={!!snapshot.onboardingCompleted} />
+          )}
+        </div>
+      </ToastProvider>
+    </RadixTooltip.Provider>
   );
 }
 

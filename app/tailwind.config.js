@@ -331,10 +331,23 @@ module.exports = {
         'noise': "url('data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\"%3E%3Cfilter id=\"noise\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"4\" /%3E%3C/filter%3E%3Crect width=\"100\" height=\"100\" filter=\"url(%23noise)\" opacity=\"0.03\" /%3E%3C/svg%3E')",
       },
 
-      // Extended transition duration for smooth animations
+      // Extended transition duration for smooth animations, plus the
+      // motion vocabulary (fast/base) the kit relies on. NOTE: keep a
+      // single `transitionDuration` object — duplicate keys silently drop
+      // the earlier scale.
       transitionDuration: {
         '300': '300ms',
         '400': '400ms',
+        fast: '150ms',
+        base: '250ms',
+      },
+
+      // Motion easings — the only two curves new code should use (spring
+      // for layout/indicator moves, standard for color/fade). `spring`
+      // matches the curve the legacy tab bar had hardcoded inline.
+      transitionTimingFunction: {
+        standard: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        spring: 'cubic-bezier(0.22, 1, 0.36, 1)',
       },
     },
   },
