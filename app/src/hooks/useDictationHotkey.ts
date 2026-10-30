@@ -158,6 +158,15 @@ export function useDictationHotkey(): DictationHotkeyState {
           window.dispatchEvent(new CustomEvent('dictation://insert-text', { detail: { text } }));
         });
 
+        // Live streaming partials (commitment protocol: text only grows) —
+        // forwarded as a DOM event so overlays/composers can preview while
+        // the user is still speaking.
+        socket.on('dictation:partial', (data: { text?: string }) => {
+          const text = data?.text;
+          if (!text) return;
+          window.dispatchEvent(new CustomEvent('dictation://partial-text', { detail: { text } }));
+        });
+
         socket.connect();
       } catch (err) {
         console.warn('[dictation] failed to open dedicated socket', err);

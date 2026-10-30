@@ -156,6 +156,7 @@ export default function OverlayApp() {
   const [bubble, setBubble] = useState<OverlayBubble | null>(null);
   const [isHovered, setIsHovered] = useState(false);
 
+
   /** Timer that returns the overlay to idle after a ttl (attention) or a
    *  grace period (stt release). We clear it whenever the mode changes. */
   const dismissTimerRef = useRef<number | null>(null);
@@ -341,6 +342,23 @@ export default function OverlayApp() {
   useEffect(() => {
     modeRef.current = mode;
   }, [mode]);
+
+  // Live streaming partials (commitment protocol: the text only grows) —
+  // replace the bubble text in place while the user is still speaking.
+  useEffect(() => {
+    const onPartial = (event: Event) => {
+      const text = (event as CustomEvent<{ text?: string }>).detail?.text?.trim();
+      if (!text || modeRef.current !== 'stt') return;
+      setBubble({
+        id: `stt-partial-${Date.now()}`,
+        text: `"${text}"`,
+        tone: 'accent',
+        compact: true,
+      });
+    };
+    window.addEventListener('dictation://partial-text', onPartial);
+    return () => window.removeEventListener('dictation://partial-text', onPartial);
+  }, []);
 
   useEffect(() => {
     let disposed = false;

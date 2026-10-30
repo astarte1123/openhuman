@@ -131,6 +131,16 @@ pub struct RecordingResult {
     pub peak_rms: f32,
 }
 
+/// One live chunk of gated mono audio while recording — fed to the streaming
+/// partial-transcription pipeline via the receiver returned by
+/// [`start_recording_with_stream`]. Samples are source-rate mono f32,
+/// already silence-gated (identical to what accumulates for the final WAV).
+#[derive(Debug, Clone)]
+pub struct StreamChunk {
+    pub samples: Vec<f32>,
+    pub sample_rate: u32,
+}
+
 /// Handle to a recording in progress. Drop or call `stop()` to end recording.
 pub struct RecordingHandle {
     stop_flag: Arc<AtomicBool>,
@@ -178,6 +188,17 @@ pub fn start_recording() -> Result<RecordingHandle, String> {
 /// `config.voice_server.silence_threshold` so the in-capture gate and the
 /// post-capture silence check use the same knob.
 pub fn start_recording_with_threshold(silence_threshold: f32) -> Result<RecordingHandle, String> {
+    start_recording_streaming(silence_threshold, false).map(|(handle, _rx)| handle)
+}
+
+/// Like [`start_recording_with_threshold`], optionally returning a receiver of
+/// live gated audio chunks for streaming partial transcription. When
+/// `enable_stream` is false the receiver side is `None` (channel never
+/// created — zero overhead for the non-streaming path).
+pub fn start_recording_streaming(
+    silence_threshold: f32,
+    enable_stream: bool,
+) -> Result<(RecordingHandle, Option<std::sync::mpsc::Receiver<StreamChunk>>), String> {
     let stop_flag = Arc::new(AtomicBool::new(false));
     let stop_flag_clone = stop_flag.clone();
     let (result_tx, result_rx) = oneshot::channel();
@@ -185,11 +206,18 @@ pub fn start_recording_with_threshold(silence_threshold: f32) -> Result<Recordin
     // Use a oneshot to report whether stream setup succeeded.
     let (setup_tx, setup_rx) = std::sync::mpsc::sync_channel::<Result<(), String>>(1);
 
+    let (chunk_tx, chunk_rx) = if enable_stream {
+        let (tx, rx) = std::sync::mpsc::channel::<StreamChunk>();
+        (Some(tx), Some(rx))
+    } else {
+        (None, None)
+    };
+
     std::thread::Builder::new()
         .name("voice-capture".into())
         .spawn(move || {
             // All cpal objects are created and used on this thread.
-            let result = record_on_thread(stop_flag_clone, setup_tx, silence_threshold);
+            let result = record_on_thread(stop_flag_clone, setup_tx, silence_threshold, chunk_tx);
             let _ = result_tx.send(result);
         })
         .map_err(|e| format!("failed to spawn capture thread: {e}"))?;
@@ -198,10 +226,13 @@ pub fn start_recording_with_threshold(silence_threshold: f32) -> Result<Recordin
     match setup_rx.recv() {
         Ok(Ok(())) => {
             info!("{LOG_PREFIX} recording started");
-            Ok(RecordingHandle {
-                stop_flag,
-                result_rx: Some(result_rx),
-            })
+            Ok((
+                RecordingHandle {
+                    stop_flag,
+                    result_rx: Some(result_rx),
+                },
+                chunk_rx,
+            ))
         }
         Ok(Err(e)) => Err(e),
         Err(_) => Err("capture thread exited before signalling readiness".to_string()),
@@ -213,7 +244,28 @@ fn record_on_thread(
     stop_flag: Arc<AtomicBool>,
     setup_tx: std::sync::mpsc::SyncSender<Result<(), String>>,
     silence_threshold: f32,
+    chunk_tx: Option<std::sync::mpsc::Sender<StreamChunk>>,
 ) -> Result<RecordingResult, String> {
+    // Fan a gated chunk out to the streaming pipeline (never blocks the
+    // real-time callback: a disconnected receiver drops the chunk). Arc so
+    // each `move` input-stream closure can hold its own sender handle.
+    let chunk_tx = chunk_tx.map(std::sync::Arc::new);
+    let preferred_tx = chunk_tx.clone();
+    let fallback_tx = chunk_tx.clone();
+    macro_rules! fanout {
+        ($tx:expr, $gated:expr, $rate:expr) => {
+            if let Some(tx) = $tx.as_ref() {
+                if !$gated.is_empty() {
+                    // std mpsc send is non-blocking on the unbounded channel;
+                    // a disconnected receiver just drops the chunk.
+                    let _ = tx.send(StreamChunk {
+                        samples: $gated.clone(),
+                        sample_rate: $rate,
+                    });
+                }
+            }
+        };
+    }
     // --- Cross-platform microphone permission pre-check ---
     use crate::aura::accessibility::{
         detect_microphone_permission, microphone_denied_message, request_microphone_access,
@@ -341,6 +393,7 @@ fn record_on_thread(
                             let mono = to_mono(data, source_channels);
                             update_peak_rms(&rms_tracker, &mono);
                             let gated = gate.lock().process(&mono);
+                            fanout!(preferred_tx, gated, source_sample_rate);
                             if !gated.is_empty() {
                                 samples_writer.lock().extend_from_slice(&gated);
                             }
@@ -362,6 +415,7 @@ fn record_on_thread(
                             let mono = to_mono(&floats, source_channels);
                             update_peak_rms(&rms_tracker, &mono);
                             let gated = gate.lock().process(&mono);
+                            fanout!(preferred_tx, gated, source_sample_rate);
                             if !gated.is_empty() {
                                 samples_writer.lock().extend_from_slice(&gated);
                             }
@@ -385,6 +439,7 @@ fn record_on_thread(
                             let mono = to_mono(&floats, source_channels);
                             update_peak_rms(&rms_tracker, &mono);
                             let gated = gate.lock().process(&mono);
+                            fanout!(preferred_tx, gated, source_sample_rate);
                             if !gated.is_empty() {
                                 samples_writer.lock().extend_from_slice(&gated);
                             }
@@ -426,6 +481,7 @@ fn record_on_thread(
                                     let mono = to_mono(data, ch);
                                     update_peak_rms(&rt, &mono);
                                     let gated = gate.lock().process(&mono);
+                                    fanout!(fallback_tx, gated, sr);
                                     if !gated.is_empty() {
                                         sw.lock().extend_from_slice(&gated);
                                     }
@@ -443,6 +499,7 @@ fn record_on_thread(
                                     let mono = to_mono(&floats, ch);
                                     update_peak_rms(&rt, &mono);
                                     let gated = gate.lock().process(&mono);
+                                    fanout!(fallback_tx, gated, sr);
                                     if !gated.is_empty() {
                                         sw.lock().extend_from_slice(&gated);
                                     }

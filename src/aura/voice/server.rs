@@ -186,7 +186,9 @@ impl VoiceServer {
         // thread so the event loop stays responsive to Release events that
         // macOS fires almost immediately for the Fn key.
         let mut recording_pending_rx: Option<
-            tokio::sync::oneshot::Receiver<Result<RecordingHandle, String>>,
+            tokio::sync::oneshot::Receiver<
+                Result<(RecordingHandle, Option<std::sync::mpsc::Receiver<audio_capture::StreamChunk>>), String>,
+            >,
         > = None;
         let mut pending_expected_app: Option<String> = None;
         let mut pending_generation: Option<u64> = None;
@@ -290,12 +292,18 @@ impl VoiceServer {
                                 // server config so capture-time gating and the
                                 // post-capture silence check share one knob.
                                 let silence_threshold = self.config.silence_threshold;
+                                // Streaming partials (commitment protocol): when
+                                // enabled in config AND the in-process whisper
+                                // engine is usable, capture also fans live gated
+                                // chunks out to the partial pipeline.
+                                let streaming = app_config.dictation.streaming
+                                    && whisper_engine_usable(app_config);
                                 let (tx, rx) = tokio::sync::oneshot::channel();
                                 tokio::task::spawn_blocking(move || {
-                                    let result =
-                                        audio_capture::start_recording_with_threshold(
-                                            silence_threshold,
-                                        );
+                                    let result = audio_capture::start_recording_streaming(
+                                        silence_threshold,
+                                        streaming,
+                                    );
                                     let _ = tx.send(result);
                                 });
                                 recording_pending_rx = Some(rx);
@@ -337,7 +345,7 @@ impl VoiceServer {
                     // Recording setup completed (or failed).
                     recording_pending_rx = None;
                     match result {
-                        Ok(Ok(handle)) => {
+                        Ok(Ok((handle, chunk_rx))) => {
                             // Check for a buffered stop event that lost the
                             // select! race against pending_ready. On warm CPAL
                             // init both branches may be ready simultaneously;
@@ -392,6 +400,18 @@ impl VoiceServer {
                                 recording_generation = pending_generation.take();
                                 recording_expected_app = pending_expected_app.take();
                                 deferred_stop_deadline = None;
+
+                                if let Some(rx) = chunk_rx {
+                                    let seed_prompt = build_seed_prompt(
+                                        &self.config.custom_dictionary,
+                                        &self.recent_transcripts.lock().await.clone(),
+                                    );
+                                    spawn_streaming_partials(
+                                        rx,
+                                        app_config.clone(),
+                                        seed_prompt,
+                                    );
+                                }
 
                                 info!("{LOG_PREFIX} recording started (live)");
                             }
@@ -755,6 +775,202 @@ async fn push_recent_transcript(recent_transcripts: &Mutex<Vec<String>>, text: &
     while recent.len() > MAX_RECENT_TRANSCRIPTS {
         recent.remove(0);
     }
+}
+
+// ── Streaming partial transcription (commitment protocol) ─────────────
+
+/// ~1s of 16 kHz audio — minimum new audio before a partial inference pass.
+const MIN_PARTIAL_SAMPLES: usize = 16_000;
+/// Cap on buffered un-inferred audio (60s) so a stalled inference loop
+/// cannot grow memory without bound.
+const MAX_PENDING_SAMPLES: usize = 16_000 * 60;
+
+/// True when the in-process whisper engine is available for partial passes —
+/// either already loaded or loadable (model file present). When false the
+/// caller skips streaming; the final transcription still runs afterwards.
+fn whisper_engine_usable(config: &Config) -> bool {
+    use crate::aura::inference::local::whisper_engine;
+    let service = crate::aura::inference::local::global(config);
+    whisper_engine::is_loaded(&service.whisper)
+        || crate::aura::inference::paths::resolve_stt_model_path(config).is_ok()
+}
+
+/// Vocabulary seed shared by the final transcription and the partial passes
+/// (custom dictionary + recent transcripts).
+fn build_seed_prompt(dictionary: &[String], recent: &[String]) -> Option<String> {
+    let mut parts: Vec<String> = Vec::new();
+    if !dictionary.is_empty() {
+        parts.push(dictionary.join(", "));
+    }
+    if !recent.is_empty() {
+        parts.push(recent.join(" "));
+    }
+    if parts.is_empty() {
+        None
+    } else {
+        Some(parts.join(". "))
+    }
+}
+
+/// Commitment-protocol partial transcript state: each inference pass decodes
+/// only the audio captured since the last commit, biased toward the
+/// committed text via whisper's `initial_prompt`. Committed text only ever
+/// grows, so the client preview is stable — no sliding-window "jumping".
+struct PartialTranscript {
+    seed: Option<String>,
+    committed: String,
+    pending: Vec<f32>,
+}
+
+impl PartialTranscript {
+    fn new(seed: Option<String>) -> Self {
+        Self {
+            seed,
+            committed: String::new(),
+            pending: Vec::new(),
+        }
+    }
+
+    fn ingest(&mut self, samples: &[f32]) {
+        self.pending.extend_from_slice(samples);
+        if self.pending.len() > MAX_PENDING_SAMPLES {
+            let drop_count = self.pending.len() - MAX_PENDING_SAMPLES;
+            self.pending.drain(..drop_count);
+        }
+    }
+
+    fn pending_len(&self) -> usize {
+        self.pending.len()
+    }
+
+    fn take_pending(&mut self) -> Vec<f32> {
+        std::mem::take(&mut self.pending)
+    }
+
+    fn commit(&mut self, text: &str) {
+        let trimmed = text.trim();
+        if trimmed.is_empty() {
+            return;
+        }
+        if !self.committed.is_empty() {
+            self.committed.push(' ');
+        }
+        self.committed.push_str(trimmed);
+    }
+
+    fn committed_text(&self) -> &str {
+        &self.committed
+    }
+
+    /// Whisper initial_prompt: seed vocabulary + committed text.
+    fn prompt(&self) -> Option<String> {
+        match (&self.seed, self.committed.is_empty()) {
+            (Some(seed), true) => Some(seed.clone()),
+            (Some(seed), false) => Some(format!("{seed}. {}", self.committed)),
+            (None, false) => Some(self.committed.clone()),
+            (None, true) => None,
+        }
+    }
+}
+
+/// Spawn the per-recording partial pipeline. Exits when the capture thread
+/// drops the chunk sender (recording stopped); publishes stable committed
+/// partials via `dictation_listener::publish_dictation_partial`.
+fn spawn_streaming_partials(
+    rx: std::sync::mpsc::Receiver<audio_capture::StreamChunk>,
+    app_config: Config,
+    seed_prompt: Option<String>,
+) {
+    tokio::spawn(async move {
+        let service = crate::aura::inference::local::global(&app_config);
+        if let Err(e) = service.ensure_whisper_loaded(&app_config).await {
+            log::warn!("{LOG_PREFIX} [partial] streaming disabled, engine load failed: {e}");
+            return;
+        }
+        let handle = service.whisper.clone();
+        let language = crate::aura::inference::local::whisper_language_hint(&app_config);
+        let interval_ms = app_config.dictation.streaming_interval_ms.max(500);
+        log::info!("{LOG_PREFIX} [partial] streaming armed interval_ms={interval_ms}");
+        tokio::task::spawn_blocking(move || {
+            streaming_partial_loop(rx, handle, language, interval_ms, seed_prompt)
+        });
+    });
+}
+
+fn streaming_partial_loop(
+    rx: std::sync::mpsc::Receiver<audio_capture::StreamChunk>,
+    handle: crate::aura::inference::local::whisper_engine::WhisperEngineHandle,
+    language: Option<String>,
+    interval_ms: u64,
+    seed_prompt: Option<String>,
+) {
+    use std::sync::mpsc::RecvTimeoutError;
+
+    use crate::aura::inference::local::whisper_engine;
+
+    let mut state = PartialTranscript::new(seed_prompt);
+    let tick = std::time::Duration::from_millis(interval_ms);
+    loop {
+        match rx.recv_timeout(tick) {
+            Ok(chunk) => {
+                let samples = if chunk.sample_rate == 16_000 {
+                    chunk.samples
+                } else {
+                    audio_capture::resample(&chunk.samples, chunk.sample_rate, 16_000)
+                };
+                state.ingest(&samples);
+            }
+            Err(RecvTimeoutError::Timeout) => {}
+            Err(RecvTimeoutError::Disconnected) => break,
+        }
+        if state.pending_len() < MIN_PARTIAL_SAMPLES {
+            continue;
+        }
+        let pending = state.take_pending();
+        let prompt = state.prompt();
+        match whisper_engine::transcribe_pcm_f32(
+            &handle,
+            &pending,
+            language.as_deref(),
+            prompt.as_deref(),
+        ) {
+            Ok(result) => {
+                let before = state.committed_text().len();
+                state.commit(&result.text);
+                if state.committed_text().len() > before {
+                    let receivers = super::dictation_listener::publish_dictation_partial(
+                        state.committed_text().to_string(),
+                    );
+                    debug!(
+                        "{LOG_PREFIX} [partial] committed +{} chars receivers={receivers}",
+                        state.committed_text().len() - before
+                    );
+                }
+            }
+            Err(e) => debug!("{LOG_PREFIX} [partial] inference failed: {e}"),
+        }
+    }
+    // Final flush: transcribe whatever is left so the live preview catches
+    // up with the tail of the utterance before the final result lands.
+    if state.pending_len() >= 8_000 {
+        let pending = state.take_pending();
+        let prompt = state.prompt();
+        if let Ok(result) = whisper_engine::transcribe_pcm_f32(
+            &handle,
+            &pending,
+            language.as_deref(),
+            prompt.as_deref(),
+        ) {
+            state.commit(&result.text);
+            super::dictation_listener::publish_dictation_partial(
+                state.committed_text().to_string(),
+            );
+        }
+    }
+    debug!(
+        "{LOG_PREFIX} [partial] loop exit committed={} chars",
+        state.committed_text().len()
+    );
 }
 
 /// Process a completed recording in the background.

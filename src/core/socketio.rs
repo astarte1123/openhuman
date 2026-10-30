@@ -339,6 +339,7 @@ pub fn spawn_web_channel_bridge(io: SocketIo) {
     let io_overlay = io.clone();
     let io_notify = io.clone();
     let io_transcription = io.clone();
+    let io_partials = io.clone();
     let io_auth = io.clone();
 
     // 2. Dictation hotkey events → broadcast to all connected clients.
@@ -514,6 +515,26 @@ pub fn spawn_web_channel_bridge(io: SocketIo) {
             let _ = io_transcription.emit("dictation:transcription", &payload);
         }
         log::debug!("[socketio] transcription bridge stopped");
+    });
+
+    // 5b. Streaming partial transcripts → broadcast while recording (the
+    // commitment protocol guarantees the text only grows, so clients can
+    // replace their live preview in place).
+    tokio::spawn(async move {
+        let mut rx = crate::aura::voice::dictation_listener::subscribe_dictation_partials();
+        loop {
+            let text = match rx.recv().await {
+                Ok(text) => text,
+                Err(tokio::sync::broadcast::error::RecvError::Lagged(skipped)) => {
+                    log::warn!("[socketio] dropped {} partial events due to lag", skipped);
+                    continue;
+                }
+                Err(tokio::sync::broadcast::error::RecvError::Closed) => break,
+            };
+            let payload = serde_json::json!({ "text": text });
+            let _ = io_partials.emit("dictation:partial", &payload);
+        }
+        log::debug!("[socketio] partial bridge stopped");
     });
 }
 

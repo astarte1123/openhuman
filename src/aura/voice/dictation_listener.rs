@@ -84,6 +84,31 @@ pub fn publish_transcription(text: String) -> usize {
     }
 }
 
+// ── Streaming partial broadcast ───────────────────────────────────────
+
+static PARTIAL_BUS: Lazy<broadcast::Sender<String>> = Lazy::new(|| {
+    let (tx, _rx) = broadcast::channel(256);
+    tx
+});
+
+/// Subscribe to streaming partial transcripts (used by the Socket.IO bridge).
+pub fn subscribe_dictation_partials() -> broadcast::Receiver<String> {
+    PARTIAL_BUS.subscribe()
+}
+
+/// Broadcast a stable committed partial transcript while recording.
+///
+/// Unlike the sliding-window partials of the old `/ws/dictation` endpoint,
+/// this text only ever grows (commitment protocol — see
+/// `server::spawn_streaming_partials`), so clients can replace their
+/// preview in place without the text "jumping".
+pub fn publish_dictation_partial(text: String) -> usize {
+    match PARTIAL_BUS.send(text) {
+        Ok(n) => n,
+        Err(_) => 0,
+    }
+}
+
 // ── Listener lifecycle ────────────────────────────────────────────────
 
 /// Start the dictation hotkey listener if enabled in config.

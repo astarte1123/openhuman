@@ -327,3 +327,49 @@ fn hallucination_detection_trailing_exclamation_still_flags_known_pattern() {
     let mode = HallucinationMode::Dictation;
     assert!(is_hallucinated_output("Thank you!", mode));
 }
+
+// ── PartialTranscript (streaming commitment protocol) ────────────────────
+
+#[test]
+fn partial_transcript_commits_only_growing_text() {
+    let mut state = PartialTranscript::new(None);
+    state.commit("ciao");
+    state.commit(" mondo");
+    state.commit(""); // ignored
+    state.commit("   "); // ignored
+    assert_eq!(state.committed_text(), "ciao mondo");
+}
+
+#[test]
+fn partial_transcript_pending_take_and_cap() {
+    let mut state = PartialTranscript::new(None);
+    state.ingest(&[0.1f32; 100]);
+    assert_eq!(state.pending_len(), 100);
+    let taken = state.take_pending();
+    assert_eq!(taken.len(), 100);
+    assert_eq!(state.pending_len(), 0);
+
+    // Cap: ingest more than MAX_PENDING_SAMPLES → oldest dropped.
+    state.ingest(&[0.2f32; MAX_PENDING_SAMPLES + 10]);
+    assert_eq!(state.pending_len(), MAX_PENDING_SAMPLES);
+}
+
+#[test]
+fn partial_transcript_prompt_combines_seed_and_committed() {
+    let mut seeded = PartialTranscript::new(Some("Aura, OpenAI".to_string()));
+    assert_eq!(seeded.prompt().as_deref(), Some("Aura, OpenAI"));
+    seeded.commit("ciao");
+    assert_eq!(seeded.prompt().as_deref(), Some("Aura, OpenAI. ciao"));
+
+    let mut bare = PartialTranscript::new(None);
+    assert!(bare.prompt().is_none());
+    bare.commit("hello");
+    assert_eq!(bare.prompt().as_deref(), Some("hello"));
+}
+
+#[test]
+fn build_seed_prompt_merges_dictionary_and_recent() {
+    let seed = build_seed_prompt(&["Aura".to_string()], &["previous text".to_string()]);
+    assert_eq!(seed.as_deref(), Some("Aura. previous text"));
+    assert!(build_seed_prompt(&[], &[]).is_none());
+}
