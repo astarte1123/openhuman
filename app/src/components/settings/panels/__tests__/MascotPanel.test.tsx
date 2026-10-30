@@ -180,17 +180,13 @@ describe('MascotPanel — mascotSlice rehydrate guard', () => {
     it('shows a friendly empty state when the library is empty', async () => {
       fetchMascotListMock.mockResolvedValueOnce([]);
       renderPanel();
-      expect(
-        await screen.findByText(/No Aura characters are available yet/i)
-      ).toBeInTheDocument();
+      expect(await screen.findByText(/No Aura characters are available yet/i)).toBeInTheDocument();
     });
 
     it('shows an error when the library endpoint rejects', async () => {
       fetchMascotListMock.mockRejectedValueOnce(new Error('offline'));
       renderPanel();
-      expect(
-        await screen.findByText(/Aura library unavailable: offline/i)
-      ).toBeInTheDocument();
+      expect(await screen.findByText(/Aura library unavailable: offline/i)).toBeInTheDocument();
     });
 
     it('dispatches setSelectedMascotId when a backend mascot is picked', async () => {

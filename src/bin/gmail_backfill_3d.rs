@@ -37,9 +37,7 @@ use aura_core::aura::composio::client::{
     create_composio_client, direct_execute, ComposioClientKind,
 };
 use aura_core::aura::composio::providers::gmail::ingest::ingest_page_into_memory_tree;
-use aura_core::aura::composio::providers::registry::{
-    get_provider, init_default_providers,
-};
+use aura_core::aura::composio::providers::registry::{get_provider, init_default_providers};
 use aura_core::aura::config::Config;
 use aura_core::aura::memory::tree::content_store::read::{
     verify_chunk_file, verify_summary_file, VerifyResult,

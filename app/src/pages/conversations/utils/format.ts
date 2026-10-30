@@ -96,8 +96,7 @@ export interface TextSegment {
 
 export type BubbleSegment = TextSegment | AuraLinkSegment;
 
-const AURA_LINK_RE =
-  /<aura-link\s+path=(?:"([^"]+)"|'([^']+)')\s*>([\s\S]*?)<\/aura-link>/gi;
+const AURA_LINK_RE = /<aura-link\s+path=(?:"([^"]+)"|'([^']+)')\s*>([\s\S]*?)<\/aura-link>/gi;
 
 export function parseBubbleSegments(content: string): BubbleSegment[] {
   if (!content || !content.includes('<aura-link')) {

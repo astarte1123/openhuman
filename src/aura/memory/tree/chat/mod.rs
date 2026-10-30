@@ -186,21 +186,22 @@ pub fn build_chat_provider(
             .flatten()
             .is_some_and(|t| !t.trim().is_empty());
         if !has_aura_session {
-            if let Ok(key) = crate::aura::inference::provider::factory::lookup_key_for_slug(
-                "openai", config,
-            ) {
+            if let Ok(key) =
+                crate::aura::inference::provider::factory::lookup_key_for_slug("openai", config)
+            {
                 if !key.trim().is_empty() {
                     log::warn!(
                         "[memory_tree::chat] llm_backend='cloud' but no authenticated Aura \
                          session — falling back to stored OpenAI key for consumer={}",
                         consumer.as_str()
                     );
-                    let inner = crate::aura::inference::provider::compatible::OpenAiCompatibleProvider::new(
-                        "openai-fallback",
-                        "https://api.openai.com/v1",
-                        Some(&key),
-                        crate::aura::inference::provider::compatible::AuthStyle::Bearer,
-                    );
+                    let inner =
+                        crate::aura::inference::provider::compatible::OpenAiCompatibleProvider::new(
+                            "openai-fallback",
+                            "https://api.openai.com/v1",
+                            Some(&key),
+                            crate::aura::inference::provider::compatible::AuthStyle::Bearer,
+                        );
                     return Ok(Arc::new(OpenAiChatProviderAdapter {
                         inner: Box::new(inner),
                         model: "gpt-4o-mini".to_string(),
@@ -244,7 +245,12 @@ impl ChatProvider for OpenAiChatProviderAdapter {
 
     async fn chat_for_json(&self, prompt: &ChatPrompt) -> Result<String> {
         self.inner
-            .chat_with_system(Some(&prompt.system), &prompt.user, &self.model, prompt.temperature)
+            .chat_with_system(
+                Some(&prompt.system),
+                &prompt.user,
+                &self.model,
+                prompt.temperature,
+            )
             .await
     }
 }

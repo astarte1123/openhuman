@@ -8,10 +8,10 @@
 
 use serde_json::{json, Map, Value};
 
-use crate::core::all::{ControllerFuture, RegisteredController};
-use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 use crate::aura::config::rpc as config_rpc;
 use crate::aura::tools::traits::Tool;
+use crate::core::all::{ControllerFuture, RegisteredController};
+use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 use crate::rpc::RpcOutcome;
 
 pub fn all_controller_schemas() -> Vec<ControllerSchema> {

@@ -138,10 +138,7 @@ mod tests {
         // name are intentionally different — guard against drift.
         let s = mk("memory", "doc_put");
         assert_eq!(s.method_name(), "memory.doc_put");
-        assert_eq!(
-            crate::core::all::rpc_method_name(&s),
-            "aura.memory_doc_put"
-        );
+        assert_eq!(crate::core::all::rpc_method_name(&s), "aura.memory_doc_put");
     }
 
     #[test]

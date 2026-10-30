@@ -123,9 +123,7 @@ fn run_sentry_test_command(args: &[String]) -> Result<()> {
                 println!("  --panic           After capturing the event, trigger a panic so the");
                 println!("                    panic integration reports it as a separate event.");
                 println!();
-                println!(
-                    "Requires AURA_CORE_SENTRY_DSN (or the legacy AURA_SENTRY_DSN alias)"
-                );
+                println!("Requires AURA_CORE_SENTRY_DSN (or the legacy AURA_SENTRY_DSN alias)");
                 println!("at runtime, or baked into the binary at build time via option_env!. On");
                 println!("success, prints the event UUID to stdout.");
                 return Ok(());
@@ -256,9 +254,7 @@ fn run_server_command(args: &[String]) -> Result<()> {
             "-h" | "--help" => {
                 println!("Usage: aura run [--host <addr>] [--port <u16>] [--jsonrpc-only] [--autocomplete-logs] [-v|--verbose]");
                 println!();
-                println!(
-                    "  --host <addr>    Bind address (default: 127.0.0.1 or AURA_CORE_HOST)"
-                );
+                println!("  --host <addr>    Bind address (default: 127.0.0.1 or AURA_CORE_HOST)");
                 println!(
                     "  --port <u16>     Listen address port (default: 7788 or AURA_CORE_PORT)"
                 );
@@ -266,7 +262,9 @@ fn run_server_command(args: &[String]) -> Result<()> {
                 autocomplete_cli_adapter::print_run_scope_help_line();
                 println!("  -v, --verbose    Shorthand for RUST_LOG=debug when RUST_LOG is unset");
                 println!();
-                println!("Logging: set RUST_LOG (e.g. RUST_LOG=debug aura run). Default level is info.");
+                println!(
+                    "Logging: set RUST_LOG (e.g. RUST_LOG=debug aura run). Default level is info."
+                );
                 return Ok(());
             }
             other => return Err(anyhow::anyhow!("unknown run arg: {other}")),
@@ -521,9 +519,7 @@ fn print_general_help(grouped: &BTreeMap<String, Vec<ControllerSchema>>) {
     println!("Usage:");
     println!("  aura run [--host <addr>] [--port <u16>] [--jsonrpc-only] [--verbose]");
     println!("  aura call --method <name> [--params '<json>']");
-    println!(
-        "  aura mcp [-v|--verbose]              (stdio MCP server; read-only memory tools)"
-    );
+    println!("  aura mcp [-v|--verbose]              (stdio MCP server; read-only memory tools)");
     println!("  aura skills <subcommand> [options]   (skill development runtime)");
     println!("  aura agent <subcommand> [options]    (inspect agent definitions & prompts)");
     println!("  aura voice [--hotkey <combo>] [--mode <tap|push>]  (voice dictation server)");

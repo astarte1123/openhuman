@@ -150,10 +150,7 @@ fn handle_apply(params: Map<String, Value>) -> ControllerFuture {
             .and_then(|v| v.as_str())
             .map(|s| s.to_string());
 
-        to_json(
-            crate::aura::update::rpc::update_apply(download_url, asset_name, staging_dir)
-                .await,
-        )
+        to_json(crate::aura::update::rpc::update_apply(download_url, asset_name, staging_dir).await)
     })
 }
 

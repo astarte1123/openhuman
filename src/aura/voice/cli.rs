@@ -8,9 +8,9 @@
 
 use anyhow::{anyhow, Result};
 
-use crate::core::logging::{init_for_cli_run, CliLogDefault};
 use crate::aura::voice::hotkey::ActivationMode;
 use crate::aura::voice::server::{run_standalone, VoiceServerConfig};
+use crate::core::logging::{init_for_cli_run, CliLogDefault};
 
 /// Parse and execute the `aura voice` / `aura dictate` subcommand.
 ///

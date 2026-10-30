@@ -181,9 +181,7 @@ fn derive_workload_providers(config: &mut Config, stats: &mut MigrationStats) {
 
     // Memory summariser — `memory_tree.llm_backend` is `LlmBackend::Cloud | Local`.
     let memory_value = match config.memory_tree.llm_backend {
-        crate::aura::config::schema::LlmBackend::Local
-            if runtime_on && !chat_model.is_empty() =>
-        {
+        crate::aura::config::schema::LlmBackend::Local if runtime_on && !chat_model.is_empty() => {
             format!("ollama:{}", chat_model)
         }
         _ => "cloud".to_string(),

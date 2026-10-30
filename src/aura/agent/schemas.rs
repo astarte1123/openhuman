@@ -2,10 +2,10 @@ use serde::de::DeserializeOwned;
 use serde::Deserialize;
 use serde_json::{Map, Value};
 
-use crate::core::all::{ControllerFuture, RegisteredController};
-use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 use crate::aura::agent::profiles::{AgentProfile, AgentProfileStore};
 use crate::aura::config::rpc as config_rpc;
+use crate::core::all::{ControllerFuture, RegisteredController};
+use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 use crate::rpc::RpcOutcome;
 
 #[derive(Debug, Deserialize)]
@@ -368,9 +368,7 @@ fn handle_triage_evaluate(params: Map<String, Value>) -> ControllerFuture {
                     .get("output")
                     .and_then(Value::as_str)
                     .unwrap_or(job_name);
-                crate::aura::agent::triage::TriggerEnvelope::from_cron(
-                    job_id, job_name, output,
-                )
+                crate::aura::agent::triage::TriggerEnvelope::from_cron(job_id, job_name, output)
             }
             "external" => {
                 tracing::trace!("[rpc][agent] building external trigger envelope");
@@ -536,8 +534,7 @@ fn handle_profile_upsert(params: Map<String, Value>) -> ControllerFuture {
             agent_id = %p.profile.agent_id,
             "[rpc][agent] profile_upsert params"
         );
-        if let Some(registry) = crate::aura::agent::harness::AgentDefinitionRegistry::global()
-        {
+        if let Some(registry) = crate::aura::agent::harness::AgentDefinitionRegistry::global() {
             let agent_id = p.profile.agent_id.trim();
             if !agent_id.is_empty() && registry.get(agent_id).is_none() {
                 tracing::debug!(
@@ -685,9 +682,9 @@ fn to_json<T: serde::Serialize>(outcome: RpcOutcome<T>) -> Result<Value, String>
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::core::TypeSchema;
     use crate::aura::agent::profiles::DEFAULT_PROFILE_ID;
     use crate::aura::config::TEST_ENV_LOCK as ENV_LOCK;
+    use crate::core::TypeSchema;
     use serde_json::json;
 
     #[test]

@@ -25,9 +25,7 @@ use crate::aura::memory::tree::tree_source::types::{Tree, TreeKind};
 use crate::aura::memory::tree::tree_topic::backfill::backfill_topic_tree;
 use crate::aura::memory::tree::tree_topic::hotness::hotness_at;
 use crate::aura::memory::tree::tree_topic::registry::get_or_create_topic_tree;
-use crate::aura::memory::tree::tree_topic::store::{
-    distinct_sources_for, get_or_fresh, upsert,
-};
+use crate::aura::memory::tree::tree_topic::store::{distinct_sources_for, get_or_fresh, upsert};
 use crate::aura::memory::tree::tree_topic::types::{
     HotnessCounters, TOPIC_CREATION_THRESHOLD, TOPIC_RECHECK_EVERY,
 };

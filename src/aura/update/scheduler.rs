@@ -6,9 +6,9 @@
 
 use std::time::Duration;
 
-use crate::core::event_bus::{publish_global, DomainEvent};
 use crate::aura::config::UpdateConfig;
 use crate::aura::update::core as update_core;
+use crate::core::event_bus::{publish_global, DomainEvent};
 
 /// Minimum allowed interval to avoid hammering the GitHub API.
 const MIN_INTERVAL_MINUTES: u32 = 10;

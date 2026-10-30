@@ -240,12 +240,11 @@ mod tests {
         // scope string (e.g. an entity id that looks like a source id) —
         // the UNIQUE constraint is on (kind, scope), not scope alone.
         let (_tmp, cfg) = test_config();
-        let source =
-            crate::aura::memory::tree::tree_source::registry::get_or_create_source_tree(
-                &cfg,
-                "shared:slack:#eng",
-            )
-            .unwrap();
+        let source = crate::aura::memory::tree::tree_source::registry::get_or_create_source_tree(
+            &cfg,
+            "shared:slack:#eng",
+        )
+        .unwrap();
         let topic = get_or_create_topic_tree(&cfg, "shared:slack:#eng").unwrap();
         assert_ne!(source.id, topic.id);
         assert_eq!(source.kind, TreeKind::Source);

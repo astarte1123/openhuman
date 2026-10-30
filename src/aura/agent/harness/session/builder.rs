@@ -10,9 +10,7 @@ use super::types::{Agent, AgentBuilder};
 use crate::aura::agent::dispatcher::{
     NativeToolDispatcher, PFormatToolDispatcher, ToolDispatcher, XmlToolDispatcher,
 };
-use crate::aura::agent::harness::definition::{
-    AgentDefinitionRegistry, PromptSource, ToolScope,
-};
+use crate::aura::agent::harness::definition::{AgentDefinitionRegistry, PromptSource, ToolScope};
 use crate::aura::agent::host_runtime;
 use crate::aura::agent::memory_loader::{DefaultMemoryLoader, MemoryLoader};
 use crate::aura::config::{Config, ContextConfig};
@@ -305,9 +303,7 @@ impl AgentBuilder {
     /// [`Agent::build_session_agent_inner`].
     pub fn payload_summarizer(
         mut self,
-        summarizer: Arc<
-            dyn crate::aura::agent::harness::payload_summarizer::PayloadSummarizer,
-        >,
+        summarizer: Arc<dyn crate::aura::agent::harness::payload_summarizer::PayloadSummarizer>,
     ) -> Self {
         self.payload_summarizer = Some(summarizer);
         self
@@ -881,8 +877,9 @@ impl Agent {
         // here, so wiring it once covers all of them. Silent for en-GB
         // (see `LanguageSection`), so this is a no-op unless the user has
         // actually selected a non-default locale.
-        prompt_builder = prompt_builder
-            .with_locale(crate::aura::locale::LocaleContext::resolve(config.locale.as_deref()));
+        prompt_builder = prompt_builder.with_locale(crate::aura::locale::LocaleContext::resolve(
+            config.locale.as_deref(),
+        ));
         if config.learning.enabled {
             // Insert the privileged reflection block ahead of the
             // generic `user_memory` section when one is already
@@ -897,12 +894,12 @@ impl Agent {
                     "user_memory",
                     Box::new(crate::aura::context::prompt::UserReflectionsSection),
                 )
-                .add_section(Box::new(
-                    crate::aura::learning::LearnedContextSection::new(memory.clone()),
-                ))
-                .add_section(Box::new(
-                    crate::aura::learning::UserProfileSection::new(memory.clone()),
-                ));
+                .add_section(Box::new(crate::aura::learning::LearnedContextSection::new(
+                    memory.clone(),
+                )))
+                .add_section(Box::new(crate::aura::learning::UserProfileSection::new(
+                    memory.clone(),
+                )));
             // NOTE: MemoryAccessSection is added after tool-filtering so we can
             // gate it on retrieval-tool visibility — see below.
             log::info!(
@@ -941,8 +938,7 @@ impl Agent {
         }
 
         // Build post-turn hooks when learning is enabled
-        let mut post_turn_hooks: Vec<Arc<dyn crate::aura::agent::hooks::PostTurnHook>> =
-            Vec::new();
+        let mut post_turn_hooks: Vec<Arc<dyn crate::aura::agent::hooks::PostTurnHook>> = Vec::new();
         if config.learning.enabled {
             if config.learning.reflection_enabled {
                 // Only the reflection hook needs an owned snapshot of the
@@ -997,9 +993,10 @@ impl Agent {
             }
 
             if config.learning.tool_memory_capture_enabled {
-                post_turn_hooks.push(Arc::new(
-                    crate::aura::memory::ToolMemoryCaptureHook::new(memory.clone(), true),
-                ));
+                post_turn_hooks.push(Arc::new(crate::aura::memory::ToolMemoryCaptureHook::new(
+                    memory.clone(),
+                    true,
+                )));
                 log::info!("[learning] tool_memory_capture hook registered");
             }
         }
@@ -1262,9 +1259,7 @@ impl Agent {
         // `None` and their tool results stay untouched (the summarizer
         // itself MUST be `None` to avoid recursive self-summarization).
         let payload_summarizer: Option<
-            std::sync::Arc<
-                dyn crate::aura::agent::harness::payload_summarizer::PayloadSummarizer,
-            >,
+            std::sync::Arc<dyn crate::aura::agent::harness::payload_summarizer::PayloadSummarizer>,
         > = if agent_id == "orchestrator" && config.context.summarizer_payload_threshold_tokens > 0
         {
             match crate::aura::agent::harness::definition::AgentDefinitionRegistry::global() {

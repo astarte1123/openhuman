@@ -2,11 +2,11 @@ use serde::de::DeserializeOwned;
 use serde::Deserialize;
 use serde_json::{Map, Value};
 
-use crate::core::all::{ControllerFuture, RegisteredController};
-use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 use crate::aura::screen_intelligence::{
     InputActionParams, PermissionRequestParams, StartSessionParams, StopSessionParams,
 };
+use crate::core::all::{ControllerFuture, RegisteredController};
+use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 use crate::rpc::RpcOutcome;
 
 #[derive(Debug, Deserialize)]
@@ -273,17 +273,13 @@ fn handle_status(_params: Map<String, Value>) -> ControllerFuture {
 
 fn handle_request_permissions(_params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async {
-        to_json(
-            crate::aura::screen_intelligence::rpc::accessibility_request_permissions().await?,
-        )
+        to_json(crate::aura::screen_intelligence::rpc::accessibility_request_permissions().await?)
     })
 }
 
 fn handle_refresh_permissions(_params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async {
-        to_json(
-            crate::aura::screen_intelligence::rpc::accessibility_refresh_permissions().await?,
-        )
+        to_json(crate::aura::screen_intelligence::rpc::accessibility_refresh_permissions().await?)
     })
 }
 
@@ -300,19 +296,14 @@ fn handle_request_permission(params: Map<String, Value>) -> ControllerFuture {
 fn handle_start_session(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let payload = deserialize_params::<StartSessionParams>(params)?;
-        to_json(
-            crate::aura::screen_intelligence::rpc::accessibility_start_session(payload)
-                .await?,
-        )
+        to_json(crate::aura::screen_intelligence::rpc::accessibility_start_session(payload).await?)
     })
 }
 
 fn handle_stop_session(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let payload = deserialize_params::<StopSessionParams>(params)?;
-        to_json(
-            crate::aura::screen_intelligence::rpc::accessibility_stop_session(payload).await?,
-        )
+        to_json(crate::aura::screen_intelligence::rpc::accessibility_stop_session(payload).await?)
     })
 }
 
@@ -324,18 +315,14 @@ fn handle_capture_now(_params: Map<String, Value>) -> ControllerFuture {
 
 fn handle_capture_image_ref(_params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async {
-        to_json(
-            crate::aura::screen_intelligence::rpc::accessibility_capture_image_ref().await?,
-        )
+        to_json(crate::aura::screen_intelligence::rpc::accessibility_capture_image_ref().await?)
     })
 }
 
 fn handle_input_action(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let payload = deserialize_params::<InputActionParams>(params)?;
-        to_json(
-            crate::aura::screen_intelligence::rpc::accessibility_input_action(payload).await?,
-        )
+        to_json(crate::aura::screen_intelligence::rpc::accessibility_input_action(payload).await?)
     })
 }
 
@@ -363,26 +350,19 @@ fn handle_capture_test(_params: Map<String, Value>) -> ControllerFuture {
 
 fn handle_globe_listener_start(_params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async {
-        to_json(
-            crate::aura::screen_intelligence::rpc::accessibility_globe_listener_start()
-                .await?,
-        )
+        to_json(crate::aura::screen_intelligence::rpc::accessibility_globe_listener_start().await?)
     })
 }
 
 fn handle_globe_listener_poll(_params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async {
-        to_json(
-            crate::aura::screen_intelligence::rpc::accessibility_globe_listener_poll().await?,
-        )
+        to_json(crate::aura::screen_intelligence::rpc::accessibility_globe_listener_poll().await?)
     })
 }
 
 fn handle_globe_listener_stop(_params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async {
-        to_json(
-            crate::aura::screen_intelligence::rpc::accessibility_globe_listener_stop().await?,
-        )
+        to_json(crate::aura::screen_intelligence::rpc::accessibility_globe_listener_stop().await?)
     })
 }
 

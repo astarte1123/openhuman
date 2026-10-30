@@ -75,10 +75,7 @@ pub async fn dispatch(
 
     // Tier 3: Legacy domain-specific dispatcher.
     if let Some(result) = crate::rpc::try_dispatch(method, params).await {
-        log::debug!(
-            "[rpc:dispatch] routed method={} subsystem=aura",
-            method
-        );
+        log::debug!("[rpc:dispatch] routed method={} subsystem=aura", method);
         return result;
     }
 

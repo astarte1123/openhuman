@@ -4,8 +4,8 @@
 
 use anyhow::Result;
 
-use crate::core::logging::CliLogDefault;
 use crate::aura::autocomplete::ops::{autocomplete_start_cli, AutocompleteStartCliOptions};
+use crate::core::logging::CliLogDefault;
 
 pub struct NamespacePreparse {
     pub args: Vec<String>,

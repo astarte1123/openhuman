@@ -90,7 +90,9 @@ fn force_stop_capture(meeting_id: &str) -> Result<bool, String> {
                 _ => unreachable!("checked Active above under the same lock guard"),
             };
             drop(registry);
-            log::debug!("{LOG_PREFIX} force_stop_capture: stopping active session meeting_id={meeting_id}");
+            log::debug!(
+                "{LOG_PREFIX} force_stop_capture: stopping active session meeting_id={meeting_id}"
+            );
             handle.stop()?;
             Ok(true)
         }
@@ -261,8 +263,8 @@ pub async fn meetings_create(
         .filter(|p| !p.is_empty())
         .collect();
 
-    let meeting = store::create_meeting(config, &title, &source, &participants)
-        .map_err(|e| e.to_string())?;
+    let meeting =
+        store::create_meeting(config, &title, &source, &participants).map_err(|e| e.to_string())?;
     log::debug!(
         "[meetings] meetings_create id={} source={source}",
         meeting.id
@@ -482,7 +484,9 @@ pub async fn meetings_append_screenshot(
     // screenshot per capture tick for the rest of the meeting. `result`
     // captures the outcome so the cleanup-on-failure block below can run
     // unconditionally before this function returns, whichever way it went.
-    let result = append_screenshot_after_write(config, meeting_id, captured_at_ms, &image_path, png_bytes).await;
+    let result =
+        append_screenshot_after_write(config, meeting_id, captured_at_ms, &image_path, png_bytes)
+            .await;
     if let Err(ref e) = result {
         match tokio::fs::remove_file(&image_path).await {
             Ok(()) => log::debug!(
@@ -726,9 +730,7 @@ pub async fn meetings_summarize_structured(
 
     Ok(RpcOutcome::new(
         summary,
-        vec![format!(
-            "meeting summarized (structured): {meeting_id}"
-        )],
+        vec![format!("meeting summarized (structured): {meeting_id}")],
     ))
 }
 
@@ -798,7 +800,10 @@ pub async fn meetings_index_to_knowledge_base(
     // multi-tenant owner concept (see Meeting's doc comment), so every
     // meeting-notes document ingests under a fixed owner tag, matching how
     // other single-user-only ingest call sites in this codebase behave.
-    let tags = vec!["meeting".to_string(), format!("platform:{}", meeting.source)];
+    let tags = vec![
+        "meeting".to_string(),
+        format!("platform:{}", meeting.source),
+    ];
 
     let result = crate::aura::memory::tree::ingest::ingest_document(
         config,
@@ -822,9 +827,7 @@ pub async fn meetings_index_to_knowledge_base(
             "chunks_written": result.chunks_written,
             "already_ingested": result.already_ingested,
         }),
-        vec![format!(
-            "meeting indexed into knowledge base: {meeting_id}"
-        )],
+        vec![format!("meeting indexed into knowledge base: {meeting_id}")],
     ))
 }
 
@@ -1005,7 +1008,10 @@ fn extract_first_json_object(s: &str) -> Option<String> {
 /// returning the model's raw text response for [`parse_structured_summary_response`]
 /// to parse. Mirrors [`summarize_transcript`]'s provider-resolution pattern
 /// exactly; only the system prompt (asking for JSON) differs.
-async fn summarize_transcript_structured(config: &Config, transcript: &str) -> Result<String, String> {
+async fn summarize_transcript_structured(
+    config: &Config,
+    transcript: &str,
+) -> Result<String, String> {
     let (provider, model) =
         crate::aura::inference::provider::create_chat_provider("summarization", config)
             .map_err(|e| format!("failed to resolve summarization provider: {e}"))?;
@@ -1397,10 +1403,9 @@ pub async fn meetings_diarize(
         return Err(msg);
     }
 
-    let segments = crate::aura::meetings::diarize::diarize_meeting_system_audio(
-        config, meeting_id, &wav_path,
-    )
-    .await?;
+    let segments =
+        crate::aura::meetings::diarize::diarize_meeting_system_audio(config, meeting_id, &wav_path)
+            .await?;
     // Excludes `engine::UNKNOWN_SPEAKER_LABEL` — a segment gets that
     // placeholder when every speech segment in the meeting was too short to
     // embed reliably (see `engine::cluster_segments`'s doc comment), meaning

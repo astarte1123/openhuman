@@ -223,9 +223,7 @@ fn resolve_config_dir_for_workspace(workspace_dir: &Path) -> (PathBuf, PathBuf) 
         );
     }
 
-    let legacy_config_dir = workspace_dir
-        .parent()
-        .map(|parent| parent.join(".aura"));
+    let legacy_config_dir = workspace_dir.parent().map(|parent| parent.join(".aura"));
     if let Some(legacy_dir) = legacy_config_dir {
         if legacy_dir.join("config.toml").exists() {
             return (legacy_dir, workspace_config_dir);
@@ -268,8 +266,7 @@ async fn resolve_runtime_config_dirs(
     default_aura_dir: &Path,
     default_workspace_dir: &Path,
 ) -> Result<(PathBuf, PathBuf, ConfigResolutionSource)> {
-    resolve_runtime_config_dirs_with(default_aura_dir, default_workspace_dir, &ProcessEnv)
-        .await
+    resolve_runtime_config_dirs_with(default_aura_dir, default_workspace_dir, &ProcessEnv).await
 }
 
 /// Env-injectable variant of [`resolve_runtime_config_dirs`]. Accepts any
@@ -318,8 +315,7 @@ async fn resolve_config_dirs_ignoring_env(
     }
 
     // 3. Active workspace marker (legacy / multi-workspace).
-    if let Some((aura_dir, workspace_dir)) =
-        load_persisted_workspace_dirs(default_aura_dir).await?
+    if let Some((aura_dir, workspace_dir)) = load_persisted_workspace_dirs(default_aura_dir).await?
     {
         return Ok((
             aura_dir,
@@ -720,12 +716,8 @@ async fn sync_directory(_path: &Path) -> Result<()> {
 impl Config {
     pub async fn load_or_init() -> Result<Self> {
         let (default_aura_dir, default_workspace_dir) = default_config_and_workspace_dirs()?;
-        Self::load_or_init_with_env_lookup(
-            &default_aura_dir,
-            &default_workspace_dir,
-            &ProcessEnv,
-        )
-        .await
+        Self::load_or_init_with_env_lookup(&default_aura_dir, &default_workspace_dir, &ProcessEnv)
+            .await
     }
 
     async fn load_or_init_with_env_lookup(
@@ -734,8 +726,7 @@ impl Config {
         env: &(dyn EnvLookup + Send + Sync),
     ) -> Result<Self> {
         let (aura_dir, workspace_dir, resolution_source) =
-            resolve_runtime_config_dirs_with(default_aura_dir, default_workspace_dir, env)
-                .await?;
+            resolve_runtime_config_dirs_with(default_aura_dir, default_workspace_dir, env).await?;
 
         let config_path = aura_dir.join("config.toml");
 
@@ -901,8 +892,7 @@ impl Config {
     pub async fn load_from_default_paths() -> Result<Self> {
         let (default_aura_dir, default_workspace_dir) = default_config_and_workspace_dirs()?;
         let (aura_dir, workspace_dir, _source) =
-            resolve_config_dirs_ignoring_env(&default_aura_dir, &default_workspace_dir)
-                .await?;
+            resolve_config_dirs_ignoring_env(&default_aura_dir, &default_workspace_dir).await?;
         let config_path = aura_dir.join("config.toml");
 
         if !config_path.exists() {
@@ -972,7 +962,8 @@ impl Config {
 
         if let Some(locale) = env.get("AURA_LOCALE") {
             if !locale.is_empty() {
-                self.locale = Some(crate::aura::locale::resolve_supported_locale(Some(&locale)).to_string());
+                self.locale =
+                    Some(crate::aura::locale::resolve_supported_locale(Some(&locale)).to_string());
             }
         }
 
@@ -1034,10 +1025,9 @@ impl Config {
             }
         }
 
-        if let Some(timeout_secs) = env.get_any(&[
-            "AURA_WEB_SEARCH_TIMEOUT_SECS",
-            "WEB_SEARCH_TIMEOUT_SECS",
-        ]) {
+        if let Some(timeout_secs) =
+            env.get_any(&["AURA_WEB_SEARCH_TIMEOUT_SECS", "WEB_SEARCH_TIMEOUT_SECS"])
+        {
             if let Ok(timeout_secs) = timeout_secs.parse::<u64>() {
                 if timeout_secs > 0 {
                     self.web_search.timeout_secs = timeout_secs;
@@ -1173,8 +1163,7 @@ impl Config {
             self.runtime_python.managed_release_tag = tag.trim().to_string();
         }
         if let Some(flag) = env.get("AURA_RUNTIME_PYTHON_PREFER_SYSTEM") {
-            if let Some(prefer_system) =
-                parse_env_bool("AURA_RUNTIME_PYTHON_PREFER_SYSTEM", &flag)
+            if let Some(prefer_system) = parse_env_bool("AURA_RUNTIME_PYTHON_PREFER_SYSTEM", &flag)
             {
                 self.runtime_python.prefer_system = prefer_system;
             }
@@ -1242,10 +1231,9 @@ impl Config {
             }
         }
         if let Some(flag) = env.get("AURA_LEARNING_TOOL_MEMORY_CAPTURE_ENABLED") {
-            if let Some(enabled) = parse_env_bool(
-                "AURA_LEARNING_TOOL_MEMORY_CAPTURE_ENABLED",
-                flag.as_str(),
-            ) {
+            if let Some(enabled) =
+                parse_env_bool("AURA_LEARNING_TOOL_MEMORY_CAPTURE_ENABLED", flag.as_str())
+            {
                 self.learning.tool_memory_capture_enabled = enabled;
             }
         }
@@ -1253,12 +1241,10 @@ impl Config {
             let normalized = source.trim().to_ascii_lowercase();
             match normalized.as_str() {
                 "local" => {
-                    self.learning.reflection_source =
-                        crate::aura::config::ReflectionSource::Local
+                    self.learning.reflection_source = crate::aura::config::ReflectionSource::Local
                 }
                 "cloud" => {
-                    self.learning.reflection_source =
-                        crate::aura::config::ReflectionSource::Cloud
+                    self.learning.reflection_source = crate::aura::config::ReflectionSource::Cloud
                 }
                 _ => {
                     tracing::warn!(
@@ -1449,9 +1435,7 @@ impl Config {
             }
         }
         if let Some(flag) = env.get("AURA_AUTO_UPDATE_RPC_MUTATIONS_ENABLED") {
-            if let Some(enabled) =
-                parse_env_bool("AURA_AUTO_UPDATE_RPC_MUTATIONS_ENABLED", &flag)
-            {
+            if let Some(enabled) = parse_env_bool("AURA_AUTO_UPDATE_RPC_MUTATIONS_ENABLED", &flag) {
                 self.update.rpc_mutations_enabled = enabled;
             }
         }

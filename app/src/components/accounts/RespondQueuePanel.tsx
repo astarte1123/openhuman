@@ -11,10 +11,7 @@ interface RespondQueuePanelProps {
   onRefresh: () => void;
 }
 
-function relativeTime(
-  iso: string,
-  t: (key: string, params?: TranslationParams) => string
-): string {
+function relativeTime(iso: string, t: (key: string, params?: TranslationParams) => string): string {
   const ts = new Date(iso).getTime();
   if (!Number.isFinite(ts)) return t('accounts.respond_queue_panel.unknown_time');
   const deltaMs = Date.now() - ts;

@@ -17,9 +17,9 @@
 use serde::de::DeserializeOwned;
 use serde_json::{Map, Value};
 
+use crate::aura::config::rpc as config_rpc;
 use crate::core::all::{ControllerFuture, RegisteredController};
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
-use crate::aura::config::rpc as config_rpc;
 use crate::rpc::RpcOutcome;
 
 #[derive(Debug, serde::Deserialize)]

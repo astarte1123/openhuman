@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { isTauri, auraAutocompleteCurrent } from '../../../utils/tauriCommands';
+import { auraAutocompleteCurrent, isTauri } from '../../../utils/tauriCommands';
 import type { InputMode } from '../../Conversations';
 
 const AUTOCOMPLETE_POLL_DEBOUNCE_MS = 320;

@@ -60,10 +60,7 @@ impl EventHandler for HealthSubscriber {
                 crate::aura::health::mark_component_ok(&format!("channel:{channel}"));
             }
             DomainEvent::ChannelDisconnected { channel, reason } => {
-                crate::aura::health::mark_component_error(
-                    &format!("channel:{channel}"),
-                    reason,
-                );
+                crate::aura::health::mark_component_error(&format!("channel:{channel}"), reason);
             }
             _ => {}
         }

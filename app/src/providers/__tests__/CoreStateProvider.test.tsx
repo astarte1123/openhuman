@@ -392,9 +392,7 @@ describe('CoreStateProvider — identity-change cache clearing', () => {
     try {
       fetchSnapshot
         .mockResolvedValueOnce(makeSnapshot({ userId: null, sessionToken: null }))
-        .mockResolvedValueOnce(
-          makeSnapshot({ userId: 'local-device', sessionToken: 'local-tok' })
-        );
+        .mockResolvedValueOnce(makeSnapshot({ userId: 'local-device', sessionToken: 'local-tok' }));
 
       render(
         <CoreStateProvider>

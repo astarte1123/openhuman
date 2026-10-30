@@ -42,8 +42,7 @@ pub(crate) fn install(config: &Config) -> Result<()> {
 pub(crate) fn start(config: &Config) -> Result<ServiceStatus> {
     if !is_service_enabled_linux()? {
         log::info!("[service] Enabling systemd service");
-        let _ =
-            run_checked(Command::new("systemctl").args(["--user", "enable", "aura.service"]));
+        let _ = run_checked(Command::new("systemctl").args(["--user", "enable", "aura.service"]));
     } else {
         log::info!("[service] Systemd service already enabled");
     }
@@ -70,9 +69,8 @@ pub(crate) fn stop(_config: &Config) -> Result<()> {
 }
 
 pub(crate) fn status(config: &Config) -> Result<ServiceStatus> {
-    let out =
-        run_capture(Command::new("systemctl").args(["--user", "is-active", "aura.service"]))
-            .unwrap_or_else(|_| "unknown".into());
+    let out = run_capture(Command::new("systemctl").args(["--user", "is-active", "aura.service"]))
+        .unwrap_or_else(|_| "unknown".into());
     let state = match out.trim() {
         "active" => ServiceState::Running,
         "inactive" | "failed" => ServiceState::Stopped,

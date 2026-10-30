@@ -86,10 +86,7 @@ fn core_rpc_url_from_env_uses_override_when_set() {
 fn fallback_workspace_dir_ends_in_workspace_under_aura() {
     let p = fallback_workspace_dir();
     assert!(p.ends_with("workspace"));
-    assert!(p
-        .parent()
-        .map(|d| d.ends_with(".aura"))
-        .unwrap_or(false));
+    assert!(p.parent().map(|d| d.ends_with(".aura")).unwrap_or(false));
 }
 
 #[test]
@@ -116,8 +113,7 @@ fn config_aura_dir_returns_config_path_parent() {
 #[test]
 fn reset_local_data_remove_error_explains_windows_file_locks() {
     let err = std::io::Error::from_raw_os_error(32);
-    let msg =
-        reset_local_data_remove_error(std::path::Path::new("C:\\Users\\me\\.aura"), &err);
+    let msg = reset_local_data_remove_error(std::path::Path::new("C:\\Users\\me\\.aura"), &err);
 
     assert!(msg.contains("locked by another Aura window or process"));
     assert!(msg.contains("Close all Aura windows and try again"));
@@ -127,8 +123,7 @@ fn reset_local_data_remove_error_explains_windows_file_locks() {
 #[test]
 fn reset_local_data_remove_error_explains_windows_lock_violation() {
     let err = std::io::Error::from_raw_os_error(33);
-    let msg =
-        reset_local_data_remove_error(std::path::Path::new("C:\\Users\\me\\.aura"), &err);
+    let msg = reset_local_data_remove_error(std::path::Path::new("C:\\Users\\me\\.aura"), &err);
 
     assert!(msg.contains("locked by another Aura window or process"));
     assert!(msg.contains("Close all Aura windows and try again"));

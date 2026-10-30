@@ -55,10 +55,7 @@ describe('rpcMethods catalog', () => {
 
   test('catalog canonical methods exist in core schema registry (drift guard)', () => {
     const schemaSources = [
-      fs.readFileSync(
-        path.resolve(__dirname, '../../../../src/aura/config/schemas.rs'),
-        'utf8'
-      ),
+      fs.readFileSync(path.resolve(__dirname, '../../../../src/aura/config/schemas.rs'), 'utf8'),
       fs.readFileSync(
         path.resolve(__dirname, '../../../../src/aura/screen_intelligence/schemas.rs'),
         'utf8'
@@ -67,10 +64,7 @@ describe('rpcMethods catalog', () => {
         path.resolve(__dirname, '../../../../src/aura/inference/provider/schemas.rs'),
         'utf8'
       ),
-      fs.readFileSync(
-        path.resolve(__dirname, '../../../../src/aura/inference/schemas.rs'),
-        'utf8'
-      ),
+      fs.readFileSync(path.resolve(__dirname, '../../../../src/aura/inference/schemas.rs'), 'utf8'),
     ].join('\n');
 
     for (const method of Object.values(CORE_RPC_METHODS)) {

@@ -1,13 +1,13 @@
 use serde::de::DeserializeOwned;
 use serde_json::{Map, Value};
 
-use crate::core::all::{ControllerFuture, RegisteredController};
-use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 use crate::aura::autocomplete::ops::AutocompleteHistoryParams;
 use crate::aura::autocomplete::{
     AutocompleteAcceptParams, AutocompleteCurrentParams, AutocompleteSetStyleParams,
     AutocompleteStartParams, AutocompleteStopParams,
 };
+use crate::core::all::{ControllerFuture, RegisteredController};
+use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 use crate::rpc::RpcOutcome;
 
 pub fn all_controller_schemas() -> Vec<ControllerSchema> {
@@ -316,9 +316,7 @@ fn handle_current(params: Map<String, Value>) -> ControllerFuture {
 }
 
 fn handle_debug_focus(_params: Map<String, Value>) -> ControllerFuture {
-    Box::pin(async {
-        to_json(crate::aura::autocomplete::rpc::autocomplete_debug_focus().await?)
-    })
+    Box::pin(async { to_json(crate::aura::autocomplete::rpc::autocomplete_debug_focus().await?) })
 }
 
 fn handle_accept(params: Map<String, Value>) -> ControllerFuture {
@@ -347,9 +345,7 @@ fn handle_history(params: Map<String, Value>) -> ControllerFuture {
 }
 
 fn handle_clear_history(_params: Map<String, Value>) -> ControllerFuture {
-    Box::pin(async {
-        to_json(crate::aura::autocomplete::rpc::autocomplete_clear_history().await?)
-    })
+    Box::pin(async { to_json(crate::aura::autocomplete::rpc::autocomplete_clear_history().await?) })
 }
 
 fn deserialize_params<T: DeserializeOwned>(params: Map<String, Value>) -> Result<T, String> {

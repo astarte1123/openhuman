@@ -289,8 +289,7 @@ function ModePicker({ onConfirm }: PickerProps) {
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-xs font-medium text-stone-700">
-                {t('bootCheck.authToken')} (
-                <code className="text-[10px]">AURA_CORE_TOKEN</code>)
+                {t('bootCheck.authToken')} (<code className="text-[10px]">AURA_CORE_TOKEN</code>)
               </label>
               <input
                 type="password"

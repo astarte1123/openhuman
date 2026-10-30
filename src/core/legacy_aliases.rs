@@ -30,10 +30,7 @@ const LEGACY_ALIASES: &[(&str, &str)] = &[
         "aura.config_get_composio_trigger_settings",
     ),
     ("aura.get_config", "aura.config_get"),
-    (
-        "aura.get_runtime_flags",
-        "aura.config_get_runtime_flags",
-    ),
+    ("aura.get_runtime_flags", "aura.config_get_runtime_flags"),
     ("aura.ping", "core.ping"),
     (
         "aura.set_browser_allow_all",
@@ -79,23 +76,14 @@ const LEGACY_ALIASES: &[(&str, &str)] = &[
         "aura.workspace_onboarding_flag_set",
         "aura.config_workspace_onboarding_flag_set",
     ),
-    (
-        "aura.local_ai_apply_preset",
-        "aura.inference_apply_preset",
-    ),
+    ("aura.local_ai_apply_preset", "aura.inference_apply_preset"),
     (
         "aura.local_ai_device_profile",
         "aura.inference_device_profile",
     ),
-    (
-        "aura.local_ai_diagnostics",
-        "aura.inference_diagnostics",
-    ),
+    ("aura.local_ai_diagnostics", "aura.inference_diagnostics"),
     ("aura.local_ai_presets", "aura.inference_presets"),
-    (
-        "aura.providers_list_models",
-        "aura.inference_list_models",
-    ),
+    ("aura.providers_list_models", "aura.inference_list_models"),
 ];
 
 /// Returns the server-side legacy → canonical RPC alias table.

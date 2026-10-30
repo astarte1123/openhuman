@@ -61,9 +61,9 @@ describe('tauriCommands/config', () => {
   describe('auraUpdateMeetSettings (#1299)', () => {
     test('throws when not running in Tauri', async () => {
       mockIsTauri.mockReturnValue(false);
-      await expect(
-        auraUpdateMeetSettings({ auto_orchestrator_handoff: true })
-      ).rejects.toThrow('Not running in Tauri');
+      await expect(auraUpdateMeetSettings({ auto_orchestrator_handoff: true })).rejects.toThrow(
+        'Not running in Tauri'
+      );
       expect(mockCallCoreRpc).not.toHaveBeenCalled();
     });
 
@@ -90,9 +90,7 @@ describe('tauriCommands/config', () => {
     test('reads via aura.config_get_meet_settings', async () => {
       mockCallCoreRpc.mockResolvedValue({ result: { auto_orchestrator_handoff: true }, logs: [] });
       const out = await auraGetMeetSettings();
-      expect(mockCallCoreRpc).toHaveBeenCalledWith({
-        method: 'aura.config_get_meet_settings',
-      });
+      expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'aura.config_get_meet_settings' });
       expect(out.result.auto_orchestrator_handoff).toBe(true);
     });
   });
@@ -107,9 +105,9 @@ describe('tauriCommands/config', () => {
 
     test('throws when not running in Tauri', async () => {
       mockIsTauri.mockReturnValue(false);
-      await expect(
-        auraUpdateComposioTriggerSettings({ triage_disabled: true })
-      ).rejects.toThrow('Not running in Tauri');
+      await expect(auraUpdateComposioTriggerSettings({ triage_disabled: true })).rejects.toThrow(
+        'Not running in Tauri'
+      );
       expect(mockCallCoreRpc).not.toHaveBeenCalled();
     });
 
@@ -136,9 +134,9 @@ describe('tauriCommands/config', () => {
 
     test('rethrows non-unknown-method errors', async () => {
       mockCallCoreRpc.mockRejectedValue(new Error('network timeout'));
-      await expect(
-        auraUpdateComposioTriggerSettings({ triage_disabled: true })
-      ).rejects.toThrow('network timeout');
+      await expect(auraUpdateComposioTriggerSettings({ triage_disabled: true })).rejects.toThrow(
+        'network timeout'
+      );
     });
   });
 

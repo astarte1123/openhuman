@@ -1082,10 +1082,7 @@ async fn discord_bot_token(config: &Config) -> Result<String, String> {
 /// List Discord guilds (servers) the connected bot is a member of.
 pub async fn discord_list_guilds(
     config: &Config,
-) -> Result<
-    RpcOutcome<Vec<crate::aura::channels::providers::discord::api::DiscordGuild>>,
-    String,
-> {
+) -> Result<RpcOutcome<Vec<crate::aura::channels::providers::discord::api::DiscordGuild>>, String> {
     use crate::aura::channels::providers::discord::api;
 
     let token = discord_bot_token(config).await?;
@@ -1123,10 +1120,8 @@ pub async fn discord_check_permissions(
     config: &Config,
     guild_id: &str,
     channel_id: &str,
-) -> Result<
-    RpcOutcome<crate::aura::channels::providers::discord::api::BotPermissionCheck>,
-    String,
-> {
+) -> Result<RpcOutcome<crate::aura::channels::providers::discord::api::BotPermissionCheck>, String>
+{
     use crate::aura::channels::providers::discord::api;
 
     if guild_id.is_empty() || channel_id.is_empty() {

@@ -59,9 +59,7 @@ describe('Skill execution (UI + core RPC)', () => {
   });
 
   it('runs start → list_tools → call_tool → stop for the seeded echo skill', async () => {
-    const start = await callAuraRpc('aura.skills_start', {
-      skill_id: E2E_RUNTIME_SKILL_ID,
-    });
+    const start = await callAuraRpc('aura.skills_start', { skill_id: E2E_RUNTIME_SKILL_ID });
     if (!start.ok) {
       console.error('[SkillExecutionE2E] skills_start failed', start, getRequestLog());
     }
@@ -71,9 +69,7 @@ describe('Skill execution (UI + core RPC)', () => {
 
     await browser.pause(800);
 
-    const tools = await callAuraRpc('aura.skills_list_tools', {
-      skill_id: E2E_RUNTIME_SKILL_ID,
-    });
+    const tools = await callAuraRpc('aura.skills_list_tools', { skill_id: E2E_RUNTIME_SKILL_ID });
     expect(tools.ok).toBe(true);
     const toolNames = (tools.result?.tools || []).map((t: { name?: string }) => t.name);
     expect(toolNames.includes('echo')).toBe(true);
@@ -92,9 +88,7 @@ describe('Skill execution (UI + core RPC)', () => {
       )
     ).toBe(true);
 
-    const stop = await callAuraRpc('aura.skills_stop', {
-      skill_id: E2E_RUNTIME_SKILL_ID,
-    });
+    const stop = await callAuraRpc('aura.skills_stop', { skill_id: E2E_RUNTIME_SKILL_ID });
     expect(stop.ok).toBe(true);
     expect(stop.result?.success === true).toBe(true);
   });
@@ -107,9 +101,7 @@ describe('Skill execution (UI + core RPC)', () => {
       });
       expect(set.ok).toBe(true);
 
-      const st = await callAuraRpc('aura.skills_status', {
-        skill_id: E2E_RUNTIME_SKILL_ID,
-      });
+      const st = await callAuraRpc('aura.skills_status', { skill_id: E2E_RUNTIME_SKILL_ID });
       expect(st.ok).toBe(true);
       expect(st.result?.setup_complete === true).toBe(true);
     } finally {

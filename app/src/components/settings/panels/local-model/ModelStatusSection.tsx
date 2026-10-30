@@ -303,9 +303,7 @@ const ModelStatusSection = ({
                 <span className={diagnostics.ok ? 'text-green-600' : 'text-red-600'}>
                   {diagnostics.ok
                     ? t('settings.model_status.all_checks_passed')
-                    : t('settings.model_status.issues_found', {
-                        count: diagnostics.issues.length,
-                      })}
+                    : t('settings.model_status.issues_found', { count: diagnostics.issues.length })}
                 </span>
               </div>
 

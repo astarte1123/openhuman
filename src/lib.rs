@@ -6,8 +6,8 @@
 //! - Domain-specific logic for the Aura agent runtime.
 
 pub mod api;
-pub mod core;
 pub mod aura;
+pub mod core;
 pub mod rpc;
 
 pub use aura::config::DaemonConfig;

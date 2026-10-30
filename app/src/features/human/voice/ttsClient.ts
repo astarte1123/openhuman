@@ -59,10 +59,7 @@ export async function synthesizeSpeech(text: string, opts: TtsOptions = {}): Pro
   if (opts.outputFormat) params.output_format = opts.outputFormat;
   ttsLog('synthesize chars=%d (raw=%d) voice=%s', spoken.length, text.length, voiceId ?? 'default');
 
-  const result = await callCoreRpc<TtsResponse>({
-    method: 'aura.voice_reply_synthesize',
-    params,
-  });
+  const result = await callCoreRpc<TtsResponse>({ method: 'aura.voice_reply_synthesize', params });
 
   ttsLog(
     'synthesize done audio_bytes=%d visemes=%d alignment=%d',

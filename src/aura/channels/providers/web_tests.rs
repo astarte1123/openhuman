@@ -173,8 +173,7 @@ fn generic_error_copy_is_sanitized_and_has_discord_report_action() {
     let message = generic_inference_error_user_message();
     assert!(message.contains("Something went wrong. Please try again."));
     assert!(message.contains("This error has been reported."));
-    assert!(message
-        .contains("<aura-link path=\"community/discord\">Report on Discord</aura-link>"));
+    assert!(message.contains("<aura-link path=\"community/discord\">Report on Discord</aura-link>"));
 }
 
 // ── Schema catalog ────────────────────────────────────────────

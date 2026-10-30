@@ -140,9 +140,7 @@ fn seed_morning_briefing(config: &Config) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::aura::cron::{
-        add_agent_job_with_definition, list_jobs, Schedule, SessionTarget,
-    };
+    use crate::aura::cron::{add_agent_job_with_definition, list_jobs, Schedule, SessionTarget};
     use chrono::{Duration as ChronoDuration, Utc};
     use tempfile::TempDir;
 

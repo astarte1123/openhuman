@@ -342,9 +342,7 @@ fn build_env_filter(verbose: bool, default_scope: CliLogDefault) -> tracing_subs
         }
         CliLogDefault::AutocompleteOnly => {
             let level = if verbose { "trace" } else { "debug" };
-            tracing_subscriber::EnvFilter::new(format!(
-                "off,aura_core::aura::autocomplete={level}"
-            ))
+            tracing_subscriber::EnvFilter::new(format!("off,aura_core::aura::autocomplete={level}"))
         }
     })
 }

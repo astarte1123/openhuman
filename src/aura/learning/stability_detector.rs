@@ -34,11 +34,11 @@
 use std::collections::HashMap;
 use std::sync::Arc;
 
-use crate::core::event_bus;
-use crate::core::event_bus::DomainEvent;
 use crate::aura::learning::cache::FacetCache;
 use crate::aura::learning::candidate::{self, CueFamily, FacetClass, LearningCandidate};
 use crate::aura::memory::store::profile::{FacetState, FacetType, ProfileFacet, UserState};
+use crate::core::event_bus;
+use crate::core::event_bus::DomainEvent;
 
 // ── Thresholds ────────────────────────────────────────────────────────────────
 
@@ -552,9 +552,7 @@ fn class_prefix(class: FacetClass) -> &'static str {
 mod tests {
     use super::*;
     use crate::aura::learning::cache::FacetCache;
-    use crate::aura::learning::candidate::{
-        Buffer, EvidenceRef, FacetClass, LearningCandidate,
-    };
+    use crate::aura::learning::candidate::{Buffer, EvidenceRef, FacetClass, LearningCandidate};
     use crate::aura::memory::store::profile::PROFILE_INIT_SQL;
     use parking_lot::Mutex;
     use rusqlite::Connection;

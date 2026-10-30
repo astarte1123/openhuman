@@ -1,7 +1,5 @@
 use super::*;
-use crate::aura::channels::context::{
-    ChannelRuntimeContext, ProviderCacheMap, RouteSelectionMap,
-};
+use crate::aura::channels::context::{ChannelRuntimeContext, ProviderCacheMap, RouteSelectionMap};
 use crate::aura::channels::traits::ChannelMessage;
 use crate::aura::inference::provider::{ChatMessage, Provider};
 use crate::aura::memory::{Memory, MemoryCategory, MemoryEntry};
@@ -147,8 +145,8 @@ fn runtime_context(workspace_dir: PathBuf) -> ChannelRuntimeContext {
         api_url: None,
         inference_url: None,
         reliability: Arc::new(crate::aura::config::ReliabilityConfig::default()),
-        provider_runtime_options:
-            crate::aura::inference::provider::ProviderRuntimeOptions::default(),
+        provider_runtime_options: crate::aura::inference::provider::ProviderRuntimeOptions::default(
+        ),
         workspace_dir: Arc::new(workspace_dir),
         message_timeout_secs: 60,
         multimodal: crate::aura::config::MultimodalConfig::default(),

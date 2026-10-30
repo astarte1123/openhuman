@@ -22,9 +22,7 @@ use serde_json::Value;
 
 use crate::aura::config::Config;
 use crate::aura::memory::tree::canonicalize::email::{EmailMessage, EmailThread};
-use crate::aura::memory::tree::canonicalize::email_clean::{
-    extract_email, parse_message_date,
-};
+use crate::aura::memory::tree::canonicalize::email_clean::{extract_email, parse_message_date};
 use crate::aura::memory::tree::content_store::raw::{
     self as raw_store, raw_rel_path, slug_account_email, RawItem, RawKind,
 };

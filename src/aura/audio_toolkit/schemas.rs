@@ -1,12 +1,10 @@
 use serde::Deserialize;
 use serde_json::{Map, Value};
 
+use crate::aura::audio_toolkit::types::{AudioFormat, AudioGenerateRequest, EmailPodcastRequest};
+use crate::aura::config::rpc as config_rpc;
 use crate::core::all::{ControllerFuture, RegisteredController};
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
-use crate::aura::audio_toolkit::types::{
-    AudioFormat, AudioGenerateRequest, EmailPodcastRequest,
-};
-use crate::aura::config::rpc as config_rpc;
 use crate::rpc::RpcOutcome;
 
 #[derive(Debug, Deserialize)]

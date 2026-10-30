@@ -2,7 +2,10 @@ import { useState } from 'react';
 
 import { useT } from '../../lib/i18n/I18nContext';
 import { BubbleMarkdown } from '../../pages/conversations/components/AgentMessageBubble';
-import { auraMeetingsSummarizeStructured, type MeetingSummary } from '../../utils/tauriCommands/meetings';
+import {
+  auraMeetingsSummarizeStructured,
+  type MeetingSummary,
+} from '../../utils/tauriCommands/meetings';
 
 interface Props {
   meetingId: string;

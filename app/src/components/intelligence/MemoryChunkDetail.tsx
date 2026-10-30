@@ -126,9 +126,7 @@ export function MemoryChunkDetail({ chunk, onSelectEntity }: MemoryChunkDetailPr
               type="button"
               onClick={() => void handleCopyId()}
               title={t('intelligence.memory_chunk_detail.copy_chunk_id')}>
-              {t('intelligence.memory_chunk_detail.chunk_label', {
-                id: shortChunkId(chunk.id),
-              })}
+              {t('intelligence.memory_chunk_detail.chunk_label', { id: shortChunkId(chunk.id) })}
               {copied && (
                 <span style={{ marginLeft: 6, color: 'var(--sage)' }}>
                   {t('intelligence.memory_chunk_detail.copied')}

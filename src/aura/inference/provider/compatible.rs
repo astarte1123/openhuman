@@ -37,8 +37,8 @@ use compatible_parse::{
 };
 use compatible_stream::sse_bytes_to_chunks;
 use compatible_types::{
-    ApiChatRequest, ApiChatResponse, ApiUsage, Choice, Function, Message, NativeChatRequest,
-    NativeMessage, OpenAiStreamOptions, AuraMeta, ResponseMessage, ResponsesRequest,
+    ApiChatRequest, ApiChatResponse, ApiUsage, AuraMeta, Choice, Function, Message,
+    NativeChatRequest, NativeMessage, OpenAiStreamOptions, ResponseMessage, ResponsesRequest,
     StreamChunkResponse, StreamingToolCall, ToolCall,
 };
 
@@ -257,10 +257,8 @@ impl OpenAiCompatibleProvider {
                 .timeout(std::time::Duration::from_secs(120))
                 .connect_timeout(std::time::Duration::from_secs(10))
                 .default_headers(headers);
-            let builder = crate::aura::config::apply_runtime_proxy_to_builder(
-                builder,
-                "provider.compatible",
-            );
+            let builder =
+                crate::aura::config::apply_runtime_proxy_to_builder(builder, "provider.compatible");
 
             return builder.build().unwrap_or_else(|error| {
                 tracing::warn!("Failed to build proxied timeout client with user-agent: {error}");
@@ -272,10 +270,8 @@ impl OpenAiCompatibleProvider {
             .use_rustls_tls()
             .timeout(std::time::Duration::from_secs(120))
             .connect_timeout(std::time::Duration::from_secs(10));
-        let builder = crate::aura::config::apply_runtime_proxy_to_builder(
-            builder,
-            "provider.compatible",
-        );
+        let builder =
+            crate::aura::config::apply_runtime_proxy_to_builder(builder, "provider.compatible");
         builder.build().unwrap_or_else(|error| {
             tracing::warn!("Failed to build proxied timeout client: {error}");
             Client::new()

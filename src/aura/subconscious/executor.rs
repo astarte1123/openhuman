@@ -259,8 +259,7 @@ async fn agent_chat_with_retry(
 
     loop {
         let result =
-            crate::aura::inference::local::ops::agent_chat(config, prompt, None, Some(0.3))
-                .await;
+            crate::aura::inference::local::ops::agent_chat(config, prompt, None, Some(0.3)).await;
 
         match result {
             Ok(outcome) => return Ok(outcome.value),

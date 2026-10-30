@@ -119,10 +119,7 @@ mod tests {
     fn all_definitions_present() {
         let defs = all();
         // +2 for the cfg(test) inherit-based test defs appended by all().
-        assert_eq!(
-            defs.len(),
-            crate::aura::agent::agents::BUILTINS.len() + 2
-        );
+        assert_eq!(defs.len(), crate::aura::agent::agents::BUILTINS.len() + 2);
     }
 
     #[test]

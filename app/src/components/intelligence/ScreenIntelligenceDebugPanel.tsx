@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 
-import { useT } from '../../lib/i18n/I18nContext';
 import {
   type ScreenIntelligenceState,
   useScreenIntelligenceState,
 } from '../../features/screen-intelligence/useScreenIntelligenceState';
+import { useT } from '../../lib/i18n/I18nContext';
 
 const formatBytes = (bytes: number | null | undefined): string => {
   if (bytes == null) return '-';

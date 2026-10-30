@@ -169,9 +169,7 @@ export interface CaptureTestResult {
   timing_ms: number;
 }
 
-export async function auraAccessibilityStatus(): Promise<
-  CommandResponse<AccessibilityStatus>
-> {
+export async function auraAccessibilityStatus(): Promise<CommandResponse<AccessibilityStatus>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }

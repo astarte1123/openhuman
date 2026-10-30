@@ -400,8 +400,7 @@ impl LocalAiService {
 }
 
 fn config_with_recommended_tier_if_unselected(config: &Config, device: &DeviceProfile) -> Config {
-    let current_tier =
-        crate::aura::inference::presets::current_tier_from_config(&config.local_ai);
+    let current_tier = crate::aura::inference::presets::current_tier_from_config(&config.local_ai);
 
     // Local AI is opt-in on every device. The only way to keep it enabled
     // across a restart is an explicit opt-in (`apply_preset` on a real tier),

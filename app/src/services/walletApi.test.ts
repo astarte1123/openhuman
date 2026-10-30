@@ -45,9 +45,6 @@ describe('walletApi', () => {
     const { setupLocalWallet } = await import('./walletApi');
     await setupLocalWallet(payload);
 
-    expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'aura.wallet_setup',
-      params: payload,
-    });
+    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'aura.wallet_setup', params: payload });
   });
 });

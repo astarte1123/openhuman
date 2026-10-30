@@ -16,9 +16,9 @@ use futures_util::StreamExt;
 use serde_json::{json, Value};
 use tempfile::tempdir;
 
+use aura_core::aura::memory::all_memory_tree_registered_controllers;
 use aura_core::core::auth::{init_rpc_token, CORE_TOKEN_ENV_VAR};
 use aura_core::core::jsonrpc::build_core_http_router;
-use aura_core::aura::memory::all_memory_tree_registered_controllers;
 
 const TEST_RPC_TOKEN: &str = "json-rpc-e2e-local-token";
 static JSON_RPC_AUTH_INIT: OnceLock<()> = OnceLock::new();
@@ -1244,8 +1244,7 @@ async fn json_rpc_meetings_create_transcript_and_finish_lifecycle() {
     // (the same dir `write_min_config` below writes `config.toml` into)
     // achieves real isolation on every platform, not just the ones where the
     // `HOME` trick happens to work.
-    let _workspace_guard =
-        EnvVarGuard::set_to_path("AURA_WORKSPACE", aura_home.as_path());
+    let _workspace_guard = EnvVarGuard::set_to_path("AURA_WORKSPACE", aura_home.as_path());
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
     let _api_url_guard = EnvVarGuard::unset("AURA_API_URL");
@@ -1514,8 +1513,7 @@ async fn json_rpc_meetings_search_finds_matching_chunk() {
     // developer `~/.aura` workspace. `AURA_WORKSPACE` is a plain env
     // var read directly by `resolve_runtime_config_dirs_with`, bypassing OS
     // home-directory resolution entirely.
-    let _workspace_guard =
-        EnvVarGuard::set_to_path("AURA_WORKSPACE", aura_home.as_path());
+    let _workspace_guard = EnvVarGuard::set_to_path("AURA_WORKSPACE", aura_home.as_path());
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
     let _api_url_guard = EnvVarGuard::unset("AURA_API_URL");
@@ -1643,8 +1641,7 @@ async fn json_rpc_meetings_export_pdf_and_docx_write_files() {
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
     // See the comment in `json_rpc_meetings_create_transcript_and_finish_lifecycle`:
     // `HOME` alone does not isolate storage on Windows.
-    let _workspace_guard =
-        EnvVarGuard::set_to_path("AURA_WORKSPACE", aura_home.as_path());
+    let _workspace_guard = EnvVarGuard::set_to_path("AURA_WORKSPACE", aura_home.as_path());
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
     let _api_url_guard = EnvVarGuard::unset("AURA_API_URL");
@@ -1773,8 +1770,7 @@ async fn json_rpc_meetings_append_screenshot_writes_file_and_runs_ocr() {
     let _home_guard = EnvVarGuard::set_to_path("HOME", home);
     // See the comment in `json_rpc_meetings_create_transcript_and_finish_lifecycle`:
     // `HOME` alone does not isolate storage on Windows.
-    let _workspace_guard =
-        EnvVarGuard::set_to_path("AURA_WORKSPACE", aura_home.as_path());
+    let _workspace_guard = EnvVarGuard::set_to_path("AURA_WORKSPACE", aura_home.as_path());
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_url_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
     let _api_url_guard = EnvVarGuard::unset("AURA_API_URL");
@@ -2101,13 +2097,8 @@ async fn json_rpc_thread_turn_state_lifecycle() {
     let rpc_base = format!("http://{rpc_addr}");
 
     // Empty workspace → no snapshots.
-    let empty_list = post_json_rpc(
-        &rpc_base,
-        9101,
-        "aura.threads_turn_state_list",
-        json!({}),
-    )
-    .await;
+    let empty_list =
+        post_json_rpc(&rpc_base, 9101, "aura.threads_turn_state_list", json!({})).await;
     let outer = assert_no_jsonrpc_error(&empty_list, "turn_state_list (empty)");
     assert_eq!(
         outer
@@ -2164,13 +2155,7 @@ async fn json_rpc_thread_turn_state_lifecycle() {
     );
 
     // list → contains the seeded snapshot
-    let list = post_json_rpc(
-        &rpc_base,
-        9103,
-        "aura.threads_turn_state_list",
-        json!({}),
-    )
-    .await;
+    let list = post_json_rpc(&rpc_base, 9103, "aura.threads_turn_state_list", json!({})).await;
     let list_outer = assert_no_jsonrpc_error(&list, "turn_state_list (one)");
     assert_eq!(
         list_outer
@@ -2316,13 +2301,8 @@ async fn json_rpc_memory_sync_and_learn() {
     );
 
     // ── memory_ingestion_status: idle on a fresh store ──────────────────────
-    let ing_status = post_json_rpc(
-        &rpc_base,
-        7006,
-        "aura.memory_ingestion_status",
-        json!({}),
-    )
-    .await;
+    let ing_status =
+        post_json_rpc(&rpc_base, 7006, "aura.memory_ingestion_status", json!({})).await;
     let ing_result = assert_no_jsonrpc_error(&ing_status, "memory_ingestion_status");
     assert_eq!(
         ing_result.get("running"),
@@ -2929,11 +2909,9 @@ async fn json_rpc_web_chat_custom_reasoning_provider_with_auth_none_omits_auth_h
     let loaded_config = aura_core::aura::config::load_config_with_timeout()
         .await
         .expect("load_config after auth-none update");
-    let (provider, model) = aura_core::aura::inference::provider::create_chat_provider(
-        "reasoning",
-        &loaded_config,
-    )
-    .expect("custom auth-none provider should build");
+    let (provider, model) =
+        aura_core::aura::inference::provider::create_chat_provider("reasoning", &loaded_config)
+            .expect("custom auth-none provider should build");
     let direct = provider
         .simple_chat("direct custom-provider smoke test", &model, 0.0)
         .await
@@ -3438,8 +3416,7 @@ async fn json_rpc_wallet_setup_round_trips_status() {
         "expected four wallet accounts after setup: {setup_result}"
     );
 
-    let persisted_status =
-        post_json_rpc(&rpc_base, 1007, "aura.wallet_status", json!({})).await;
+    let persisted_status = post_json_rpc(&rpc_base, 1007, "aura.wallet_status", json!({})).await;
     let persisted_body = assert_no_jsonrpc_error(&persisted_status, "wallet_status_persisted");
     let persisted_result = persisted_body.get("result").unwrap_or(persisted_body);
     assert_eq!(
@@ -3493,10 +3470,8 @@ async fn json_rpc_wallet_execution_surface_round_trips() {
     let _backend_url_guard = EnvVarGuard::unset("BACKEND_URL");
     let _vite_backend_guard = EnvVarGuard::unset("VITE_BACKEND_URL");
     let (wallet_rpc_addr, raw_txs) = start_mock_wallet_evm_rpc().await;
-    let _evm_provider_guard = EnvVarGuard::set(
-        "AURA_WALLET_RPC_EVM",
-        &format!("http://{wallet_rpc_addr}"),
-    );
+    let _evm_provider_guard =
+        EnvVarGuard::set("AURA_WALLET_RPC_EVM", &format!("http://{wallet_rpc_addr}"));
     let _btc_provider_guard = EnvVarGuard::unset("AURA_WALLET_RPC_BTC");
     let _sol_provider_guard = EnvVarGuard::unset("AURA_WALLET_RPC_SOLANA");
     let _tron_provider_guard = EnvVarGuard::unset("AURA_WALLET_RPC_TRON");
@@ -3532,13 +3507,7 @@ async fn json_rpc_wallet_execution_surface_round_trips() {
     assert_no_jsonrpc_error(&setup, "wallet_setup_for_execution");
 
     // supported_assets: 4 native assets plus the default EVM token catalog.
-    let assets = post_json_rpc(
-        &rpc_base,
-        2002,
-        "aura.wallet_supported_assets",
-        json!({}),
-    )
-    .await;
+    let assets = post_json_rpc(&rpc_base, 2002, "aura.wallet_supported_assets", json!({})).await;
     let body = assert_no_jsonrpc_error(&assets, "wallet_supported_assets");
     let result = body.get("result").unwrap_or(&body);
     let list = result.as_array().expect("supported_assets array");
@@ -3707,10 +3676,7 @@ encrypt = false
     std::fs::write(aura_home.join("config.toml"), &cfg).expect("write config");
     std::fs::create_dir_all(aura_home.join("users").join("local")).expect("mkdir users/local");
     std::fs::write(
-        aura_home
-            .join("users")
-            .join("local")
-            .join("config.toml"),
+        aura_home.join("users").join("local").join("config.toml"),
         &cfg,
     )
     .expect("write user config");
@@ -4034,13 +4000,7 @@ async fn json_rpc_local_ai_device_profile_and_presets() {
     tokio::time::sleep(Duration::from_millis(100)).await;
 
     // --- device_profile ---
-    let profile = post_json_rpc(
-        &rpc_base,
-        30,
-        "aura.inference_device_profile",
-        json!({}),
-    )
-    .await;
+    let profile = post_json_rpc(&rpc_base, 30, "aura.inference_device_profile", json!({})).await;
     let profile_result = assert_no_jsonrpc_error(&profile, "device_profile");
     let profile_payload = profile_result.get("result").unwrap_or(profile_result);
     assert!(
@@ -4122,8 +4082,7 @@ async fn json_rpc_local_ai_device_profile_and_presets() {
     );
 
     // --- verify presets reflects the change ---
-    let presets_after =
-        post_json_rpc(&rpc_base, 33, "aura.inference_presets", json!({})).await;
+    let presets_after = post_json_rpc(&rpc_base, 33, "aura.inference_presets", json!({})).await;
     let presets_after_result = assert_no_jsonrpc_error(&presets_after, "presets_after");
     let presets_after_payload = presets_after_result
         .get("result")
@@ -4262,8 +4221,7 @@ async fn json_rpc_local_ai_lm_studio_config_diagnostics_and_prompt() {
         Some(true)
     );
 
-    let diagnostics =
-        post_json_rpc(&rpc_base, 37, "aura.inference_diagnostics", json!({})).await;
+    let diagnostics = post_json_rpc(&rpc_base, 37, "aura.inference_diagnostics", json!({})).await;
     let diagnostics_result = assert_no_jsonrpc_error(&diagnostics, "lm_studio_diagnostics");
     assert_eq!(
         diagnostics_result.get("provider").and_then(Value::as_str),
@@ -4589,13 +4547,7 @@ async fn billing_rpc_e2e() {
     }
 
     // --- billing_get_current_plan ---
-    let plan = post_json_rpc(
-        &rpc_base,
-        2,
-        "aura.billing_get_current_plan",
-        json!({}),
-    )
-    .await;
+    let plan = post_json_rpc(&rpc_base, 2, "aura.billing_get_current_plan", json!({})).await;
     let plan_outer = assert_no_jsonrpc_error(&plan, "billing_get_current_plan");
     let plan_result = inner(plan_outer, "billing_get_current_plan");
     assert_eq!(

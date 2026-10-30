@@ -61,8 +61,7 @@ pub(crate) struct ChannelRuntimeContext {
     pub(crate) api_url: Option<String>,
     pub(crate) inference_url: Option<String>,
     pub(crate) reliability: Arc<crate::aura::config::ReliabilityConfig>,
-    pub(crate) provider_runtime_options:
-        crate::aura::inference::provider::ProviderRuntimeOptions,
+    pub(crate) provider_runtime_options: crate::aura::inference::provider::ProviderRuntimeOptions,
     pub(crate) workspace_dir: Arc<PathBuf>,
     pub(crate) message_timeout_secs: u64,
     pub(crate) multimodal: crate::aura::config::MultimodalConfig,
@@ -388,9 +387,7 @@ mod tests {
         let ctx = runtime_context();
         let sender = "discord_alice_reply_thread:thread-1";
         let mut history = Vec::new();
-        history.push(crate::aura::inference::provider::ChatMessage::user(
-            "short",
-        ));
+        history.push(crate::aura::inference::provider::ChatMessage::user("short"));
         history.extend((0..20).map(|idx| {
             crate::aura::inference::provider::ChatMessage::assistant("x".repeat(700 + idx))
         }));

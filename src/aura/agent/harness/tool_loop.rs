@@ -417,12 +417,8 @@ pub(crate) async fn run_tool_call_loop(
                     // signal and floods Sentry — see AURA-TAURI-3Y/3Z
                     // (~46 events combined) and the underlying TAURI-2E/84/T
                     // (~3300 events from raw per-attempt 429/503/504 reports).
-                    let transient = crate::aura::inference::provider::reliable::is_rate_limited(
-                        &e,
-                    )
-                        || crate::aura::inference::provider::reliable::is_upstream_unhealthy(
-                            &e,
-                        );
+                    let transient = crate::aura::inference::provider::reliable::is_rate_limited(&e)
+                        || crate::aura::inference::provider::reliable::is_upstream_unhealthy(&e);
                     if transient {
                         tracing::warn!(
                             domain = "agent",
@@ -646,8 +642,7 @@ pub(crate) async fn run_tool_call_loop(
             }
 
             let result = if let Some(tool) = tool_opt {
-                let tool_deadline =
-                    crate::aura::tool_timeout::tool_execution_timeout_duration();
+                let tool_deadline = crate::aura::tool_timeout::tool_execution_timeout_duration();
                 let timeout_secs = crate::aura::tool_timeout::tool_execution_timeout_secs();
                 let tool_started = std::time::Instant::now();
                 let outcome =

@@ -1,9 +1,5 @@
 import { persistor } from '../store';
-import {
-  resetAuraDataAndRestartCore,
-  restartApp,
-  scheduleCefProfilePurge,
-} from './tauriCommands';
+import { resetAuraDataAndRestartCore, restartApp, scheduleCefProfilePurge } from './tauriCommands';
 
 const ACTIVE_USER_KEY = 'AURA_ACTIVE_USER_ID';
 

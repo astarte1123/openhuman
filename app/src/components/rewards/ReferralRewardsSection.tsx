@@ -280,9 +280,7 @@ const ReferralRewardsSection = () => {
               onClick={() => void handleApply()}
               disabled={applyLoading || !applyCode.trim()}
               className="rounded-xl bg-primary-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-700 disabled:opacity-50">
-              {applyLoading
-                ? t('rewards.referrals.applying')
-                : t('rewards.referrals.apply_button')}
+              {applyLoading ? t('rewards.referrals.applying') : t('rewards.referrals.apply_button')}
             </button>
           </div>
           {applyError ? <p className="text-xs text-coral-600">{applyError}</p> : null}

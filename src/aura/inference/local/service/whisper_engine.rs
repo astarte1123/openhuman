@@ -289,10 +289,7 @@ pub fn transcribe_pcm_f32(
         },
     );
     if guard_stats.lines_removed > 0 {
-        debug!(
-            "{LOG_PREFIX} whisper-guard: {}",
-            guard_stats.summary()
-        );
+        debug!("{LOG_PREFIX} whisper-guard: {}", guard_stats.summary());
     }
     let text: String = cleaned_segments.join("");
 

@@ -380,9 +380,7 @@ fn resolve_config_dir_for_workspace_returns_parent_and_workspace() {
     let ws = PathBuf::from("/home/test/.aura/workspace");
     let (config_dir, workspace_dir) = resolve_config_dir_for_workspace(&ws);
     // Config dir is the parent of workspace.
-    assert!(
-        config_dir.ends_with(".aura") || config_dir == PathBuf::from("/home/test/.aura")
-    );
+    assert!(config_dir.ends_with(".aura") || config_dir == PathBuf::from("/home/test/.aura"));
     assert!(workspace_dir.ends_with("workspace"));
 }
 
@@ -635,9 +633,7 @@ fn env_overlay_runtime_python_flags_respect_bool_parser() {
         "untouched keys stay at defaults"
     );
 
-    cfg.apply_env_overlay_with(
-        &HashMapEnv::new().with("AURA_RUNTIME_PYTHON_ENABLED", "perhaps"),
-    );
+    cfg.apply_env_overlay_with(&HashMapEnv::new().with("AURA_RUNTIME_PYTHON_ENABLED", "perhaps"));
     assert!(cfg.runtime_python.enabled);
 
     cfg.apply_env_overlay_with(
@@ -725,26 +721,20 @@ fn env_overlay_analytics_enabled_parses_truthy_falsy() {
 #[test]
 fn env_overlay_learning_source_values_and_invalid_ignored() {
     let mut cfg = Config::default();
-    cfg.apply_env_overlay_with(
-        &HashMapEnv::new().with("AURA_LEARNING_REFLECTION_SOURCE", "local"),
-    );
+    cfg.apply_env_overlay_with(&HashMapEnv::new().with("AURA_LEARNING_REFLECTION_SOURCE", "local"));
     assert_eq!(
         cfg.learning.reflection_source,
         crate::aura::config::ReflectionSource::Local
     );
 
-    cfg.apply_env_overlay_with(
-        &HashMapEnv::new().with("AURA_LEARNING_REFLECTION_SOURCE", "cloud"),
-    );
+    cfg.apply_env_overlay_with(&HashMapEnv::new().with("AURA_LEARNING_REFLECTION_SOURCE", "cloud"));
     assert_eq!(
         cfg.learning.reflection_source,
         crate::aura::config::ReflectionSource::Cloud
     );
 
     // Unknown — ignored, retains cloud from previous step.
-    cfg.apply_env_overlay_with(
-        &HashMapEnv::new().with("AURA_LEARNING_REFLECTION_SOURCE", "bogus"),
-    );
+    cfg.apply_env_overlay_with(&HashMapEnv::new().with("AURA_LEARNING_REFLECTION_SOURCE", "bogus"));
     assert_eq!(
         cfg.learning.reflection_source,
         crate::aura::config::ReflectionSource::Cloud
@@ -767,26 +757,20 @@ fn env_overlay_learning_numeric_values_parse() {
 fn env_overlay_dictation_activation_mode_only_toggle_or_push() {
     let mut cfg = Config::default();
 
-    cfg.apply_env_overlay_with(
-        &HashMapEnv::new().with("AURA_DICTATION_ACTIVATION_MODE", "toggle"),
-    );
+    cfg.apply_env_overlay_with(&HashMapEnv::new().with("AURA_DICTATION_ACTIVATION_MODE", "toggle"));
     assert_eq!(
         cfg.dictation.activation_mode,
         crate::aura::config::DictationActivationMode::Toggle
     );
 
-    cfg.apply_env_overlay_with(
-        &HashMapEnv::new().with("AURA_DICTATION_ACTIVATION_MODE", "push"),
-    );
+    cfg.apply_env_overlay_with(&HashMapEnv::new().with("AURA_DICTATION_ACTIVATION_MODE", "push"));
     assert_eq!(
         cfg.dictation.activation_mode,
         crate::aura::config::DictationActivationMode::Push
     );
 
     // Unknown — retains previous value (Push).
-    cfg.apply_env_overlay_with(
-        &HashMapEnv::new().with("AURA_DICTATION_ACTIVATION_MODE", "wave"),
-    );
+    cfg.apply_env_overlay_with(&HashMapEnv::new().with("AURA_DICTATION_ACTIVATION_MODE", "wave"));
     assert_eq!(
         cfg.dictation.activation_mode,
         crate::aura::config::DictationActivationMode::Push

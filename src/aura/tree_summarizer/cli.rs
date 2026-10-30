@@ -188,10 +188,9 @@ fn run_summarize(args: &[String]) -> Result<()> {
     let rt = build_runtime()?;
     rt.block_on(async {
         let config = load_config().await?;
-        let outcome =
-            crate::aura::tree_summarizer::rpc::tree_summarizer_run(&config, namespace)
-                .await
-                .map_err(anyhow::Error::msg)?;
+        let outcome = crate::aura::tree_summarizer::rpc::tree_summarizer_run(&config, namespace)
+            .await
+            .map_err(anyhow::Error::msg)?;
 
         println!(
             "{}",
@@ -207,9 +206,7 @@ fn run_query(args: &[String]) -> Result<()> {
     let (opts, rest) = parse_opts(args)?;
 
     if rest.iter().any(|a| is_help(a)) || rest.is_empty() {
-        println!(
-            "Usage: aura tree-summarizer query <namespace> [<node_id>] [--node-id <id>] [-v]"
-        );
+        println!("Usage: aura tree-summarizer query <namespace> [<node_id>] [--node-id <id>] [-v]");
         println!();
         println!("Read a summary tree node and its direct children.");
         println!();
@@ -238,11 +235,10 @@ fn run_query(args: &[String]) -> Result<()> {
     let rt = build_runtime()?;
     rt.block_on(async {
         let config = load_config().await?;
-        let outcome = crate::aura::tree_summarizer::rpc::tree_summarizer_query(
-            &config, namespace, node_id,
-        )
-        .await
-        .map_err(anyhow::Error::msg)?;
+        let outcome =
+            crate::aura::tree_summarizer::rpc::tree_summarizer_query(&config, namespace, node_id)
+                .await
+                .map_err(anyhow::Error::msg)?;
 
         println!(
             "{}",
@@ -273,10 +269,9 @@ fn run_status(args: &[String]) -> Result<()> {
     let rt = build_runtime()?;
     rt.block_on(async {
         let config = load_config().await?;
-        let outcome =
-            crate::aura::tree_summarizer::rpc::tree_summarizer_status(&config, namespace)
-                .await
-                .map_err(anyhow::Error::msg)?;
+        let outcome = crate::aura::tree_summarizer::rpc::tree_summarizer_status(&config, namespace)
+            .await
+            .map_err(anyhow::Error::msg)?;
 
         println!(
             "{}",
@@ -357,9 +352,7 @@ fn is_help(value: &str) -> bool {
 fn print_help() {
     println!("aura tree-summarizer — hierarchical summary tree\n");
     println!("Usage:");
-    println!(
-        "  aura tree-summarizer ingest  <namespace> [--content <text>] [--file <path>] [-v]"
-    );
+    println!("  aura tree-summarizer ingest  <namespace> [--content <text>] [--file <path>] [-v]");
     println!("  aura tree-summarizer run     <namespace> [-v]");
     println!("  aura tree-summarizer query   <namespace> [<node_id>] [-v]");
     println!("  aura tree-summarizer status  <namespace> [-v]");

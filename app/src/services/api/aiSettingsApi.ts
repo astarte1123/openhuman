@@ -24,21 +24,21 @@ import {
 } from '../../utils/tauriCommands/auth';
 import { isTauri } from '../../utils/tauriCommands/common';
 import {
-  type ClientConfig,
-  type CloudProviderCreds,
-  type ModelSettingsUpdate,
   auraGetClientConfig,
   auraUpdateLocalAiSettings,
   auraUpdateModelSettings,
+  type ClientConfig,
+  type CloudProviderCreds,
+  type ModelSettingsUpdate,
 } from '../../utils/tauriCommands/config';
 import {
-  type LocalAiDiagnostics,
-  type LocalAiStatus,
-  type ModelPresetResult,
   auraLocalAiApplyPreset,
   auraLocalAiDiagnostics,
   auraLocalAiPresets,
   auraLocalAiStatus,
+  type LocalAiDiagnostics,
+  type LocalAiStatus,
+  type ModelPresetResult,
   type PresetsResponse,
 } from '../../utils/tauriCommands/localAi';
 

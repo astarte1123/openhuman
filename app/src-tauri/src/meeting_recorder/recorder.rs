@@ -161,23 +161,18 @@ pub async fn meeting_recorder_start<R: Runtime>(
     log::info!("{LOG_PREFIX} created meeting_id={meeting_id}");
 
     // 3) Start live transcription via the Minutes engine.
-    let minutes = match super::minutes_engine::start(
-        meeting_id.clone(),
-        language,
-        mic_device_name,
-    )
-    .await
-    {
-        Ok(s) => s,
-        Err(err) => {
-            let _ = rpc_call(
-                "aura.meetings_finish",
-                serde_json::json!({ "meeting_id": meeting_id, "duration_ms": 0 }),
-            )
-            .await;
-            return Err(err);
-        }
-    };
+    let minutes =
+        match super::minutes_engine::start(meeting_id.clone(), language, mic_device_name).await {
+            Ok(s) => s,
+            Err(err) => {
+                let _ = rpc_call(
+                    "aura.meetings_finish",
+                    serde_json::json!({ "meeting_id": meeting_id, "duration_ms": 0 }),
+                )
+                .await;
+                return Err(err);
+            }
+        };
 
     // 4) Spawn the sibling periodic screenshot-capture task (slide OCR).
     let screenshot_handle = screenshot::spawn_capture_task(meeting_id.clone());
@@ -438,7 +433,10 @@ fn resample_chunk(
 /// rather than importing `meet_audio`'s, matching the existing project
 /// convention of each shell feature module owning its own small RPC
 /// helper (see also `telegram_scanner::mod.rs`).
-pub(super) async fn rpc_call(method: &str, params: serde_json::Value) -> Result<serde_json::Value, String> {
+pub(super) async fn rpc_call(
+    method: &str,
+    params: serde_json::Value,
+) -> Result<serde_json::Value, String> {
     let body = serde_json::json!({
         "jsonrpc": "2.0",
         "id": 1,

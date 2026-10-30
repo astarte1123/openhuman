@@ -208,9 +208,7 @@ const RewardsCouponSection = () => {
               onClick={() => void handleRedeem()}
               disabled={submitLoading || !couponCode.trim()}
               className="rounded-xl bg-primary-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-700 disabled:opacity-50">
-              {submitLoading
-                ? t('rewards.coupon.redeeming')
-                : t('rewards.coupon.redeem_button')}
+              {submitLoading ? t('rewards.coupon.redeeming') : t('rewards.coupon.redeem_button')}
             </button>
           </div>
           {submitSuccess ? (
@@ -267,9 +265,7 @@ const RewardsCouponSection = () => {
                     <th className="px-3 py-2 font-medium">{t('rewards.coupon.table_code')}</th>
                     <th className="px-3 py-2 font-medium">{t('rewards.coupon.table_reward')}</th>
                     <th className="px-3 py-2 font-medium">{t('rewards.coupon.table_status')}</th>
-                    <th className="px-3 py-2 font-medium">
-                      {t('rewards.coupon.table_redeemed')}
-                    </th>
+                    <th className="px-3 py-2 font-medium">{t('rewards.coupon.table_redeemed')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-stone-100">

@@ -138,8 +138,7 @@ async fn outbound_thread_id_is_gated_per_provider() {
     use crate::aura::inference::provider::thread_context::with_thread_id;
 
     let third_party = make_provider("Venice", "https://api.venice.ai", None);
-    let aura =
-        make_provider("Aura", "https://api.aura.test", None).with_aura_thread_id();
+    let aura = make_provider("Aura", "https://api.aura.test", None).with_aura_thread_id();
 
     with_thread_id("thread-xyz", async {
         assert!(

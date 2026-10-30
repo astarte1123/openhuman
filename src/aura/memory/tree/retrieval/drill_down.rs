@@ -24,9 +24,7 @@ use anyhow::Result;
 
 use crate::aura::config::Config;
 use crate::aura::memory::tree::content_store::read as content_read;
-use crate::aura::memory::tree::retrieval::types::{
-    hit_from_chunk, hit_from_summary, RetrievalHit,
-};
+use crate::aura::memory::tree::retrieval::types::{hit_from_chunk, hit_from_summary, RetrievalHit};
 use crate::aura::memory::tree::score::embed::{build_embedder_from_config, cosine_similarity};
 use crate::aura::memory::tree::store::{get_chunk, get_chunk_embedding};
 use crate::aura::memory::tree::tree_source::store;
@@ -301,8 +299,7 @@ mod tests {
                     tags: vec![],
                     source_ref: Some(SourceRef::new("slack://x")),
                 },
-                token_count: crate::aura::memory::tree::tree_source::types::INPUT_TOKEN_BUDGET
-                    * 6
+                token_count: crate::aura::memory::tree::tree_source::types::INPUT_TOKEN_BUDGET * 6
                     / 10,
                 seq_in_source: seq,
                 created_at: ts,
@@ -325,9 +322,9 @@ mod tests {
                 &tree,
                 &LeafRef {
                     chunk_id: c.id.clone(),
-                    token_count:
-                        crate::aura::memory::tree::tree_source::types::INPUT_TOKEN_BUDGET * 6
-                            / 10,
+                    token_count: crate::aura::memory::tree::tree_source::types::INPUT_TOKEN_BUDGET
+                        * 6
+                        / 10,
                     timestamp: ts,
                     content: c.content.clone(),
                     entities: vec![],

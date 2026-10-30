@@ -121,9 +121,8 @@ fn rasterize_svg(svg: &str) -> Result<Vec<u8>, String> {
 /// Chromium's fake video capture re-reads the file in a loop, so one
 /// frame is enough for a steady image.
 fn encode_single_frame_y4m(rgba: &[u8]) -> Vec<u8> {
-    let header = format!(
-        "YUV4MPEG2 W{WIDTH} H{HEIGHT} {FRAMERATE} Ip A1:1 C420jpeg Xaura-mascot\nFRAME\n"
-    );
+    let header =
+        format!("YUV4MPEG2 W{WIDTH} H{HEIGHT} {FRAMERATE} Ip A1:1 C420jpeg Xaura-mascot\nFRAME\n");
 
     let pixel_count = (WIDTH * HEIGHT) as usize;
     let mut y_plane = Vec::with_capacity(pixel_count);

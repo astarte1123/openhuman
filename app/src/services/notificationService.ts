@@ -36,10 +36,7 @@ export async function fetchNotifications(opts?: {
 export async function markNotificationRead(id: string): Promise<void> {
   log('markNotificationRead id=%s', id);
   try {
-    await callCoreRpc<{ ok: boolean }>({
-      method: 'aura.notification_mark_read',
-      params: { id },
-    });
+    await callCoreRpc<{ ok: boolean }>({ method: 'aura.notification_mark_read', params: { id } });
     log('markNotificationRead ok id=%s', id);
   } catch (err) {
     errLog('markNotificationRead failed id=%s: %o', id, err);
@@ -101,19 +98,13 @@ export async function setNotificationSettings(payload: {
   importance_threshold: number;
   route_to_orchestrator: boolean;
 }): Promise<void> {
-  await callCoreRpc<{ ok: boolean }>({
-    method: 'aura.notification_settings_set',
-    params: payload,
-  });
+  await callCoreRpc<{ ok: boolean }>({ method: 'aura.notification_settings_set', params: payload });
 }
 
 export async function dismissNotification(id: string): Promise<void> {
   log('dismissNotification id=%s', id);
   try {
-    await callCoreRpc<{ ok: boolean }>({
-      method: 'aura.notification_dismiss',
-      params: { id },
-    });
+    await callCoreRpc<{ ok: boolean }>({ method: 'aura.notification_dismiss', params: { id } });
     log('dismissNotification ok id=%s', id);
   } catch (err) {
     errLog('dismissNotification failed id=%s: %o', id, err);
@@ -124,10 +115,7 @@ export async function dismissNotification(id: string): Promise<void> {
 export async function markNotificationActed(id: string): Promise<void> {
   log('markNotificationActed id=%s', id);
   try {
-    await callCoreRpc<{ ok: boolean }>({
-      method: 'aura.notification_mark_acted',
-      params: { id },
-    });
+    await callCoreRpc<{ ok: boolean }>({ method: 'aura.notification_mark_acted', params: { id } });
     log('markNotificationActed ok id=%s', id);
   } catch (err) {
     errLog('markNotificationActed failed id=%s: %o', id, err);

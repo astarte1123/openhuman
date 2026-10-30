@@ -203,8 +203,7 @@ impl Tool for CurlTool {
             .timeout(Duration::from_secs(self.timeout_secs))
             .connect_timeout(Duration::from_secs(10))
             .redirect(reqwest::redirect::Policy::none());
-        let builder =
-            crate::aura::config::apply_runtime_proxy_to_builder(builder, "tool.curl");
+        let builder = crate::aura::config::apply_runtime_proxy_to_builder(builder, "tool.curl");
         let client = match builder.build() {
             Ok(c) => c,
             Err(e) => {

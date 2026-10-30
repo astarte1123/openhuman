@@ -3,8 +3,6 @@
 use serde::de::DeserializeOwned;
 use serde_json::{Map, Value};
 
-use crate::core::all::{ControllerFuture, RegisteredController};
-use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 use crate::aura::agent::task_board::{TaskBoard, TaskBoardCard, TaskBoardStore};
 use crate::aura::memory::{
     AppendConversationMessageRequest, ConversationMessagesRequest, CreateConversationThreadRequest,
@@ -13,6 +11,8 @@ use crate::aura::memory::{
     UpsertConversationThreadRequest,
 };
 use crate::aura::threads::turn_state::{ClearTurnStateRequest, GetTurnStateRequest};
+use crate::core::all::{ControllerFuture, RegisteredController};
+use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 
 use super::ops;
 
@@ -546,18 +546,16 @@ fn handle_task_board_get(params: Map<String, Value>) -> ControllerFuture {
                 format!("load config: {e}")
             })?;
         tracing::trace!(thread_id = %thread_id, "[rpc][task_board] get loading_board");
-        let board = crate::aura::agent::task_board::board_for_thread(
-            &config.workspace_dir,
-            &thread_id,
-        )
-        .map_err(|e| {
-            tracing::debug!(
-                thread_id = %thread_id,
-                error = %e,
-                "[rpc][task_board] get board_error"
-            );
-            e
-        })?;
+        let board =
+            crate::aura::agent::task_board::board_for_thread(&config.workspace_dir, &thread_id)
+                .map_err(|e| {
+                    tracing::debug!(
+                        thread_id = %thread_id,
+                        error = %e,
+                        "[rpc][task_board] get board_error"
+                    );
+                    e
+                })?;
         tracing::debug!(
             thread_id = %thread_id,
             card_count = board.cards.len(),

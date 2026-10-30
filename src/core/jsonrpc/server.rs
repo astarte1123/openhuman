@@ -194,8 +194,7 @@ async fn run_server_inner(
                     if !config.heartbeat.enabled {
                         log::info!("[subconscious] disabled by config (heartbeat.enabled = false)");
                     } else {
-                        match crate::aura::subconscious::global::bootstrap_after_login().await
-                        {
+                        match crate::aura::subconscious::global::bootstrap_after_login().await {
                             Ok(()) => log::info!(
                                 "[subconscious] bootstrapped on startup (existing session)"
                             ),
@@ -487,9 +486,7 @@ pub async fn bootstrap_core_runtime(embedded_core: bool) {
     // for the human-readable `sessions/` companions. Idempotent via a
     // marker file at `state/migrations/session_layout_v1.done`, so this
     // costs one stat() on every subsequent boot.
-    match crate::aura::agent::harness::session::migrate_session_layout_if_needed(
-        &workspace_dir,
-    ) {
+    match crate::aura::agent::harness::session::migrate_session_layout_if_needed(&workspace_dir) {
         Ok(outcome) if outcome.already_done => {
             log::debug!("[runtime] session_layout migration already applied");
         }

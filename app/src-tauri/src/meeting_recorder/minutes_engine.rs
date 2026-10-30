@@ -48,7 +48,11 @@ pub fn minutes_binary() -> Result<PathBuf, String> {
     let home = std::env::var("USERPROFILE")
         .or_else(|_| std::env::var("HOME"))
         .map_err(|_| "cannot resolve home directory to locate minutes.exe".to_string())?;
-    let exe = if cfg!(windows) { "minutes.exe" } else { "minutes" };
+    let exe = if cfg!(windows) {
+        "minutes.exe"
+    } else {
+        "minutes"
+    };
     let p = PathBuf::from(home).join(".minutes").join("bin").join(exe);
     if p.is_file() {
         Ok(p)
@@ -100,7 +104,11 @@ pub async fn start(
     if let Some(lang) = language.as_deref().map(str::trim).filter(|l| !l.is_empty()) {
         cmd.args(["-l", lang]);
     }
-    if let Some(dev) = mic_device_name.as_deref().map(str::trim).filter(|d| !d.is_empty()) {
+    if let Some(dev) = mic_device_name
+        .as_deref()
+        .map(str::trim)
+        .filter(|d| !d.is_empty())
+    {
         cmd.args(["-D", dev]);
     }
     cmd.stdout(Stdio::null()).stderr(Stdio::null());
@@ -133,7 +141,10 @@ pub async fn stop(mut session: MinutesSession) {
     session.stop_flag.store(true, Ordering::SeqCst);
     let last_line = session.poll_task.await.unwrap_or(0);
 
-    log::info!("{LOG_PREFIX} stopping live session meeting_id={}", session.meeting_id);
+    log::info!(
+        "{LOG_PREFIX} stopping live session meeting_id={}",
+        session.meeting_id
+    );
     match command(&session.bin)
         .arg("stop")
         .stdout(Stdio::null())
@@ -172,7 +183,13 @@ async fn poll_loop(bin: PathBuf, meeting_id: String, stop_flag: Arc<AtomicBool>)
 /// Reads lines after `since` and pushes them; returns the highest line seen.
 async fn drain_once(bin: &PathBuf, meeting_id: &str, since: u64) -> u64 {
     let output = match command(bin)
-        .args(["transcript", "--since", &since.to_string(), "--format", "json"])
+        .args([
+            "transcript",
+            "--since",
+            &since.to_string(),
+            "--format",
+            "json",
+        ])
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
         .output()
@@ -215,7 +232,10 @@ async fn drain_once(bin: &PathBuf, meeting_id: &str, since: u64) -> u64 {
                 line.line,
                 text.len()
             ),
-            Err(err) => log::warn!("{LOG_PREFIX} append_transcript_chunk failed line={}: {err}", line.line),
+            Err(err) => log::warn!(
+                "{LOG_PREFIX} append_transcript_chunk failed line={}: {err}",
+                line.line
+            ),
         }
     }
     last

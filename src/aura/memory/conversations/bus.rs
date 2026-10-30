@@ -9,9 +9,9 @@ use async_trait::async_trait;
 use chrono::Utc;
 use serde_json::json;
 
-use crate::core::event_bus::{DomainEvent, EventHandler, SubscriptionHandle};
 use crate::aura::channels::context::conversation_history_key;
 use crate::aura::channels::traits::ChannelMessage;
+use crate::core::event_bus::{DomainEvent, EventHandler, SubscriptionHandle};
 
 use super::{
     append_message, ensure_thread, get_messages, ConversationMessage, CreateConversationThread,

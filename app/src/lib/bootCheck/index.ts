@@ -142,10 +142,7 @@ async function checkVersion(callRpc: BootCheckTransport['callRpc']): Promise<Ver
     // attempts read `result.version_info.version` (no such field) and then
     // `result.version` (skipped the RpcOutcome `result` wrapper) — both
     // yielded '' and pinned every boot to "outdated local".
-    const response = await callRpc<{ result?: { version?: string } }>(
-      'aura.update_version',
-      {}
-    );
+    const response = await callRpc<{ result?: { version?: string } }>('aura.update_version', {});
     const coreVersion = response?.result?.version ?? '';
     log('[boot-check] version_check app=%s core=%s', APP_VERSION, coreVersion);
 

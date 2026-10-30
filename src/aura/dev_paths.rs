@@ -31,11 +31,7 @@ pub fn repo_ai_prompts_dir(cwd: &Path) -> Option<PathBuf> {
         if !ok {
             continue;
         }
-        let candidate = base
-            .join("src")
-            .join("aura")
-            .join("agent")
-            .join("prompts");
+        let candidate = base.join("src").join("aura").join("agent").join("prompts");
         if candidate.is_dir() {
             return Some(candidate);
         }

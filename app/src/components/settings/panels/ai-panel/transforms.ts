@@ -36,7 +36,8 @@ export function toPanelProvider(p: CloudProviderView): CloudProvider {
     persona: p.persona ?? undefined,
     clientId: p.client_id ?? undefined,
     subjectUuid: p.subject_uuid ?? undefined,
-    youworkerTransport: (p.youworker_transport as 'webhook' | 'websocket' | null | undefined) ?? undefined,
+    youworkerTransport:
+      (p.youworker_transport as 'webhook' | 'websocket' | null | undefined) ?? undefined,
   };
 }
 

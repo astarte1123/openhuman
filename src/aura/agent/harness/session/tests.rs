@@ -121,10 +121,7 @@ impl Tool for MockTool {
         serde_json::json!({"type": "object"})
     }
 
-    async fn execute(
-        &self,
-        _args: serde_json::Value,
-    ) -> Result<crate::aura::tools::ToolResult> {
+    async fn execute(&self, _args: serde_json::Value) -> Result<crate::aura::tools::ToolResult> {
         Ok(crate::aura::tools::ToolResult::success("tool-out"))
     }
 }

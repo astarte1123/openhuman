@@ -141,10 +141,7 @@ const DiscordConfig = ({ definition }: DiscordConfigProps) => {
           upsertChannelConnection({
             channel: 'discord',
             authMode: 'managed_dm',
-            patch: {
-              status: 'error',
-              lastError: t('channels.discord_config.link_token_expired'),
-            },
+            patch: { status: 'error', lastError: t('channels.discord_config.link_token_expired') },
           })
         );
       })();

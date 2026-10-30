@@ -176,11 +176,7 @@ export async function syncConnection(
   connectionId: string,
   reason: 'manual' | 'periodic' | 'connection_created' = 'manual'
 ): Promise<unknown> {
-  console.debug(
-    '[composio][sync] → aura.composio_sync conn=%s reason=%s',
-    connectionId,
-    reason
-  );
+  console.debug('[composio][sync] → aura.composio_sync conn=%s reason=%s', connectionId, reason);
   const raw = await callCoreRpc<unknown>({
     method: 'aura.composio_sync',
     params: { connection_id: connectionId, reason },

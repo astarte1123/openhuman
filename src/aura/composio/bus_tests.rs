@@ -90,18 +90,12 @@ fn direct_mode_constant_matches_trigger_drop_check() {
     // a silent no-op and backend-tenant ghosts would leak through
     // into a direct-mode user's triage pipeline. Pin both sides.
     use crate::aura::config::ComposioConfig;
-    assert_eq!(
-        crate::aura::config::schema::COMPOSIO_MODE_DIRECT,
-        "direct"
-    );
+    assert_eq!(crate::aura::config::schema::COMPOSIO_MODE_DIRECT, "direct");
     let cfg = ComposioConfig {
         mode: "direct".into(),
         ..Default::default()
     };
-    assert_eq!(
-        cfg.mode,
-        crate::aura::config::schema::COMPOSIO_MODE_DIRECT
-    );
+    assert_eq!(cfg.mode, crate::aura::config::schema::COMPOSIO_MODE_DIRECT);
 }
 
 #[test]

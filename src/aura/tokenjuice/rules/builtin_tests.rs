@@ -168,8 +168,7 @@ fn compile_issues_reporting_logic_works() {
 
     // Simulate a parse failure (bad JSON)
     let bad_json = "{ not valid json at all }";
-    if let Err(e) = serde_json::from_str::<crate::aura::tokenjuice::types::JsonRule>(bad_json)
-    {
+    if let Err(e) = serde_json::from_str::<crate::aura::tokenjuice::types::JsonRule>(bad_json) {
         compile_issues.push(format!("PARSE 'bad-entry': {}", e));
     }
 

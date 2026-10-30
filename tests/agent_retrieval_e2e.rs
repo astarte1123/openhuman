@@ -19,7 +19,6 @@
 //! regression where the tool wrapper exists but the orchestrator can't see
 //! it.
 
-use chrono::{TimeZone, Utc};
 use aura_core::aura::config::Config;
 use aura_core::aura::memory::tree::canonicalize::chat::{ChatBatch, ChatMessage};
 use aura_core::aura::memory::tree::canonicalize::email::{EmailMessage, EmailThread};
@@ -28,6 +27,7 @@ use aura_core::aura::memory::tree::jobs::drain_until_idle;
 use aura_core::aura::tools::{
     MemoryTreeFetchLeavesTool, MemoryTreeQueryTopicTool, MemoryTreeSearchEntitiesTool, Tool,
 };
+use chrono::{TimeZone, Utc};
 use serde_json::{json, Value};
 use tempfile::TempDir;
 

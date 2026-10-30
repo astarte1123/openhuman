@@ -12,17 +12,15 @@
 //! Sub-agents always run in "typed" mode: a narrow archetype-specific
 //! prompt with a filtered tool list, on a cheaper model where applicable.
 //!
-use crate::core::event_bus::{publish_global, DomainEvent};
 use crate::aura::agent::harness::definition::AgentDefinitionRegistry;
 use crate::aura::agent::harness::fork_context::current_parent;
 use crate::aura::agent::harness::subagent_runner::{
     run_subagent, SubagentRunOptions, SubagentRunOutcome,
 };
 use crate::aura::agent::progress::AgentProgress;
-use crate::aura::memory::conversations::{
-    self, ConversationMessage, CreateConversationThread,
-};
+use crate::aura::memory::conversations::{self, ConversationMessage, CreateConversationThread};
 use crate::aura::tools::traits::{PermissionLevel, Tool, ToolResult};
+use crate::core::event_bus::{publish_global, DomainEvent};
 use async_trait::async_trait;
 use serde_json::json;
 use std::path::PathBuf;
@@ -256,10 +254,8 @@ impl Tool for SpawnSubagentTool {
                         // (preserve the parent's frozen snapshot so the
                         // pre-flight doesn't reject every toolkit during
                         // a transient 5xx).
-                        match crate::aura::composio::fetch_connected_integrations_status(
-                            &config,
-                        )
-                        .await
+                        match crate::aura::composio::fetch_connected_integrations_status(&config)
+                            .await
                         {
                             FetchConnectedIntegrationsStatus::Authoritative(fresh) => {
                                 tracing::debug!(

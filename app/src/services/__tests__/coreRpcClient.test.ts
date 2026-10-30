@@ -178,14 +178,8 @@ describe('coreRpcClient', () => {
     ['aura.update_memory_settings', 'aura.config_update_memory_settings'],
     ['aura.update_model_settings', 'aura.inference_update_model_settings'],
     ['aura.update_runtime_settings', 'aura.config_update_runtime_settings'],
-    [
-      'aura.update_screen_intelligence_settings',
-      'aura.config_update_screen_intelligence_settings',
-    ],
-    [
-      'aura.workspace_onboarding_flag_exists',
-      'aura.config_workspace_onboarding_flag_exists',
-    ],
+    ['aura.update_screen_intelligence_settings', 'aura.config_update_screen_intelligence_settings'],
+    ['aura.workspace_onboarding_flag_exists', 'aura.config_workspace_onboarding_flag_exists'],
     ['aura.workspace_onboarding_flag_set', 'aura.config_workspace_onboarding_flag_set'],
   ])('rewrites legacy alias %s -> %s', async (incoming, expected) => {
     const fetchMock = vi.mocked(fetch);

@@ -15,11 +15,11 @@ import {
 } from '../features/daemon/store';
 import { daemonHealthService } from '../services/daemonHealthService';
 import {
-  type CommandResponse,
   auraAgentServerStatus,
   auraServiceStart,
   auraServiceStatus,
   auraServiceStop,
+  type CommandResponse,
   type ServiceStatus,
 } from '../utils/tauriCommands';
 

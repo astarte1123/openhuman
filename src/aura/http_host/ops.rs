@@ -15,9 +15,7 @@ use crate::aura::http_host::path_utils::{
     canonicalize_hosted_directory, redact_path_for_log, render_host_for_url, sanitize_bind_host,
     sanitize_optional_label,
 };
-use crate::aura::http_host::types::{
-    HostedDirAuth, HostedDirServerInfo, StartHostedDirParams,
-};
+use crate::aura::http_host::types::{HostedDirAuth, HostedDirServerInfo, StartHostedDirParams};
 use crate::aura::http_host::LOG_PREFIX;
 
 pub(crate) struct HostedDirRuntime {
@@ -78,8 +76,7 @@ pub async fn start_hosted_dir_server(
             .filter(|value| !value.is_empty())
             .map(str::to_string)
             .or(default_username);
-        let username =
-            sanitize_basic_auth_username(username).unwrap_or_else(|| "aura".to_string());
+        let username = sanitize_basic_auth_username(username).unwrap_or_else(|| "aura".to_string());
         let password = generate_password();
         HostedDirAuth {
             enabled: true,

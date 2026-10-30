@@ -18,9 +18,7 @@ use chrono::{Duration, TimeZone, Utc};
 
 use crate::aura::config::Config;
 use crate::aura::memory::tree::content_store::read as content_read;
-use crate::aura::memory::tree::retrieval::types::{
-    hit_from_summary, QueryResponse, RetrievalHit,
-};
+use crate::aura::memory::tree::retrieval::types::{hit_from_summary, QueryResponse, RetrievalHit};
 use crate::aura::memory::tree::score::embed::{build_embedder_from_config, cosine_similarity};
 use crate::aura::memory::tree::score::store::{lookup_entity, EntityHit};
 use crate::aura::memory::tree::tree_source::store;

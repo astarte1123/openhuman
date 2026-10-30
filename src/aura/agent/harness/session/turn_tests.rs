@@ -1,5 +1,4 @@
 use super::*;
-use crate::core::event_bus::{global, init_global, DomainEvent};
 use crate::aura::agent::dispatcher::XmlToolDispatcher;
 use crate::aura::agent::hooks::{PostTurnHook, TurnContext};
 use crate::aura::agent::memory_loader::MemoryLoader;
@@ -7,6 +6,7 @@ use crate::aura::inference::provider::{ChatRequest, ChatResponse, Provider};
 use crate::aura::memory::Memory;
 use crate::aura::tools::Tool;
 use crate::aura::tools::ToolResult;
+use crate::core::event_bus::{global, init_global, DomainEvent};
 use async_trait::async_trait;
 use std::collections::HashSet;
 use std::sync::Arc;

@@ -67,7 +67,9 @@ impl CallJoinScanner for GoogleMeetScanner {
         // and gives us frame-lifecycle events for free if a future PR wants
         // them. Both are best-effort — if they fail we still try to
         // evaluate.
-        let _ = cdp.call("Page.enable", serde_json::json!({}), Some(&session)).await;
+        let _ = cdp
+            .call("Page.enable", serde_json::json!({}), Some(&session))
+            .await;
         let _ = cdp
             .call("Runtime.enable", serde_json::json!({}), Some(&session))
             .await;

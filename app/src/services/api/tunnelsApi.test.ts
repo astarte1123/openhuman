@@ -118,9 +118,7 @@ describe('tunnelsApi.getTunnel', () => {
     const { tunnelsApi } = await import('./tunnelsApi');
     const result = await tunnelsApi.getTunnel('t-99');
 
-    expect(mockCallCoreCommand).toHaveBeenCalledWith('aura.webhooks_get_tunnel', {
-      id: 't-99',
-    });
+    expect(mockCallCoreCommand).toHaveBeenCalledWith('aura.webhooks_get_tunnel', { id: 't-99' });
     expect(result.id).toBe('t-99');
   });
 
@@ -184,9 +182,7 @@ describe('tunnelsApi.deleteTunnel', () => {
     const { tunnelsApi } = await import('./tunnelsApi');
     await tunnelsApi.deleteTunnel('t-1');
 
-    expect(mockCallCoreCommand).toHaveBeenCalledWith('aura.webhooks_delete_tunnel', {
-      id: 't-1',
-    });
+    expect(mockCallCoreCommand).toHaveBeenCalledWith('aura.webhooks_delete_tunnel', { id: 't-1' });
   });
 
   it('resolves without a return value on success', async () => {

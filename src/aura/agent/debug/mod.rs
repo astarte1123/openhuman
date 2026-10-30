@@ -33,9 +33,7 @@ use crate::aura::agent::harness::definition::{
 use crate::aura::agent::harness::session::Agent;
 use crate::aura::composio::ComposioActionTool;
 use crate::aura::config::Config;
-use crate::aura::context::prompt::{
-    LearnedContextData, PromptContext, PromptTool, ToolCallFormat,
-};
+use crate::aura::context::prompt::{LearnedContextData, PromptContext, PromptTool, ToolCallFormat};
 use crate::aura::tools::{Tool, ToolCategory, ToolSpec};
 
 // ---------------------------------------------------------------------------

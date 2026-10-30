@@ -53,9 +53,7 @@ fn trim_for_prompt(text: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::aura::subconscious::reflection::{
-        hydrate_draft, ReflectionDraft, ReflectionKind,
-    };
+    use crate::aura::subconscious::reflection::{hydrate_draft, ReflectionDraft, ReflectionKind};
 
     fn r(id: &str, body: &str) -> Reflection {
         hydrate_draft(

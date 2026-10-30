@@ -269,10 +269,7 @@ mod tests {
 
     #[test]
     fn id_from_short_accepts_scheme_and_rejects_others() {
-        assert_eq!(
-            id_from_short("aura://link/abc123"),
-            Some("abc123".into())
-        );
+        assert_eq!(id_from_short("aura://link/abc123"), Some("abc123".into()));
         assert!(id_from_short("https://example.com/").is_none());
         assert!(id_from_short("aura://link/").is_none());
         assert!(id_from_short("aura://link/not-hex!").is_none());

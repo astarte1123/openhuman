@@ -32,7 +32,6 @@ use std::time::{Duration, Instant};
 
 use anyhow::{anyhow, Context};
 
-use crate::core::event_bus::{request_native_global, NativeRequestError};
 use crate::aura::agent::bus::{AgentTurnRequest, AgentTurnResponse, AGENT_RUN_TURN_METHOD};
 use crate::aura::agent::harness::definition::{AgentDefinition, PromptSource};
 use crate::aura::agent::harness::AgentDefinitionRegistry;
@@ -43,6 +42,7 @@ use crate::aura::inference::provider::reliable::{
 };
 use crate::aura::inference::provider::ChatMessage;
 use crate::aura::scheduler_gate::LlmPermit;
+use crate::core::event_bus::{request_native_global, NativeRequestError};
 
 use super::decision::{parse_triage_decision, ParseError, TriageDecision};
 use super::envelope::TriggerEnvelope;

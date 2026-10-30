@@ -84,10 +84,7 @@ describe('System tools — Browser (open URL + automation registry)', () => {
     expect(status.ok).toBe(true);
     expect(status.result?.running).toBe(true);
 
-    const list = await callAuraRpc<ListDefinitionsResult>(
-      'aura.agent_list_definitions',
-      {}
-    );
+    const list = await callAuraRpc<ListDefinitionsResult>('aura.agent_list_definitions', {});
     stepLog('agent_list_definitions response (count only)', {
       count: list.result?.definitions?.length ?? 0,
     });
@@ -138,10 +135,7 @@ describe('System tools — Browser (open URL + automation registry)', () => {
     // wildcard scope is present means the LLM-facing tool surface that
     // would expose this schema to a model is intact. The schema content
     // itself is unit-tested in `browser_tests.rs::browser_tool_schema_*`.
-    const list = await callAuraRpc<ListDefinitionsResult>(
-      'aura.agent_list_definitions',
-      {}
-    );
+    const list = await callAuraRpc<ListDefinitionsResult>('aura.agent_list_definitions', {});
     expect(list.ok).toBe(true);
     const defs = list.result?.definitions ?? [];
     // The integrations_agent and tools_agent both bring browser surfaces

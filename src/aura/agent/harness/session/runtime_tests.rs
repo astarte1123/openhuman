@@ -1,9 +1,9 @@
 use super::*;
-use crate::core::event_bus::{global, init_global, DomainEvent};
 use crate::aura::agent::dispatcher::XmlToolDispatcher;
 use crate::aura::agent::error::AgentError;
 use crate::aura::inference::provider::{ChatMessage, ChatRequest, ChatResponse, UsageInfo};
 use crate::aura::memory::Memory;
+use crate::core::event_bus::{global, init_global, DomainEvent};
 use anyhow::anyhow;
 use async_trait::async_trait;
 use parking_lot::Mutex;

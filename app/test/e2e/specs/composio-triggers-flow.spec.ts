@@ -110,9 +110,7 @@ describe('Composio trigger toggles (UI + core RPC)', () => {
     const triggerId = beforeResult.triggers[0]?.id;
     expect(typeof triggerId).toBe('string');
 
-    const disable = await callAuraRpc('aura.composio_disable_trigger', {
-      trigger_id: triggerId,
-    });
+    const disable = await callAuraRpc('aura.composio_disable_trigger', { trigger_id: triggerId });
     expect(disable.ok).toBe(true);
     const out = disable.value?.result ?? disable.value;
     expect(out.deleted).toBe(true);

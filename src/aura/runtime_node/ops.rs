@@ -1,13 +1,13 @@
 use std::sync::Arc;
 use std::time::Instant;
 
-use crate::core::event_bus::{publish_global, DomainEvent};
 use crate::aura::agent::host_runtime::{NativeRuntime, RuntimeAdapter};
 use crate::aura::config::Config;
 use crate::aura::memory::Memory;
 use crate::aura::runtime_node::types::{ExecuteToolOutcome, RuntimeToolSummary};
 use crate::aura::security::SecurityPolicy;
 use crate::aura::tools::{self, Tool, ToolCallOptions, ToolScope};
+use crate::core::event_bus::{publish_global, DomainEvent};
 use tracing::{debug, trace};
 
 fn tool_scope_label(scope: ToolScope) -> &'static str {

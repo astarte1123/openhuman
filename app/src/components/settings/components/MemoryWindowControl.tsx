@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 
 import { useT } from '../../../lib/i18n/I18nContext';
 import {
+  auraGetConfig,
+  auraUpdateMemorySettings,
   isTauri,
   MEMORY_CONTEXT_WINDOWS,
   type MemoryContextWindow,
-  auraGetConfig,
-  auraUpdateMemorySettings,
 } from '../../../utils/tauriCommands';
 
 interface PresetMeta {
@@ -135,9 +135,7 @@ const MemoryWindowControl = ({ onError, onSaved }: Props) => {
       data-testid="memory-window-control">
       <div className="flex items-baseline justify-between">
         <div>
-          <h3 className="text-base font-semibold">
-            {t('settings.memory_window_control.heading')}
-          </h3>
+          <h3 className="text-base font-semibold">{t('settings.memory_window_control.heading')}</h3>
           <p className="text-sm text-muted-foreground">
             {t('settings.memory_window_control.description')}
           </p>

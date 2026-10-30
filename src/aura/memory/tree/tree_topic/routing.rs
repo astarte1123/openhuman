@@ -21,9 +21,7 @@
 use anyhow::Result;
 
 use crate::aura::config::Config;
-use crate::aura::memory::tree::tree_source::bucket_seal::{
-    append_leaf, LabelStrategy, LeafRef,
-};
+use crate::aura::memory::tree::tree_source::bucket_seal::{append_leaf, LabelStrategy, LeafRef};
 use crate::aura::memory::tree::tree_source::store as src_store;
 use crate::aura::memory::tree::tree_source::summariser::Summariser;
 use crate::aura::memory::tree::tree_source::types::{TreeKind, TreeStatus};

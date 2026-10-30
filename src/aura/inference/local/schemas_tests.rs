@@ -133,7 +133,8 @@ async fn install_whisper_handler_serializes_concurrent_calls() {
     crate::aura::inference::local::voice_install_common::write_status(
         crate::aura::inference::local::voice_install_common::VoiceInstallStatus {
             engine: crate::aura::inference::local::voice_install_common::ENGINE_WHISPER.to_string(),
-            state: crate::aura::inference::local::voice_install_common::VoiceInstallState::Installing,
+            state:
+                crate::aura::inference::local::voice_install_common::VoiceInstallState::Installing,
             progress: Some(0),
             downloaded_bytes: None,
             total_bytes: None,
@@ -193,7 +194,8 @@ async fn install_piper_handler_serializes_concurrent_calls() {
     crate::aura::inference::local::voice_install_common::write_status(
         crate::aura::inference::local::voice_install_common::VoiceInstallStatus {
             engine: crate::aura::inference::local::voice_install_common::ENGINE_PIPER.to_string(),
-            state: crate::aura::inference::local::voice_install_common::VoiceInstallState::Installing,
+            state:
+                crate::aura::inference::local::voice_install_common::VoiceInstallState::Installing,
             progress: Some(0),
             downloaded_bytes: None,
             total_bytes: None,

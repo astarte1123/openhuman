@@ -2,9 +2,9 @@ use serde::de::DeserializeOwned;
 use serde::Deserialize;
 use serde_json::{Map, Value};
 
+use crate::aura::config::rpc as config_rpc;
 use crate::core::all::{ControllerFuture, RegisteredController};
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
-use crate::aura::config::rpc as config_rpc;
 use crate::rpc::RpcOutcome;
 
 #[derive(Debug, Deserialize)]
@@ -387,11 +387,8 @@ fn handle_auth_consume_login_token(params: Map<String, Value>) -> ControllerFutu
         let config = config_rpc::load_config_with_timeout().await?;
         let payload = deserialize_params::<AuthConsumeLoginTokenParams>(params)?;
         to_json(
-            crate::aura::credentials::rpc::consume_login_token(
-                &config,
-                payload.login_token.trim(),
-            )
-            .await?,
+            crate::aura::credentials::rpc::consume_login_token(&config, payload.login_token.trim())
+                .await?,
         )
     })
 }

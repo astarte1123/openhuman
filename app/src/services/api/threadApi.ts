@@ -47,9 +47,7 @@ export const threadApi = {
   },
 
   getThreads: async (): Promise<ThreadsListData> => {
-    const response = await callCoreRpc<Envelope<ThreadsListData>>({
-      method: 'aura.threads_list',
-    });
+    const response = await callCoreRpc<Envelope<ThreadsListData>>({ method: 'aura.threads_list' });
     return unwrapEnvelope(response);
   },
 
@@ -111,9 +109,7 @@ export const threadApi = {
   },
 
   purge: async (): Promise<PurgeResultData> => {
-    const response = await callCoreRpc<Envelope<PurgeResultData>>({
-      method: 'aura.threads_purge',
-    });
+    const response = await callCoreRpc<Envelope<PurgeResultData>>({ method: 'aura.threads_purge' });
     return unwrapEnvelope(response);
   },
 

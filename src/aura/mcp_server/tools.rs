@@ -1,11 +1,11 @@
 use serde_json::{json, Map, Value};
 
-use crate::core::all;
 use crate::aura::agent::harness::AgentDefinitionRegistry;
 use crate::aura::agent::Agent;
 use crate::aura::config::rpc as config_rpc;
 use crate::aura::inference::provider::traits::build_tool_instructions_text;
 use crate::aura::security::{SecurityPolicy, ToolOperation};
+use crate::core::all;
 
 const DEFAULT_LIMIT: u64 = 10;
 const MAX_LIMIT: u64 = 50;
@@ -709,8 +709,7 @@ async fn enforce_act_policy(tool_name: &str) -> Result<(), ToolCallError> {
         .map_err(ToolCallError::InvalidParams)
 }
 
-async fn load_config_and_init_registry() -> Result<crate::aura::config::Config, ToolCallError>
-{
+async fn load_config_and_init_registry() -> Result<crate::aura::config::Config, ToolCallError> {
     let config = config_rpc::load_config_with_timeout()
         .await
         .map_err(|err| ToolCallError::Internal(format!("failed to load config: {err}")))?;

@@ -1,8 +1,8 @@
 import { SUPPORTED_LOCALES } from '../lib/i18n/locales';
+import { isTauri } from '../services/webviewAccountService';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setLocale } from '../store/localeSlice';
 import { auraUpdateLocale } from '../utils/tauriCommands/config';
-import { isTauri } from '../services/webviewAccountService';
 
 interface LanguageSelectProps {
   /** Accessible label for the underlying <select>. */

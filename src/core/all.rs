@@ -140,11 +140,9 @@ fn build_registered_controllers() -> Vec<RegisteredController> {
     // Inline autocomplete settings
     controllers.extend(crate::aura::autocomplete::all_autocomplete_registered_controllers());
     // External messaging channels (Web, Telegram, etc.)
-    controllers.extend(
-        crate::aura::channels::providers::web::all_web_channel_registered_controllers(),
-    );
     controllers
-        .extend(crate::aura::channels::controllers::all_channels_registered_controllers());
+        .extend(crate::aura::channels::providers::web::all_web_channel_registered_controllers());
+    controllers.extend(crate::aura::channels::controllers::all_channels_registered_controllers());
     // Persistent configuration management
     controllers.extend(crate::aura::config::all_config_registered_controllers());
     // Local sidecar reachability + backend Socket.IO state diagnostics (#1527)
@@ -162,9 +160,8 @@ fn build_registered_controllers() -> Vec<RegisteredController> {
     // People resolution and interaction scoring
     controllers.extend(crate::aura::people::all_people_registered_controllers());
     // Screen capture and UI analysis
-    controllers.extend(
-        crate::aura::screen_intelligence::all_screen_intelligence_registered_controllers(),
-    );
+    controllers
+        .extend(crate::aura::screen_intelligence::all_screen_intelligence_registered_controllers());
     // Backend Socket.IO bridge + related runtime plumbing
     controllers.extend(crate::aura::socket::all_socket_registered_controllers());
     // Managed Node.js runtime bridge (tool listing + dispatch)
@@ -182,14 +179,12 @@ fn build_registered_controllers() -> Vec<RegisteredController> {
     // Memory tree retrieval layer (#710 — LLM-callable read tools over the tree)
     controllers.extend(crate::aura::memory::all_retrieval_registered_controllers());
     // Slack → memory-tree ingestion engine (per-message ingest, no bucketing)
-    controllers.extend(
-        crate::aura::composio::providers::slack::all_slack_memory_registered_controllers(),
-    );
+    controllers
+        .extend(crate::aura::composio::providers::slack::all_slack_memory_registered_controllers());
     // Per-connection memory sync status, controls, and progress (#1136)
     controllers.extend(crate::aura::memory::all_memory_sync_status_registered_controllers());
     // Link shortener for long tracking URLs — saves LLM tokens
-    controllers
-        .extend(crate::aura::redirect_links::all_redirect_links_registered_controllers());
+    controllers.extend(crate::aura::redirect_links::all_redirect_links_registered_controllers());
     // Referral and growth tracking
     controllers.extend(crate::aura::referral::all_referral_registered_controllers());
     // Billing and subscription management
@@ -205,9 +200,8 @@ fn build_registered_controllers() -> Vec<RegisteredController> {
     // Local wallet metadata and onboarding status
     controllers.extend(crate::aura::wallet::all_wallet_registered_controllers());
     // Local assistive surfaces over third-party provider apps
-    controllers.extend(
-        crate::aura::provider_surfaces::all_provider_surfaces_registered_controllers(),
-    );
+    controllers
+        .extend(crate::aura::provider_surfaces::all_provider_surfaces_registered_controllers());
     // OS-level text input interactions
     controllers.extend(crate::aura::text_input::all_text_input_registered_controllers());
     // Voice transcription and synthesis
@@ -219,8 +213,7 @@ fn build_registered_controllers() -> Vec<RegisteredController> {
     // Core binary update management
     controllers.extend(crate::aura::update::all_update_registered_controllers());
     // Hierarchical knowledge summarization
-    controllers
-        .extend(crate::aura::tree_summarizer::all_tree_summarizer_registered_controllers());
+    controllers.extend(crate::aura::tree_summarizer::all_tree_summarizer_registered_controllers());
     // Self-learning and user context enrichment
     controllers.extend(crate::aura::learning::all_learning_registered_controllers());
     // Conversation thread and message management
@@ -278,8 +271,7 @@ fn build_declared_controller_schemas() -> Vec<ControllerSchema> {
     schemas.extend(crate::aura::http_host::all_http_host_controller_schemas());
     schemas.extend(crate::aura::cost::all_cost_controller_schemas());
     schemas.extend(crate::aura::autocomplete::all_autocomplete_controller_schemas());
-    schemas
-        .extend(crate::aura::channels::providers::web::all_web_channel_controller_schemas());
+    schemas.extend(crate::aura::channels::providers::web::all_web_channel_controller_schemas());
     schemas.extend(crate::aura::channels::controllers::all_channels_controller_schemas());
     schemas.extend(crate::aura::config::all_config_controller_schemas());
     schemas.extend(crate::aura::connectivity::all_connectivity_controller_schemas());
@@ -289,9 +281,7 @@ fn build_declared_controller_schemas() -> Vec<ControllerSchema> {
     schemas.extend(crate::aura::inference::all_inference_controller_schemas());
     schemas.extend(crate::aura::inference::all_local_ai_controller_schemas());
     schemas.extend(crate::aura::people::all_people_controller_schemas());
-    schemas.extend(
-        crate::aura::screen_intelligence::all_screen_intelligence_controller_schemas(),
-    );
+    schemas.extend(crate::aura::screen_intelligence::all_screen_intelligence_controller_schemas());
     schemas.extend(crate::aura::socket::all_socket_controller_schemas());
     schemas.extend(crate::aura::javascript::all_javascript_controller_schemas());
     schemas.extend(crate::aura::skills::all_skills_controller_schemas());
@@ -300,9 +290,7 @@ fn build_declared_controller_schemas() -> Vec<ControllerSchema> {
     schemas.extend(crate::aura::memory::all_memory_controller_schemas());
     schemas.extend(crate::aura::memory::all_memory_tree_controller_schemas());
     schemas.extend(crate::aura::memory::all_retrieval_controller_schemas());
-    schemas.extend(
-        crate::aura::composio::providers::slack::all_slack_memory_controller_schemas(),
-    );
+    schemas.extend(crate::aura::composio::providers::slack::all_slack_memory_controller_schemas());
     schemas.extend(crate::aura::memory::all_memory_sync_status_controller_schemas());
     schemas.extend(crate::aura::redirect_links::all_redirect_links_controller_schemas());
     schemas.extend(crate::aura::referral::all_referral_controller_schemas());
@@ -324,9 +312,8 @@ fn build_declared_controller_schemas() -> Vec<ControllerSchema> {
     // Per-thread todo list (agent task board CRUD over RPC)
     schemas.extend(crate::aura::todos::all_todos_controller_schemas());
     // Embedded webview native notifications
-    schemas.extend(
-        crate::aura::webview_notifications::all_webview_notifications_controller_schemas(),
-    );
+    schemas
+        .extend(crate::aura::webview_notifications::all_webview_notifications_controller_schemas());
     // Integration notification ingest, triage, and per-provider settings
     schemas.extend(crate::aura::notifications::all_notifications_controller_schemas());
     // Google Meet call-join request validation

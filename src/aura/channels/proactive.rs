@@ -19,10 +19,10 @@
 //! (step 1). This avoids double-delivering to a channel that doesn't
 //! exist.
 
-use crate::core::event_bus::{DomainEvent, EventHandler};
-use crate::core::socketio::WebChannelEvent;
 use crate::aura::channels::providers::web::publish_web_channel_event;
 use crate::aura::channels::{Channel, SendMessage};
+use crate::core::event_bus::{DomainEvent, EventHandler};
+use crate::core::socketio::WebChannelEvent;
 use async_trait::async_trait;
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock};

@@ -73,8 +73,7 @@ impl Tool for McpListServersTool {
                     server.endpoint,
                     match &server.auth {
                         crate::aura::config::McpAuthConfig::None => "none",
-                        crate::aura::config::McpAuthConfig::BearerToken { .. } =>
-                            "bearer_token",
+                        crate::aura::config::McpAuthConfig::BearerToken { .. } => "bearer_token",
                         crate::aura::config::McpAuthConfig::Basic { .. } => "basic",
                         crate::aura::config::McpAuthConfig::Header { .. } => "header",
                         crate::aura::config::McpAuthConfig::QueryParam { .. } => "query_param",

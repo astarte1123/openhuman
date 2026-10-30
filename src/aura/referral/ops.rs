@@ -73,9 +73,7 @@ pub async fn claim_referral(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::aura::credentials::{
-        AuthService, APP_SESSION_PROVIDER, DEFAULT_AUTH_PROFILE_NAME,
-    };
+    use crate::aura::credentials::{AuthService, APP_SESSION_PROVIDER, DEFAULT_AUTH_PROFILE_NAME};
     use axum::{
         routing::{get, post},
         Json, Router,

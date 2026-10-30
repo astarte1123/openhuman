@@ -5,9 +5,9 @@
 //! echo target), waits for the response, and emits it back through the socket.
 //! This decouples the socket module from webhook routing logic.
 
-use crate::core::event_bus::{publish_global, DomainEvent, EventHandler};
 use crate::aura::socket::global_socket_manager;
 use crate::aura::webhooks::WebhookResponseData;
+use crate::core::event_bus::{publish_global, DomainEvent, EventHandler};
 use async_trait::async_trait;
 use serde_json::json;
 use std::collections::HashMap;

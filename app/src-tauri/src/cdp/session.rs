@@ -691,10 +691,7 @@ mod tests {
 
     #[test]
     fn placeholder_url_uses_about_blank_fragment_marker() {
-        assert_eq!(
-            placeholder_url("acct-42"),
-            "about:blank#aura-acct-acct-42"
-        );
+        assert_eq!(placeholder_url("acct-42"), "about:blank#aura-acct-acct-42");
     }
 
     #[test]

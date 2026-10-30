@@ -1,5 +1,4 @@
 import { useT } from '../../../../lib/i18n/I18nContext';
-
 import type { CloudProvider, OllamaModel, OllamaState, ProviderRef, Workload } from './types';
 
 // ─────────────────────────────────────────────────────────────────────────────

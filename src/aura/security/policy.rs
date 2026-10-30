@@ -505,10 +505,7 @@ impl SecurityPolicy {
             // matches the log truncation so a long base command with safe args
             // still shows enough context to diagnose the block.
             let truncated = &command[..floor_char_boundary(command, 80)];
-            log::warn!(
-                "[aura:policy] Command blocked by allowlist: {}",
-                truncated
-            );
+            log::warn!("[aura:policy] Command blocked by allowlist: {}", truncated);
             return Err(format!(
                 "Command not allowed by security policy: {truncated}"
             ));

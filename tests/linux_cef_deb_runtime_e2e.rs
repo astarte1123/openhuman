@@ -108,10 +108,7 @@ fn core_bin_env_override_graceful_when_nonexistent() {
 #[test]
 fn core_bin_packaged_linux_paths_order() {
     // Document the expected search order for packaged Linux binaries
-    let expected_paths = [
-        "/usr/bin/aura-core",
-        "/usr/lib/Aura/aura-core",
-    ];
+    let expected_paths = ["/usr/bin/aura-core", "/usr/lib/Aura/aura-core"];
 
     // Verify these are valid absolute paths
     for path in &expected_paths {

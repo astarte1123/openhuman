@@ -144,9 +144,7 @@ fn priority_marker(priority: ToolMemoryPriority) -> &'static str {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::aura::agent::prompts::types::{
-        LearnedContextData, PromptContext, ToolCallFormat,
-    };
+    use crate::aura::agent::prompts::types::{LearnedContextData, PromptContext, ToolCallFormat};
     use crate::aura::memory::tool_memory::types::ToolMemorySource;
 
     fn rule(tool: &str, body: &str, priority: ToolMemoryPriority) -> ToolMemoryRule {

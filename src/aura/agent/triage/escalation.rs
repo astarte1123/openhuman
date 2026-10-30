@@ -200,8 +200,8 @@ async fn dispatch_target_agent(agent_id: &str, prompt: &str) -> anyhow::Result<S
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::core::event_bus::{init_global, DomainEvent};
     use crate::aura::agent::harness::definition::AgentDefinitionRegistry;
+    use crate::core::event_bus::{init_global, DomainEvent};
     use serde_json::json;
     use tokio::time::{sleep, timeout, Duration};
 

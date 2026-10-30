@@ -100,8 +100,7 @@ const ComposioTriagePanel = () => {
 
       <div className="p-4 space-y-5">
         <p className="text-sm text-stone-500">
-          {t('composio.triageDesc')}{' '}
-          <span className="font-mono">AURA_TRIGGER_TRIAGE_DISABLED</span>{' '}
+          {t('composio.triageDesc')} <span className="font-mono">AURA_TRIGGER_TRIAGE_DISABLED</span>{' '}
           {t('composio.envVarOverrides')}
         </p>
 

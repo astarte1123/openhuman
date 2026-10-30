@@ -198,10 +198,9 @@ pub(crate) fn load_prompt_source(
             let prompt_root = workspace_dir.join("agent").join("prompts");
             let workspace_path = prompt_root.join(path);
             if workspace_path.is_file() {
-                if let Ok(resolved) = crate::aura::security::validate_path_within_root(
-                    &workspace_path,
-                    &prompt_root,
-                ) {
+                if let Ok(resolved) =
+                    crate::aura::security::validate_path_within_root(&workspace_path, &prompt_root)
+                {
                     return std::fs::read_to_string(&resolved).map_err(|e| {
                         SubagentRunError::PromptLoad {
                             path: resolved.display().to_string(),

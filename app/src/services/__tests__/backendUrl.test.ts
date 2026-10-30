@@ -33,9 +33,7 @@ describe('getBackendUrl', () => {
 
     const { getBackendUrl } = await loadFreshModule();
     expect(await getBackendUrl()).toBe('https://core-derived.example.com');
-    expect(hoisted.callCoreRpcMock).toHaveBeenCalledWith({
-      method: 'aura.config_resolve_api_url',
-    });
+    expect(hoisted.callCoreRpcMock).toHaveBeenCalledWith({ method: 'aura.config_resolve_api_url' });
   });
 
   test('caches the resolved URL after the first call so the RPC does not refire', async () => {

@@ -6,9 +6,7 @@ use serde_json::Value;
 
 use crate::aura::config::{self, UpdateConfig, UpdateRestartStrategy};
 use crate::aura::update;
-use crate::aura::update::types::{
-    UpdateApplyResult, UpdateInfo, UpdateRunResult, VersionInfo,
-};
+use crate::aura::update::types::{UpdateApplyResult, UpdateInfo, UpdateRunResult, VersionInfo};
 use crate::rpc::RpcOutcome;
 
 async fn load_update_policy() -> Result<UpdateConfig, String> {
@@ -484,10 +482,7 @@ mod tests {
     #[test]
     fn validate_asset_name_rejects_unprefixed_asset() {
         let err = validate_asset_name("malicious-binary.tar.gz").unwrap_err();
-        assert!(
-            err.contains("must start with 'aura-core-'"),
-            "got: {err}"
-        );
+        assert!(err.contains("must start with 'aura-core-'"), "got: {err}");
     }
 
     // ── update_apply rejection paths ──────────────────────────────

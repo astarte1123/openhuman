@@ -11,7 +11,9 @@ pub(super) fn run_server(args: &[String]) -> Result<()> {
     let (opts, rest) = parse_opts(args)?;
 
     if rest.iter().any(|a| is_help(a)) {
-        println!("Usage: aura screen-intelligence run [--ttl <secs>] [--keep] [--no-vision-model] [-v]");
+        println!(
+            "Usage: aura screen-intelligence run [--ttl <secs>] [--keep] [--no-vision-model] [-v]"
+        );
         println!();
         println!("Start the screen intelligence capture + vision loop.");
         println!("Captures screenshots at baseline FPS, runs OCR and vision analysis,");

@@ -25,7 +25,10 @@ export interface ComposerSendDecision {
 
 export interface ComposerBlockedSendFeedback {
   showLimitModal: boolean;
-  error: { code: 'usage_limit_reached' | 'socket_disconnected' | 'turn_in_progress'; message: string };
+  error: {
+    code: 'usage_limit_reached' | 'socket_disconnected' | 'turn_in_progress';
+    message: string;
+  };
 }
 
 export interface ComposerKeyDownEventLike {

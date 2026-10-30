@@ -7,9 +7,9 @@
 use serde::Deserialize;
 use serde_json::{Map, Value};
 
+use crate::aura::config::rpc as config_rpc;
 use crate::core::all::{ControllerFuture, RegisteredController};
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
-use crate::aura::config::rpc as config_rpc;
 use crate::rpc::RpcOutcome;
 
 /// Returns a collection of all available controller schemas for the service domain.
@@ -206,9 +206,7 @@ fn handle_restart(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let payload: ServiceRestartParams =
             serde_json::from_value(Value::Object(params)).map_err(|e| e.to_string())?;
-        to_json(
-            crate::aura::service::rpc::service_restart(payload.source, payload.reason).await?,
-        )
+        to_json(crate::aura::service::rpc::service_restart(payload.source, payload.reason).await?)
     })
 }
 
@@ -219,10 +217,7 @@ fn handle_shutdown(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let payload: ServiceRestartParams =
             serde_json::from_value(Value::Object(params)).map_err(|e| e.to_string())?;
-        to_json(
-            crate::aura::service::rpc::service_shutdown(payload.source, payload.reason)
-                .await?,
-        )
+        to_json(crate::aura::service::rpc::service_shutdown(payload.source, payload.reason).await?)
     })
 }
 

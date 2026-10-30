@@ -22,7 +22,6 @@
 import { type ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { useT } from '../../lib/i18n/I18nContext';
 import {
   authorize,
   deleteConnection,
@@ -35,6 +34,7 @@ import {
   type ComposioUserScopePref,
   deriveComposioState,
 } from '../../lib/composio/types';
+import { useT } from '../../lib/i18n/I18nContext';
 import { openUrl } from '../../utils/openUrl';
 import type { ComposioToolkitMeta } from './toolkitMeta';
 import TriggerToggles from './TriggerToggles';
@@ -665,9 +665,7 @@ export default function ComposioConnectModal({
                   {t('composio.connect_modal.reopen_browser')}
                 </button>
               )}
-              <p className="text-xs text-stone-400">
-                {t('composio.connect_modal.waiting_hint')}
-              </p>
+              <p className="text-xs text-stone-400">{t('composio.connect_modal.waiting_hint')}</p>
             </>
           )}
 
@@ -768,11 +766,7 @@ export default function ComposioConnectModal({
 
 // ── Scope toggles ───────────────────────────────────────────────────
 
-const SCOPE_ROWS: Array<{
-  key: keyof ComposioUserScopePref;
-  labelKey: string;
-  hintKey: string;
-}> = [
+const SCOPE_ROWS: Array<{ key: keyof ComposioUserScopePref; labelKey: string; hintKey: string }> = [
   {
     key: 'read',
     labelKey: 'composio.connect_modal.scope_read_label',

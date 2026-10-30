@@ -2,9 +2,9 @@ use serde::de::DeserializeOwned;
 use serde::Deserialize;
 use serde_json::{Map, Value};
 
+use crate::aura::config::rpc as config_rpc;
 use crate::core::all::{ControllerFuture, RegisteredController};
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
-use crate::aura::config::rpc as config_rpc;
 use crate::rpc::RpcOutcome;
 
 #[derive(Debug, Deserialize)]
@@ -303,11 +303,8 @@ fn handle_local_ai_transcribe(params: Map<String, Value>) -> ControllerFuture {
         let p = deserialize_params::<LocalAiTranscribeParams>(params)?;
         let config = config_rpc::load_config_with_timeout().await?;
         to_json(
-            crate::aura::inference::local::ops::local_ai_transcribe(
-                &config,
-                p.audio_path.trim(),
-            )
-            .await?,
+            crate::aura::inference::local::ops::local_ai_transcribe(&config, p.audio_path.trim())
+                .await?,
         )
     })
 }
@@ -352,9 +349,7 @@ fn handle_local_ai_assets_status(_params: Map<String, Value>) -> ControllerFutur
 fn handle_local_ai_downloads_progress(_params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let config = config_rpc::load_config_with_timeout().await?;
-        to_json(
-            crate::aura::inference::local::ops::local_ai_downloads_progress(&config).await?,
-        )
+        to_json(crate::aura::inference::local::ops::local_ai_downloads_progress(&config).await?)
     })
 }
 
@@ -411,8 +406,8 @@ fn handle_local_ai_install_whisper(params: Map<String, Value>) -> ControllerFutu
                         "[voice-install:whisper] slot already held — returning current status"
                     );
                     let current = crate::aura::inference::local::voice_install_common::read_status(
-                    crate::aura::inference::local::voice_install_common::ENGINE_WHISPER,
-                );
+                        crate::aura::inference::local::voice_install_common::ENGINE_WHISPER,
+                    );
                     return serde_json::to_value(current)
                         .map_err(|e| format!("serialize whisper status: {e}"));
                 }
@@ -479,10 +474,9 @@ fn handle_local_ai_install_piper(params: Map<String, Value>) -> ControllerFuture
                     tracing::debug!(
                         "[voice-install:piper] slot already held — returning current status"
                     );
-                    let current =
-                        crate::aura::inference::local::voice_install_common::read_status(
-                            crate::aura::inference::local::voice_install_common::ENGINE_PIPER,
-                        );
+                    let current = crate::aura::inference::local::voice_install_common::read_status(
+                        crate::aura::inference::local::voice_install_common::ENGINE_PIPER,
+                    );
                     return serde_json::to_value(current)
                         .map_err(|e| format!("serialize piper status: {e}"));
                 }

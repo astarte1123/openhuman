@@ -13,11 +13,11 @@ import { useT } from '../../lib/i18n/I18nContext';
 import type { ConfirmationModal as ConfirmationModalType } from '../../types/intelligence';
 import { meetingRecorderStop } from '../../utils/tauriCommands/meetingRecorder';
 import {
-  type Meeting,
-  type MeetingScreenshot,
   auraMeetingsDelete,
   auraMeetingsGet,
   auraMeetingsUpdateTitle,
+  type Meeting,
+  type MeetingScreenshot,
   type TranscriptChunk,
 } from '../../utils/tauriCommands/meetings';
 

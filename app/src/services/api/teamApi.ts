@@ -9,11 +9,9 @@ async function rpcResult<T>(method: string, params?: Record<string, unknown>): P
 export const teamApi = {
   getTeams: async (): Promise<TeamWithRole[]> => rpcResult('aura.team_list_teams'),
 
-  getTeam: async (teamId: string): Promise<Team> =>
-    rpcResult('aura.team_get_team', { teamId }),
+  getTeam: async (teamId: string): Promise<Team> => rpcResult('aura.team_get_team', { teamId }),
 
-  createTeam: async (name: string): Promise<Team> =>
-    rpcResult('aura.team_create_team', { name }),
+  createTeam: async (name: string): Promise<Team> => rpcResult('aura.team_create_team', { name }),
 
   updateTeam: async (teamId: string, data: { name?: string }): Promise<Team> =>
     rpcResult('aura.team_update_team', { teamId, ...data }),

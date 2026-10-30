@@ -307,16 +307,15 @@ pub(crate) async fn compute_state(
     // as connected to the welcome agent (issue #1149). Best-effort —
     // a credential-store read failure logs and falls back to empty
     // rather than masking the rest of the snapshot.
-    let connected_channels =
-        crate::aura::channels::controllers::connected_channel_slugs(config)
-            .await
-            .unwrap_or_else(|err| {
-                tracing::warn!(
-                    error = %err,
-                    "[onboarding] connected_channel_slugs failed; reporting empty channel list"
-                );
-                Vec::new()
-            });
+    let connected_channels = crate::aura::channels::controllers::connected_channel_slugs(config)
+        .await
+        .unwrap_or_else(|err| {
+            tracing::warn!(
+                error = %err,
+                "[onboarding] connected_channel_slugs failed; reporting empty channel list"
+            );
+            Vec::new()
+        });
 
     let onboarding_status = if !is_authenticated {
         "unauthenticated"

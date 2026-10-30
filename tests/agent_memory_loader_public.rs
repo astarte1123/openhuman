@@ -52,9 +52,7 @@ impl Memory for ScriptedMemory {
         Ok(false)
     }
 
-    async fn namespace_summaries(
-        &self,
-    ) -> Result<Vec<aura_core::aura::memory::NamespaceSummary>> {
+    async fn namespace_summaries(&self) -> Result<Vec<aura_core::aura::memory::NamespaceSummary>> {
         Ok(Vec::new())
     }
 

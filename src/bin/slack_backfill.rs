@@ -42,14 +42,10 @@ use clap::Parser;
 use aura_core::aura::composio::client::{
     create_composio_client, direct_execute, direct_list_connections, ComposioClientKind,
 };
-use aura_core::aura::composio::providers::registry::{
-    get_provider, init_default_providers,
-};
+use aura_core::aura::composio::providers::registry::{get_provider, init_default_providers};
 use aura_core::aura::composio::providers::slack::run_backfill_via_search;
 use aura_core::aura::composio::providers::{ProviderContext, SyncReason};
-use aura_core::aura::composio::types::{
-    ComposioConnectionsResponse, ComposioExecuteResponse,
-};
+use aura_core::aura::composio::types::{ComposioConnectionsResponse, ComposioExecuteResponse};
 use aura_core::aura::config::Config;
 use aura_core::aura::memory;
 
@@ -210,9 +206,9 @@ async fn main() -> Result<()> {
     })?;
 
     if cli.seal_probe {
-        use chrono::{Duration, Utc};
         use aura_core::aura::memory::tree::canonicalize::chat::{ChatBatch, ChatMessage};
         use aura_core::aura::memory::tree::ingest::ingest_chat;
+        use chrono::{Duration, Utc};
 
         let connection_id = cli.connection_id.clone().ok_or_else(|| {
             anyhow::anyhow!(

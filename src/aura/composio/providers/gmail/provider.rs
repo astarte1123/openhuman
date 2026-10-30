@@ -537,10 +537,7 @@ impl ComposioProvider for GmailProvider {
         // connection-created sync. Periodic itself already calls this
         // on its own success path; calling it from the provider keeps
         // the bookkeeping consistent for the other entry points.
-        crate::aura::composio::periodic::record_sync_success(
-            self.toolkit_slug(),
-            &connection_id,
-        );
+        crate::aura::composio::periodic::record_sync_success(self.toolkit_slug(), &connection_id);
 
         let dup_ratio = if total_fetched > 0 {
             (total_fetched.saturating_sub(total_persisted)) as f64 / total_fetched as f64

@@ -7,9 +7,7 @@ use aura_core::aura::agent::hooks::{
     fire_hooks, sanitize_tool_output, PostTurnHook, ToolCallRecord, TurnContext,
 };
 use aura_core::aura::config::AgentConfig;
-use aura_core::aura::inference::provider::{
-    ChatMessage, ChatRequest, ChatResponse, Provider,
-};
+use aura_core::aura::inference::provider::{ChatMessage, ChatRequest, ChatResponse, Provider};
 use aura_core::aura::memory::{Memory, MemoryCategory, MemoryEntry};
 use parking_lot::Mutex;
 use std::sync::atomic::Ordering;
@@ -85,9 +83,7 @@ impl Memory for StubMemory {
         Ok(false)
     }
 
-    async fn namespace_summaries(
-        &self,
-    ) -> Result<Vec<aura_core::aura::memory::NamespaceSummary>> {
+    async fn namespace_summaries(&self) -> Result<Vec<aura_core::aura::memory::NamespaceSummary>> {
         Ok(Vec::new())
     }
 

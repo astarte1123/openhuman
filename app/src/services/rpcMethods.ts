@@ -39,16 +39,14 @@ export const LEGACY_METHOD_ALIASES: Record<string, CoreRpcMethod> = {
   'aura.set_browser_allow_all': CORE_RPC_METHODS.configSetBrowserAllowAll,
   'aura.update_analytics_settings': CORE_RPC_METHODS.configUpdateAnalyticsSettings,
   'aura.update_browser_settings': CORE_RPC_METHODS.configUpdateBrowserSettings,
-  'aura.update_composio_trigger_settings':
-    CORE_RPC_METHODS.configUpdateComposioTriggerSettings,
+  'aura.update_composio_trigger_settings': CORE_RPC_METHODS.configUpdateComposioTriggerSettings,
   'aura.update_local_ai_settings': CORE_RPC_METHODS.inferenceUpdateLocalSettings,
   'aura.update_memory_settings': CORE_RPC_METHODS.configUpdateMemorySettings,
   'aura.update_model_settings': CORE_RPC_METHODS.inferenceUpdateModelSettings,
   'aura.update_runtime_settings': CORE_RPC_METHODS.configUpdateRuntimeSettings,
   'aura.update_screen_intelligence_settings':
     CORE_RPC_METHODS.configUpdateScreenIntelligenceSettings,
-  'aura.workspace_onboarding_flag_exists':
-    CORE_RPC_METHODS.configWorkspaceOnboardingFlagExists,
+  'aura.workspace_onboarding_flag_exists': CORE_RPC_METHODS.configWorkspaceOnboardingFlagExists,
   'aura.workspace_onboarding_flag_set': CORE_RPC_METHODS.configWorkspaceOnboardingFlagSet,
   'aura.local_ai_apply_preset': CORE_RPC_METHODS.inferenceApplyPreset,
   'aura.local_ai_device_profile': CORE_RPC_METHODS.inferenceDeviceProfile,

@@ -2,9 +2,9 @@ use serde::de::DeserializeOwned;
 use serde::Deserialize;
 use serde_json::{Map, Value};
 
+use crate::aura::config::rpc as config_rpc;
 use crate::core::all::{ControllerFuture, RegisteredController};
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
-use crate::aura::config::rpc as config_rpc;
 use crate::rpc::RpcOutcome;
 
 #[derive(Debug, Deserialize)]
@@ -442,8 +442,7 @@ fn handle_billing_get_transactions(params: Map<String, Value>) -> ControllerFutu
             deserialize_params::<TransactionsParams>(params)?
         };
         to_json(
-            crate::aura::billing::get_transactions(&config, payload.limit, payload.offset)
-                .await?,
+            crate::aura::billing::get_transactions(&config, payload.limit, payload.offset).await?,
         )
     })
 }
@@ -496,10 +495,7 @@ fn handle_billing_delete_card(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let config = config_rpc::load_config_with_timeout().await?;
         let payload = deserialize_params::<CardParams>(params)?;
-        to_json(
-            crate::aura::billing::delete_card(&config, payload.payment_method_id.trim())
-                .await?,
-        )
+        to_json(crate::aura::billing::delete_card(&config, payload.payment_method_id.trim()).await?)
     })
 }
 

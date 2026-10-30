@@ -39,9 +39,7 @@ use aura_core::aura::embeddings::NoopEmbedding;
 use aura_core::aura::memory::store::types::NamespaceDocumentInput;
 use aura_core::aura::memory::store::UnifiedMemory;
 use aura_core::aura::screen_intelligence::CaptureFrame;
-use aura_core::aura::screen_intelligence::{
-    global_engine, AccessibilityEngine, VisionSummary,
-};
+use aura_core::aura::screen_intelligence::{global_engine, AccessibilityEngine, VisionSummary};
 
 // ── Env isolation ────────────────────────────────────────────────────
 
@@ -118,8 +116,7 @@ fn make_capture_frame(image_ref: Option<String>) -> CaptureFrame {
 
 /// Open a UnifiedMemory backed by NoopEmbedding in a temp dir.
 fn open_test_memory(dir: &Path) -> UnifiedMemory {
-    let embedder: Arc<dyn aura_core::aura::embeddings::EmbeddingProvider> =
-        Arc::new(NoopEmbedding);
+    let embedder: Arc<dyn aura_core::aura::embeddings::EmbeddingProvider> = Arc::new(NoopEmbedding);
     UnifiedMemory::new(dir, embedder, Some(5)).expect("UnifiedMemory::new")
 }
 

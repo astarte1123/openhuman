@@ -63,10 +63,7 @@ async fn gmail_fixture_ingestion_recovers_required_signals() {
         .entities
         .iter()
         .any(|entity| entity.name == "ASHA MEHTA"));
-    assert!(result
-        .entities
-        .iter()
-        .any(|entity| entity.name == "AURA"));
+    assert!(result.entities.iter().any(|entity| entity.name == "AURA"));
     assert!(result
         .relations
         .iter()
@@ -141,10 +138,7 @@ async fn notion_fixture_ingestion_recovers_required_signals() {
         .await
         .unwrap();
 
-    assert!(result
-        .entities
-        .iter()
-        .any(|entity| entity.name == "AURA"));
+    assert!(result.entities.iter().any(|entity| entity.name == "AURA"));
     assert!(result
         .entities
         .iter()
@@ -192,10 +186,7 @@ async fn notion_fixture_ingestion_recovers_required_signals() {
         .await
         .unwrap();
     assert!(!recall.context_text.is_empty());
-    assert!(recall
-        .hits
-        .iter()
-        .any(|hit| hit.content.contains("Aura")));
+    assert!(recall.hits.iter().any(|hit| hit.content.contains("Aura")));
 
     let memories = memory
         .recall_namespace_memories("skill-notion", 5)

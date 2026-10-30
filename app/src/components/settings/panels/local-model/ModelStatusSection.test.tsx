@@ -129,9 +129,7 @@ describe('ModelStatusSection diagnostics', () => {
         diagnostics={makeDiagnostics({ ok: false, issues: ['Ollama server is not running'] })}
       />
     );
-    expect(
-      screen.getByText(/Manage the Ollama process and model pulls outside Aura/)
-    ).toBeTruthy();
+    expect(screen.getByText(/Manage the Ollama process and model pulls outside Aura/)).toBeTruthy();
   });
 
   it('does not render repair actions section when repair_actions is empty', () => {

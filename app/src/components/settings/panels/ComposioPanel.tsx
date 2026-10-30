@@ -16,10 +16,10 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useT } from '../../../lib/i18n/I18nContext';
 import {
-  type ComposioModeStatus,
   auraComposioClearApiKey,
   auraComposioGetMode,
   auraComposioSetApiKey,
+  type ComposioModeStatus,
 } from '../../../utils/tauriCommands';
 import SettingsHeader from '../components/SettingsHeader';
 import { useSettingsNavigation } from '../hooks/useSettingsNavigation';

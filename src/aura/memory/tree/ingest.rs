@@ -9,7 +9,6 @@
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
-use crate::core::event_bus::{publish_global, DomainEvent};
 use crate::aura::config::Config;
 use crate::aura::memory::tree::canonicalize::{
     chat::{self, ChatBatch},
@@ -24,6 +23,7 @@ use crate::aura::memory::tree::score::{self, ScoreResult, ScoringConfig};
 use crate::aura::memory::tree::store;
 use crate::aura::memory::tree::types::SourceKind;
 use crate::aura::memory::tree::util::redact::redact;
+use crate::core::event_bus::{publish_global, DomainEvent};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 const BODY_PREVIEW_MAX_BYTES: usize = 2048;

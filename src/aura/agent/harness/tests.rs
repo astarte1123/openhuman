@@ -81,8 +81,7 @@ impl Provider for VisionProvider {
         _temperature: f64,
     ) -> anyhow::Result<ChatResponse> {
         self.calls.fetch_add(1, Ordering::SeqCst);
-        let marker_count =
-            crate::aura::agent::multimodal::count_image_markers(request.messages);
+        let marker_count = crate::aura::agent::multimodal::count_image_markers(request.messages);
         if marker_count == 0 {
             anyhow::bail!("expected image markers in request messages");
         }

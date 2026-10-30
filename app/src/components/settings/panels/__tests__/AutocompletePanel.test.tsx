@@ -3,16 +3,16 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { renderWithProviders } from '../../../../test/test-utils';
 import {
-  type AutocompleteConfig,
-  type AutocompleteStatus,
-  type CommandResponse,
-  type ConfigSnapshot,
-  isTauri,
   auraAutocompleteSetStyle,
   auraAutocompleteStart,
   auraAutocompleteStatus,
   auraAutocompleteStop,
   auraGetConfig,
+  type AutocompleteConfig,
+  type AutocompleteStatus,
+  type CommandResponse,
+  type ConfigSnapshot,
+  isTauri,
 } from '../../../../utils/tauriCommands';
 import AutocompletePanel from '../AutocompletePanel';
 
@@ -84,9 +84,7 @@ describe('AutocompletePanel (simplified)', () => {
       logs: [],
     }));
 
-    vi.mocked(auraGetConfig).mockImplementation(async () =>
-      makeConfigSnapshot(runtime.config)
-    );
+    vi.mocked(auraGetConfig).mockImplementation(async () => makeConfigSnapshot(runtime.config));
 
     vi.mocked(auraAutocompleteSetStyle).mockImplementation(async params => {
       runtime.config = {

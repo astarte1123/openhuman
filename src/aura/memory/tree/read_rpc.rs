@@ -1504,17 +1504,13 @@ pub async fn reset_tree_rpc(config: &Config) -> Result<RpcOutcome<ResetTreeRespo
         .memory_tree_content_root()
         .join("wiki")
         .join("summaries");
-    let remove_result = crate::aura::util::retry_with_backoff_async(
-        "remove wiki/summaries",
-        6,
-        200,
-        || async {
+    let remove_result =
+        crate::aura::util::retry_with_backoff_async("remove wiki/summaries", 6, 200, || async {
             tokio::fs::remove_dir_all(&summaries_dir)
                 .await
                 .context("remove_dir_all")
-        },
-    )
-    .await;
+        })
+        .await;
 
     match remove_result {
         Ok(()) => log::debug!("[memory_tree::read::reset_tree] removed wiki/summaries"),

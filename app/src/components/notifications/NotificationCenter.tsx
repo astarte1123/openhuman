@@ -61,9 +61,7 @@ const NotificationCenter = () => {
         if (!cancelled) {
           dispatch(
             setIntegrationError(
-              err instanceof Error
-                ? err.message
-                : t('notifications.center.load_failed')
+              err instanceof Error ? err.message : t('notifications.center.load_failed')
             )
           );
         }
@@ -203,9 +201,7 @@ const NotificationCenter = () => {
               />
             </svg>
             <p className="text-sm font-medium">{t('notifications.center.empty_title')}</p>
-            <p className="text-xs mt-1 opacity-70">
-              {t('notifications.center.empty_subtitle')}
-            </p>
+            <p className="text-xs mt-1 opacity-70">{t('notifications.center.empty_subtitle')}</p>
           </div>
         )}
 

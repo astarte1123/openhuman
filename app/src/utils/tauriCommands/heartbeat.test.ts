@@ -79,11 +79,8 @@ describe('tauriCommands/heartbeat', () => {
 
   test('rejects when not running in Tauri', async () => {
     mockIsTauri.mockReturnValue(false);
-    const {
-      auraHeartbeatSettingsGet,
-      auraHeartbeatSettingsSet,
-      auraHeartbeatTickNow,
-    } = await import('./heartbeat');
+    const { auraHeartbeatSettingsGet, auraHeartbeatSettingsSet, auraHeartbeatTickNow } =
+      await import('./heartbeat');
 
     await expect(auraHeartbeatSettingsGet()).rejects.toThrow('Not running in Tauri');
     await expect(auraHeartbeatSettingsSet({ enabled: true })).rejects.toThrow(

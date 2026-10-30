@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useScreenIntelligenceState } from '../../../features/screen-intelligence/useScreenIntelligenceState';
 import { useT } from '../../../lib/i18n/I18nContext';
-import { isTauri, auraUpdateScreenIntelligenceSettings } from '../../../utils/tauriCommands';
+import { auraUpdateScreenIntelligenceSettings, isTauri } from '../../../utils/tauriCommands';
 import SettingsHeader from '../components/SettingsHeader';
 import { useSettingsNavigation } from '../hooks/useSettingsNavigation';
 import PermissionsSection from './screen-intelligence/PermissionsSection';

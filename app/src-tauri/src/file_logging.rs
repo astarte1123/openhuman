@@ -42,9 +42,7 @@ pub(crate) fn resolve_data_dir() -> PathBuf {
         }
     }
     aura_core::aura::config::default_root_aura_dir().unwrap_or_else(|err| {
-        eprintln!(
-            "[file_logging] default_root_aura_dir failed ({err}); falling back to temp dir"
-        );
+        eprintln!("[file_logging] default_root_aura_dir failed ({err}); falling back to temp dir");
         std::env::temp_dir().join("aura")
     })
 }

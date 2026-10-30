@@ -51,8 +51,8 @@ pub(crate) fn resolve_daemon_executable() -> Result<PathBuf> {
             };
 
             #[cfg(windows)]
-            let matches = name.starts_with("aura-core-")
-                || name.eq_ignore_ascii_case("aura-core.exe");
+            let matches =
+                name.starts_with("aura-core-") || name.eq_ignore_ascii_case("aura-core.exe");
             #[cfg(not(windows))]
             let matches = name.starts_with("aura-core-") || name == "aura-core";
 

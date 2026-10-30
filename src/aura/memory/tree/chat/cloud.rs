@@ -242,8 +242,7 @@ mod tests {
     fn generic_404_with_model_not_treated_as_unavailable() {
         // A generic 404 mentioning "model" should NOT trigger fallback —
         // only the explicit "not available for your organization" phrase should.
-        let err =
-            anyhow::anyhow!("Aura API error (404 Not Found): model endpoint returned 404");
+        let err = anyhow::anyhow!("Aura API error (404 Not Found): model endpoint returned 404");
         assert!(!is_model_unavailable_error(&err));
     }
 

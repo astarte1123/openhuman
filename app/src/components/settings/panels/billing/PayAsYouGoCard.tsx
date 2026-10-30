@@ -41,7 +41,9 @@ const PayAsYouGoCard = ({
         <h3 className="font-headline text-xl font-bold tracking-tight text-stone-950">
           {t('settings.pay_as_you_go.balance_title')}
         </h3>
-        <p className="mt-1 text-sm text-stone-500">{t('settings.pay_as_you_go.balance_subtitle')}</p>
+        <p className="mt-1 text-sm text-stone-500">
+          {t('settings.pay_as_you_go.balance_subtitle')}
+        </p>
         {creditBalance ? (
           <div className="grid mt-4 gap-3 sm:grid-cols-3">
             <div>

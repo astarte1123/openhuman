@@ -99,7 +99,10 @@ fn render_pptx_escapes_xml_special_characters() {
             );
         }
     }
-    assert!(found_escaped, "expected escaped '&' from 'R&D' in some slide");
+    assert!(
+        found_escaped,
+        "expected escaped '&' from 'R&D' in some slide"
+    );
 }
 
 #[test]

@@ -69,9 +69,7 @@ export async function subconsciousStatus(): Promise<CommandResponse<Subconscious
 
 export async function subconsciousTrigger(): Promise<CommandResponse<TickResult>> {
   if (!isTauri()) throw new Error('Not running in Tauri');
-  return await callCoreRpc<CommandResponse<TickResult>>({
-    method: 'aura.subconscious_trigger',
-  });
+  return await callCoreRpc<CommandResponse<TickResult>>({ method: 'aura.subconscious_trigger' });
 }
 
 // ── Tasks CRUD ───────────────────────────────────────────────────────────────

@@ -6,9 +6,9 @@
 
 use serde_json::{Map, Value};
 
+use crate::aura::config::ops::load_config_with_timeout;
 use crate::core::all::{ControllerFuture, RegisteredController};
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
-use crate::aura::config::ops::load_config_with_timeout;
 use crate::rpc::RpcOutcome;
 
 use super::rpc;

@@ -113,9 +113,8 @@ pub(super) async fn rpc_handler(
                 // query params, or pasted-through provider error text that
                 // includes tokens. `sanitize_api_error` runs the same scrub
                 // used in the SessionExpired publish path below.
-                let redacted = crate::aura::inference::provider::ops::sanitize_api_error(
-                    &display_message,
-                );
+                let redacted =
+                    crate::aura::inference::provider::ops::sanitize_api_error(&display_message);
                 tracing::warn!(
                     method = %method,
                     elapsed_ms = ms as u64,

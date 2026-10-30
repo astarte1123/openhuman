@@ -177,21 +177,12 @@ mod tests {
 
     #[tokio::test]
     async fn live_search_smoke() {
-        if std::env::var("AURA_GITBOOKS_LIVE_TEST")
-            .ok()
-            .as_deref()
-            != Some("1")
-        {
+        if std::env::var("AURA_GITBOOKS_LIVE_TEST").ok().as_deref() != Some("1") {
             return;
         }
-        let t = GitbooksSearchTool::new(
-            "https://tinyhumans.gitbook.io/aura/~gitbook/mcp".into(),
-            30,
-        );
-        let result = t
-            .execute(json!({"query": "what is aura"}))
-            .await
-            .unwrap();
+        let t =
+            GitbooksSearchTool::new("https://tinyhumans.gitbook.io/aura/~gitbook/mcp".into(), 30);
+        let result = t.execute(json!({"query": "what is aura"})).await.unwrap();
         assert!(
             !result.is_error,
             "live search returned error: {}",

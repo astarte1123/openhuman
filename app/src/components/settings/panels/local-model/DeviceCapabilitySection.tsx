@@ -258,9 +258,7 @@ const DeviceCapabilitySection = ({
                 key={preset.tier}
                 onClick={() => void handleApply(preset.tier)}
                 disabled={applying !== null || locked}
-                title={
-                  locked ? t('settings.device_capability.needs_ollama_tier_title') : undefined
-                }
+                title={locked ? t('settings.device_capability.needs_ollama_tier_title') : undefined}
                 className={`w-full text-left rounded-lg border p-3 transition-colors ${
                   isCurrent
                     ? 'border-primary-400 bg-primary-50'

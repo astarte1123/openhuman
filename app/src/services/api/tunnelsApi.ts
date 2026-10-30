@@ -57,10 +57,7 @@ export const tunnelsApi = {
 
   /** PATCH /webhooks/core/:tunnelId — update a webhook tunnel by its internal ID. */
   updateTunnel: async (tunnelId: string, body: UpdateTunnelRequest): Promise<Tunnel> => {
-    return await callCoreCommand<Tunnel>('aura.webhooks_update_tunnel', {
-      id: tunnelId,
-      ...body,
-    });
+    return await callCoreCommand<Tunnel>('aura.webhooks_update_tunnel', { id: tunnelId, ...body });
   },
 
   /** DELETE /webhooks/core/:tunnelId — delete a webhook tunnel by its internal ID. */

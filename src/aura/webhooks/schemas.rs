@@ -499,10 +499,7 @@ fn handle_update_tunnel(params: Map<String, Value>) -> ControllerFuture {
             body.insert("isActive".to_string(), Value::Bool(active));
         }
         let body = Value::Object(body);
-        to_json(
-            crate::aura::webhooks::ops::update_tunnel(&config, payload.id.trim(), body)
-                .await?,
-        )
+        to_json(crate::aura::webhooks::ops::update_tunnel(&config, payload.id.trim(), body).await?)
     })
 }
 

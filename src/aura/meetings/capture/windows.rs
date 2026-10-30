@@ -226,7 +226,13 @@ fn run_mic_capture_thread(
                     &stream_config,
                     move |data: &[f32], _: &cpal::InputCallbackInfo| {
                         let mono = to_mono(data, channels);
-                        push_chunk(&tx, mono, sample_rate, AudioTrack::Microphone, session_start);
+                        push_chunk(
+                            &tx,
+                            mono,
+                            sample_rate,
+                            AudioTrack::Microphone,
+                            session_start,
+                        );
                     },
                     |err| error!("{LOG_PREFIX}[mic] stream error: {err}"),
                     None,
@@ -241,7 +247,13 @@ fn run_mic_capture_thread(
                     move |data: &[i16], _: &cpal::InputCallbackInfo| {
                         let floats: Vec<f32> = data.iter().map(|&s| s as f32 / 32768.0).collect();
                         let mono = to_mono(&floats, channels);
-                        push_chunk(&tx, mono, sample_rate, AudioTrack::Microphone, session_start);
+                        push_chunk(
+                            &tx,
+                            mono,
+                            sample_rate,
+                            AudioTrack::Microphone,
+                            session_start,
+                        );
                     },
                     |err| error!("{LOG_PREFIX}[mic] stream error: {err}"),
                     None,
@@ -254,10 +266,18 @@ fn run_mic_capture_thread(
                 .build_input_stream(
                     &stream_config,
                     move |data: &[u16], _: &cpal::InputCallbackInfo| {
-                        let floats: Vec<f32> =
-                            data.iter().map(|&s| (s as f32 - 32768.0) / 32768.0).collect();
+                        let floats: Vec<f32> = data
+                            .iter()
+                            .map(|&s| (s as f32 - 32768.0) / 32768.0)
+                            .collect();
                         let mono = to_mono(&floats, channels);
-                        push_chunk(&tx, mono, sample_rate, AudioTrack::Microphone, session_start);
+                        push_chunk(
+                            &tx,
+                            mono,
+                            sample_rate,
+                            AudioTrack::Microphone,
+                            session_start,
+                        );
                     },
                     |err| error!("{LOG_PREFIX}[mic] stream error: {err}"),
                     None,
@@ -304,9 +324,7 @@ fn spawn_loopback_stream(
 
     std::thread::Builder::new()
         .name("meeting-capture-loopback".into())
-        .spawn(move || {
-            run_loopback_capture_thread(sink, stop_flag_thread, setup_tx, session_start)
-        })
+        .spawn(move || run_loopback_capture_thread(sink, stop_flag_thread, setup_tx, session_start))
         .map_err(|e| format!("failed to spawn loopback capture thread: {e}"))?;
 
     match setup_rx.recv() {

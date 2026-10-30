@@ -8,15 +8,15 @@
 use std::net::SocketAddr;
 use std::sync::{Arc, Mutex};
 
+use aura_core::aura::config::MemoryConfig;
+use aura_core::aura::memory::store::AgentMemoryBackend;
+use aura_core::aura::memory::traits::{Memory, MemoryCategory, RecallOpts};
 use axum::{
     extract::{Query, State},
     http::StatusCode,
     routing::{get, post},
     Json, Router,
 };
-use aura_core::aura::config::MemoryConfig;
-use aura_core::aura::memory::store::AgentMemoryBackend;
-use aura_core::aura::memory::traits::{Memory, MemoryCategory, RecallOpts};
 use serde::{Deserialize, Serialize};
 
 #[derive(Default, Clone)]

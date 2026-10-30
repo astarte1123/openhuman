@@ -133,9 +133,7 @@ vi.mock('../utils/tauriCommands', () => ({
   auraServiceStart: vi.fn().mockResolvedValue({ result: { state: 'Running' }, logs: [] }),
   auraServiceStop: vi.fn().mockResolvedValue({ result: { state: 'Stopped' }, logs: [] }),
   auraServiceStatus: vi.fn().mockResolvedValue({ result: { state: 'Running' }, logs: [] }),
-  auraServiceUninstall: vi
-    .fn()
-    .mockResolvedValue({ result: { state: 'NotInstalled' }, logs: [] }),
+  auraServiceUninstall: vi.fn().mockResolvedValue({ result: { state: 'NotInstalled' }, logs: [] }),
   auraAgentServerStatus: vi.fn().mockResolvedValue({ result: { running: true }, logs: [] }),
   auraUpdateMeetSettings: vi
     .fn()

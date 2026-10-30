@@ -19,7 +19,6 @@
 
 use super::transcript;
 use super::types::Agent;
-use crate::core::event_bus::{publish_global, DomainEvent};
 use crate::aura::agent::dispatcher::{ParsedToolCall, ToolExecutionResult};
 use crate::aura::agent::harness;
 use crate::aura::agent::hooks::{self, ToolCallRecord, TurnContext};
@@ -34,6 +33,7 @@ use crate::aura::memory::MemoryCategory;
 use crate::aura::tools::traits::ToolCallOptions;
 use crate::aura::tools::Tool;
 use crate::aura::util::truncate_with_ellipsis;
+use crate::core::event_bus::{publish_global, DomainEvent};
 use anyhow::Result;
 use std::hash::{Hash, Hasher};
 use std::sync::Arc;
@@ -171,9 +171,7 @@ impl Agent {
             // the refresh — no signal we can safely act on, same as
             // when the cache itself is empty.
             if let Ok(cfg) = crate::aura::config::Config::load_or_init().await {
-                if let Some(cache_view) =
-                    crate::aura::composio::cached_active_integrations(&cfg)
-                {
+                if let Some(cache_view) = crate::aura::composio::cached_active_integrations(&cfg) {
                     let new_hash = crate::aura::composio::connected_set_hash(&cache_view);
                     if new_hash != self.last_seen_integrations_hash {
                         log::info!(
@@ -275,8 +273,7 @@ impl Agent {
         ) {
             match crate::aura::config::rpc::load_config_with_timeout().await {
                 Ok(cfg) => {
-                    match crate::aura::agent::tree_loader::TreeContextLoader::load(&cfg).await
-                    {
+                    match crate::aura::agent::tree_loader::TreeContextLoader::load(&cfg).await {
                         Ok(tree_ctx) => {
                             let was_first = self.last_tree_prefetch_at.is_none();
                             self.last_tree_prefetch_at = Some(now);
@@ -1485,16 +1482,16 @@ impl Agent {
         // `delegate_name = "research"`) doesn't collide with a
         // same-named skill tool on the wire — Anthropic 400s on dup
         // tool names where Aura's backend silently accepts.
-        let visible_specs: Vec<crate::aura::tools::ToolSpec> =
-            if self.visible_tool_names.is_empty() {
-                (*self.tool_specs).clone()
-            } else {
-                self.tool_specs
-                    .iter()
-                    .filter(|spec| self.visible_tool_names.contains(&spec.name))
-                    .cloned()
-                    .collect()
-            };
+        let visible_specs: Vec<crate::aura::tools::ToolSpec> = if self.visible_tool_names.is_empty()
+        {
+            (*self.tool_specs).clone()
+        } else {
+            self.tool_specs
+                .iter()
+                .filter(|spec| self.visible_tool_names.contains(&spec.name))
+                .cloned()
+                .collect()
+        };
         self.visible_tool_specs = Arc::new(super::builder::dedup_visible_tool_specs(visible_specs));
 
         // Compute add/remove deltas for the log line — useful when
@@ -1547,8 +1544,7 @@ impl Agent {
             visible_tool_names: &self.visible_tool_names,
             tool_call_format: self.tool_dispatcher.tool_call_format(),
             connected_integrations: &self.connected_integrations,
-            connected_identities_md: crate::aura::agent::prompts::render_connected_identities(
-            ),
+            connected_identities_md: crate::aura::agent::prompts::render_connected_identities(),
             include_profile: !self.omit_profile,
             include_memory_md: !self.omit_memory_md,
             curated_snapshot: None,

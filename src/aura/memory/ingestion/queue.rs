@@ -14,8 +14,8 @@ use tokio::sync::mpsc;
 
 use super::state::IngestionState;
 use super::MemoryIngestionConfig;
-use crate::core::event_bus::{publish_global, DomainEvent};
 use crate::aura::memory::store::{NamespaceDocumentInput, UnifiedMemory};
+use crate::core::event_bus::{publish_global, DomainEvent};
 
 /// A job submitted to the ingestion worker.
 ///

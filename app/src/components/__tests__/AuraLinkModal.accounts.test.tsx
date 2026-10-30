@@ -50,9 +50,7 @@ function renderModal(store = createStore()) {
 
 function openAccountsModal() {
   act(() => {
-    window.dispatchEvent(
-      new CustomEvent(AURA_LINK_EVENT, { detail: { path: 'accounts/setup' } })
-    );
+    window.dispatchEvent(new CustomEvent(AURA_LINK_EVENT, { detail: { path: 'accounts/setup' } }));
   });
 }
 

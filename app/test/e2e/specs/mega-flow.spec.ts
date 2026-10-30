@@ -452,9 +452,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     clearRequestLog();
 
     // Create a thread as user A.
-    const createA = await callAuraRpc('aura.threads_create_new', {
-      title: 'Thread for user A',
-    });
+    const createA = await callAuraRpc('aura.threads_create_new', { title: 'Thread for user A' });
     expect(createA.ok).toBe(true);
     const threadId: string =
       createA.result?.result?.id ?? createA.result?.id ?? createA.value?.result?.id ?? '';
@@ -698,10 +696,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
     console.log(`${LOG} dedup: second ingest skipped=${secondSkipped}`);
 
     // List all notifications for the gmail provider.
-    const list = await callAuraRpc('aura.notification_list', {
-      provider: 'gmail',
-      limit: 50,
-    });
+    const list = await callAuraRpc('aura.notification_list', { provider: 'gmail', limit: 50 });
     expect(list.ok).toBe(true);
 
     const items: unknown[] =
@@ -768,9 +763,7 @@ describe('Mega flow — login + Gmail OAuth + Composio in one session', () => {
 
     // Step 3 — list messages for the thread and assert the appended message
     // appears in the result.
-    const msgList = await callAuraRpc('aura.threads_messages_list', {
-      thread_id: threadId,
-    });
+    const msgList = await callAuraRpc('aura.threads_messages_list', { thread_id: threadId });
     expect(msgList.ok).toBe(true);
 
     const messages: unknown[] =

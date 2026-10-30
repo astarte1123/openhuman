@@ -421,10 +421,8 @@ fn user_memory_section_returns_empty_when_no_summaries() {
 
 #[test]
 fn render_subagent_system_prompt_renders_workspace_tail() {
-    let workspace = std::env::temp_dir().join(format!(
-        "aura_prompt_subagent_{}",
-        uuid::Uuid::new_v4()
-    ));
+    let workspace =
+        std::env::temp_dir().join(format!("aura_prompt_subagent_{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&workspace).unwrap();
 
     let tools: Vec<Box<dyn Tool>> = vec![Box::new(TestTool)];
@@ -476,8 +474,7 @@ fn subagent_render_options_invert_definition_flags() {
 
 #[test]
 fn render_subagent_system_prompt_honors_identity_safety_and_skills_flags() {
-    let workspace =
-        std::env::temp_dir().join(format!("aura_prompt_opts_{}", uuid::Uuid::new_v4()));
+    let workspace = std::env::temp_dir().join(format!("aura_prompt_opts_{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&workspace).unwrap();
     std::fs::write(workspace.join("SOUL.md"), "# Soul\nContext").unwrap();
     std::fs::write(workspace.join("IDENTITY.md"), "# Identity\nContext").unwrap();
@@ -783,10 +780,8 @@ fn narrow_subagent_definition_flags_skip_profile_md() {
     // `omit_profile` at its default `true`. PROFILE.md must NOT be
     // injected even when present on disk — the narrow runner is
     // task-focused and should not pay the token cost.
-    let workspace = std::env::temp_dir().join(format!(
-        "aura_prompt_narrow_flags_{}",
-        uuid::Uuid::new_v4()
-    ));
+    let workspace =
+        std::env::temp_dir().join(format!("aura_prompt_narrow_flags_{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&workspace).unwrap();
     std::fs::write(
         workspace.join("PROFILE.md"),
@@ -826,10 +821,8 @@ fn narrow_subagent_definition_flags_skip_profile_md() {
 fn render_subagent_system_prompt_injects_memory_md_when_enabled() {
     // Opt-in agents with `omit_memory_md = false` must see MEMORY.md
     // (archivist-curated long-term memory) in their rendered prompt.
-    let workspace = std::env::temp_dir().join(format!(
-        "aura_prompt_memory_on_{}",
-        uuid::Uuid::new_v4()
-    ));
+    let workspace =
+        std::env::temp_dir().join(format!("aura_prompt_memory_on_{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&workspace).unwrap();
     std::fs::write(
         workspace.join("MEMORY.md"),
@@ -872,10 +865,8 @@ fn render_subagent_system_prompt_injects_memory_md_when_enabled() {
 fn render_subagent_system_prompt_skips_memory_md_when_disabled() {
     // Narrow specialists with `omit_memory_md = true` (the default)
     // must NOT see MEMORY.md even when it exists on disk.
-    let workspace = std::env::temp_dir().join(format!(
-        "aura_prompt_memory_off_{}",
-        uuid::Uuid::new_v4()
-    ));
+    let workspace =
+        std::env::temp_dir().join(format!("aura_prompt_memory_off_{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&workspace).unwrap();
     std::fs::write(
         workspace.join("MEMORY.md"),
@@ -914,10 +905,8 @@ fn profile_md_and_memory_md_are_capped_at_user_file_max_chars() {
     // grow over time. Injection caps them at USER_FILE_MAX_CHARS
     // (~1000 tokens each) so the system prompt footprint stays
     // bounded. Test both files at once to pin the shared budget.
-    let workspace = std::env::temp_dir().join(format!(
-        "aura_prompt_user_cap_{}",
-        uuid::Uuid::new_v4()
-    ));
+    let workspace =
+        std::env::temp_dir().join(format!("aura_prompt_user_cap_{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&workspace).unwrap();
     let big = "x".repeat(USER_FILE_MAX_CHARS + 500);
     std::fs::write(workspace.join("PROFILE.md"), &big).unwrap();
@@ -966,10 +955,8 @@ fn rendered_subagent_system_prompt_is_byte_stable_across_repeat_calls() {
     // different-typed truncation path, or if either cap drifts, the
     // bytes differ and the backend's automatic prefix cache busts.
     // This test pins the invariant end-to-end.
-    let workspace = std::env::temp_dir().join(format!(
-        "aura_prompt_byte_stable_{}",
-        uuid::Uuid::new_v4()
-    ));
+    let workspace =
+        std::env::temp_dir().join(format!("aura_prompt_byte_stable_{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&workspace).unwrap();
     std::fs::write(workspace.join("PROFILE.md"), "# User Profile\nJane Doe").unwrap();
     std::fs::write(workspace.join("MEMORY.md"), "# Memory\nRecent: shipped v1").unwrap();
@@ -1118,10 +1105,8 @@ fn for_subagent_builder_injects_user_files_even_when_identity_omitted() {
 
 #[test]
 fn sync_workspace_file_updates_hash_and_inject_workspace_file_truncates() {
-    let workspace = std::env::temp_dir().join(format!(
-        "aura_prompt_workspace_{}",
-        uuid::Uuid::new_v4()
-    ));
+    let workspace =
+        std::env::temp_dir().join(format!("aura_prompt_workspace_{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&workspace).unwrap();
 
     sync_workspace_file(&workspace, "SOUL.md");
@@ -1448,7 +1433,10 @@ fn language_section_is_silent_for_default_locale() {
         locale: crate::aura::locale::LocaleContext::default_context(),
     };
     let out = section.build(&empty_prompt_context()).unwrap();
-    assert_eq!(out, "", "en-GB is the model's native output language — nothing to say");
+    assert_eq!(
+        out, "",
+        "en-GB is the model's native output language — nothing to say"
+    );
 }
 
 #[test]

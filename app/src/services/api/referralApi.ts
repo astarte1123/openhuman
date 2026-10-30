@@ -309,10 +309,7 @@ export const referralApi = {
     }
     const deviceFingerprint = getOrCreateDeviceFingerprint();
     try {
-      await callCoreCommand<unknown>('aura.referral_claim', {
-        code: trimmed,
-        deviceFingerprint,
-      });
+      await callCoreCommand<unknown>('aura.referral_claim', { code: trimmed, deviceFingerprint });
       console.debug('[referral] claim succeeded', { codeLength: trimmed.length });
     } catch (err) {
       console.debug('[referral] claim RPC failed', referralRpcErrorMessage(err));

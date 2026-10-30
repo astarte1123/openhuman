@@ -28,10 +28,10 @@ use futures_util::stream::{self, StreamExt};
 use serde_json::json;
 use tracing::{debug, error};
 
-use crate::core::types::AppState;
 use crate::aura::config::Config;
 use crate::aura::inference::provider;
 use crate::aura::inference::provider::traits::ChatMessage;
+use crate::core::types::AppState;
 
 use super::types::{
     ChatCompletionChoice, ChatCompletionChunk, ChatCompletionChunkChoice, ChatCompletionDelta,
@@ -78,15 +78,13 @@ async fn chat_completions_handler(
     // Build provider string from model name.
     // If the model already looks like a provider string, use it directly.
     // Otherwise treat a bare model name as an Ollama model.
-    let provider_string = if req.model.starts_with("ollama:")
-        || req.model.contains(':')
-        || req.model == "aura"
-    {
-        req.model.clone()
-    } else {
-        // Bare model name (no colon) — route to Ollama local runtime.
-        format!("ollama:{}", req.model)
-    };
+    let provider_string =
+        if req.model.starts_with("ollama:") || req.model.contains(':') || req.model == "aura" {
+            req.model.clone()
+        } else {
+            // Bare model name (no colon) — route to Ollama local runtime.
+            format!("ollama:{}", req.model)
+        };
 
     let (provider_box, model_id) = match provider::factory::create_chat_provider_from_string(
         "agentic",

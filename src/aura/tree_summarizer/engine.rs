@@ -5,7 +5,6 @@ use anyhow::{Context, Result};
 use chrono::{DateTime, Timelike, Utc};
 use std::collections::BTreeMap;
 
-use crate::core::event_bus::{publish_global, DomainEvent};
 use crate::aura::config::Config;
 use crate::aura::inference::provider::traits::Provider;
 use crate::aura::tree_summarizer::store;
@@ -13,6 +12,7 @@ use crate::aura::tree_summarizer::types::{
     derive_node_ids, derive_parent_id, estimate_tokens, level_from_node_id, NodeLevel, TreeNode,
     TreeStatus,
 };
+use crate::core::event_bus::{publish_global, DomainEvent};
 
 const SUMMARIZATION_TEMP: f64 = 0.3;
 
@@ -408,8 +408,7 @@ async fn summarize_to_limit(
             char_limit
         );
         // Truncate at a char boundary
-        let truncated =
-            &response[..crate::aura::util::floor_char_boundary(&response, char_limit)];
+        let truncated = &response[..crate::aura::util::floor_char_boundary(&response, char_limit)];
         truncated.to_string()
     } else {
         response

@@ -3,8 +3,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useCoreState } from '../providers/CoreStateProvider';
 import {
-  type ComposioTriggerHistoryEntry,
   auraComposioListTriggerHistory,
+  type ComposioTriggerHistoryEntry,
 } from '../utils/tauriCommands';
 
 const log = debug('composio:history');

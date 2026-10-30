@@ -2,14 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useT } from '../../../lib/i18n/I18nContext';
 import {
-  type AutocompleteConfig,
-  type AutocompleteStatus,
-  isTauri,
   auraAutocompleteSetStyle,
   auraAutocompleteStart,
   auraAutocompleteStatus,
   auraAutocompleteStop,
   auraGetConfig,
+  type AutocompleteConfig,
+  type AutocompleteStatus,
+  isTauri,
 } from '../../../utils/tauriCommands';
 import SettingsHeader from '../components/SettingsHeader';
 import { useSettingsNavigation } from '../hooks/useSettingsNavigation';

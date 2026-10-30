@@ -65,7 +65,11 @@ describe('CustomRoutingDialog — model suggestions', () => {
     expect(screen.getByDisplayValue('gpt-4o')).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /^Save$/i }));
-    expect(onSubmit).toHaveBeenCalledWith({ kind: 'cloud', providerSlug: 'openai', model: 'gpt-4o' });
+    expect(onSubmit).toHaveBeenCalledWith({
+      kind: 'cloud',
+      providerSlug: 'openai',
+      model: 'gpt-4o',
+    });
   });
 
   it('still disables Save when the model field is cleared', () => {

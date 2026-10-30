@@ -532,18 +532,14 @@ impl AuthProfilesStore {
         let mut waited = 0_u64;
         let mut cleared_stale = false;
         loop {
-            let open_result = crate::aura::util::retry_with_backoff(
-                "create auth profile lock",
-                6,
-                100,
-                || {
+            let open_result =
+                crate::aura::util::retry_with_backoff("create auth profile lock", 6, 100, || {
                     OpenOptions::new()
                         .create_new(true)
                         .write(true)
                         .open(&self.lock_path)
                         .context("open lock file")
-                },
-            );
+                });
 
             match open_result {
                 Ok(mut file) => {

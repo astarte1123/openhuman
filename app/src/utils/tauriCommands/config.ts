@@ -340,9 +340,7 @@ export async function auraUpdateAnalyticsSettings(update: {
   });
 }
 
-export async function auraGetAnalyticsSettings(): Promise<
-  CommandResponse<{ enabled: boolean }>
-> {
+export async function auraGetAnalyticsSettings(): Promise<CommandResponse<{ enabled: boolean }>> {
   if (!isTauri()) {
     throw new Error('Not running in Tauri');
   }

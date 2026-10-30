@@ -2,9 +2,9 @@
 
 use serde_json::{Map, Value};
 
+use crate::aura::memory::rpc::{self, LearnAllParams};
 use crate::core::all::{ControllerFuture, RegisteredController};
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
-use crate::aura::memory::rpc::{self, LearnAllParams};
 
 use super::{parse_params, to_json};
 

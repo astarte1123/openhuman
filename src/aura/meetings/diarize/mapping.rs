@@ -75,8 +75,8 @@ fn best_overlapping_segment<'a>(
         .filter_map(|seg| {
             let seg_start_ms = seg.start_secs * 1000.0;
             let seg_end_ms = seg.end_secs * 1000.0;
-            let overlap_ms = (chunk_end_ms.min(seg_end_ms) - chunk_start_ms.max(seg_start_ms))
-                .max(0.0);
+            let overlap_ms =
+                (chunk_end_ms.min(seg_end_ms) - chunk_start_ms.max(seg_start_ms)).max(0.0);
             (overlap_ms > 0.0).then_some((seg, overlap_ms))
         })
         .max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal))

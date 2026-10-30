@@ -45,7 +45,10 @@ async fn meetings_create_trims_and_uses_provided_fields() {
 async fn meetings_list_returns_created_meetings() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
 
     let out = meetings_list(&config).await.unwrap();
     assert!(out.value.iter().any(|m| m.id == created.id));
@@ -63,7 +66,10 @@ async fn meetings_get_rejects_empty_meeting_id() {
 async fn meetings_get_returns_meeting_and_chunks() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
     meetings_append_transcript_chunk(&config, &created.id, 0, 1_000, "hello", None)
         .await
         .unwrap();
@@ -78,7 +84,10 @@ async fn meetings_get_returns_meeting_and_chunks() {
 async fn meetings_update_title_rejects_empty_title() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
 
     let err = meetings_update_title(&config, &created.id, "   ")
         .await
@@ -90,7 +99,10 @@ async fn meetings_update_title_rejects_empty_title() {
 async fn meetings_update_title_renames_meeting() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
 
     let out = meetings_update_title(&config, &created.id, "Renamed")
         .await
@@ -102,7 +114,10 @@ async fn meetings_update_title_renames_meeting() {
 async fn meetings_delete_reports_true_when_removed() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
 
     let out = meetings_delete(&config, &created.id).await.unwrap();
     assert_eq!(out.value["deleted"], serde_json::json!(true));
@@ -132,7 +147,10 @@ async fn meetings_append_transcript_chunk_errors_when_meeting_missing() {
 async fn meetings_append_transcript_chunk_errors_when_meeting_not_recording() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
     meetings_finish(&config, &created.id, 1_000).await.unwrap();
 
     let err = meetings_append_transcript_chunk(&config, &created.id, 0, 1_000, "hi", None)
@@ -156,7 +174,10 @@ async fn meetings_finish_errors_when_meeting_missing() {
 async fn meetings_finish_errors_when_already_completed() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
     meetings_finish(&config, &created.id, 1_000).await.unwrap();
 
     let err = meetings_finish(&config, &created.id, 2_000)
@@ -169,7 +190,10 @@ async fn meetings_finish_errors_when_already_completed() {
 async fn meetings_finish_marks_completed_with_duration() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
 
     let out = meetings_finish(&config, &created.id, 5_000).await.unwrap();
     assert_eq!(out.value.status, MeetingStatus::Completed);
@@ -180,7 +204,10 @@ async fn meetings_finish_marks_completed_with_duration() {
 async fn meetings_summarize_errors_when_no_transcript() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
 
     let err = meetings_summarize(&config, &created.id).await.unwrap_err();
     assert!(err.contains("no transcript to summarize"));
@@ -211,7 +238,9 @@ async fn meetings_summarize_structured_rejects_empty_meeting_id() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
 
-    let err = meetings_summarize_structured(&config, "  ").await.unwrap_err();
+    let err = meetings_summarize_structured(&config, "  ")
+        .await
+        .unwrap_err();
     assert!(err.contains("Missing 'meeting_id'"));
 }
 
@@ -230,7 +259,10 @@ async fn meetings_summarize_structured_errors_when_meeting_missing() {
 async fn meetings_summarize_structured_errors_when_no_transcript() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
 
     let err = meetings_summarize_structured(&config, &created.id)
         .await
@@ -435,7 +467,10 @@ async fn meetings_search_rejects_empty_query() {
 async fn meetings_export_rejects_unsupported_format() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
 
     let err = meetings_export(&config, &created.id, "txt")
         .await
@@ -519,7 +554,10 @@ async fn meetings_export_docx_writes_nonempty_file_and_returns_its_path() {
 async fn meetings_export_works_with_zero_transcript_chunks() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
 
     let out = meetings_export(&config, &created.id, "pdf").await.unwrap();
     let path = out.value["path"]
@@ -583,7 +621,10 @@ async fn meetings_append_screenshot_errors_when_meeting_missing() {
 async fn meetings_append_screenshot_errors_when_meeting_not_recording() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
     meetings_finish(&config, &created.id, 1_000).await.unwrap();
 
     let err = meetings_append_screenshot(&config, &created.id, 0, "AAAA")
@@ -596,7 +637,10 @@ async fn meetings_append_screenshot_errors_when_meeting_not_recording() {
 async fn meetings_append_screenshot_rejects_invalid_base64() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
 
     let err = meetings_append_screenshot(&config, &created.id, 0, "not-valid-base64!!")
         .await
@@ -611,7 +655,10 @@ async fn meetings_append_screenshot_rejects_invalid_base64() {
 async fn meetings_append_screenshot_writes_file_runs_ocr_and_is_visible_via_get() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
 
     let image_base64 = base64_png_with_text("Slide Title");
     // Downloads the OCR models on first use (network required for this test).
@@ -718,7 +765,10 @@ async fn meetings_start_local_capture_errors_when_meeting_missing() {
 async fn meetings_start_local_capture_errors_when_meeting_not_recording() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
     meetings_finish(&config, &created.id, 1_000).await.unwrap();
 
     let err = meetings_start_local_capture(&config, &created.id, None)
@@ -761,7 +811,10 @@ async fn meetings_start_local_capture_rejects_meeting_recorder_source() {
 async fn meetings_start_local_capture_accepts_explicit_capture_screenshots_true() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
     meetings_finish(&config, &created.id, 1_000).await.unwrap();
 
     let err = meetings_start_local_capture(&config, &created.id, Some(true))
@@ -807,7 +860,10 @@ async fn meetings_stop_local_capture_errors_when_meeting_missing() {
 async fn meetings_stop_local_capture_reports_false_when_nothing_active() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
 
     let out = meetings_stop_local_capture(&config, &created.id)
         .await
@@ -835,7 +891,10 @@ fn force_stop_capture_returns_false_when_registry_empty() {
 async fn meetings_start_local_capture_rejects_when_reservation_already_starting() {
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
 
     // Simulate a concurrent `meetings_start_local_capture` call that has
     // already reserved this meeting_id's slot (see `CaptureSlot::Starting`'s
@@ -924,7 +983,10 @@ async fn meetings_finish_and_delete_tolerate_no_active_capture() {
     // without ever using local capture).
     let tmp = TempDir::new().unwrap();
     let config = test_config(&tmp);
-    let created = meetings_create(&config, None, None, None).await.unwrap().value;
+    let created = meetings_create(&config, None, None, None)
+        .await
+        .unwrap()
+        .value;
 
     let finished = meetings_finish(&config, &created.id, 1_000).await.unwrap();
     assert_eq!(finished.value.status, MeetingStatus::Completed);
@@ -1051,10 +1113,15 @@ async fn meetings_index_to_knowledge_base_errors_for_missing_meeting() {
 async fn meetings_index_to_knowledge_base_ingests_a_completed_meeting() {
     let tmp = TempDir::new().unwrap();
     let config = knowledge_base_test_config(&tmp);
-    let created = meetings_create(&config, Some("Standup".to_string()), Some("local".to_string()), None)
-        .await
-        .unwrap()
-        .value;
+    let created = meetings_create(
+        &config,
+        Some("Standup".to_string()),
+        Some("local".to_string()),
+        None,
+    )
+    .await
+    .unwrap()
+    .value;
     store::append_transcript_chunk(
         &config,
         &created.id,
@@ -1077,10 +1144,15 @@ async fn meetings_index_to_knowledge_base_ingests_a_completed_meeting() {
 async fn meetings_index_to_knowledge_base_is_idempotent() {
     let tmp = TempDir::new().unwrap();
     let config = knowledge_base_test_config(&tmp);
-    let created = meetings_create(&config, Some("Standup".to_string()), Some("local".to_string()), None)
-        .await
-        .unwrap()
-        .value;
+    let created = meetings_create(
+        &config,
+        Some("Standup".to_string()),
+        Some("local".to_string()),
+        None,
+    )
+    .await
+    .unwrap()
+    .value;
     store::append_transcript_chunk(
         &config,
         &created.id,
@@ -1113,10 +1185,15 @@ async fn meetings_index_to_knowledge_base_is_idempotent() {
 async fn meetings_index_to_knowledge_base_rejects_a_recording_meeting() {
     let tmp = TempDir::new().unwrap();
     let config = knowledge_base_test_config(&tmp);
-    let created = meetings_create(&config, Some("Standup".to_string()), Some("local".to_string()), None)
-        .await
-        .unwrap()
-        .value;
+    let created = meetings_create(
+        &config,
+        Some("Standup".to_string()),
+        Some("local".to_string()),
+        None,
+    )
+    .await
+    .unwrap()
+    .value;
     assert_eq!(created.status, MeetingStatus::Recording);
     store::append_transcript_chunk(
         &config,

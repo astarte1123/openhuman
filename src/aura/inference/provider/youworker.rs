@@ -241,7 +241,12 @@ impl YouWorkerProvider {
             "{}/channels/{CHANNEL}/inbound/message",
             self.config.yw_base.trim_end_matches('/')
         );
-        let body = inbound_message_body(&conversation_ref, &self.config.persona, &message_id, message);
+        let body = inbound_message_body(
+            &conversation_ref,
+            &self.config.persona,
+            &message_id,
+            message,
+        );
 
         let send_result = timeout(
             HTTP_TIMEOUT,
@@ -312,24 +317,32 @@ impl YouWorkerProvider {
             HeaderValue::from_str(&format!("Bearer {jwt}"))
                 .map_err(|e| anyhow::anyhow!("[youworker][ws] invalid bearer header: {e}"))?,
         );
-        request
-            .headers_mut()
-            .insert("Sec-WebSocket-Protocol", HeaderValue::from_static(WS_SUBPROTOCOL));
+        request.headers_mut().insert(
+            "Sec-WebSocket-Protocol",
+            HeaderValue::from_static(WS_SUBPROTOCOL),
+        );
 
         // Needed for wss:// TLS; no-op if already installed elsewhere.
         let _ = rustls::crypto::ring::default_provider().install_default();
 
-        let (mut socket, _) = timeout(WS_CONTROL_TIMEOUT, tokio_tungstenite::connect_async(request))
-            .await
-            .map_err(|_| anyhow::anyhow!("[youworker][ws] connect timed out"))?
-            .map_err(|e| anyhow::anyhow!("[youworker][ws] connect failed: {e}"))?;
+        let (mut socket, _) = timeout(
+            WS_CONTROL_TIMEOUT,
+            tokio_tungstenite::connect_async(request),
+        )
+        .await
+        .map_err(|_| anyhow::anyhow!("[youworker][ws] connect timed out"))?
+        .map_err(|e| anyhow::anyhow!("[youworker][ws] connect failed: {e}"))?;
 
         let result = self.run_turn_ws_on_socket(&mut socket, message).await;
         let _ = socket.close(None).await;
         result
     }
 
-    async fn run_turn_ws_on_socket(&self, socket: &mut WsSocket, message: &str) -> anyhow::Result<String> {
+    async fn run_turn_ws_on_socket(
+        &self,
+        socket: &mut WsSocket,
+        message: &str,
+    ) -> anyhow::Result<String> {
         let create_result = ws_send_control(
             socket,
             "session.create",
@@ -339,7 +352,9 @@ impl YouWorkerProvider {
         let session_id = create_result
             .get("session_id")
             .and_then(Value::as_str)
-            .ok_or_else(|| anyhow::anyhow!("[youworker][ws] session.create.result missing session_id"))?
+            .ok_or_else(|| {
+                anyhow::anyhow!("[youworker][ws] session.create.result missing session_id")
+            })?
             .to_string();
 
         ws_send_control(
@@ -361,7 +376,9 @@ impl YouWorkerProvider {
             ws_collect_terminal_response(socket, &session_id),
         )
         .await
-        .map_err(|_| anyhow::anyhow!("[youworker][ws] timed out waiting for the agent's response"))?
+        .map_err(|_| {
+            anyhow::anyhow!("[youworker][ws] timed out waiting for the agent's response")
+        })?
     }
 }
 
@@ -510,7 +527,11 @@ fn ws_fold_transcript_delta(
 type WsSocket = WebSocketStream<MaybeTlsStream<tokio::net::TcpStream>>;
 
 /// The `ClientFrame` envelope: `{id, type, ts, payload}`.
-async fn ws_send_frame(socket: &mut WsSocket, frame_type: &str, payload: Value) -> anyhow::Result<String> {
+async fn ws_send_frame(
+    socket: &mut WsSocket,
+    frame_type: &str,
+    payload: Value,
+) -> anyhow::Result<String> {
     let id = uuid::Uuid::new_v4().to_string();
     let envelope = json!({
         "id": id,
@@ -530,14 +551,22 @@ async fn ws_send_frame(socket: &mut WsSocket, frame_type: &str, payload: Value) 
 /// Send a control frame and wait for its `in_reply_to` reply
 /// (`<frame_type>.result`), bailing loudly on a matching `error` frame.
 /// Returns the reply's `payload`.
-async fn ws_send_control(socket: &mut WsSocket, frame_type: &str, payload: Value) -> anyhow::Result<Value> {
+async fn ws_send_control(
+    socket: &mut WsSocket,
+    frame_type: &str,
+    payload: Value,
+) -> anyhow::Result<Value> {
     let id = ws_send_frame(socket, frame_type, payload).await?;
     let expected_result_type = format!("{frame_type}.result");
     loop {
         let msg = timeout(WS_CONTROL_TIMEOUT, socket.next())
             .await
-            .map_err(|_| anyhow::anyhow!("[youworker][ws] timed out waiting for {expected_result_type}"))?
-            .ok_or_else(|| anyhow::anyhow!("[youworker][ws] closed while waiting for {expected_result_type}"))?
+            .map_err(|_| {
+                anyhow::anyhow!("[youworker][ws] timed out waiting for {expected_result_type}")
+            })?
+            .ok_or_else(|| {
+                anyhow::anyhow!("[youworker][ws] closed while waiting for {expected_result_type}")
+            })?
             .map_err(|e| anyhow::anyhow!("[youworker][ws] read error: {e}"))?;
         let WsMessage::Text(text) = msg else { continue };
         log::debug!("[youworker][ws] recv: {text}");
@@ -561,7 +590,10 @@ async fn ws_send_control(socket: &mut WsSocket, frame_type: &str, payload: Value
 }
 
 /// Read `transcript.delta` frames until the response block finalizes.
-async fn ws_collect_terminal_response(socket: &mut WsSocket, _session_id: &str) -> anyhow::Result<String> {
+async fn ws_collect_terminal_response(
+    socket: &mut WsSocket,
+    _session_id: &str,
+) -> anyhow::Result<String> {
     let mut response_block_id: Option<String> = None;
     let mut response_text = String::new();
     loop {

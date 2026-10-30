@@ -242,12 +242,11 @@ pub(crate) async fn collect_calendar_meetings(
             lookahead_minutes = config.heartbeat.meeting_lookahead_minutes.max(1),
             "[composio][heartbeat-planner] applying calendar query defaults pre-poll"
         );
-        let arguments =
-            crate::aura::composio::googlecalendar_args::apply_calendar_query_defaults(
-                "GOOGLECALENDAR_EVENTS_LIST",
-                Some(arguments),
-                &iana,
-            );
+        let arguments = crate::aura::composio::googlecalendar_args::apply_calendar_query_defaults(
+            "GOOGLECALENDAR_EVENTS_LIST",
+            Some(arguments),
+            &iana,
+        );
 
         let resp: ComposioExecuteResponse = match &kind {
             ComposioClientKind::Backend(client) => {
@@ -456,9 +455,7 @@ pub(crate) fn collect_relevant_notifications(
         // feedback loop where each heartbeat tick spawns a new "Important event"
         // with a fresh ID that bypasses the dedupe store.
         .filter(|item| item.provider != "heartbeat")
-        .filter(|item| {
-            item.status == crate::aura::notifications::types::NotificationStatus::Unread
-        })
+        .filter(|item| item.status == crate::aura::notifications::types::NotificationStatus::Unread)
         .filter(|item| {
             item.triage_action
                 .as_deref()

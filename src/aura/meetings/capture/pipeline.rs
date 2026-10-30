@@ -141,9 +141,7 @@ pub async fn run_capture_session(
     let mut capture_handle = tokio::task::spawn_blocking(move || backend.start(tx))
         .await
         .map_err(|e| {
-            debug!(
-                "{LOG_PREFIX} backend start task join error meeting_id={start_meeting_id}: {e}"
-            );
+            debug!("{LOG_PREFIX} backend start task join error meeting_id={start_meeting_id}: {e}");
             format!("capture backend start task join error: {e}")
         })?
         .map_err(|e| {
@@ -186,7 +184,13 @@ pub async fn run_capture_session(
         );
     }
 
-    tokio::spawn(run_consumer_loop(meeting_id, config, whisper, rx, finished_tx));
+    tokio::spawn(run_consumer_loop(
+        meeting_id,
+        config,
+        whisper,
+        rx,
+        finished_tx,
+    ));
 
     Ok(capture_handle)
 }
@@ -507,7 +511,10 @@ impl CaptureSession {
     /// roughly every [`PAUSE_BOUNDARY_SILENCE_MS`].
     pub fn take_pause_boundary_ready(&mut self) -> Option<(AudioTrack, Vec<f32>, i64)> {
         let buf = self.buffers.get_mut(&AudioTrack::SystemAudio)?;
-        let voiced_prefix = buf.samples.len().saturating_sub(buf.trailing_silence_samples);
+        let voiced_prefix = buf
+            .samples
+            .len()
+            .saturating_sub(buf.trailing_silence_samples);
         if buf.trailing_silence_samples < PAUSE_BOUNDARY_SILENCE_SAMPLES
             || voiced_prefix < MIN_VOICED_PREFIX_SAMPLES
         {
@@ -564,7 +571,12 @@ impl CaptureSession {
 mod tests {
     use super::*;
 
-    fn chunk(track: AudioTrack, samples: Vec<f32>, sample_rate: u32, captured_at_ms: i64) -> AudioChunk {
+    fn chunk(
+        track: AudioTrack,
+        samples: Vec<f32>,
+        sample_rate: u32,
+        captured_at_ms: i64,
+    ) -> AudioChunk {
         AudioChunk {
             pcm_f32: samples,
             sample_rate,
@@ -615,7 +627,12 @@ mod tests {
     fn drain_ready_leaves_small_buffers_untouched() {
         let mut session = CaptureSession::new("meeting_1".into());
         // Well under MIN_FLUSH_SAMPLES (0.5s @ 16kHz).
-        session.push(chunk(AudioTrack::Microphone, vec![0.1; 100], WHISPER_SAMPLE_RATE, 0));
+        session.push(chunk(
+            AudioTrack::Microphone,
+            vec![0.1; 100],
+            WHISPER_SAMPLE_RATE,
+            0,
+        ));
 
         assert!(session.drain_ready().is_empty());
         // Still buffered — drain_all should find it.
@@ -647,10 +664,20 @@ mod tests {
     #[test]
     fn chunk_start_ms_resets_after_each_drain() {
         let mut session = CaptureSession::new("meeting_1".into());
-        session.push(chunk(AudioTrack::Microphone, vec![0.1; 10], WHISPER_SAMPLE_RATE, 100));
+        session.push(chunk(
+            AudioTrack::Microphone,
+            vec![0.1; 10],
+            WHISPER_SAMPLE_RATE,
+            100,
+        ));
         let _ = session.drain_all();
 
-        session.push(chunk(AudioTrack::Microphone, vec![0.1; 10], WHISPER_SAMPLE_RATE, 900));
+        session.push(chunk(
+            AudioTrack::Microphone,
+            vec![0.1; 10],
+            WHISPER_SAMPLE_RATE,
+            900,
+        ));
         let batch = session.drain_all();
         assert_eq!(batch[0].2, 900);
     }
@@ -658,7 +685,12 @@ mod tests {
     #[test]
     fn empty_chunk_after_resample_is_ignored() {
         let mut session = CaptureSession::new("meeting_1".into());
-        session.push(chunk(AudioTrack::Microphone, Vec::new(), WHISPER_SAMPLE_RATE, 0));
+        session.push(chunk(
+            AudioTrack::Microphone,
+            Vec::new(),
+            WHISPER_SAMPLE_RATE,
+            0,
+        ));
         assert!(session.drain_all().is_empty());
     }
 
@@ -692,7 +724,12 @@ mod tests {
         assert!(session.take_pause_boundary_ready().is_none());
 
         // One more silent sample crosses the pause-boundary threshold.
-        session.push(chunk(AudioTrack::SystemAudio, vec![0.0], WHISPER_SAMPLE_RATE, 1_100));
+        session.push(chunk(
+            AudioTrack::SystemAudio,
+            vec![0.0],
+            WHISPER_SAMPLE_RATE,
+            1_100,
+        ));
         let ready = session
             .take_pause_boundary_ready()
             .expect("pause boundary should fire once trailing silence threshold is crossed");
@@ -766,7 +803,12 @@ mod tests {
             WHISPER_SAMPLE_RATE,
             500,
         ));
-        session.push(chunk(AudioTrack::SystemAudio, vec![0.5; 10], WHISPER_SAMPLE_RATE, 1_100));
+        session.push(chunk(
+            AudioTrack::SystemAudio,
+            vec![0.5; 10],
+            WHISPER_SAMPLE_RATE,
+            1_100,
+        ));
         assert!(session.take_pause_boundary_ready().is_none());
 
         session.push(chunk(

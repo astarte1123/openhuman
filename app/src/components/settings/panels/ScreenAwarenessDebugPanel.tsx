@@ -3,7 +3,7 @@ import { type ComponentProps, useRef, useState } from 'react';
 import ScreenIntelligenceDebugPanel from '../../../components/intelligence/ScreenIntelligenceDebugPanel';
 import { useScreenIntelligenceState } from '../../../features/screen-intelligence/useScreenIntelligenceState';
 import { useT } from '../../../lib/i18n/I18nContext';
-import { isTauri, auraUpdateScreenIntelligenceSettings } from '../../../utils/tauriCommands';
+import { auraUpdateScreenIntelligenceSettings, isTauri } from '../../../utils/tauriCommands';
 import SettingsHeader from '../components/SettingsHeader';
 import { useSettingsNavigation } from '../hooks/useSettingsNavigation';
 

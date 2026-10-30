@@ -155,9 +155,7 @@ export default function RewardsCommunityTab({
               onClick={onRetry}
               disabled={isLoading}
               className="rounded-full border border-amber-300 bg-white px-3 py-1 text-xs font-semibold text-amber-800 shadow-sm transition-colors hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-60">
-              {isLoading
-                ? t('rewards.community.retrying')
-                : t('rewards.community.try_again')}
+              {isLoading ? t('rewards.community.retrying') : t('rewards.community.try_again')}
             </button>
           ) : null}
         </div>
@@ -228,9 +226,7 @@ export default function RewardsCommunityTab({
           </div>
           {isLoading ? (
             <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-soft">
-              <div className="text-sm text-stone-600">
-                {t('rewards.community.loading_rewards')}
-              </div>
+              <div className="text-sm text-stone-600">{t('rewards.community.loading_rewards')}</div>
             </div>
           ) : rewardRoles.length > 0 ? (
             rewardRoles.map((role, index) => {

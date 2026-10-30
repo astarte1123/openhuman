@@ -9,11 +9,9 @@
 use serde::de::DeserializeOwned;
 use serde_json::{Map, Value};
 
-use crate::core::all::ControllerFuture;
 use crate::aura::webview_apis::client;
-use crate::aura::webview_apis::types::{
-    Ack, GmailLabel, GmailMessage, GmailSendRequest, SendAck,
-};
+use crate::aura::webview_apis::types::{Ack, GmailLabel, GmailMessage, GmailSendRequest, SendAck};
+use crate::core::all::ControllerFuture;
 use crate::rpc::RpcOutcome;
 
 // ── handlers ────────────────────────────────────────────────────────────

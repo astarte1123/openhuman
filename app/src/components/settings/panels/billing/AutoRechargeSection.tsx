@@ -72,336 +72,332 @@ const AutoRechargeSection = ({
 }: AutoRechargeSectionProps) => {
   const { t } = useT();
   return (
-  <div className="rounded-2xl border border-stone-200 bg-white overflow-hidden">
-    {/* Header row */}
-    <div className="flex items-center justify-between p-3">
-      <div>
-        <p className="text-md font-semibold text-stone-900">
-          {t('settings.auto_recharge.enable_title')}
-        </p>
-        <p className="text-[11px] text-stone-400 mt-0.5">
-          {t('settings.auto_recharge.enable_subtitle')}
-        </p>
-      </div>
-      {arLoading ? (
-        <div className="w-10 h-5 rounded-full bg-stone-700/60 animate-pulse" />
-      ) : (
-        <button
-          onClick={onArToggle}
-          disabled={arSaving}
-          role="switch"
-          aria-checked={arSettings?.enabled ?? false}
-          aria-label={t('settings.auto_recharge.toggle_aria_label')}
-          className={`relative w-10 h-5 rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-900 ${
-            arSaving ? 'opacity-50 cursor-not-allowed' : ''
-          } ${arSettings?.enabled ? 'bg-primary-500' : 'bg-stone-600'}`}>
-          <span
-            className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${
-              arSettings?.enabled ? 'translate-x-5' : 'translate-x-0'
-            }`}
-          />
-        </button>
-      )}
-    </div>
-
-    {/* Error banner */}
-    {arError && (
-      <div className="mx-3 mb-2 flex items-start gap-2 rounded-lg bg-coral-500/10 border border-coral-500/20 px-2.5 py-2">
-        <svg
-          className="w-3.5 h-3.5 text-coral-400 flex-shrink-0 mt-0.5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
-          />
-        </svg>
-        <p className="text-[12px] text-coral-400 leading-relaxed">{arError}</p>
-      </div>
-    )}
-
-    {/* Settings — only shown when enabled */}
-    {!arLoading && arSettings?.enabled && (
-      <div className="border-t border-stone-200 px-3 pt-3 pb-2 space-y-3">
-        {/* Status row */}
-        <div className="flex items-center gap-3 flex-wrap">
-          {arSettings.inFlight && (
-            <span className="flex items-center gap-1 text-[10px] text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2 py-0.5">
-              <svg className="w-2.5 h-2.5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                />
-              </svg>
-              {t('settings.auto_recharge.recharge_in_progress')}
-            </span>
-          )}
-          {arSettings.spentThisWeekUsd > 0 && (
-            <span className="text-[10px] text-stone-400">
-              {t('settings.auto_recharge.weekly_spent', {
-                spent: arSettings.spentThisWeekUsd.toFixed(2),
-                limit: arSettings.weeklyLimitUsd,
-              })}
-            </span>
-          )}
-          {arSettings.lastRechargeAt && (
-            <span className="text-[10px] text-stone-500">
-              {t('settings.auto_recharge.last_recharged', {
-                date: new Date(arSettings.lastRechargeAt).toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                }),
-              })}
-            </span>
-          )}
-        </div>
-
-        {/* Last error from recharge attempt */}
-        {arSettings.lastError && (
-          <div className="flex items-start gap-1.5 rounded-lg bg-coral-500/10 border border-coral-500/20 px-2.5 py-2">
-            <svg
-              className="w-3 h-3 text-coral-400 flex-shrink-0 mt-0.5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
-              />
-            </svg>
-            <p className="text-[10px] text-coral-300">
-              {t('settings.auto_recharge.last_recharge_failed', {
-                error: arSettings.lastError,
-              })}
-            </p>
-          </div>
-        )}
-
-        {/* Trigger threshold */}
+    <div className="rounded-2xl border border-stone-200 bg-white overflow-hidden">
+      {/* Header row */}
+      <div className="flex items-center justify-between p-3">
         <div>
-          <p className="text-[11px] text-stone-400 mb-1.5">
-            {t('settings.auto_recharge.threshold_label')}
+          <p className="text-md font-semibold text-stone-900">
+            {t('settings.auto_recharge.enable_title')}
           </p>
-          <div className="flex gap-1.5 flex-wrap">
-            {THRESHOLD_OPTIONS.map(v => (
-              <button
-                key={v}
-                onClick={() => setArThreshold(v)}
-                className={`px-2.5 py-1 text-xs rounded-lg border transition-colors ${
-                  arThreshold === v
-                    ? 'bg-primary-500/20 text-primary-400 border-primary-500/40'
-                    : 'bg-stone-100 text-stone-500 border-stone-200 hover:text-stone-700'
-                }`}>
-                ${v}
-              </button>
-            ))}
-          </div>
+          <p className="text-[11px] text-stone-400 mt-0.5">
+            {t('settings.auto_recharge.enable_subtitle')}
+          </p>
         </div>
-
-        {/* Recharge amount */}
-        <div>
-          <p className="text-[11px] text-stone-400 mb-1.5">
-            {t('settings.auto_recharge.amount_label')}
-          </p>
-          <div className="flex gap-1.5 flex-wrap">
-            {RECHARGE_OPTIONS.map(v => (
-              <button
-                key={v}
-                onClick={() => setArAmount(v)}
-                className={`px-2.5 py-1 text-xs rounded-lg border transition-colors ${
-                  arAmount === v
-                    ? 'bg-primary-500/20 text-primary-400 border-primary-500/40'
-                    : 'bg-stone-100 text-stone-500 border-stone-200 hover:text-stone-700'
-                }`}>
-                ${v}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Weekly limit */}
-        <div>
-          <p className="text-[11px] text-stone-400 mb-1.5">
-            {t('settings.auto_recharge.weekly_limit_label')}
-          </p>
-          <div className="flex gap-1.5 flex-wrap">
-            {WEEKLY_LIMIT_OPTIONS.map(v => (
-              <button
-                key={v}
-                onClick={() => setArWeeklyLimit(v)}
-                className={`px-2.5 py-1 text-xs rounded-lg border transition-colors ${
-                  arWeeklyLimit === v
-                    ? 'bg-primary-500/20 text-primary-400 border-primary-500/40'
-                    : 'bg-stone-100 text-stone-500 border-stone-200 hover:text-stone-700'
-                }`}>
-                ${v}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Validation hint */}
-        {arAmount <= arThreshold && (
-          <p className="text-[10px] text-amber-400">
-            {t('settings.auto_recharge.validation_hint')}
-          </p>
-        )}
-
-        {/* Save button */}
-        {arDirty && (
+        {arLoading ? (
+          <div className="w-10 h-5 rounded-full bg-stone-700/60 animate-pulse" />
+        ) : (
           <button
-            onClick={onArSave}
-            disabled={arSaving || arAmount <= arThreshold}
-            className={`w-full py-1.5 text-xs font-medium rounded-lg transition-colors ${
-              arSaving || arAmount <= arThreshold
-                ? 'bg-stone-700/40 text-stone-500 cursor-not-allowed'
-                : 'bg-primary-500 hover:bg-primary-600 text-white'
-            }`}>
-            {arSaving
-              ? t('settings.auto_recharge.saving')
-              : t('settings.auto_recharge.save_settings')}
+            onClick={onArToggle}
+            disabled={arSaving}
+            role="switch"
+            aria-checked={arSettings?.enabled ?? false}
+            aria-label={t('settings.auto_recharge.toggle_aria_label')}
+            className={`relative w-10 h-5 rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-900 ${
+              arSaving ? 'opacity-50 cursor-not-allowed' : ''
+            } ${arSettings?.enabled ? 'bg-primary-500' : 'bg-stone-600'}`}>
+            <span
+              className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${
+                arSettings?.enabled ? 'translate-x-5' : 'translate-x-0'
+              }`}
+            />
           </button>
         )}
       </div>
-    )}
 
-    {/* Payment methods */}
-    <div className="border-t border-stone-200 px-3 py-2.5">
-      <div className="flex items-center justify-between mb-2">
-        <p className="text-[11px] font-medium text-stone-600">
-          {t('settings.auto_recharge.payment_methods_title')}
-        </p>
-        <button
-          onClick={onAddCard}
-          className="text-[11px] text-primary-400 hover:text-primary-300 font-medium transition-colors">
-          {t('settings.auto_recharge.add_card')}
-        </button>
-      </div>
-
-      {cardsLoading ? (
-        <div className="space-y-1.5">
-          {[0, 1].map(i => (
-            <div key={i} className="h-9 rounded-lg bg-stone-700/30 animate-pulse" />
-          ))}
-        </div>
-      ) : cards.length === 0 ? (
-        <div className="flex items-center gap-2 rounded-lg bg-stone-50 border border-stone-200 p-2.5">
+      {/* Error banner */}
+      {arError && (
+        <div className="mx-3 mb-2 flex items-start gap-2 rounded-lg bg-coral-500/10 border border-coral-500/20 px-2.5 py-2">
           <svg
-            className="w-4 h-4 text-stone-500 flex-shrink-0"
+            className="w-3.5 h-3.5 text-coral-400 flex-shrink-0 mt-0.5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+              strokeWidth={2}
+              d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
             />
           </svg>
-          <p className="text-[11px] text-stone-500">
-            {t('settings.auto_recharge.no_cards')}
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-1.5">
-          {cards.map(card => {
-            const isDeleting = deletingCardId === card.id;
-            const isSettingDefault = settingDefaultId === card.id;
-            const isConfirming = confirmDeleteId === card.id;
-
-            return (
-              <div
-                key={card.id}
-                className="flex items-center gap-2 rounded-lg bg-stone-50 border border-stone-200 px-2.5 py-2">
-                {/* Card icon */}
-                <svg
-                  className="w-4 h-4 text-stone-400 flex-shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                  />
-                </svg>
-
-                {/* Card info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-xs text-stone-900 font-medium">
-                      {cardBrandLabel(card.brand)} ••••{card.last4}
-                    </span>
-                    {card.isDefault && (
-                      <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-primary-500/20 text-primary-400 border border-primary-500/30 font-medium">
-                        {t('settings.auto_recharge.default_badge')}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[10px] text-stone-500 mt-0.5">
-                    {t('settings.auto_recharge.expires', {
-                      month: String(card.expMonth).padStart(2, '0'),
-                      year: String(card.expYear).slice(-2),
-                    })}
-                  </p>
-                </div>
-
-                {/* Actions */}
-                <div className="flex items-center gap-1 flex-shrink-0">
-                  {!card.isDefault && (
-                    <button
-                      onClick={() => onSetDefault(card.id)}
-                      disabled={!!settingDefaultId || !!deletingCardId}
-                      className="text-[10px] text-stone-500 hover:text-stone-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed px-1.5 py-1">
-                      {isSettingDefault ? '…' : t('settings.auto_recharge.set_default')}
-                    </button>
-                  )}
-
-                  {isConfirming ? (
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => onDeleteCard(card.id)}
-                        disabled={isDeleting}
-                        className="text-[10px] text-coral-400 hover:text-coral-300 font-medium transition-colors disabled:opacity-40 px-1.5 py-1">
-                        {isDeleting ? '…' : t('settings.auto_recharge.confirm')}
-                      </button>
-                      <button
-                        onClick={() => setConfirmDeleteId(null)}
-                        className="text-[10px] text-stone-500 hover:text-stone-400 transition-colors px-1 py-1">
-                        {t('settings.auto_recharge.cancel')}
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => setConfirmDeleteId(card.id)}
-                      disabled={isDeleting || !!settingDefaultId}
-                      className="text-[10px] text-stone-500 hover:text-coral-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed px-1.5 py-1">
-                      {t('settings.auto_recharge.remove')}
-                    </button>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+          <p className="text-[12px] text-coral-400 leading-relaxed">{arError}</p>
         </div>
       )}
+
+      {/* Settings — only shown when enabled */}
+      {!arLoading && arSettings?.enabled && (
+        <div className="border-t border-stone-200 px-3 pt-3 pb-2 space-y-3">
+          {/* Status row */}
+          <div className="flex items-center gap-3 flex-wrap">
+            {arSettings.inFlight && (
+              <span className="flex items-center gap-1 text-[10px] text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2 py-0.5">
+                <svg className="w-2.5 h-2.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+                {t('settings.auto_recharge.recharge_in_progress')}
+              </span>
+            )}
+            {arSettings.spentThisWeekUsd > 0 && (
+              <span className="text-[10px] text-stone-400">
+                {t('settings.auto_recharge.weekly_spent', {
+                  spent: arSettings.spentThisWeekUsd.toFixed(2),
+                  limit: arSettings.weeklyLimitUsd,
+                })}
+              </span>
+            )}
+            {arSettings.lastRechargeAt && (
+              <span className="text-[10px] text-stone-500">
+                {t('settings.auto_recharge.last_recharged', {
+                  date: new Date(arSettings.lastRechargeAt).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                  }),
+                })}
+              </span>
+            )}
+          </div>
+
+          {/* Last error from recharge attempt */}
+          {arSettings.lastError && (
+            <div className="flex items-start gap-1.5 rounded-lg bg-coral-500/10 border border-coral-500/20 px-2.5 py-2">
+              <svg
+                className="w-3 h-3 text-coral-400 flex-shrink-0 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                />
+              </svg>
+              <p className="text-[10px] text-coral-300">
+                {t('settings.auto_recharge.last_recharge_failed', { error: arSettings.lastError })}
+              </p>
+            </div>
+          )}
+
+          {/* Trigger threshold */}
+          <div>
+            <p className="text-[11px] text-stone-400 mb-1.5">
+              {t('settings.auto_recharge.threshold_label')}
+            </p>
+            <div className="flex gap-1.5 flex-wrap">
+              {THRESHOLD_OPTIONS.map(v => (
+                <button
+                  key={v}
+                  onClick={() => setArThreshold(v)}
+                  className={`px-2.5 py-1 text-xs rounded-lg border transition-colors ${
+                    arThreshold === v
+                      ? 'bg-primary-500/20 text-primary-400 border-primary-500/40'
+                      : 'bg-stone-100 text-stone-500 border-stone-200 hover:text-stone-700'
+                  }`}>
+                  ${v}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Recharge amount */}
+          <div>
+            <p className="text-[11px] text-stone-400 mb-1.5">
+              {t('settings.auto_recharge.amount_label')}
+            </p>
+            <div className="flex gap-1.5 flex-wrap">
+              {RECHARGE_OPTIONS.map(v => (
+                <button
+                  key={v}
+                  onClick={() => setArAmount(v)}
+                  className={`px-2.5 py-1 text-xs rounded-lg border transition-colors ${
+                    arAmount === v
+                      ? 'bg-primary-500/20 text-primary-400 border-primary-500/40'
+                      : 'bg-stone-100 text-stone-500 border-stone-200 hover:text-stone-700'
+                  }`}>
+                  ${v}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Weekly limit */}
+          <div>
+            <p className="text-[11px] text-stone-400 mb-1.5">
+              {t('settings.auto_recharge.weekly_limit_label')}
+            </p>
+            <div className="flex gap-1.5 flex-wrap">
+              {WEEKLY_LIMIT_OPTIONS.map(v => (
+                <button
+                  key={v}
+                  onClick={() => setArWeeklyLimit(v)}
+                  className={`px-2.5 py-1 text-xs rounded-lg border transition-colors ${
+                    arWeeklyLimit === v
+                      ? 'bg-primary-500/20 text-primary-400 border-primary-500/40'
+                      : 'bg-stone-100 text-stone-500 border-stone-200 hover:text-stone-700'
+                  }`}>
+                  ${v}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Validation hint */}
+          {arAmount <= arThreshold && (
+            <p className="text-[10px] text-amber-400">
+              {t('settings.auto_recharge.validation_hint')}
+            </p>
+          )}
+
+          {/* Save button */}
+          {arDirty && (
+            <button
+              onClick={onArSave}
+              disabled={arSaving || arAmount <= arThreshold}
+              className={`w-full py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                arSaving || arAmount <= arThreshold
+                  ? 'bg-stone-700/40 text-stone-500 cursor-not-allowed'
+                  : 'bg-primary-500 hover:bg-primary-600 text-white'
+              }`}>
+              {arSaving
+                ? t('settings.auto_recharge.saving')
+                : t('settings.auto_recharge.save_settings')}
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Payment methods */}
+      <div className="border-t border-stone-200 px-3 py-2.5">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-[11px] font-medium text-stone-600">
+            {t('settings.auto_recharge.payment_methods_title')}
+          </p>
+          <button
+            onClick={onAddCard}
+            className="text-[11px] text-primary-400 hover:text-primary-300 font-medium transition-colors">
+            {t('settings.auto_recharge.add_card')}
+          </button>
+        </div>
+
+        {cardsLoading ? (
+          <div className="space-y-1.5">
+            {[0, 1].map(i => (
+              <div key={i} className="h-9 rounded-lg bg-stone-700/30 animate-pulse" />
+            ))}
+          </div>
+        ) : cards.length === 0 ? (
+          <div className="flex items-center gap-2 rounded-lg bg-stone-50 border border-stone-200 p-2.5">
+            <svg
+              className="w-4 h-4 text-stone-500 flex-shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+              />
+            </svg>
+            <p className="text-[11px] text-stone-500">{t('settings.auto_recharge.no_cards')}</p>
+          </div>
+        ) : (
+          <div className="space-y-1.5">
+            {cards.map(card => {
+              const isDeleting = deletingCardId === card.id;
+              const isSettingDefault = settingDefaultId === card.id;
+              const isConfirming = confirmDeleteId === card.id;
+
+              return (
+                <div
+                  key={card.id}
+                  className="flex items-center gap-2 rounded-lg bg-stone-50 border border-stone-200 px-2.5 py-2">
+                  {/* Card icon */}
+                  <svg
+                    className="w-4 h-4 text-stone-400 flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                    />
+                  </svg>
+
+                  {/* Card info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-xs text-stone-900 font-medium">
+                        {cardBrandLabel(card.brand)} ••••{card.last4}
+                      </span>
+                      {card.isDefault && (
+                        <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-primary-500/20 text-primary-400 border border-primary-500/30 font-medium">
+                          {t('settings.auto_recharge.default_badge')}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[10px] text-stone-500 mt-0.5">
+                      {t('settings.auto_recharge.expires', {
+                        month: String(card.expMonth).padStart(2, '0'),
+                        year: String(card.expYear).slice(-2),
+                      })}
+                    </p>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    {!card.isDefault && (
+                      <button
+                        onClick={() => onSetDefault(card.id)}
+                        disabled={!!settingDefaultId || !!deletingCardId}
+                        className="text-[10px] text-stone-500 hover:text-stone-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed px-1.5 py-1">
+                        {isSettingDefault ? '…' : t('settings.auto_recharge.set_default')}
+                      </button>
+                    )}
+
+                    {isConfirming ? (
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => onDeleteCard(card.id)}
+                          disabled={isDeleting}
+                          className="text-[10px] text-coral-400 hover:text-coral-300 font-medium transition-colors disabled:opacity-40 px-1.5 py-1">
+                          {isDeleting ? '…' : t('settings.auto_recharge.confirm')}
+                        </button>
+                        <button
+                          onClick={() => setConfirmDeleteId(null)}
+                          className="text-[10px] text-stone-500 hover:text-stone-400 transition-colors px-1 py-1">
+                          {t('settings.auto_recharge.cancel')}
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setConfirmDeleteId(card.id)}
+                        disabled={isDeleting || !!settingDefaultId}
+                        className="text-[10px] text-stone-500 hover:text-coral-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed px-1.5 py-1">
+                        {t('settings.auto_recharge.remove')}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
-  </div>
   );
 };
 

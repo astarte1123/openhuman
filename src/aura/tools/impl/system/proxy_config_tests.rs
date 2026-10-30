@@ -121,18 +121,12 @@ fn parse_scope_known_values() {
         ProxyConfigTool::parse_scope("env"),
         Some(ProxyScope::Environment)
     );
-    assert_eq!(
-        ProxyConfigTool::parse_scope("aura"),
-        Some(ProxyScope::Aura)
-    );
+    assert_eq!(ProxyConfigTool::parse_scope("aura"), Some(ProxyScope::Aura));
     assert_eq!(
         ProxyConfigTool::parse_scope("internal"),
         Some(ProxyScope::Aura)
     );
-    assert_eq!(
-        ProxyConfigTool::parse_scope("core"),
-        Some(ProxyScope::Aura)
-    );
+    assert_eq!(ProxyConfigTool::parse_scope("core"), Some(ProxyScope::Aura));
     assert_eq!(
         ProxyConfigTool::parse_scope("services"),
         Some(ProxyScope::Services)

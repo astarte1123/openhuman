@@ -19,8 +19,7 @@ fn env_flag_enabled(key: &str) -> bool {
 
 /// Returns the core RPC URL from environment variables or a default value.
 pub fn core_rpc_url_from_env() -> String {
-    std::env::var("AURA_CORE_RPC_URL")
-        .unwrap_or_else(|_| "http://127.0.0.1:7788/rpc".to_string())
+    std::env::var("AURA_CORE_RPC_URL").unwrap_or_else(|_| "http://127.0.0.1:7788/rpc".to_string())
 }
 
 const CONFIG_LOAD_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(30);
@@ -64,8 +63,7 @@ fn fallback_workspace_dir() -> PathBuf {
 
 /// Returns the default Aura configuration directory (~/.aura).
 fn default_aura_dir() -> PathBuf {
-    crate::aura::config::default_root_aura_dir()
-        .unwrap_or_else(|_| env_scoped_fallback_root_dir())
+    crate::aura::config::default_root_aura_dir().unwrap_or_else(|_| env_scoped_fallback_root_dir())
 }
 
 fn env_scoped_fallback_root_dir() -> PathBuf {
@@ -207,8 +205,7 @@ pub fn snapshot_config_json(config: &Config) -> Result<serde_json::Value, String
 
 /// Serializes the client-facing AI config slice consumed by the settings UI.
 pub fn client_config_json(config: &Config) -> serde_json::Value {
-    let app_version =
-        std::env::var("AURA_APP_VERSION").unwrap_or_else(|_| "unknown".to_string());
+    let app_version = std::env::var("AURA_APP_VERSION").unwrap_or_else(|_| "unknown".to_string());
     let api_key_set = config
         .api_key
         .as_deref()
@@ -1208,8 +1205,7 @@ pub async fn load_and_apply_voice_server_settings(
     if let Some(mode) = update.activation_mode {
         match mode.as_str() {
             "tap" => {
-                config.voice_server.activation_mode =
-                    crate::aura::config::VoiceActivationMode::Tap;
+                config.voice_server.activation_mode = crate::aura::config::VoiceActivationMode::Tap;
             }
             "push" => {
                 config.voice_server.activation_mode =

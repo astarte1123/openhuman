@@ -215,9 +215,7 @@ export async function auraAgentChat(
 
 export async function auraLocalAiStatus(): Promise<CommandResponse<LocalAiStatus>> {
   try {
-    return await callCoreRpc<CommandResponse<LocalAiStatus>>({
-      method: 'aura.inference_status',
-    });
+    return await callCoreRpc<CommandResponse<LocalAiStatus>>({ method: 'aura.inference_status' });
   } catch (err) {
     const message = tauriErrorMessage(err);
     if (message.includes('unknown method: aura.inference_status')) {
@@ -339,9 +337,7 @@ export async function auraLocalAiAnalyzeSentiment(
   });
 }
 
-export async function auraLocalAiAssetsStatus(): Promise<
-  CommandResponse<LocalAiAssetsStatus>
-> {
+export async function auraLocalAiAssetsStatus(): Promise<CommandResponse<LocalAiAssetsStatus>> {
   return await callCoreRpc<CommandResponse<LocalAiAssetsStatus>>({
     method: 'aura.local_ai_assets_status',
   });

@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { isTauri, auraAutocompleteCurrent } from '../../../../utils/tauriCommands';
+import { auraAutocompleteCurrent, isTauri } from '../../../../utils/tauriCommands';
 import { useInlineAutocomplete } from '../useInlineAutocomplete';
 
 vi.mock('../../../../utils/tauriCommands', () => ({

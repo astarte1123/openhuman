@@ -344,10 +344,7 @@ export async function memoryLearnAll(namespaces?: string[]): Promise<MemoryLearn
   if (namespaces && namespaces.length > 0) {
     params.namespaces = namespaces;
   }
-  const resp = await callCoreRpc<MemoryLearnAllResult>({
-    method: 'aura.memory_learn_all',
-    params,
-  });
+  const resp = await callCoreRpc<MemoryLearnAllResult>({ method: 'aura.memory_learn_all', params });
   console.debug('[memory.learn] memoryLearnAll: exit processed=%d', resp?.namespaces_processed);
   return resp;
 }

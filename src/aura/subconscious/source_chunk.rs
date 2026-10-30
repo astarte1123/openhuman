@@ -218,41 +218,40 @@ fn resolve_entity(config: &crate::aura::config::Config, raw: &str) -> SourceChun
     // any UI that wants to chip the chunk by category.
     let original_kind = parse_ref(raw).0.to_string();
     type EntityLookup = anyhow::Result<Option<(String, String, f64, Option<f64>)>>;
-    let lookup: EntityLookup =
-        crate::aura::memory::tree::store::with_connection(config, |conn| {
-            // Top-scoring surface form for this entity.
-            let mut stmt = conn.prepare(
-                "SELECT entity_kind, surface, score
+    let lookup: EntityLookup = crate::aura::memory::tree::store::with_connection(config, |conn| {
+        // Top-scoring surface form for this entity.
+        let mut stmt = conn.prepare(
+            "SELECT entity_kind, surface, score
                  FROM mem_tree_entity_index
                  WHERE entity_id = ?1
                  ORDER BY score DESC
                  LIMIT 1",
-            )?;
-            let row = stmt
-                .query_row(rusqlite::params![raw], |row| {
-                    let entity_kind: String = row.get(0)?;
-                    let surface: String = row.get(1)?;
-                    let score: f64 = row.get(2)?;
-                    Ok((entity_kind, surface, score))
-                })
-                .ok();
+        )?;
+        let row = stmt
+            .query_row(rusqlite::params![raw], |row| {
+                let entity_kind: String = row.get(0)?;
+                let surface: String = row.get(1)?;
+                let score: f64 = row.get(2)?;
+                Ok((entity_kind, surface, score))
+            })
+            .ok();
 
-            let Some((entity_kind, surface, score)) = row else {
-                return Ok(None);
-            };
+        let Some((entity_kind, surface, score)) = row else {
+            return Ok(None);
+        };
 
-            // Optional hotness enrichment — empty for entities the
-            // hotness pass hasn't seen yet, fine to leave None.
-            let mut hotness_stmt = conn.prepare(
-                "SELECT last_hotness FROM mem_tree_entity_hotness
+        // Optional hotness enrichment — empty for entities the
+        // hotness pass hasn't seen yet, fine to leave None.
+        let mut hotness_stmt = conn.prepare(
+            "SELECT last_hotness FROM mem_tree_entity_hotness
                  WHERE entity_id = ?1 AND last_hotness IS NOT NULL",
-            )?;
-            let hotness: Option<f64> = hotness_stmt
-                .query_row(rusqlite::params![raw], |row| row.get(0))
-                .ok();
+        )?;
+        let hotness: Option<f64> = hotness_stmt
+            .query_row(rusqlite::params![raw], |row| row.get(0))
+            .ok();
 
-            Ok(Some((entity_kind, surface, score, hotness)))
-        });
+        Ok(Some((entity_kind, surface, score, hotness)))
+    });
 
     match lookup {
         Ok(Some((entity_kind, surface, score, hotness))) => {

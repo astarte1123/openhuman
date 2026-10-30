@@ -3,9 +3,9 @@
 use super::attachments::{parse_attachment_markers, parse_path_only_attachment};
 use super::channel_types::{TelegramChannel, TelegramTypingTask};
 use super::text::{strip_tool_call_tags, TELEGRAM_MAX_MESSAGE_LENGTH};
-use crate::core::event_bus::{publish_global, DomainEvent};
 use crate::aura::channels::traits::{Channel, ChannelMessage, SendMessage};
 use crate::aura::config::StreamMode;
+use crate::core::event_bus::{publish_global, DomainEvent};
 use async_trait::async_trait;
 use std::time::Duration;
 

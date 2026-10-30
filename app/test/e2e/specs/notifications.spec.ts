@@ -126,9 +126,7 @@ describe('Notifications', () => {
     const beforeStats = before.result?.result ?? {};
     const initialUnread = getUnreadCount(beforeStats);
 
-    const result = await callAuraRpc('aura.notification_mark_read', {
-      id: 'e2e-notif-001',
-    });
+    const result = await callAuraRpc('aura.notification_mark_read', { id: 'e2e-notif-001' });
     stepLog('notification_mark_read result', { ok: result.ok, result: result.result });
     expect(result.ok).toBe(true);
 

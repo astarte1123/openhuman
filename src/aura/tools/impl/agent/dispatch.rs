@@ -1,10 +1,10 @@
 //! Subagent dispatch logic shared by all agent delegation tools.
 
-use crate::core::event_bus::{publish_global, DomainEvent};
 use crate::aura::agent::harness::definition::AgentDefinitionRegistry;
 use crate::aura::agent::harness::fork_context::current_parent;
 use crate::aura::agent::harness::subagent_runner::{run_subagent, SubagentRunOptions};
 use crate::aura::tools::traits::ToolResult;
+use crate::core::event_bus::{publish_global, DomainEvent};
 
 pub(crate) async fn dispatch_subagent(
     agent_id: &str,

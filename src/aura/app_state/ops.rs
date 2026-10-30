@@ -376,8 +376,7 @@ async fn fetch_current_user_cached(config: &Config, token: &str) -> Result<Optio
 /// cache TTL is **ignored** here intentionally — for prompt rendering
 /// a slightly stale identity is fine; the freshness check only
 /// matters for the snapshot RPC that fronts the React shell.
-pub fn peek_cached_current_user_identity() -> Option<crate::aura::agent::prompts::UserIdentity>
-{
+pub fn peek_cached_current_user_identity() -> Option<crate::aura::agent::prompts::UserIdentity> {
     let cache = CURRENT_USER_CACHE.lock();
     let entry = cache.as_ref()?;
     let user = entry.user.as_object()?;
@@ -426,9 +425,7 @@ async fn build_runtime_snapshot(config: &Config) -> RuntimeSnapshot {
         }
     };
 
-    let autocomplete = crate::aura::autocomplete::global_engine()
-        .status()
-        .await;
+    let autocomplete = crate::aura::autocomplete::global_engine().status().await;
 
     let service = match crate::aura::service::status(config) {
         Ok(status) => status,

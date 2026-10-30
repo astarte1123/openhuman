@@ -136,8 +136,12 @@ async fn ensure_model_file(
     }
 
     let tmp_path = final_path.with_extension("onnx.part");
-    std::fs::write(&tmp_path, &bytes)
-        .with_context(|| format!("failed to write diarization model to {}", tmp_path.display()))?;
+    std::fs::write(&tmp_path, &bytes).with_context(|| {
+        format!(
+            "failed to write diarization model to {}",
+            tmp_path.display()
+        )
+    })?;
     std::fs::rename(&tmp_path, &final_path).with_context(|| {
         format!(
             "failed to finalize diarization model at {}",
@@ -167,10 +171,16 @@ mod tests {
     #[test]
     fn models_installed_false_when_files_are_truncated_stubs() {
         let dir = tempdir().expect("tempdir");
-        std::fs::write(dir.path().join(SEGMENTATION_MODEL_FILENAME), b"not a real model")
-            .expect("write stub");
-        std::fs::write(dir.path().join(EMBEDDING_MODEL_FILENAME), b"not a real model")
-            .expect("write stub");
+        std::fs::write(
+            dir.path().join(SEGMENTATION_MODEL_FILENAME),
+            b"not a real model",
+        )
+        .expect("write stub");
+        std::fs::write(
+            dir.path().join(EMBEDDING_MODEL_FILENAME),
+            b"not a real model",
+        )
+        .expect("write stub");
         assert!(!models_installed(dir.path()));
     }
 

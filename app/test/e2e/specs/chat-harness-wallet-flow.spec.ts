@@ -134,12 +134,10 @@ describe('Chat harness — wallet flow', () => {
       { timeout: 20_000, timeoutMsg: 'wallet_status never became configured' }
     );
 
-    const walletState = await callAuraRpc<{
-      result: { content_utf8: string; truncated: boolean };
-    }>('aura.test_support_read_workspace_file', {
-      rel_path: 'state/wallet-state.json',
-      max_bytes: 131_072,
-    });
+    const walletState = await callAuraRpc<{ result: { content_utf8: string; truncated: boolean } }>(
+      'aura.test_support_read_workspace_file',
+      { rel_path: 'state/wallet-state.json', max_bytes: 131_072 }
+    );
     expect(walletState.ok).toBe(true);
     const content = walletState.result?.result?.content_utf8 ?? '';
     expect(content).toContain('"consentGranted": true');

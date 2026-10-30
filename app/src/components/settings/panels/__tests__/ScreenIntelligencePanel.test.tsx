@@ -7,9 +7,9 @@ import {
   useScreenIntelligenceState,
 } from '../../../../features/screen-intelligence/useScreenIntelligenceState';
 import {
+  auraUpdateScreenIntelligenceSettings,
   type ConfigSnapshot,
   isTauri,
-  auraUpdateScreenIntelligenceSettings,
 } from '../../../../utils/tauriCommands';
 import ScreenIntelligencePanel from '../ScreenIntelligencePanel';
 
@@ -19,11 +19,7 @@ vi.mock('../../../../features/screen-intelligence/useScreenIntelligenceState', (
 
 vi.mock('../../../../utils/tauriCommands', async importOriginal => {
   const actual = await importOriginal<typeof import('../../../../utils/tauriCommands')>();
-  return {
-    ...actual,
-    isTauri: vi.fn(() => true),
-    auraUpdateScreenIntelligenceSettings: vi.fn(),
-  };
+  return { ...actual, isTauri: vi.fn(() => true), auraUpdateScreenIntelligenceSettings: vi.fn() };
 });
 
 const baseState: ScreenIntelligenceState = {

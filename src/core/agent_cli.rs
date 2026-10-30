@@ -497,9 +497,7 @@ fn print_dump_prompt_help() {
     println!("  aura agent dump-prompt --agent orchestrator --json");
     println!();
     println!("  # integrations_agent bound to the user's gmail connection.");
-    println!(
-        "  aura agent dump-prompt --agent integrations_agent --toolkit gmail --with-tools"
-    );
+    println!("  aura agent dump-prompt --agent integrations_agent --toolkit gmail --with-tools");
 }
 
 fn is_help(value: &str) -> bool {

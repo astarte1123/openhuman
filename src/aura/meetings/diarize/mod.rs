@@ -102,11 +102,10 @@ pub async fn diarize_meeting_system_audio(
 
     let wav_path = wav_path.to_path_buf();
     let deadline = DIARIZATION_DEADLINE;
-    let segments = tokio::task::spawn_blocking(move || {
-        engine::diarize_wav(&wav_path, &models_dir, deadline)
-    })
-    .await
-    .map_err(|e| format!("diarization task panicked: {e}"))??;
+    let segments =
+        tokio::task::spawn_blocking(move || engine::diarize_wav(&wav_path, &models_dir, deadline))
+            .await
+            .map_err(|e| format!("diarization task panicked: {e}"))??;
 
     debug!(
         "{LOG_PREFIX} diarize_meeting_system_audio: done meeting_id={meeting_id} \

@@ -121,7 +121,10 @@ pub fn diarize_wav(
         ));
     }
     if !emb_model.is_file() {
-        return Err(format!("embedding model missing at {}", emb_model.display()));
+        return Err(format!(
+            "embedding model missing at {}",
+            emb_model.display()
+        ));
     }
 
     let (samples, sample_rate) = load_audio(wav_path)?;
@@ -135,8 +138,8 @@ pub fn diarize_wav(
     }
 
     check_deadline(start, deadline)?;
-    let raw_segments =
-        segment_speech(&samples, sample_rate, &seg_model).map_err(|e| format!("speech segmentation failed: {e}"))?;
+    let raw_segments = segment_speech(&samples, sample_rate, &seg_model)
+        .map_err(|e| format!("speech segmentation failed: {e}"))?;
     debug!(
         "{LOG_PREFIX} engine::diarize_wav: {} raw speech segment(s)",
         raw_segments.len()
@@ -386,8 +389,8 @@ fn merge_short_segments(segments: Vec<SpeechSegment>, sample_rate: u32) -> Vec<S
     for seg in segments.iter().skip(1) {
         let gap = seg.start_sample.saturating_sub(current.end_sample);
         let current_dur = current.end_sample.saturating_sub(current.start_sample);
-        let should_merge =
-            gap <= max_gap_samples || (current_dur < min_dur_samples && gap <= max_short_gap_samples);
+        let should_merge = gap <= max_gap_samples
+            || (current_dur < min_dur_samples && gap <= max_short_gap_samples);
 
         if should_merge {
             current.end_secs = seg.end_secs;
@@ -621,7 +624,12 @@ fn cosine_similarity(a: &[f32], b: &[f32]) -> f32 {
 mod tests {
     use super::*;
 
-    fn seg(start_secs: f64, end_secs: f64, start_sample: usize, end_sample: usize) -> SpeechSegment {
+    fn seg(
+        start_secs: f64,
+        end_secs: f64,
+        start_sample: usize,
+        end_sample: usize,
+    ) -> SpeechSegment {
         SpeechSegment {
             start_secs,
             end_secs,

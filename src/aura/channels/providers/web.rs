@@ -6,9 +6,6 @@ use std::collections::{HashMap, HashSet};
 use tokio::sync::{broadcast, Mutex};
 use uuid::Uuid;
 
-use crate::core::all::{ControllerFuture, RegisteredController};
-use crate::core::socketio::{SubagentProgressDetail, WebChannelEvent};
-use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 use crate::aura::agent::profiles::{AgentProfile, AgentProfileStore, DEFAULT_PROFILE_ID};
 use crate::aura::agent::Agent;
 use crate::aura::config::rpc as config_rpc;
@@ -17,6 +14,9 @@ use crate::aura::prompt_injection::{
     enforce_prompt_input, PromptEnforcementAction, PromptEnforcementContext,
 };
 use crate::aura::threads::turn_state::{TurnStateMirror, TurnStateStore};
+use crate::core::all::{ControllerFuture, RegisteredController};
+use crate::core::socketio::{SubagentProgressDetail, WebChannelEvent};
+use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 use crate::rpc::RpcOutcome;
 
 use super::presentation;
@@ -1465,11 +1465,9 @@ fn load_reflection_chunks_for_thread(
     workspace_dir: &std::path::Path,
     thread_id: &str,
 ) -> Option<Vec<crate::aura::subconscious::SourceChunk>> {
-    let messages = crate::aura::memory::conversations::get_messages(
-        workspace_dir.to_path_buf(),
-        thread_id,
-    )
-    .ok()?;
+    let messages =
+        crate::aura::memory::conversations::get_messages(workspace_dir.to_path_buf(), thread_id)
+            .ok()?;
     let first = messages.first()?;
     let origin = first
         .extra_metadata
@@ -1483,12 +1481,11 @@ fn load_reflection_chunks_for_thread(
         .get("reflection_id")
         .and_then(|v| v.as_str())?
         .to_string();
-    let reflection =
-        crate::aura::subconscious::store::with_connection(workspace_dir, |conn| {
-            crate::aura::subconscious::reflection_store::get_reflection(conn, &reflection_id)
-        })
-        .ok()
-        .flatten()?;
+    let reflection = crate::aura::subconscious::store::with_connection(workspace_dir, |conn| {
+        crate::aura::subconscious::reflection_store::get_reflection(conn, &reflection_id)
+    })
+    .ok()
+    .flatten()?;
     Some(reflection.source_chunks)
 }
 

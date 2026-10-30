@@ -9,8 +9,8 @@
 //! 2. **Emoji reactions** — decide whether the assistant should react to the
 //!    user's message with an emoji.
 
-use crate::core::socketio::WebChannelEvent;
 use crate::aura::config::rpc as config_rpc;
+use crate::core::socketio::WebChannelEvent;
 
 use super::web::publish_web_channel_event;
 
@@ -396,9 +396,7 @@ async fn try_reaction(user_message: &str) -> Option<String> {
         return None;
     }
 
-    match crate::aura::inference::ops::inference_should_react(&config, user_message, "web")
-        .await
-    {
+    match crate::aura::inference::ops::inference_should_react(&config, user_message, "web").await {
         Ok(outcome) => {
             let decision = outcome.value;
             if decision.should_react {

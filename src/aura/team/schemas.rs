@@ -2,9 +2,9 @@ use serde::de::DeserializeOwned;
 use serde::Deserialize;
 use serde_json::{Map, Value};
 
+use crate::aura::config::rpc as config_rpc;
 use crate::core::all::{ControllerFuture, RegisteredController};
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
-use crate::aura::config::rpc as config_rpc;
 use crate::rpc::RpcOutcome;
 
 #[derive(Debug, Deserialize)]
@@ -442,8 +442,7 @@ fn handle_team_remove_member(params: Map<String, Value>) -> ControllerFuture {
         let config = config_rpc::load_config_with_timeout().await?;
         let payload = deserialize_params::<RemoveMemberParams>(params)?;
         to_json(
-            crate::aura::team::remove_member(&config, &payload.team_id, &payload.user_id)
-                .await?,
+            crate::aura::team::remove_member(&config, &payload.team_id, &payload.user_id).await?,
         )
     })
 }
@@ -477,8 +476,7 @@ fn handle_team_revoke_invite(params: Map<String, Value>) -> ControllerFuture {
         let config = config_rpc::load_config_with_timeout().await?;
         let payload = deserialize_params::<RevokeInviteParams>(params)?;
         to_json(
-            crate::aura::team::revoke_invite(&config, &payload.team_id, &payload.invite_id)
-                .await?,
+            crate::aura::team::revoke_invite(&config, &payload.team_id, &payload.invite_id).await?,
         )
     })
 }

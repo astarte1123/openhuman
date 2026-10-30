@@ -57,7 +57,11 @@ fn transport_from_config_str_parses_websocket() {
 #[test]
 fn transport_from_config_str_defaults_to_webhook() {
     for s in ["", "webhook", "  ", "bogus", "WEBSOCKET"] {
-        assert_eq!(YouWorkerTransport::from_config_str(s), YouWorkerTransport::Webhook, "input={s:?}");
+        assert_eq!(
+            YouWorkerTransport::from_config_str(s),
+            YouWorkerTransport::Webhook,
+            "input={s:?}"
+        );
     }
 }
 
@@ -103,7 +107,10 @@ fn ws_fold_ignores_non_transcript_frames() {
     let mut id = None;
     let mut text = String::new();
     let frame = serde_json::json!({ "type": "status.update", "payload": {} });
-    assert_eq!(ws_fold_transcript_delta(&frame, &mut id, &mut text).unwrap(), None);
+    assert_eq!(
+        ws_fold_transcript_delta(&frame, &mut id, &mut text).unwrap(),
+        None
+    );
 }
 
 #[test]
@@ -123,7 +130,10 @@ fn ws_fold_ignores_non_response_block_created() {
         "type": "transcript.delta",
         "payload": { "delta": { "op": "block.created", "block": { "block_id": "u1", "type": "user" } } }
     });
-    assert_eq!(ws_fold_transcript_delta(&frame, &mut id, &mut text).unwrap(), None);
+    assert_eq!(
+        ws_fold_transcript_delta(&frame, &mut id, &mut text).unwrap(),
+        None
+    );
     assert!(id.is_none());
 }
 
@@ -136,14 +146,20 @@ fn ws_fold_full_turn_accumulates_and_finalizes() {
         "type": "transcript.delta",
         "payload": { "delta": { "op": "block.created", "block": { "block_id": "b1", "type": "response" } } }
     });
-    assert_eq!(ws_fold_transcript_delta(&created, &mut id, &mut text).unwrap(), None);
+    assert_eq!(
+        ws_fold_transcript_delta(&created, &mut id, &mut text).unwrap(),
+        None
+    );
     assert_eq!(id.as_deref(), Some("b1"));
 
     let updated = serde_json::json!({
         "type": "transcript.delta",
         "payload": { "delta": { "op": "block.updated", "block_id": "b1", "patch": { "markdown": "pong" } } }
     });
-    assert_eq!(ws_fold_transcript_delta(&updated, &mut id, &mut text).unwrap(), None);
+    assert_eq!(
+        ws_fold_transcript_delta(&updated, &mut id, &mut text).unwrap(),
+        None
+    );
     assert_eq!(text, "pong");
 
     // A later block.updated replaces (not appends) — confirmed shape carries
@@ -152,7 +168,10 @@ fn ws_fold_full_turn_accumulates_and_finalizes() {
         "type": "transcript.delta",
         "payload": { "delta": { "op": "block.updated", "block_id": "b1", "patch": { "markdown": "pong pong" } } }
     });
-    assert_eq!(ws_fold_transcript_delta(&updated_again, &mut id, &mut text).unwrap(), None);
+    assert_eq!(
+        ws_fold_transcript_delta(&updated_again, &mut id, &mut text).unwrap(),
+        None
+    );
     assert_eq!(text, "pong pong");
 
     let finalized = serde_json::json!({
@@ -173,7 +192,10 @@ fn ws_fold_ignores_finalize_for_other_blocks() {
         "type": "transcript.delta",
         "payload": { "delta": { "op": "block.finalized", "block_id": "reasoning-1" } }
     });
-    assert_eq!(ws_fold_transcript_delta(&frame, &mut id, &mut text).unwrap(), None);
+    assert_eq!(
+        ws_fold_transcript_delta(&frame, &mut id, &mut text).unwrap(),
+        None
+    );
 }
 
 // ── Manual live smoke test ───────────────────────────────────────────────────

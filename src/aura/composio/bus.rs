@@ -51,11 +51,11 @@ use std::time::Duration;
 
 use async_trait::async_trait;
 
-use crate::core::event_bus::{subscribe_global, DomainEvent, EventHandler, SubscriptionHandle};
 use crate::aura::agent::triage::{apply_decision, run_triage, TriageOutcome, TriggerEnvelope};
 use crate::aura::composio::trigger_history;
 use crate::aura::config::rpc as config_rpc;
 use crate::aura::config::schema::COMPOSIO_MODE_DIRECT;
+use crate::core::event_bus::{subscribe_global, DomainEvent, EventHandler, SubscriptionHandle};
 
 use super::client::ComposioClient;
 use super::providers::{get_provider, ProviderContext};

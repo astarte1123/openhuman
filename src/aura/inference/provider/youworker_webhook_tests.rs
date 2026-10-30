@@ -7,7 +7,9 @@ use base64::Engine;
 /// calling `verify_signature`) so the test actually exercises the function
 /// under test against ground truth.
 fn sign(secret: &str, webhook_id: &str, webhook_timestamp: &str, raw_body: &[u8]) -> String {
-    let encoded_key = secret.strip_prefix("whsec_").expect("test secret must have whsec_ prefix");
+    let encoded_key = secret
+        .strip_prefix("whsec_")
+        .expect("test secret must have whsec_ prefix");
     let key_bytes = base64::engine::general_purpose::STANDARD
         .decode(encoded_key)
         .expect("test secret must be valid base64");
@@ -31,7 +33,13 @@ const TEST_SECRET: &str = "whsec_MfKQ9r8GKYqrTwjUPD8ILPZIo2LaLaSw";
 fn verify_signature_accepts_a_correctly_signed_delivery() {
     let body = br#"{"conversation_ref":"c1","text":"pong","idempotency_key":"k1"}"#;
     let sig = sign(TEST_SECRET, "wh_1", "1700000000", body);
-    assert!(verify_signature(TEST_SECRET, "wh_1", "1700000000", body, &sig));
+    assert!(verify_signature(
+        TEST_SECRET,
+        "wh_1",
+        "1700000000",
+        body,
+        &sig
+    ));
 }
 
 #[test]
@@ -39,7 +47,13 @@ fn verify_signature_rejects_a_tampered_body() {
     let body = br#"{"conversation_ref":"c1","text":"pong","idempotency_key":"k1"}"#;
     let sig = sign(TEST_SECRET, "wh_1", "1700000000", body);
     let tampered = br#"{"conversation_ref":"c1","text":"PWNED","idempotency_key":"k1"}"#;
-    assert!(!verify_signature(TEST_SECRET, "wh_1", "1700000000", tampered, &sig));
+    assert!(!verify_signature(
+        TEST_SECRET,
+        "wh_1",
+        "1700000000",
+        tampered,
+        &sig
+    ));
 }
 
 #[test]
@@ -47,13 +61,25 @@ fn verify_signature_rejects_wrong_secret() {
     let body = br#"{"conversation_ref":"c1"}"#;
     let sig = sign(TEST_SECRET, "wh_1", "1700000000", body);
     let other_secret = "whsec_ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
-    assert!(!verify_signature(other_secret, "wh_1", "1700000000", body, &sig));
+    assert!(!verify_signature(
+        other_secret,
+        "wh_1",
+        "1700000000",
+        body,
+        &sig
+    ));
 }
 
 #[test]
 fn verify_signature_rejects_missing_whsec_prefix() {
     let body = br#"{"conversation_ref":"c1"}"#;
-    assert!(!verify_signature("not-a-whsec-secret", "wh_1", "1700000000", body, "v1,anything"));
+    assert!(!verify_signature(
+        "not-a-whsec-secret",
+        "wh_1",
+        "1700000000",
+        body,
+        "v1,anything"
+    ));
 }
 
 #[test]
@@ -61,13 +87,25 @@ fn verify_signature_accepts_when_any_tuple_in_a_rotation_list_matches() {
     let body = br#"{"conversation_ref":"c1"}"#;
     let good = sign(TEST_SECRET, "wh_1", "1700000000", body);
     let header = format!("v1,bm9uc2Vuc2U= {good}");
-    assert!(verify_signature(TEST_SECRET, "wh_1", "1700000000", body, &header));
+    assert!(verify_signature(
+        TEST_SECRET,
+        "wh_1",
+        "1700000000",
+        body,
+        &header
+    ));
 }
 
 #[test]
 fn verify_signature_rejects_empty_signature_header() {
     let body = br#"{}"#;
-    assert!(!verify_signature(TEST_SECRET, "wh_1", "1700000000", body, ""));
+    assert!(!verify_signature(
+        TEST_SECRET,
+        "wh_1",
+        "1700000000",
+        body,
+        ""
+    ));
 }
 
 // ── within_replay_window ─────────────────────────────────────────────────────

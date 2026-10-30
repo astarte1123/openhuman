@@ -107,8 +107,8 @@ pub fn publish_failed(envelope: &TriggerEnvelope, reason: &str) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::core::event_bus::{global, init_global, DomainEvent};
     use crate::aura::agent::triage::TriggerEnvelope;
+    use crate::core::event_bus::{global, init_global, DomainEvent};
     use serde_json::json;
     use std::sync::Arc;
     use tokio::sync::Mutex;

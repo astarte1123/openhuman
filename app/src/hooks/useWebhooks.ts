@@ -161,11 +161,7 @@ export function useWebhooks() {
   const registerEcho = useCallback(
     async (tunnelUuid: string, tunnelName?: string, backendTunnelId?: string) => {
       try {
-        const response = await auraWebhooksRegisterEcho(
-          tunnelUuid,
-          tunnelName,
-          backendTunnelId
-        );
+        const response = await auraWebhooksRegisterEcho(tunnelUuid, tunnelName, backendTunnelId);
         setRegistrations(response.result.result.registrations);
         log('Registered echo for tunnel %s', tunnelUuid);
       } catch (err) {

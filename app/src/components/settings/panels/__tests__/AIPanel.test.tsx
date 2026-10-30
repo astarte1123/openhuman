@@ -606,9 +606,7 @@ describe('AIPanel', () => {
 
     fireEvent.change(screen.getByLabelText('Interval'), { target: { value: '30' } });
     await waitFor(() =>
-      expect(vi.mocked(auraHeartbeatSettingsSet)).toHaveBeenLastCalledWith({
-        interval_minutes: 30,
-      })
+      expect(vi.mocked(auraHeartbeatSettingsSet)).toHaveBeenLastCalledWith({ interval_minutes: 30 })
     );
 
     fireEvent.click(screen.getByRole('button', { name: 'Planner tick now' }));

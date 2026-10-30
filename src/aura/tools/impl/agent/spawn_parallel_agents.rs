@@ -1,11 +1,11 @@
 //! Tool: `spawn_parallel_agents` — fan out independent sub-agent tasks.
 
-use crate::core::event_bus::{publish_global, DomainEvent};
 use crate::aura::agent::harness::definition::{AgentDefinition, AgentDefinitionRegistry};
 use crate::aura::agent::harness::fork_context::current_parent;
 use crate::aura::agent::harness::subagent_runner::{run_subagent, SubagentRunOptions};
 use crate::aura::agent::progress::AgentProgress;
 use crate::aura::tools::traits::{PermissionLevel, Tool, ToolResult};
+use crate::core::event_bus::{publish_global, DomainEvent};
 use async_trait::async_trait;
 use futures::future::join_all;
 use serde::{Deserialize, Serialize};

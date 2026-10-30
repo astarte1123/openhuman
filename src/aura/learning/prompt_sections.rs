@@ -146,9 +146,7 @@ const CACHE_PROMPT_CAP: usize = 25;
 /// from the synchronous part of the system prompt build path. The caller should
 /// keep both this path and the existing KV-namespace path active until the KV path
 /// is removed in a follow-up phase.
-pub fn load_learned_from_cache(
-    cache: &crate::aura::learning::cache::FacetCache,
-) -> Vec<String> {
+pub fn load_learned_from_cache(cache: &crate::aura::learning::cache::FacetCache) -> Vec<String> {
     let facets = match cache.list_active() {
         Ok(f) => f,
         Err(e) => {
@@ -196,12 +194,11 @@ pub fn load_learned_from_cache(
             // Phase 4: render in structured `class/key: value` form so the
             // agent can parse the source. Goal class keeps value-only (full
             // sentence, no key prefix). Pinned entries get a trailing suffix.
-            let pinned =
-                if f.user_state == crate::aura::memory::store::profile::UserState::Pinned {
-                    " *(pinned)*"
-                } else {
-                    ""
-                };
+            let pinned = if f.user_state == crate::aura::memory::store::profile::UserState::Pinned {
+                " *(pinned)*"
+            } else {
+                ""
+            };
             let entry = if f.key.starts_with("goal/") {
                 // Goal class: render just the value, it's a sentence.
                 format!("{}{}", f.value, pinned)

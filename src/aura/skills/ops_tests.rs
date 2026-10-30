@@ -185,21 +185,13 @@ fn project_scope_shadows_user_scope_on_collision() {
     let ws_dir = tempfile::tempdir().unwrap();
     write(&ws_dir.path().join(".aura").join("trust"), "");
 
-    let user_skill = user_dir
-        .path()
-        .join(".aura")
-        .join("skills")
-        .join("greet");
+    let user_skill = user_dir.path().join(".aura").join("skills").join("greet");
     write(
         &user_skill.join("SKILL.md"),
         "---\nname: greet\ndescription: USER COPY\n---\n",
     );
 
-    let proj_skill = ws_dir
-        .path()
-        .join(".aura")
-        .join("skills")
-        .join("greet");
+    let proj_skill = ws_dir.path().join(".aura").join("skills").join("greet");
     write(
         &proj_skill.join("SKILL.md"),
         "---\nname: greet\ndescription: PROJECT COPY\n---\n",
@@ -1152,8 +1144,7 @@ fn uninstall_skill_rejects_symlinked_skills_root() {
         "---\nname: real\ndescription: in real root\n---\n",
     );
     std::fs::create_dir_all(home.path().join(".aura")).unwrap();
-    std::os::unix::fs::symlink(&real_skills, home.path().join(".aura").join("skills"))
-        .unwrap();
+    std::os::unix::fs::symlink(&real_skills, home.path().join(".aura").join("skills")).unwrap();
     let err = uninstall_skill(
         UninstallSkillParams {
             name: "real".into(),

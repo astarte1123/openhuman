@@ -1,20 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { useT } from '../../../../lib/i18n/I18nContext';
 import { listConnections as listComposioConnections } from '../../../../lib/composio/composioApi';
 import type { ComposioConnection } from '../../../../lib/composio/types';
+import { useT } from '../../../../lib/i18n/I18nContext';
 import {
   creditsApi,
   type CreditTransaction,
   type TeamUsage,
 } from '../../../../services/api/creditsApi';
 import {
-  type HeartbeatPlannerSummary,
-  type HeartbeatSettings,
-  type HeartbeatSettingsPatch,
   auraHeartbeatSettingsGet,
   auraHeartbeatSettingsSet,
   auraHeartbeatTickNow,
+  type HeartbeatPlannerSummary,
+  type HeartbeatSettings,
+  type HeartbeatSettingsPatch,
 } from '../../../../utils/tauriCommands/heartbeat';
 import { FormulaRow, LoopToggle, MetricTile } from './PanelControls';
 import {
@@ -425,9 +425,7 @@ const BackgroundLoopControls = ({
                 />
                 <LoopToggle
                   label={t('settings.background_loop_controls.external_delivery_label')}
-                  description={t(
-                    'settings.background_loop_controls.external_delivery_description'
-                  )}
+                  description={t('settings.background_loop_controls.external_delivery_description')}
                   checked={settings.external_delivery_enabled}
                   busy={saving === 'external_delivery_enabled'}
                   onToggle={() =>

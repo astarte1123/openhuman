@@ -246,11 +246,7 @@ fn resolve_prompts_dir(workspace_dir: &Path) -> Option<std::path::PathBuf> {
 
     // Try CARGO_MANIFEST_DIR (dev builds)
     if let Some(dir) = option_env!("CARGO_MANIFEST_DIR").map(std::path::PathBuf::from) {
-        let candidate = dir
-            .join("src")
-            .join("aura")
-            .join("agent")
-            .join("prompts");
+        let candidate = dir.join("src").join("aura").join("agent").join("prompts");
         if candidate.is_dir() {
             return Some(candidate);
         }

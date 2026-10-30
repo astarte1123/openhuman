@@ -22,10 +22,10 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use async_trait::async_trait;
 
-use crate::core::event_bus::{subscribe_global, DomainEvent, EventHandler, SubscriptionHandle};
 use crate::aura::learning::candidate::{
     self, CueFamily, EvidenceRef, FacetClass, LearningCandidate,
 };
+use crate::core::event_bus::{subscribe_global, DomainEvent, EventHandler, SubscriptionHandle};
 
 // ── Constants ────────────────────────────────────────────────────────────────
 

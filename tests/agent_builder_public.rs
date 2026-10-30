@@ -104,9 +104,7 @@ impl Memory for StubMemory {
         Ok(false)
     }
 
-    async fn namespace_summaries(
-        &self,
-    ) -> Result<Vec<aura_core::aura::memory::NamespaceSummary>> {
+    async fn namespace_summaries(&self) -> Result<Vec<aura_core::aura::memory::NamespaceSummary>> {
         Ok(Vec::new())
     }
 
@@ -175,10 +173,7 @@ fn builder_applies_defaults_and_exposes_public_accessors() {
 
     assert_eq!(agent.tools().len(), 2);
     assert_eq!(agent.tool_specs().len(), 2);
-    assert_eq!(
-        agent.model_name(),
-        aura_core::aura::config::DEFAULT_MODEL
-    );
+    assert_eq!(agent.model_name(), aura_core::aura::config::DEFAULT_MODEL);
     assert_eq!(agent.temperature(), 0.7);
     assert_eq!(agent.workspace_dir(), std::path::Path::new("."));
     assert!(agent.skills().is_empty());

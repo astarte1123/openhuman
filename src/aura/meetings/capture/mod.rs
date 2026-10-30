@@ -147,7 +147,11 @@ impl CaptureHandle {
     /// [`CaptureHandle::stop_and_wait_for_drain`] also waits for it to
     /// actually finish — see
     /// [`extra_join_handles`](Self::extra_join_handles)'s doc comment.
-    pub(crate) fn add_join_handle(&mut self, handle: tokio::task::JoinHandle<()>, label: &'static str) {
+    pub(crate) fn add_join_handle(
+        &mut self,
+        handle: tokio::task::JoinHandle<()>,
+        label: &'static str,
+    ) {
         self.extra_join_handles.push((handle, label));
     }
 
@@ -343,7 +347,10 @@ mod tests {
             .await
             .expect("must not error when no signal is attached");
 
-        assert!(flag.load(Ordering::SeqCst), "stop flags must still be signalled");
+        assert!(
+            flag.load(Ordering::SeqCst),
+            "stop flags must still be signalled"
+        );
     }
 
     #[tokio::test]
@@ -388,7 +395,10 @@ mod tests {
             .await
             .expect("a timeout must be swallowed, not propagated as an error");
 
-        assert!(flag.load(Ordering::SeqCst), "stop flags must still be signalled");
+        assert!(
+            flag.load(Ordering::SeqCst),
+            "stop flags must still be signalled"
+        );
     }
 
     #[tokio::test]

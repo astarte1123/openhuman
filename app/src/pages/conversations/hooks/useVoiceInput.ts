@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 import { type ChatSendError, chatSendError } from '../../../chat/chatSendError';
 import type { ThreadMessage } from '../../../types/thread';
 import {
-  notifyOverlaySttState,
   auraVoiceStatus,
   auraVoiceTranscribeBytes,
   auraVoiceTts,
+  notifyOverlaySttState,
 } from '../../../utils/tauriCommands';
 import type { InputMode, ReplyMode } from '../../Conversations';
 

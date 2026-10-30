@@ -14,9 +14,9 @@ use serde::de::DeserializeOwned;
 use serde_json::{Map, Value};
 
 use super::rpc as slack_rpc;
+use crate::aura::config::rpc as config_rpc;
 use crate::core::all::{ControllerFuture, RegisteredController};
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
-use crate::aura::config::rpc as config_rpc;
 use crate::rpc::RpcOutcome;
 
 const NAMESPACE: &str = "slack_memory";

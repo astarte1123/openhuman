@@ -51,13 +51,7 @@ const INDEX_JS = `globalThis.__skill = {
 /** Resolve directories that should contain `e2e-runtime/manifest.json` (core may use either). */
 export function resolveE2eRuntimeSkillDirs(): string[] {
   const dirs: string[] = [];
-  const homeDir = path.join(
-    os.homedir(),
-    '.aura',
-    'workspace',
-    'skills',
-    E2E_RUNTIME_SKILL_ID
-  );
+  const homeDir = path.join(os.homedir(), '.aura', 'workspace', 'skills', E2E_RUNTIME_SKILL_ID);
   dirs.push(homeDir);
 
   const w = process.env.AURA_WORKSPACE?.trim();

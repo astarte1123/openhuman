@@ -36,9 +36,7 @@ pub(super) fn run_status(args: &[String]) -> Result<()> {
 /// `aura screen-intelligence start` — start a capture + vision session.
 pub(super) fn run_start_session(args: &[String]) -> Result<()> {
     if args.iter().any(|a| is_help(a)) {
-        println!(
-            "Usage: aura screen-intelligence start [--ttl <secs>] [--no-vision-model] [-v]"
-        );
+        println!("Usage: aura screen-intelligence start [--ttl <secs>] [--no-vision-model] [-v]");
         println!();
         println!("Start a screen intelligence capture session with vision analysis.");
         println!("The session runs until TTL expires or Ctrl+C is pressed.");

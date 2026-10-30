@@ -49,9 +49,6 @@ mod tests {
 
     #[test]
     fn prefix_trims_raw_title_whitespace() {
-        assert_eq!(
-            format_title("Discord", "  ping  "),
-            "Aura: Discord — ping"
-        );
+        assert_eq!(format_title("Discord", "  ping  "), "Aura: Discord — ping");
     }
 }

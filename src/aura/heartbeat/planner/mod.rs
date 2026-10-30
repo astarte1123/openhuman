@@ -25,10 +25,10 @@ use std::collections::HashSet;
 
 use chrono::{DateTime, Duration, Utc};
 
-use crate::core::event_bus::{publish_global, DomainEvent};
 use crate::aura::config::Config;
 use crate::aura::notifications::bus::publish_core_notification;
 use crate::aura::notifications::types::CoreNotificationEvent;
+use crate::core::event_bus::{publish_global, DomainEvent};
 
 use collectors::{
     collect_calendar_meetings, collect_cron_reminders, collect_relevant_notifications,

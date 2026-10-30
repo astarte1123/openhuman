@@ -30,8 +30,7 @@ fn shared_root_dir(config: &Config) -> PathBuf {
     if std::env::var_os("AURA_WORKSPACE").is_some() {
         return config_root_dir(config);
     }
-    crate::aura::config::default_root_aura_dir()
-        .unwrap_or_else(|_| config_root_dir(config))
+    crate::aura::config::default_root_aura_dir().unwrap_or_else(|_| config_root_dir(config))
 }
 
 pub(crate) fn workspace_ollama_dir(config: &Config) -> PathBuf {

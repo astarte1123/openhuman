@@ -114,10 +114,9 @@ pub fn capture_screen_image_ref_for_context(
         use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine as _};
         use uuid::Uuid;
 
-        let tmp_file = TemporaryScreenshotFile::new(std::env::temp_dir().join(format!(
-            "aura_screen_intelligence_{}.png",
-            Uuid::new_v4()
-        )));
+        let tmp_file = TemporaryScreenshotFile::new(
+            std::env::temp_dir().join(format!("aura_screen_intelligence_{}.png", Uuid::new_v4())),
+        );
 
         let capture_mode = capture_mode_for_context(context);
         log_capture_mode_decision(context, &capture_mode);

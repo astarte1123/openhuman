@@ -8,7 +8,6 @@
 //! drive the model.
 
 use super::types::{Agent, AgentBuilder};
-use crate::core::event_bus::{publish_global, DomainEvent};
 use crate::aura::agent::dispatcher::ParsedToolCall;
 use crate::aura::agent::error::AgentError;
 use crate::aura::inference::provider::{self, ConversationMessage, Provider, ToolCall};
@@ -18,6 +17,7 @@ use crate::aura::prompt_injection::{
 };
 use crate::aura::tools::{Tool, ToolSpec};
 use crate::aura::util::truncate_with_ellipsis;
+use crate::core::event_bus::{publish_global, DomainEvent};
 use anyhow::Result;
 use std::collections::HashSet;
 use std::sync::Arc;
@@ -114,9 +114,7 @@ impl Agent {
     }
 
     /// Active Composio integrations fetched at session start.
-    pub fn connected_integrations(
-        &self,
-    ) -> &[crate::aura::context::prompt::ConnectedIntegration] {
+    pub fn connected_integrations(&self) -> &[crate::aura::context::prompt::ConnectedIntegration] {
         &self.connected_integrations
     }
 

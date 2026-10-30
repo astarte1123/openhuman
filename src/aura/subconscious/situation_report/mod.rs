@@ -128,9 +128,8 @@ fn build_identifiers_section() -> String {
     if identities.is_empty() {
         return String::new();
     }
-    let body = crate::aura::composio::providers::profile::render_connected_identities_section(
-        &identities,
-    );
+    let body =
+        crate::aura::composio::providers::profile::render_connected_identities_section(&identities);
     if body.trim().is_empty() {
         return String::new();
     }

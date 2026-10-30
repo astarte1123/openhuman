@@ -51,7 +51,7 @@ import type { TaskBoardCard, TaskBoardCardStatus } from '../types/turnState';
 import { splitAgentMessageIntoBubbles } from '../utils/agentMessageBubbles';
 import { BILLING_DASHBOARD_URL } from '../utils/links';
 import { openUrl } from '../utils/openUrl';
-import { isTauri, auraAutocompleteAccept } from '../utils/tauriCommands';
+import { auraAutocompleteAccept, isTauri } from '../utils/tauriCommands';
 import { formatTimelineEntry } from '../utils/toolTimelineFormatting';
 import { AgentMessageBubble, BubbleMarkdown } from './conversations/components/AgentMessageBubble';
 import { CitationChips, type MessageCitation } from './conversations/components/CitationChips';
@@ -438,7 +438,10 @@ const Conversations = ({ variant = 'page', composer = 'text' }: ConversationsPro
       );
     }
 
-    if (sendDecision.blockReason === 'empty_input' || sendDecision.blockReason === 'missing_thread') {
+    if (
+      sendDecision.blockReason === 'empty_input' ||
+      sendDecision.blockReason === 'missing_thread'
+    ) {
       return;
     }
 

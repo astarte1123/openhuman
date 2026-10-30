@@ -7,7 +7,10 @@ import type { IntegrationNotification } from '../../types/notifications';
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** Relative human-readable time string, e.g. "2m ago". */
-function relativeTime(isoString: string, t: (key: string, params?: TranslationParams) => string): string {
+function relativeTime(
+  isoString: string,
+  t: (key: string, params?: TranslationParams) => string
+): string {
   const diff = Date.now() - new Date(isoString).getTime();
   const s = Math.floor(diff / 1000);
   if (s < 60) return t('notifications.card.seconds_ago', { count: s });

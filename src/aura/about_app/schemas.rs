@@ -4,9 +4,9 @@ use serde::de::DeserializeOwned;
 use serde::Deserialize;
 use serde_json::{Map, Value};
 
+use crate::aura::about_app::CapabilityCategory;
 use crate::core::all::{ControllerFuture, RegisteredController};
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
-use crate::aura::about_app::CapabilityCategory;
 use crate::rpc::RpcOutcome;
 
 #[derive(Debug, Deserialize, Default)]
@@ -129,9 +129,7 @@ fn handle_about_app_search(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let payload = deserialize_params::<AboutAppSearchParams>(params)?;
         tracing::debug!(query = %payload.query, "[about_app] search capabilities");
-        to_json(crate::aura::about_app::search_capabilities(
-            &payload.query,
-        ))
+        to_json(crate::aura::about_app::search_capabilities(&payload.query))
     })
 }
 

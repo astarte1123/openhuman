@@ -626,10 +626,7 @@ mod tests {
             crate::aura::embeddings::DEFAULT_OLLAMA_MODEL,
             "empty model ID must fall back to default Ollama model"
         );
-        assert_eq!(
-            dims,
-            crate::aura::embeddings::DEFAULT_OLLAMA_DIMENSIONS
-        );
+        assert_eq!(dims, crate::aura::embeddings::DEFAULT_OLLAMA_DIMENSIONS);
     }
 
     #[test]

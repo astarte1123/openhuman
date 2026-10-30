@@ -535,9 +535,7 @@ fn upsert_summary_provenance(front_matter: &str) -> String {
     let mut inserted = false;
 
     for raw in front_matter.lines() {
-        if raw.starts_with("aura_core_version: ")
-            || raw.starts_with("memory_artifact_format: ")
-        {
+        if raw.starts_with("aura_core_version: ") || raw.starts_with("memory_artifact_format: ") {
             continue;
         }
         if !inserted && raw == "aliases:" {
@@ -561,10 +559,7 @@ fn upsert_summary_provenance(front_matter: &str) -> String {
             .unwrap_or(lines.len());
         lines.insert(
             insert_at,
-            format!(
-                "aura_core_version: {}",
-                yaml_scalar(AURA_CORE_VERSION)
-            ),
+            format!("aura_core_version: {}", yaml_scalar(AURA_CORE_VERSION)),
         );
         lines.insert(
             insert_at + 1,
@@ -912,10 +907,7 @@ mod tests {
         assert!(fm.contains("level: 1"), "must have level");
         assert!(fm.contains("child_count: 2"), "must have child_count");
         assert!(
-            fm.contains(&format!(
-                "aura_core_version: {}",
-                AURA_CORE_VERSION
-            )),
+            fm.contains(&format!("aura_core_version: {}", AURA_CORE_VERSION)),
             "must stamp the core version"
         );
         assert!(
@@ -1185,10 +1177,7 @@ mod tests {
         assert!(rewritten_str.contains("  - person/Alice-Smith"));
         assert!(rewritten_str.contains("  - topic/Memory"));
         assert!(!rewritten_str.contains("tags: []"));
-        assert!(rewritten_str.contains(&format!(
-            "aura_core_version: {}",
-            AURA_CORE_VERSION
-        )));
+        assert!(rewritten_str.contains(&format!("aura_core_version: {}", AURA_CORE_VERSION)));
         assert!(rewritten_str.contains(&format!(
             "memory_artifact_format: {}",
             MEMORY_ARTIFACT_FORMAT
@@ -1203,10 +1192,7 @@ mod tests {
             b"---\nid: legacy\nkind: summary\ntags: []\naliases:\n  - legacy\n---\nlegacy body";
         let rewritten = rewrite_summary_tags(file, &["person/Alice".to_string()]).unwrap();
         let rewritten_str = std::str::from_utf8(&rewritten).unwrap();
-        assert!(rewritten_str.contains(&format!(
-            "aura_core_version: {}",
-            AURA_CORE_VERSION
-        )));
+        assert!(rewritten_str.contains(&format!("aura_core_version: {}", AURA_CORE_VERSION)));
         assert!(rewritten_str.contains(&format!(
             "memory_artifact_format: {}",
             MEMORY_ARTIFACT_FORMAT

@@ -329,10 +329,7 @@ fn summarization_defaults_to_aura_like_memory() {
 #[test]
 fn unknown_workload_falls_back_to_aura() {
     let config = Config::default();
-    assert_eq!(
-        provider_for_role("nope-not-a-workload", &config),
-        "aura"
-    );
+    assert_eq!(provider_for_role("nope-not-a-workload", &config), "aura");
     assert_eq!(provider_for_role("", &config), "aura");
 }
 

@@ -29,9 +29,7 @@ export interface SetupWalletParams {
 }
 
 export const fetchWalletStatus = async (): Promise<WalletStatus> => {
-  const response = await callCoreRpc<{ result: WalletStatus }>({
-    method: 'aura.wallet_status',
-  });
+  const response = await callCoreRpc<{ result: WalletStatus }>({ method: 'aura.wallet_status' });
   return response.result;
 };
 

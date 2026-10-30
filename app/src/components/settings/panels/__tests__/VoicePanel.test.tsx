@@ -10,8 +10,6 @@ import {
 } from '../../../../services/api/voiceInstallApi';
 import { renderWithProviders } from '../../../../test/test-utils';
 import {
-  type CommandResponse,
-  type ConfigSnapshot,
   auraGetVoiceServerSettings,
   auraLocalAiAssetsStatus,
   auraUpdateVoiceServerSettings,
@@ -20,6 +18,8 @@ import {
   auraVoiceServerStop,
   auraVoiceSetProviders,
   auraVoiceStatus,
+  type CommandResponse,
+  type ConfigSnapshot,
   type VoiceServerSettings,
   type VoiceServerStatus,
   type VoiceStatus,
@@ -81,11 +81,7 @@ const makeInstallStatus = (
 });
 
 const makeConfigSnapshot = (): CommandResponse<ConfigSnapshot> => ({
-  result: {
-    config: {},
-    workspace_dir: '/tmp/aura-ui',
-    config_path: '/tmp/aura-ui/config.toml',
-  },
+  result: { config: {}, workspace_dir: '/tmp/aura-ui', config_path: '/tmp/aura-ui/config.toml' },
   logs: [],
 });
 
@@ -135,9 +131,7 @@ describe('VoicePanel', () => {
       result: { ...runtime.settings },
       logs: [],
     }));
-    vi.mocked(auraVoiceServerStatus).mockImplementation(async () => ({
-      ...runtime.serverStatus,
-    }));
+    vi.mocked(auraVoiceServerStatus).mockImplementation(async () => ({ ...runtime.serverStatus }));
     vi.mocked(auraVoiceStatus).mockImplementation(async () => ({ ...runtime.voiceStatus }));
     vi.mocked(auraLocalAiAssetsStatus).mockImplementation(async () => ({
       result: {

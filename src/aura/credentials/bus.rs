@@ -20,8 +20,8 @@
 //! `AURA-TAURI-1T` (5,414 Sentry events from one user's
 //! cron-driven LLM calls after session expiry).
 
-use crate::core::event_bus::{DomainEvent, EventHandler};
 use crate::aura::scheduler_gate;
+use crate::core::event_bus::{DomainEvent, EventHandler};
 use async_trait::async_trait;
 
 /// Subscribes to [`DomainEvent::SessionExpired`] and runs the canonical

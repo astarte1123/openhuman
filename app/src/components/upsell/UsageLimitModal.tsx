@@ -13,7 +13,10 @@ interface UsageLimitModalProps {
   currentTier: PlanTier;
 }
 
-function formatResetTime(isoStr: string, t: (key: string, params?: TranslationParams) => string): string {
+function formatResetTime(
+  isoStr: string,
+  t: (key: string, params?: TranslationParams) => string
+): string {
   const ms = new Date(isoStr).getTime() - Date.now();
   if (ms <= 0) return t('upsell.usage_limit_modal.reset_now');
   const mins = Math.ceil(ms / 60_000);

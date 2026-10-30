@@ -154,9 +154,8 @@ fn verify_signature(
         return false;
     };
 
-    let mut signed_content = Vec::with_capacity(
-        webhook_id.len() + 1 + webhook_timestamp.len() + 1 + raw_body.len(),
-    );
+    let mut signed_content =
+        Vec::with_capacity(webhook_id.len() + 1 + webhook_timestamp.len() + 1 + raw_body.len());
     signed_content.extend_from_slice(webhook_id.as_bytes());
     signed_content.push(b'.');
     signed_content.extend_from_slice(webhook_timestamp.as_bytes());
@@ -167,8 +166,7 @@ fn verify_signature(
         let Some(b64) = tuple.strip_prefix("v1,") else {
             return false;
         };
-        let Ok(given) =
-            base64::Engine::decode(&base64::engine::general_purpose::STANDARD, b64)
+        let Ok(given) = base64::Engine::decode(&base64::engine::general_purpose::STANDARD, b64)
         else {
             return false;
         };
@@ -179,7 +177,9 @@ fn verify_signature(
         let Ok(mac) = HmacSha256::new_from_slice(&key_bytes) else {
             return false;
         };
-        mac.chain_update(&signed_content).verify_slice(&given).is_ok()
+        mac.chain_update(&signed_content)
+            .verify_slice(&given)
+            .is_ok()
     })
 }
 
@@ -203,7 +203,12 @@ pub async fn youworker_outbound_message_handler(
     headers: HeaderMap,
     body: Bytes,
 ) -> impl IntoResponse {
-    let header = |name: &str| headers.get(name).and_then(|v| v.to_str().ok()).unwrap_or("");
+    let header = |name: &str| {
+        headers
+            .get(name)
+            .and_then(|v| v.to_str().ok())
+            .unwrap_or("")
+    };
     let webhook_id = header("webhook-id");
     let webhook_timestamp = header("webhook-timestamp");
     let webhook_signature = header("webhook-signature");
@@ -225,7 +230,13 @@ pub async fn youworker_outbound_message_handler(
         return StatusCode::UNAUTHORIZED;
     };
 
-    if !verify_signature(&secret, webhook_id, webhook_timestamp, &body, webhook_signature) {
+    if !verify_signature(
+        &secret,
+        webhook_id,
+        webhook_timestamp,
+        &body,
+        webhook_signature,
+    ) {
         log::warn!("[youworker][webhook] signature verification failed — rejecting delivery");
         return StatusCode::UNAUTHORIZED;
     }

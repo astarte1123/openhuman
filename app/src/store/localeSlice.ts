@@ -1,6 +1,10 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import { DEFAULT_LOCALE, resolveFirstSupportedLocale, type SupportedLocale } from '../lib/i18n/locales';
+import {
+  DEFAULT_LOCALE,
+  resolveFirstSupportedLocale,
+  type SupportedLocale,
+} from '../lib/i18n/locales';
 
 /**
  * First-run detection cascade (only runs when there's no persisted state

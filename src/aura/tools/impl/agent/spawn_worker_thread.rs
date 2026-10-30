@@ -12,9 +12,7 @@
 use crate::aura::agent::harness::definition::AgentDefinitionRegistry;
 use crate::aura::agent::harness::fork_context::current_parent;
 use crate::aura::agent::harness::subagent_runner::{run_subagent, SubagentRunOptions};
-use crate::aura::memory::conversations::{
-    self, ConversationMessage, CreateConversationThread,
-};
+use crate::aura::memory::conversations::{self, ConversationMessage, CreateConversationThread};
 use crate::aura::tools::traits::{PermissionLevel, Tool, ToolResult};
 use async_trait::async_trait;
 use serde_json::json;

@@ -402,12 +402,10 @@ pub async fn local_ai_chat(
             }
         }
 
-        ollama_messages.push(
-            crate::aura::inference::local::ollama::OllamaChatMessage {
-                role: normalized_role,
-                content: msg.content,
-            },
-        );
+        ollama_messages.push(crate::aura::inference::local::ollama::OllamaChatMessage {
+            role: normalized_role,
+            content: msg.content,
+        });
     }
 
     let service = local_ai::global(config);

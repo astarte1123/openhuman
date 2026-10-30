@@ -4,9 +4,9 @@
 //! incoming JSON, call [`super::client::request`] with the matching
 //! bridge method name, return the decoded response.
 
+use crate::aura::webview_apis::rpc;
 use crate::core::all::RegisteredController;
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
-use crate::aura::webview_apis::rpc;
 
 // ── registration ────────────────────────────────────────────────────────
 

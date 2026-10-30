@@ -585,9 +585,7 @@ pub(crate) async fn seal_one_level(
     // without manual configuration. Best-effort and idempotent — never
     // overwrites an existing file.
     if let Err(err) =
-        crate::aura::memory::tree::content_store::obsidian::ensure_obsidian_defaults(
-            &content_root,
-        )
+        crate::aura::memory::tree::content_store::obsidian::ensure_obsidian_defaults(&content_root)
     {
         log::warn!(
             "[tree_source::bucket_seal] ensure_obsidian_defaults failed: {err:#} — \
@@ -703,9 +701,7 @@ pub(crate) async fn seal_one_level(
             // and global trees are sinks — no fan-out from their seals.
             if matches!(tree_kind, TreeKind::Source) {
                 use crate::aura::memory::tree::jobs::store::enqueue_tx as enqueue_job_tx;
-                use crate::aura::memory::tree::jobs::types::{
-                    NewJob, NodeRef, TopicRoutePayload,
-                };
+                use crate::aura::memory::tree::jobs::types::{NewJob, NodeRef, TopicRoutePayload};
                 let route = TopicRoutePayload {
                     node: NodeRef::Summary {
                         summary_id: summary_id_for_closure.clone(),

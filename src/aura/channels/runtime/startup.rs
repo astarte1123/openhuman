@@ -2,7 +2,6 @@
 
 use super::dispatch::run_message_dispatch_loop;
 use super::supervision::{compute_max_in_flight_messages, spawn_supervised_listener};
-use crate::core::event_bus::{self, DomainEvent, TracingSubscriber, DEFAULT_CAPACITY};
 use crate::aura::agent::harness::build_tool_instructions_filtered;
 use crate::aura::agent::host_runtime;
 use crate::aura::channels::context::{
@@ -35,6 +34,7 @@ use crate::aura::inference::provider::{self, Provider};
 use crate::aura::memory::{self, Memory};
 use crate::aura::security::SecurityPolicy;
 use crate::aura::tools;
+use crate::core::event_bus::{self, DomainEvent, TracingSubscriber, DEFAULT_CAPACITY};
 use anyhow::Result;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
@@ -142,9 +142,9 @@ pub async fn start_channels(config: Config) -> Result<()> {
 
     // Initialise the sub-agent definition registry from this workspace.
     // Idempotent — `bootstrap_core_runtime` may also call it.
-    if let Err(err) = crate::aura::agent::harness::AgentDefinitionRegistry::init_global(
-        &config.workspace_dir,
-    ) {
+    if let Err(err) =
+        crate::aura::agent::harness::AgentDefinitionRegistry::init_global(&config.workspace_dir)
+    {
         tracing::warn!(
             "AgentDefinitionRegistry::init_global failed: {err} — \
              spawn_subagent will be unavailable until restart"

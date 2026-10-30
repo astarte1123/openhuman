@@ -1,6 +1,6 @@
 use super::{
-    current_rpc_token, default_core_port, generate_rpc_token, is_expected_port_clash,
-    is_aura_root_body, parse_lsof_pid, parse_netstat_pid, CoreProcessHandle,
+    current_rpc_token, default_core_port, generate_rpc_token, is_aura_root_body,
+    is_expected_port_clash, parse_lsof_pid, parse_netstat_pid, CoreProcessHandle,
 };
 use std::sync::{Mutex, MutexGuard, OnceLock};
 

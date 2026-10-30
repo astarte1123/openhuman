@@ -357,10 +357,7 @@ fn update_summary_structured_overwrites_a_prior_plain_summary() {
 #[test]
 fn parse_summary_structured_column_returns_none_for_absent_and_empty() {
     assert_eq!(parse_summary_structured_column("m1", None), None);
-    assert_eq!(
-        parse_summary_structured_column("m1", Some("".into())),
-        None
-    );
+    assert_eq!(parse_summary_structured_column("m1", Some("".into())), None);
     assert_eq!(
         parse_summary_structured_column("m1", Some("   ".into())),
         None
@@ -467,8 +464,7 @@ fn with_connection_migrates_a_pre_block4_database_missing_the_column() {
         decisions: vec![],
         action_items: vec![],
     };
-    update_summary_structured(&config, "meeting_legacy", "updated overview", &structured)
-        .unwrap();
+    update_summary_structured(&config, "meeting_legacy", "updated overview", &structured).unwrap();
     let refetched = get_meeting(&config, "meeting_legacy").unwrap();
     assert_eq!(refetched.summary_structured, Some(structured));
 }

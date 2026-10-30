@@ -2,9 +2,9 @@ use serde::de::DeserializeOwned;
 use serde::Deserialize;
 use serde_json::{Map, Value};
 
+use crate::aura::config::rpc as config_rpc;
 use crate::core::all::{ControllerFuture, RegisteredController};
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
-use crate::aura::config::rpc as config_rpc;
 use crate::rpc::RpcOutcome;
 
 #[derive(Debug, Deserialize)]
@@ -469,9 +469,9 @@ fn handle_inference_status(_params: Map<String, Value>) -> ControllerFuture {
 }
 
 fn handle_inference_get_client_config(_params: Map<String, Value>) -> ControllerFuture {
-    Box::pin(async move {
-        to_json(crate::aura::inference::rpc::inference_get_client_config().await?)
-    })
+    Box::pin(
+        async move { to_json(crate::aura::inference::rpc::inference_get_client_config().await?) },
+    )
 }
 
 fn handle_inference_update_model_settings(params: Map<String, Value>) -> ControllerFuture {
@@ -595,16 +595,12 @@ fn handle_inference_update_local_settings(params: Map<String, Value>) -> Control
 fn handle_inference_list_models(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let request = deserialize_params::<InferenceListModelsParams>(params)?;
-        to_json(
-            crate::aura::inference::rpc::inference_list_models(&request.provider_id).await?,
-        )
+        to_json(crate::aura::inference::rpc::inference_list_models(&request.provider_id).await?)
     })
 }
 
 fn handle_inference_device_profile(_params: Map<String, Value>) -> ControllerFuture {
-    Box::pin(
-        async move { to_json(crate::aura::inference::rpc::inference_device_profile().await?) },
-    )
+    Box::pin(async move { to_json(crate::aura::inference::rpc::inference_device_profile().await?) })
 }
 
 fn handle_inference_presets(_params: Map<String, Value>) -> ControllerFuture {
@@ -690,10 +686,7 @@ fn handle_inference_chat(params: Map<String, Value>) -> ControllerFuture {
                 },
             )
             .collect();
-        to_json(
-            crate::aura::inference::rpc::inference_chat(&config, messages, p.max_tokens)
-                .await?,
-        )
+        to_json(crate::aura::inference::rpc::inference_chat(&config, messages, p.max_tokens).await?)
     })
 }
 
@@ -717,8 +710,7 @@ fn handle_inference_analyze_sentiment(params: Map<String, Value>) -> ControllerF
         let p = deserialize_params::<InferenceAnalyzeSentimentParams>(params)?;
         let config = config_rpc::load_config_with_timeout().await?;
         to_json(
-            crate::aura::inference::rpc::inference_analyze_sentiment(&config, &p.message)
-                .await?,
+            crate::aura::inference::rpc::inference_analyze_sentiment(&config, &p.message).await?,
         )
     })
 }

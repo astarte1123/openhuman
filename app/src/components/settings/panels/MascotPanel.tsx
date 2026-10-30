@@ -226,9 +226,7 @@ const MascotPanel = () => {
                               version: summary.version,
                               states: summary.states.length,
                             })}
-                            {summary.hasVisemes
-                              ? t('settings.mascot_panel.visemes_suffix')
-                              : ''}
+                            {summary.hasVisemes ? t('settings.mascot_panel.visemes_suffix') : ''}
                           </span>
                         </span>
                         {active && (

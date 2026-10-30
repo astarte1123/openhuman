@@ -331,9 +331,7 @@ impl CoreProcessHandle {
                         self.port
                     );
                     if let Err(e) = kill_pid_force(pid) {
-                        return Err(format!(
-                            "failed to force-kill stale aura pid {pid}: {e}"
-                        ));
+                        return Err(format!("failed to force-kill stale aura pid {pid}: {e}"));
                     }
                 }
                 Some(current) => {

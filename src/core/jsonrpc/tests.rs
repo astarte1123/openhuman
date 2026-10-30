@@ -120,10 +120,7 @@ async fn shutdown_token_stops_axum_listener_within_timeout() {
             workspace.path().as_os_str().to_os_string(),
         ),
         ("AURA_DISABLE_CHANNEL_LISTENERS", OsString::from("1")),
-        (
-            "AURA_CORE_TOKEN",
-            OsString::from("test-token-shutdown"),
-        ),
+        ("AURA_CORE_TOKEN", OsString::from("test-token-shutdown")),
     ]);
 
     let probe = std::net::TcpListener::bind("127.0.0.1:0").expect("allocate test port");
@@ -177,13 +174,9 @@ async fn invoke_doctor_models_rejects_unknown_param() {
 
 #[tokio::test]
 async fn invoke_config_get_runtime_flags_via_registry() {
-    let result = invoke_method(
-        default_state(),
-        "aura.config_get_runtime_flags",
-        json!({}),
-    )
-    .await
-    .expect("runtime flags should succeed");
+    let result = invoke_method(default_state(), "aura.config_get_runtime_flags", json!({}))
+        .await
+        .expect("runtime flags should succeed");
     assert!(result.get("result").is_some());
 }
 
@@ -209,13 +202,9 @@ async fn invoke_auth_store_session_missing_token_fails_validation() {
 
 #[tokio::test]
 async fn invoke_service_status_rejects_unknown_param() {
-    let err = invoke_method(
-        default_state(),
-        "aura.service_status",
-        json!({ "x": 1 }),
-    )
-    .await
-    .expect_err("unknown param should fail");
+    let err = invoke_method(default_state(), "aura.service_status", json!({ "x": 1 }))
+        .await
+        .expect_err("unknown param should fail");
     assert!(err.contains("unknown param 'x'"));
 }
 
@@ -271,13 +260,9 @@ async fn invoke_memory_recall_memories_rejects_unknown_param() {
 
 #[tokio::test]
 async fn invoke_migrate_openclaw_rejects_unknown_param() {
-    let err = invoke_method(
-        default_state(),
-        "aura.migrate_openclaw",
-        json!({ "x": 1 }),
-    )
-    .await
-    .expect_err("unknown param should fail");
+    let err = invoke_method(default_state(), "aura.migrate_openclaw", json!({ "x": 1 }))
+        .await
+        .expect_err("unknown param should fail");
     assert!(err.contains("unknown param 'x'"));
 }
 
@@ -293,9 +278,7 @@ fn http_schema_dump_includes_aura_and_core_methods() {
     );
 
     assert!(
-        methods
-            .iter()
-            .any(|m| m.method == "aura.health_snapshot"),
+        methods.iter().any(|m| m.method == "aura.health_snapshot"),
         "schema dump should include migrated aura methods"
     );
 
@@ -307,9 +290,7 @@ fn http_schema_dump_includes_aura_and_core_methods() {
     );
 
     assert!(
-        methods
-            .iter()
-            .any(|m| m.method == "aura.team_list_members"),
+        methods.iter().any(|m| m.method == "aura.team_list_members"),
         "schema dump should include team methods"
     );
 }
@@ -328,13 +309,9 @@ async fn billing_get_current_plan_rejects_unknown_param() {
 
 #[tokio::test]
 async fn billing_purchase_plan_missing_plan_fails_validation() {
-    let err = invoke_method(
-        default_state(),
-        "aura.billing_purchase_plan",
-        json!({}),
-    )
-    .await
-    .expect_err("missing plan should fail");
+    let err = invoke_method(default_state(), "aura.billing_purchase_plan", json!({}))
+        .await
+        .expect_err("missing plan should fail");
     assert!(err.contains("missing required param 'plan'"));
 }
 
@@ -847,13 +824,9 @@ async fn invoke_method_rejects_array_params_for_registered_method() {
     // Registered controllers expect named-argument style (JSON object).
     // Passing an array must fail with a clear "invalid params" error
     // instead of silently calling the handler with no args.
-    let err = invoke_method(
-        default_state(),
-        "aura.health_snapshot",
-        json!([1, 2, 3]),
-    )
-    .await
-    .expect_err("array params should be rejected");
+    let err = invoke_method(default_state(), "aura.health_snapshot", json!([1, 2, 3]))
+        .await
+        .expect_err("array params should be rejected");
     assert!(err.contains("invalid params"));
     assert!(err.contains("array"));
 }

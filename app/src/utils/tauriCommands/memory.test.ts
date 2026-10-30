@@ -74,10 +74,7 @@ describe('memoryLearnAll', () => {
 
     const result = await memoryLearnAll();
 
-    expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'aura.memory_learn_all',
-      params: {},
-    });
+    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'aura.memory_learn_all', params: {} });
     expect(result.namespaces_processed).toBe(0);
   });
 

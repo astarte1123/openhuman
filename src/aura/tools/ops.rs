@@ -245,8 +245,9 @@ pub fn all_tools_with_runtime(
     // Generic remote MCP bridge tools. These let the agent enumerate
     // named MCP servers and forward `tools/call` through the core
     // instead of hardcoding one bespoke MCP integration per server.
-    let mcp_registry =
-        Arc::new(crate::aura::mcp_client::McpServerRegistry::from_config(root_config));
+    let mcp_registry = Arc::new(crate::aura::mcp_client::McpServerRegistry::from_config(
+        root_config,
+    ));
     if !mcp_registry.is_empty() {
         tools.push(Box::new(McpListServersTool::new(Arc::clone(&mcp_registry))));
         tools.push(Box::new(McpListToolsTool::new(Arc::clone(&mcp_registry))));
@@ -277,14 +278,12 @@ pub fn all_tools_with_runtime(
     // web_search above, this calls the Seltz API directly with a user-
     // provided API key.
     if root_config.seltz.enabled {
-        tools.push(Box::new(
-            crate::aura::integrations::SeltzSearchTool::new(
-                root_config.seltz.api_key.clone(),
-                root_config.seltz.api_url.clone(),
-                root_config.seltz.max_results,
-                root_config.seltz.timeout_secs,
-            ),
-        ));
+        tools.push(Box::new(crate::aura::integrations::SeltzSearchTool::new(
+            root_config.seltz.api_key.clone(),
+            root_config.seltz.api_url.clone(),
+            root_config.seltz.max_results,
+            root_config.seltz.timeout_secs,
+        )));
         tracing::debug!("[seltz] registered seltz_search tool");
     } else {
         tracing::debug!("[seltz] disabled — set SELTZ_API_KEY to enable");
@@ -354,9 +353,9 @@ pub fn all_tools_with_runtime(
     if let Some(client) = crate::aura::integrations::build_client(root_config) {
         tracing::debug!("[integrations] client built successfully");
         if root_config.integrations.apify.enabled {
-            tools.push(Box::new(
-                crate::aura::integrations::ApifyRunActorTool::new(Arc::clone(&client)),
-            ));
+            tools.push(Box::new(crate::aura::integrations::ApifyRunActorTool::new(
+                Arc::clone(&client),
+            )));
             tools.push(Box::new(
                 crate::aura::integrations::ApifyGetRunStatusTool::new(Arc::clone(&client)),
             ));
@@ -385,9 +384,9 @@ pub fn all_tools_with_runtime(
             tools.push(Box::new(
                 crate::aura::integrations::ParallelExtractTool::new(Arc::clone(&client)),
             ));
-            tools.push(Box::new(
-                crate::aura::integrations::ParallelChatTool::new(Arc::clone(&client)),
-            ));
+            tools.push(Box::new(crate::aura::integrations::ParallelChatTool::new(
+                Arc::clone(&client),
+            )));
             tools.push(Box::new(
                 crate::aura::integrations::ParallelResearchTool::new(Arc::clone(&client)),
             ));
@@ -402,15 +401,15 @@ pub fn all_tools_with_runtime(
             tracing::debug!("[integrations] parallel disabled — skipping");
         }
         if root_config.integrations.stock_prices.enabled {
-            tools.push(Box::new(
-                crate::aura::integrations::StockQuoteTool::new(Arc::clone(&client)),
-            ));
+            tools.push(Box::new(crate::aura::integrations::StockQuoteTool::new(
+                Arc::clone(&client),
+            )));
             tools.push(Box::new(
                 crate::aura::integrations::StockExchangeRateTool::new(Arc::clone(&client)),
             ));
-            tools.push(Box::new(
-                crate::aura::integrations::StockOptionsTool::new(Arc::clone(&client)),
-            ));
+            tools.push(Box::new(crate::aura::integrations::StockOptionsTool::new(
+                Arc::clone(&client),
+            )));
             tools.push(Box::new(
                 crate::aura::integrations::StockCryptoSeriesTool::new(Arc::clone(&client)),
             ));
@@ -422,9 +421,9 @@ pub fn all_tools_with_runtime(
             tracing::debug!("[integrations] stock_prices disabled — skipping");
         }
         if root_config.integrations.twilio.enabled {
-            tools.push(Box::new(
-                crate::aura::integrations::TwilioCallTool::new(Arc::clone(&client)),
-            ));
+            tools.push(Box::new(crate::aura::integrations::TwilioCallTool::new(
+                Arc::clone(&client),
+            )));
             tracing::debug!("[integrations] registered twilio tools");
         } else {
             tracing::debug!("[integrations] twilio disabled — skipping");
@@ -455,9 +454,7 @@ pub fn all_tools_with_runtime(
     // bridge) is a follow-up; today the gate just controls visibility
     // so agents don't see a method that always errors.
     if crate::aura::tools::implementations::lsp_capability_enabled() {
-        tools.push(Box::new(
-            crate::aura::tools::implementations::LspTool::new(),
-        ));
+        tools.push(Box::new(crate::aura::tools::implementations::LspTool::new()));
         tracing::debug!("[lsp] capability gate on — LspTool registered");
     } else {
         tracing::debug!("[lsp] capability gate off (set AURA_LSP_ENABLED=1 to register)");

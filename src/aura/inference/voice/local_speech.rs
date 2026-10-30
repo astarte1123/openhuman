@@ -67,9 +67,7 @@ use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
 use log::debug;
 
 use crate::aura::config::Config;
-use crate::aura::inference::paths::{
-    resolve_piper_binary_with_config, resolve_tts_voice_path,
-};
+use crate::aura::inference::paths::{resolve_piper_binary_with_config, resolve_tts_voice_path};
 use crate::rpc::RpcOutcome;
 
 use crate::aura::voice::reply_speech::{ReplySpeechResult, VisemeFrame};

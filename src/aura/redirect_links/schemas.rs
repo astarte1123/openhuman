@@ -1,10 +1,10 @@
 use serde::de::DeserializeOwned;
 use serde_json::{Map, Value};
 
-use crate::core::all::{ControllerFuture, RegisteredController};
-use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 use crate::aura::config::rpc as config_rpc;
 use crate::aura::redirect_links::ops as rl_ops;
+use crate::core::all::{ControllerFuture, RegisteredController};
+use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 use crate::rpc::RpcOutcome;
 
 pub fn all_controller_schemas() -> Vec<ControllerSchema> {
@@ -135,8 +135,7 @@ pub fn schemas(function: &str) -> ControllerSchema {
         "rewrite_inbound" => ControllerSchema {
             namespace: "redirect_links",
             function: "rewrite_inbound",
-            description:
-                "Rewrite every long URL in `text` to an `aura://link/<id>` placeholder \
+            description: "Rewrite every long URL in `text` to an `aura://link/<id>` placeholder \
                  to save tokens before a prompt hits the model. URLs shorter than `min_len` \
                  are left untouched.",
             inputs: vec![
@@ -163,8 +162,7 @@ pub fn schemas(function: &str) -> ControllerSchema {
         "rewrite_outbound" => ControllerSchema {
             namespace: "redirect_links",
             function: "rewrite_outbound",
-            description:
-                "Expand every `aura://link/<id>` placeholder in `text` back to its full \
+            description: "Expand every `aura://link/<id>` placeholder in `text` back to its full \
                  URL before the message reaches the user.",
             inputs: vec![FieldSchema {
                 name: "text",

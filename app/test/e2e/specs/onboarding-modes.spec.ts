@@ -99,10 +99,9 @@ async function waitForHash(prefix: string, timeout = 15_000): Promise<boolean> {
 
 async function resetOnboardingFlagAndReload(): Promise<void> {
   stepLog('Resetting onboarding_completed=false via RPC');
-  const res = await callAuraRpc<{ completed: boolean }>(
-    'aura.config_set_onboarding_completed',
-    { value: false }
-  );
+  const res = await callAuraRpc<{ completed: boolean }>('aura.config_set_onboarding_completed', {
+    value: false,
+  });
   if (!res.ok) {
     throw new Error(`config.set_onboarding_completed failed: ${JSON.stringify(res)}`);
   }

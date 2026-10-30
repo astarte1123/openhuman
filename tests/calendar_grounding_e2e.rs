@@ -136,7 +136,9 @@ async fn test_integrations_agent_has_current_date_context() -> Result<()> {
         iter_count: Arc::new(Mutex::new(0)),
     });
 
-    let _ = aura_core::aura::agent::harness::definition::AgentDefinitionRegistry::init_global_builtins();
+    let _ =
+        aura_core::aura::agent::harness::definition::AgentDefinitionRegistry::init_global_builtins(
+        );
 
     let parent = aura_core::aura::agent::harness::ParentExecutionContext {
         provider: provider.clone(),
@@ -158,12 +160,11 @@ async fn test_integrations_agent_has_current_date_context() -> Result<()> {
         on_progress: None,
     };
 
-    let mut def =
-        aura_core::aura::agent::harness::definition::AgentDefinitionRegistry::global()
-            .unwrap()
-            .get("integrations_agent")
-            .unwrap()
-            .clone();
+    let mut def = aura_core::aura::agent::harness::definition::AgentDefinitionRegistry::global()
+        .unwrap()
+        .get("integrations_agent")
+        .unwrap()
+        .clone();
     // `integrations_agent` ships with `[model] hint = "agentic"`. After
     // #1710, a Hint sub-agent builds a fresh provider via the workload
     // factory instead of inheriting `parent.provider` — which here would
@@ -226,11 +227,7 @@ impl aura_core::aura::memory::Memory for StubMemory {
     ) -> Result<Vec<aura_core::aura::memory::MemoryEntry>> {
         Ok(vec![])
     }
-    async fn get(
-        &self,
-        _: &str,
-        _: &str,
-    ) -> Result<Option<aura_core::aura::memory::MemoryEntry>> {
+    async fn get(&self, _: &str, _: &str) -> Result<Option<aura_core::aura::memory::MemoryEntry>> {
         Ok(None)
     }
     async fn list(
@@ -244,9 +241,7 @@ impl aura_core::aura::memory::Memory for StubMemory {
     async fn forget(&self, _: &str, _: &str) -> Result<bool> {
         Ok(true)
     }
-    async fn namespace_summaries(
-        &self,
-    ) -> Result<Vec<aura_core::aura::memory::NamespaceSummary>> {
+    async fn namespace_summaries(&self) -> Result<Vec<aura_core::aura::memory::NamespaceSummary>> {
         Ok(vec![])
     }
     async fn count(&self) -> Result<usize> {

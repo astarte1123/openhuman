@@ -189,14 +189,12 @@ struct LazyToolkitResolver {
 impl LazyToolkitResolver {
     fn resolve(&self, name: &str) -> Option<Box<dyn Tool>> {
         let action = self.actions.iter().find(|a| a.name == name)?;
-        Some(Box::new(
-            crate::aura::composio::ComposioActionTool::new(
-                self.config.clone(),
-                action.name.clone(),
-                action.description.clone(),
-                action.parameters.clone(),
-            ),
-        ))
+        Some(Box::new(crate::aura::composio::ComposioActionTool::new(
+            self.config.clone(),
+            action.name.clone(),
+            action.description.clone(),
+            action.parameters.clone(),
+        )))
     }
 
     /// Slugs from the bound toolkit, for inclusion in unknown-tool
@@ -377,8 +375,7 @@ async fn run_typed_mode(
                     // from the spawn pre-flight; only fall back to the
                     // parent's frozen list when the backend explicitly
                     // can't answer.
-                    match crate::aura::composio::fetch_connected_integrations_status(&config)
-                        .await
+                    match crate::aura::composio::fetch_connected_integrations_status(&config).await
                     {
                         FetchConnectedIntegrationsStatus::Authoritative(fresh) => {
                             tracing::debug!(
@@ -697,14 +694,12 @@ async fn run_typed_mode(
                     };
 
                 for action in selected {
-                    dynamic_tools.push(Box::new(
-                        crate::aura::composio::ComposioActionTool::new(
-                            arc_config.clone(),
-                            action.name.clone(),
-                            action.description.clone(),
-                            action.parameters.clone(),
-                        ),
-                    ));
+                    dynamic_tools.push(Box::new(crate::aura::composio::ComposioActionTool::new(
+                        arc_config.clone(),
+                        action.name.clone(),
+                        action.description.clone(),
+                        action.parameters.clone(),
+                    )));
                 }
                 tracing::debug!(
                     agent_id = %definition.id,

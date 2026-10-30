@@ -20,12 +20,10 @@ use tower::ServiceExt;
 use wiremock::matchers::{header as wm_header, method, path};
 use wiremock::{Mock, MockServer, ResponseTemplate};
 
+use aura_core::aura::inference::provider::compatible::{AuthStyle, OpenAiCompatibleProvider};
+use aura_core::aura::inference::provider::traits::{ChatMessage, Provider};
 use aura_core::core::auth::{init_rpc_token, CORE_TOKEN_ENV_VAR};
 use aura_core::core::jsonrpc::build_core_http_router;
-use aura_core::aura::inference::provider::compatible::{
-    AuthStyle, OpenAiCompatibleProvider,
-};
-use aura_core::aura::inference::provider::traits::{ChatMessage, Provider};
 
 // ── Environment serialisation lock ───────────────────────────────────────────
 //

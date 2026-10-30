@@ -35,9 +35,7 @@ export async function auraServiceInstall(): Promise<CommandResponse<ServiceStatu
     throw new Error('Not running in Tauri');
   }
   try {
-    return await callCoreRpc<CommandResponse<ServiceStatus>>({
-      method: 'aura.service_install',
-    });
+    return await callCoreRpc<CommandResponse<ServiceStatus>>({ method: 'aura.service_install' });
   } catch {
     const raw = await invoke<string>('service_install_direct');
     return parseServiceCliOutput<ServiceStatus>(raw);
@@ -73,9 +71,7 @@ export async function auraServiceStatus(): Promise<CommandResponse<ServiceStatus
     throw new Error('Not running in Tauri');
   }
   try {
-    return await callCoreRpc<CommandResponse<ServiceStatus>>({
-      method: 'aura.service_status',
-    });
+    return await callCoreRpc<CommandResponse<ServiceStatus>>({ method: 'aura.service_status' });
   } catch {
     const raw = await invoke<string>('service_status_direct');
     return parseServiceCliOutput<ServiceStatus>(raw);
@@ -87,9 +83,7 @@ export async function auraServiceUninstall(): Promise<CommandResponse<ServiceSta
     throw new Error('Not running in Tauri');
   }
   try {
-    return await callCoreRpc<CommandResponse<ServiceStatus>>({
-      method: 'aura.service_uninstall',
-    });
+    return await callCoreRpc<CommandResponse<ServiceStatus>>({ method: 'aura.service_uninstall' });
   } catch {
     const raw = await invoke<string>('service_uninstall_direct');
     return parseServiceCliOutput<ServiceStatus>(raw);

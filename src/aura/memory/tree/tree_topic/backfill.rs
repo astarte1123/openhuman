@@ -29,9 +29,7 @@ use chrono::Utc;
 use crate::aura::config::Config;
 use crate::aura::memory::tree::score::store::lookup_entity;
 use crate::aura::memory::tree::store::get_chunk;
-use crate::aura::memory::tree::tree_source::bucket_seal::{
-    append_leaf, LabelStrategy, LeafRef,
-};
+use crate::aura::memory::tree::tree_source::bucket_seal::{append_leaf, LabelStrategy, LeafRef};
 use crate::aura::memory::tree::tree_source::summariser::Summariser;
 use crate::aura::memory::tree::tree_source::types::Tree;
 use crate::aura::memory::tree::util::redact::redact;

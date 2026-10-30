@@ -302,8 +302,8 @@ pub fn prepare_process_cache_path() -> Result<PathBuf, String> {
         return Ok(preset);
     }
 
-    let user_id_raw = read_active_user_id(&default_aura_dir)
-        .unwrap_or_else(|| PRE_LOGIN_USER_ID.to_string());
+    let user_id_raw =
+        read_active_user_id(&default_aura_dir).unwrap_or_else(|| PRE_LOGIN_USER_ID.to_string());
     let user_id = match validate_user_id_for_path(&user_id_raw) {
         Ok(id) => id,
         Err(why) => {

@@ -39,10 +39,7 @@ describe('coreCommandClient', () => {
     const params = { id: 'tunnel-99', name: 'my-hook' };
     await callCoreCommand('aura.webhooks_update_tunnel', params);
 
-    expect(mockCallCoreRpc).toHaveBeenCalledWith({
-      method: 'aura.webhooks_update_tunnel',
-      params,
-    });
+    expect(mockCallCoreRpc).toHaveBeenCalledWith({ method: 'aura.webhooks_update_tunnel', params });
   });
 
   it('returns object result intact', async () => {

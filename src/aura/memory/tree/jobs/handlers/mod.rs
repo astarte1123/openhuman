@@ -590,9 +590,7 @@ mod tests {
         cfg: &Config,
     ) -> crate::aura::memory::tree::tree_source::types::Tree {
         use crate::aura::memory::tree::store::upsert_chunks;
-        use crate::aura::memory::tree::types::{
-            chunk_id, Chunk, Metadata, SourceKind, SourceRef,
-        };
+        use crate::aura::memory::tree::types::{chunk_id, Chunk, Metadata, SourceKind, SourceRef};
         let tree = get_or_create_source_tree(cfg, "slack:#eng").unwrap();
         let ts = chrono::Utc.timestamp_millis_opt(1_700_000_000_000).unwrap();
         let chunk = Chunk {
@@ -697,17 +695,14 @@ mod tests {
         let (_tmp, cfg) = test_config();
         // Spawn a topic tree directly via the registry (skipping curator's
         // hotness gate — we just need a TreeKind::Topic with leaves).
-        let topic_tree =
-            crate::aura::memory::tree::tree_topic::registry::get_or_create_topic_tree(
-                &cfg,
-                "topic:phoenix-migration",
-            )
-            .unwrap();
+        let topic_tree = crate::aura::memory::tree::tree_topic::registry::get_or_create_topic_tree(
+            &cfg,
+            "topic:phoenix-migration",
+        )
+        .unwrap();
         // Push a single 10k-token leaf so L0 is gate-ready.
         use crate::aura::memory::tree::store::upsert_chunks;
-        use crate::aura::memory::tree::types::{
-            chunk_id, Chunk, Metadata, SourceKind, SourceRef,
-        };
+        use crate::aura::memory::tree::types::{chunk_id, Chunk, Metadata, SourceKind, SourceRef};
         let ts = chrono::Utc.timestamp_millis_opt(1_700_000_000_000).unwrap();
         let chunk = Chunk {
             id: chunk_id(SourceKind::Chat, "slack:#eng", 0, "topic-seed"),
@@ -774,12 +769,11 @@ mod tests {
         let (_tmp, cfg) = test_config();
 
         // 1. Create a target topic tree with a clean L0 buffer.
-        let topic_tree =
-            crate::aura::memory::tree::tree_topic::registry::get_or_create_topic_tree(
-                &cfg,
-                "email:alice@example.com",
-            )
-            .unwrap();
+        let topic_tree = crate::aura::memory::tree::tree_topic::registry::get_or_create_topic_tree(
+            &cfg,
+            "email:alice@example.com",
+        )
+        .unwrap();
         let l0_before = src_store::get_buffer(&cfg, &topic_tree.id, 0).unwrap();
         assert!(l0_before.is_empty());
 
@@ -789,9 +783,7 @@ mod tests {
         let source_tree = get_or_create_source_tree(&cfg, "slack:#eng").unwrap();
         use crate::aura::memory::tree::store::upsert_chunks;
         use crate::aura::memory::tree::tree_source::bucket_seal::seal_one_level;
-        use crate::aura::memory::tree::types::{
-            chunk_id, Chunk, Metadata, SourceKind, SourceRef,
-        };
+        use crate::aura::memory::tree::types::{chunk_id, Chunk, Metadata, SourceKind, SourceRef};
         let ts = chrono::Utc.timestamp_millis_opt(1_700_000_000_000).unwrap();
         let content_root = cfg.memory_tree_content_root();
         std::fs::create_dir_all(&content_root).unwrap();

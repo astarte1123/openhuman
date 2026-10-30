@@ -70,8 +70,7 @@ fn handle_list_models(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let req: ListModelsRequest = deserialize_params(params)?;
         to_json(
-            crate::aura::inference::provider::ops::list_configured_models(&req.provider_id)
-                .await?,
+            crate::aura::inference::provider::ops::list_configured_models(&req.provider_id).await?,
         )
     })
 }

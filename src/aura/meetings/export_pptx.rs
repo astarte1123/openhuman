@@ -98,8 +98,9 @@ fn summary_lines_for_deck(meeting: &Meeting) -> Vec<String> {
         .map(str::trim)
         .filter(|s| !s.is_empty());
     let Some(summary) = summary else {
-        return vec!["(no summary yet — generate one before exporting for full content)"
-            .to_string()];
+        return vec![
+            "(no summary yet — generate one before exporting for full content)".to_string(),
+        ];
     };
     let mut lines = Vec::new();
     for raw_line in summary.lines() {
@@ -178,11 +179,22 @@ fn write_pptx_zip(titles: &[&str], bodies: &[Vec<String>]) -> Result<Vec<u8>> {
     let mut buf = Vec::new();
     {
         let mut zip = ZipWriter::new(Cursor::new(&mut buf));
-        let opts = SimpleFileOptions::default().compression_method(zip::CompressionMethod::Deflated);
+        let opts =
+            SimpleFileOptions::default().compression_method(zip::CompressionMethod::Deflated);
 
-        write_part(&mut zip, opts, "[Content_Types].xml", &content_types_xml(slide_count))?;
+        write_part(
+            &mut zip,
+            opts,
+            "[Content_Types].xml",
+            &content_types_xml(slide_count),
+        )?;
         write_part(&mut zip, opts, "_rels/.rels", ROOT_RELS_XML)?;
-        write_part(&mut zip, opts, "ppt/presentation.xml", &presentation_xml(slide_count))?;
+        write_part(
+            &mut zip,
+            opts,
+            "ppt/presentation.xml",
+            &presentation_xml(slide_count),
+        )?;
         write_part(
             &mut zip,
             opts,
@@ -190,14 +202,24 @@ fn write_pptx_zip(titles: &[&str], bodies: &[Vec<String>]) -> Result<Vec<u8>> {
             &presentation_rels_xml(slide_count),
         )?;
         write_part(&mut zip, opts, "ppt/theme/theme1.xml", THEME_XML)?;
-        write_part(&mut zip, opts, "ppt/slideMasters/slideMaster1.xml", SLIDE_MASTER_XML)?;
+        write_part(
+            &mut zip,
+            opts,
+            "ppt/slideMasters/slideMaster1.xml",
+            SLIDE_MASTER_XML,
+        )?;
         write_part(
             &mut zip,
             opts,
             "ppt/slideMasters/_rels/slideMaster1.xml.rels",
             SLIDE_MASTER_RELS_XML,
         )?;
-        write_part(&mut zip, opts, "ppt/slideLayouts/slideLayout1.xml", SLIDE_LAYOUT_XML)?;
+        write_part(
+            &mut zip,
+            opts,
+            "ppt/slideLayouts/slideLayout1.xml",
+            SLIDE_LAYOUT_XML,
+        )?;
         write_part(
             &mut zip,
             opts,
@@ -221,7 +243,8 @@ fn write_pptx_zip(titles: &[&str], bodies: &[Vec<String>]) -> Result<Vec<u8>> {
             )?;
         }
 
-        zip.finish().context("failed to finalize pptx zip archive")?;
+        zip.finish()
+            .context("failed to finalize pptx zip archive")?;
     }
     Ok(buf)
 }

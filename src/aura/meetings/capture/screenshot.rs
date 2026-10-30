@@ -157,14 +157,11 @@ async fn run_capture_loop(meeting_id: String, config: Config, stop_flag: Arc<Ato
         // can't stall other work scheduled on this same worker (e.g. this
         // loop's own stop-flag polling, or other in-flight RPC calls),
         // mirroring `ops::meetings_append_screenshot`'s OCR call.
-        let (png_bytes, thumbnail) = match tokio::task::spawn_blocking(capture_frame_blocking)
-            .await
+        let (png_bytes, thumbnail) = match tokio::task::spawn_blocking(capture_frame_blocking).await
         {
             Ok(Ok(pair)) => pair,
             Ok(Err(err)) => {
-                warn!(
-                    "{LOG_PREFIX} screenshot capture failed meeting_id={meeting_id} error={err}"
-                );
+                warn!("{LOG_PREFIX} screenshot capture failed meeting_id={meeting_id} error={err}");
                 continue;
             }
             Err(join_err) => {
@@ -200,9 +197,7 @@ async fn run_capture_loop(meeting_id: String, config: Config, stop_flag: Arc<Ato
                 persisted_count += 1;
             }
             Err(err) => {
-                warn!(
-                    "{LOG_PREFIX} append_screenshot failed meeting_id={meeting_id} error={err}"
-                );
+                warn!("{LOG_PREFIX} append_screenshot failed meeting_id={meeting_id} error={err}");
             }
         }
     }
@@ -398,8 +393,7 @@ mod tests {
             )
             .unwrap();
 
-        let thumbnail =
-            downscale_grayscale_thumbnail(&png_bytes).expect("valid PNG should decode");
+        let thumbnail = downscale_grayscale_thumbnail(&png_bytes).expect("valid PNG should decode");
         assert_eq!(
             thumbnail.len(),
             (DIFF_THUMBNAIL_SIZE * DIFF_THUMBNAIL_SIZE) as usize
@@ -410,10 +404,7 @@ mod tests {
 
     #[test]
     fn should_capture_false_before_interval_elapsed() {
-        assert!(!should_capture(
-            Duration::from_secs(19),
-            CAPTURE_INTERVAL
-        ));
+        assert!(!should_capture(Duration::from_secs(19), CAPTURE_INTERVAL));
     }
 
     #[test]

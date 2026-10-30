@@ -5,9 +5,7 @@
 use super::*;
 use crate::aura::memory::tree::content_store;
 use crate::aura::memory::tree::store::upsert_chunks;
-use crate::aura::memory::tree::tree_source::bucket_seal::{
-    append_leaf, LabelStrategy, LeafRef,
-};
+use crate::aura::memory::tree::tree_source::bucket_seal::{append_leaf, LabelStrategy, LeafRef};
 use crate::aura::memory::tree::tree_source::registry::get_or_create_source_tree;
 use crate::aura::memory::tree::tree_source::summariser::inert::InertSummariser;
 use crate::aura::memory::tree::tree_source::types::TreeStatus;

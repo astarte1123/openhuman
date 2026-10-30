@@ -110,8 +110,8 @@ fn make_test_context(
         api_url: None,
         inference_url: None,
         reliability: Arc::new(crate::aura::config::ReliabilityConfig::default()),
-        provider_runtime_options:
-            crate::aura::inference::provider::ProviderRuntimeOptions::default(),
+        provider_runtime_options: crate::aura::inference::provider::ProviderRuntimeOptions::default(
+        ),
         workspace_dir: Arc::new(std::env::temp_dir()),
         message_timeout_secs: CHANNEL_MESSAGE_TIMEOUT_SECS,
         multimodal: crate::aura::config::MultimodalConfig::default(),

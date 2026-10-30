@@ -39,10 +39,10 @@ use std::sync::Arc;
 
 use async_trait::async_trait;
 
-use crate::core::event_bus::{subscribe_global, DomainEvent, EventHandler, SubscriptionHandle};
 use crate::aura::composio::providers::profile_md::replace_managed_block;
 use crate::aura::learning::cache::FacetCache;
 use crate::aura::memory::store::profile::UserState;
+use crate::core::event_bus::{subscribe_global, DomainEvent, EventHandler, SubscriptionHandle};
 
 // ── Class → block metadata ────────────────────────────────────────────────────
 

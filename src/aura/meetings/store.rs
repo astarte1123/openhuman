@@ -10,10 +10,10 @@
 //! `meeting_transcript_chunks` by triggers rather than duplicating the text —
 //! see [`search_transcripts`] and [`backfill_missing_fts_rows`].
 
+use crate::aura::config::Config;
 use crate::aura::meetings::types::{
     Meeting, MeetingScreenshot, MeetingStatus, MeetingSummary, TranscriptChunk,
 };
-use crate::aura::config::Config;
 use anyhow::{Context, Result};
 use chrono::Utc;
 use rusqlite::{params, Connection};
@@ -439,7 +439,10 @@ pub fn update_summary_structured(
 /// existing plain-text `summary` must stay readable even if its structured
 /// sidecar is corrupt, matching this module's backward-compatibility
 /// contract (see `Meeting::summary_structured`'s doc comment).
-fn parse_summary_structured_column(meeting_id: &str, raw: Option<String>) -> Option<MeetingSummary> {
+fn parse_summary_structured_column(
+    meeting_id: &str,
+    raw: Option<String>,
+) -> Option<MeetingSummary> {
     let raw = raw?;
     let trimmed = raw.trim();
     if trimmed.is_empty() {
@@ -664,13 +667,11 @@ fn with_connection<T>(config: &Config, f: impl FnOnce(&Connection) -> Result<T>)
 /// process/connection adds the same column first (SQLite reports that as a
 /// "duplicate column name" failure, not a distinguishable error code — same
 /// caveat `cron::store::add_column_if_missing` documents).
-fn add_column_if_missing(
-    conn: &Connection,
-    table: &str,
-    name: &str,
-    sql_type: &str,
-) -> Result<()> {
-    match conn.execute(&format!("ALTER TABLE {table} ADD COLUMN {name} {sql_type}"), []) {
+fn add_column_if_missing(conn: &Connection, table: &str, name: &str, sql_type: &str) -> Result<()> {
+    match conn.execute(
+        &format!("ALTER TABLE {table} ADD COLUMN {name} {sql_type}"),
+        [],
+    ) {
         Ok(_) => {
             log::info!("{LOG_PREFIX} migration: added column {table}.{name} ({sql_type})");
             Ok(())

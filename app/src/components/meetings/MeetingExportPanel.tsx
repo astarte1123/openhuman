@@ -1,10 +1,7 @@
 import { useState } from 'react';
 
 import { useT } from '../../lib/i18n/I18nContext';
-import {
-  type MeetingExportFormat,
-  auraMeetingsExport,
-} from '../../utils/tauriCommands/meetings';
+import { auraMeetingsExport, type MeetingExportFormat } from '../../utils/tauriCommands/meetings';
 
 interface Props {
   meetingId: string;

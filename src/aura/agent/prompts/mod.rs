@@ -145,9 +145,7 @@ impl SystemPromptBuilder {
     /// rendered bytes are then frozen for the rest of the session the
     /// same way `from_final_body` freezes them — the difference is just
     /// *when* the freeze happens.
-    pub fn from_dynamic(
-        builder: crate::aura::agent::harness::definition::PromptBuilder,
-    ) -> Self {
+    pub fn from_dynamic(builder: crate::aura::agent::harness::definition::PromptBuilder) -> Self {
         Self {
             sections: vec![Box::new(DynamicPromptSection::new(builder))],
         }

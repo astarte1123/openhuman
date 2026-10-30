@@ -18,7 +18,6 @@ use std::sync::Arc;
 
 use tokio::sync::mpsc;
 
-use crate::core::event_bus::register_native_global;
 use crate::aura::agent::progress::AgentProgress;
 use crate::aura::config::MultimodalConfig;
 use crate::aura::inference::provider::{ChatMessage, Provider};
@@ -26,6 +25,7 @@ use crate::aura::prompt_injection::{
     enforce_prompt_input, PromptEnforcementAction, PromptEnforcementContext,
 };
 use crate::aura::tools::Tool;
+use crate::core::event_bus::register_native_global;
 
 use super::harness::definition::{AgentDefinitionRegistry, SandboxMode};
 use super::harness::{run_tool_call_loop, with_current_sandbox_mode};

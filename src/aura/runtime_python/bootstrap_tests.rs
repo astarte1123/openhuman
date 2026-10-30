@@ -58,10 +58,9 @@ async fn install_managed_from_mock_astral_release_downloads_and_resolves_executa
         .mode();
     assert_ne!(mode & 0o111, 0, "python binary must be executable");
 
-    let version = crate::aura::runtime_python::resolver::probe_python_version_public(
-        &resolved.python_bin,
-    )
-    .expect("version probe");
+    let version =
+        crate::aura::runtime_python::resolver::probe_python_version_public(&resolved.python_bin)
+            .expect("version probe");
     assert_eq!(version.trim(), "Python 3.12.13");
 
     server.abort();

@@ -1,8 +1,5 @@
 //! Channel runtime loop and message processing.
 
-use crate::core::event_bus::{
-    publish_global, request_native_global, DomainEvent, NativeRequestError,
-};
 use crate::aura::agent::bus::{AgentTurnRequest, AgentTurnResponse, AGENT_RUN_TURN_METHOD};
 use crate::aura::agent::harness::definition::{
     AgentDefinition, AgentDefinitionRegistry, ToolScope,
@@ -23,6 +20,9 @@ use crate::aura::config::Config;
 use crate::aura::inference::provider::{self, ChatMessage};
 use crate::aura::tools::{orchestrator_tools, Tool};
 use crate::aura::util::truncate_with_ellipsis;
+use crate::core::event_bus::{
+    publish_global, request_native_global, DomainEvent, NativeRequestError,
+};
 use std::collections::HashSet;
 use std::sync::Arc;
 use std::time::{Duration, Instant};

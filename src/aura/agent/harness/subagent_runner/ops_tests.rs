@@ -225,8 +225,7 @@ fn tool_response(name: &str, args: &str) -> ChatResponse {
 /// Build a minimal `ParentExecutionContext` suitable for runner tests.
 /// Uses a no-op memory backend so we don't have to spin up a real one.
 fn make_parent(provider: Arc<dyn Provider>, tools: Vec<Box<dyn Tool>>) -> ParentExecutionContext {
-    let tool_specs: Vec<crate::aura::tools::ToolSpec> =
-        tools.iter().map(|t| t.spec()).collect();
+    let tool_specs: Vec<crate::aura::tools::ToolSpec> = tools.iter().map(|t| t.spec()).collect();
     ParentExecutionContext {
         provider,
         all_tools: Arc::new(tools),

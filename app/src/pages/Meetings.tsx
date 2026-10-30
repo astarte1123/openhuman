@@ -7,9 +7,9 @@ import MeetingListRow from '../components/meetings/MeetingListRow';
 import MeetingRecordModal from '../components/meetings/MeetingRecordModal';
 import { useT } from '../lib/i18n/I18nContext';
 import {
-  type Meeting,
   auraMeetingsList,
   auraMeetingsSearch,
+  type Meeting,
   type TranscriptSearchResult,
 } from '../utils/tauriCommands/meetings';
 

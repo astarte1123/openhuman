@@ -1,8 +1,4 @@
-import {
-  auraLocalAiApplyPreset,
-  auraLocalAiPresets,
-  type PresetsResponse,
-} from './tauriCommands';
+import { auraLocalAiApplyPreset, auraLocalAiPresets, type PresetsResponse } from './tauriCommands';
 
 const MAX_RETRIES = 5;
 const RETRY_BASE_DELAY_MS = 250;
