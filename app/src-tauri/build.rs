@@ -7,6 +7,18 @@ fn main() {
     println!("cargo:rerun-if-changed=permissions");
     println!("cargo:rerun-if-changed=capabilities");
 
+    // Main-thread stack reserve: the linker default is 1 MB, and CEF's
+    // shutdown path (browser close → cef::shutdown) recurses with depth
+    // proportional to the number of live browser objects. In debug builds
+    // (fat stack frames) long sessions accumulated enough webviews to blow
+    // the 1 MB main stack at quit — `thread 'main' has overflowed its stack`
+    // (STATUS_ACCESS_VIOLATION after the guard page). 16 MB matches modern
+    // browser defaults and leaves headroom for deep teardown chains.
+    // Windows-only link flag; ignored elsewhere.
+    if env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("windows") {
+        println!("cargo:rustc-link-arg=/STACK:16777216");
+    }
+
     maybe_override_tauri_config_for_local_builds();
     tauri_build::build();
 }
