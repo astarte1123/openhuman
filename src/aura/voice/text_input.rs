@@ -104,18 +104,31 @@ pub fn insert_text(text: &str, expected_app: Option<&str>) -> Result<(), String>
 
     debug!("{LOG_PREFIX} paste keystroke sent");
 
-    // Step 4: Restore clipboard after a delay (non-blocking).
+    // Step 4: Restore clipboard after a delay (non-blocking). Only restore if
+    // the clipboard still holds our pasted text — if the user copied something
+    // else in the meantime, restoring would silently clobber their clipboard.
     if let Some(original) = saved_clipboard {
+        let pasted = text.to_string();
         std::thread::spawn(move || {
             std::thread::sleep(CLIPBOARD_RESTORE_DELAY);
             match Clipboard::new() {
-                Ok(mut cb) => {
-                    if let Err(e) = cb.set_text(&original) {
-                        warn!("{LOG_PREFIX} failed to restore clipboard: {e}");
-                    } else {
-                        debug!("{LOG_PREFIX} clipboard restored");
+                Ok(mut cb) => match cb.get_text() {
+                    Ok(current) if current == pasted => {
+                        if let Err(e) = cb.set_text(&original) {
+                            warn!("{LOG_PREFIX} failed to restore clipboard: {e}");
+                        } else {
+                            debug!("{LOG_PREFIX} clipboard restored");
+                        }
                     }
-                }
+                    Ok(_) => {
+                        debug!(
+                            "{LOG_PREFIX} clipboard changed since paste — skipping restore to avoid clobbering user content"
+                        );
+                    }
+                    Err(e) => {
+                        warn!("{LOG_PREFIX} failed to read clipboard before restore: {e}");
+                    }
+                },
                 Err(e) => warn!("{LOG_PREFIX} failed to re-open clipboard for restore: {e}"),
             }
         });

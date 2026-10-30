@@ -1,10 +1,8 @@
 /**
  * Voice and dictation commands.
  */
-import { invoke } from '@tauri-apps/api/core';
-
 import { callCoreRpc } from '../../services/coreRpcClient';
-import { CommandResponse, isTauri } from './common';
+import { CommandResponse } from './common';
 import { ConfigSnapshot } from './config';
 
 export interface VoiceSpeechResult {
@@ -65,10 +63,7 @@ export async function auraVoiceStatus(): Promise<VoiceStatus> {
 }
 
 export async function auraVoiceServerStatus(): Promise<VoiceServerStatus> {
-  return await callCoreRpc<VoiceServerStatus>({
-    method: 'aura.voice_server_status',
-    params: {},
-  });
+  return await callCoreRpc<VoiceServerStatus>({ method: 'aura.voice_server_status', params: {} });
 }
 
 export async function auraVoiceServerStart(params?: {
@@ -83,15 +78,10 @@ export async function auraVoiceServerStart(params?: {
 }
 
 export async function auraVoiceServerStop(): Promise<VoiceServerStatus> {
-  return await callCoreRpc<VoiceServerStatus>({
-    method: 'aura.voice_server_stop',
-    params: {},
-  });
+  return await callCoreRpc<VoiceServerStatus>({ method: 'aura.voice_server_stop', params: {} });
 }
 
-export async function auraGetVoiceServerSettings(): Promise<
-  CommandResponse<VoiceServerSettings>
-> {
+export async function auraGetVoiceServerSettings(): Promise<CommandResponse<VoiceServerSettings>> {
   return await callCoreRpc<CommandResponse<VoiceServerSettings>>({
     method: 'aura.config_get_voice_server_settings',
     params: {},
@@ -164,43 +154,11 @@ export async function auraVoiceTranscribeBytes(
   });
 }
 
-export async function auraVoiceTts(
-  text: string,
-  outputPath?: string
-): Promise<VoiceTtsResult> {
+export async function auraVoiceTts(text: string, outputPath?: string): Promise<VoiceTtsResult> {
   return await callCoreRpc<VoiceTtsResult>({
     method: 'aura.voice_tts',
     params: { text, output_path: outputPath },
   });
-}
-
-/**
- * Register (or re-register) the global dictation toggle hotkey.
- */
-export async function registerDictationHotkey(shortcut: string): Promise<void> {
-  if (!isTauri()) {
-    console.debug('[dictation] registerDictationHotkey: skipped — not running in Tauri');
-    return;
-  }
-  const normalizedShortcut = shortcut
-    .trim()
-    .replace(/\bCommandOrControl\b/gi, 'CmdOrCtrl')
-    .replace(/\bCommand\b/gi, 'Cmd')
-    .replace(/\bControl\b/gi, 'Ctrl')
-    .replace(/\bOption\b/gi, 'Alt');
-
-  console.debug(
-    '[dictation] registerDictationHotkey: shortcut=%s normalized=%s',
-    shortcut,
-    normalizedShortcut
-  );
-  try {
-    await invoke<void>('register_dictation_hotkey', { shortcut: normalizedShortcut });
-  } catch (err) {
-    console.warn('[dictation] registerDictationHotkey normalized registration failed', err);
-    throw err;
-  }
-  console.debug('[dictation] registerDictationHotkey: done');
 }
 
 /**
@@ -219,16 +177,3 @@ export const notifyOverlaySttState = (
     }
   })();
 };
-
-/**
- * Unregister the global dictation hotkey if one is active.
- */
-export async function unregisterDictationHotkey(): Promise<void> {
-  if (!isTauri()) {
-    console.debug('[dictation] unregisterDictationHotkey: skipped — not running in Tauri');
-    return;
-  }
-  console.debug('[dictation] unregisterDictationHotkey: invoking');
-  await invoke<void>('unregister_dictation_hotkey');
-  console.debug('[dictation] unregisterDictationHotkey: done');
-}

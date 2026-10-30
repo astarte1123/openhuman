@@ -240,9 +240,9 @@ const gaIE: TranslationMap = {
   'onboarding.apiKeys.title': 'Cuirimis Do API Eochracha leis',
   'onboarding.apiKeys.subtitle':
     'Is féidir leat iad a ghreamú anois nó scipeáil agus iad a chur leis níos déanaí i Socruithe › AI. Stóráiltear eochracha ar an ngléas seo, agus iad criptithe ar fos.',
-  'onboarding.apiKeys.openaiLabel': 'OpenAIAPI eochair',
+  'onboarding.apiKeys.openaiLabel': 'OpenAI API eochair',
   'onboarding.apiKeys.openaiPlaceholder': 'sk-...',
-  'onboarding.apiKeys.anthropicLabel': 'AnthropicAPI eochair',
+  'onboarding.apiKeys.anthropicLabel': 'Anthropic API eochair',
   'onboarding.apiKeys.anthropicPlaceholder': 'sk-ant-...',
   'onboarding.apiKeys.saveError':
     'Níorbh fhéidir an eochair sin a shábháil. Seiceáil arís é le do thoil agus bain triail eile as.',
@@ -381,7 +381,7 @@ const gaIE: TranslationMap = {
   'privacy.shareAnonymizedDataDesc':
     'Help improve Youma by sharing anonymous crash reports and usage analytics. All data is fully anonymized — no personal data, messages, wallet keys, or session information is ever collected.',
   'privacy.meetingFollowUps': 'Cruinnithe leantacha',
-  'privacy.autoHandoffMeet': 'Tras-scríbhinní uathoibríocha GoogleMeet chuig an gceolfhoireann',
+  'privacy.autoHandoffMeet': 'Trascríbhinní uathoibríocha GoogleMeet chuig an gceolfhoireann',
   'privacy.autoHandoffMeetDesc':
     "When a Google Meet call ends, Youma's orchestrator can read the transcript and may take actions like drafting messages, scheduling follow-ups, or posting summaries to your connected Slack workspace. Off by default.",
   'privacy.analyticsDisclaimer':
@@ -737,6 +737,10 @@ const gaIE: TranslationMap = {
   'mic.tapAndSpeak': 'Tapáil agus labhair',
   'mic.stopRecording': 'Stop taifeadadh agus seol',
   'mic.startRecording': 'Tosaigh taifeadadh',
+  'mic.editTranscript': 'Cuir an trascríobh in eagar',
+  'mic.reviewHint': 'Cuir isteach chun a sheoladh · Esc chun é a chaitheamh amach',
+  'mic.discardTranscription': 'Caith amach',
+  'mic.sendTranscription': 'Seol',
   'token.usageLimitReached': 'Teorainn úsáide bainte amach',
   'token.approachingLimit': 'Ag druidim teorainn',
   'token.planClickForDetails': 'plean - cliceáil le haghaidh sonraí',

@@ -108,7 +108,7 @@ describe('MicComposer', () => {
     expect(getUserMediaMock).not.toHaveBeenCalled();
   });
 
-  it('starts recording on tap, then transcribes + submits on second tap', async () => {
+  it('starts recording on tap, then shows an editable review before submitting', async () => {
     transcribeWithFactoryMock.mockResolvedValueOnce('hello world');
     const onSubmit = vi.fn();
     const onError = vi.fn();
@@ -130,8 +130,53 @@ describe('MicComposer', () => {
     });
 
     fireEvent.click(screen.getByRole('button', { name: /stop recording and send/i }));
-    await waitFor(() => expect(onSubmit).toHaveBeenCalledWith('hello world'));
+
+    // The transcript lands in the review editor — NOT straight into onSubmit.
+    const editor = await screen.findByRole('textbox', { name: /edit transcription/i });
+    expect(editor).toHaveValue('hello world');
+    expect(onSubmit).not.toHaveBeenCalled();
     expect(transcribeWithFactoryMock).toHaveBeenCalledTimes(1);
+
+    // Explicit confirm (Send button) pushes it into the send pipeline.
+    fireEvent.click(screen.getByRole('button', { name: /^send$/i }));
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledWith('hello world'));
+  });
+
+  it('lets the user edit the transcript before sending', async () => {
+    transcribeWithFactoryMock.mockResolvedValueOnce('hello wrld');
+    const onSubmit = vi.fn();
+    render(<MicComposer disabled={false} onSubmit={onSubmit} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /start recording/i }));
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /stop recording and send/i })).toBeInTheDocument()
+    );
+    fireEvent.click(screen.getByRole('button', { name: /stop recording and send/i }));
+
+    const editor = await screen.findByRole('textbox', { name: /edit transcription/i });
+    fireEvent.change(editor, { target: { value: 'hello world' } });
+    fireEvent.keyDown(editor, { key: 'Enter' });
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledWith('hello world'));
+  });
+
+  it('discards the transcript on Escape without submitting', async () => {
+    transcribeWithFactoryMock.mockResolvedValueOnce('never mind');
+    const onSubmit = vi.fn();
+    render(<MicComposer disabled={false} onSubmit={onSubmit} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /start recording/i }));
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /stop recording and send/i })).toBeInTheDocument()
+    );
+    fireEvent.click(screen.getByRole('button', { name: /stop recording and send/i }));
+
+    const editor = await screen.findByRole('textbox', { name: /edit transcription/i });
+    fireEvent.keyDown(editor, { key: 'Escape' });
+
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /start recording/i })).toBeInTheDocument()
+    );
+    expect(onSubmit).not.toHaveBeenCalled();
   });
 
   it('forwards the language prop to transcribeCloud', async () => {
@@ -200,6 +245,9 @@ describe('MicComposer', () => {
       expect(screen.getByRole('button', { name: /stop recording and send/i })).toBeInTheDocument()
     );
     fireEvent.click(screen.getByRole('button', { name: /stop recording and send/i }));
+    const editor = await screen.findByRole('textbox', { name: /edit transcription/i });
+    expect(editor).toHaveValue('after fallback');
+    fireEvent.click(screen.getByRole('button', { name: /^send$/i }));
     await waitFor(() => expect(onSubmit).toHaveBeenCalledWith('after fallback'));
     expect(encodeBlobToWavMock).toHaveBeenCalledTimes(1);
     expect(transcribeWithFactoryMock).toHaveBeenCalledTimes(2);
@@ -235,7 +283,7 @@ describe('MicComposer', () => {
 
   // ── Spacebar shortcut (#1471) ────────────────────────────────────────────
 
-  it('spacebar starts recording when idle and stops + submits on second press', async () => {
+  it('spacebar starts recording when idle and stops into review on second press', async () => {
     transcribeWithFactoryMock.mockResolvedValueOnce('voice via space');
     const onSubmit = vi.fn();
     render(<MicComposer disabled={false} onSubmit={onSubmit} />);
@@ -247,7 +295,25 @@ describe('MicComposer', () => {
     );
 
     fireEvent.keyDown(window, { code: 'Space' });
+    const editor = await screen.findByRole('textbox', { name: /edit transcription/i });
+    expect(editor).toHaveValue('voice via space');
+    // Enter in the review editor confirms the send.
+    fireEvent.keyDown(editor, { key: 'Enter' });
     await waitFor(() => expect(onSubmit).toHaveBeenCalledWith('voice via space'));
+  });
+
+  it('spacebar is a no-op while reviewing a transcript', async () => {
+    transcribeWithFactoryMock.mockResolvedValueOnce('pending review');
+    render(<MicComposer disabled={false} onSubmit={vi.fn()} />);
+    fireEvent.keyDown(window, { code: 'Space' });
+    await waitFor(() => expect(getUserMediaMock).toHaveBeenCalled());
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /stop recording and send/i })).toBeInTheDocument()
+    );
+    fireEvent.keyDown(window, { code: 'Space' });
+    await screen.findByRole('textbox', { name: /edit transcription/i });
+    // Second spacebar must not start a new recording while reviewing.
+    expect(getUserMediaMock).toHaveBeenCalledTimes(1);
   });
 
   it('spacebar ignores key repeat so holding the key does not flap the recorder', () => {

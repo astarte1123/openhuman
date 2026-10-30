@@ -31,8 +31,6 @@ allow = [
     "service_stop_direct",
     "service_status_direct",
     "service_uninstall_direct",
-    "register_dictation_hotkey",
-    "unregister_dictation_hotkey",
     "webview_account_open",
     "webview_account_close",
     "webview_account_purge",
@@ -87,5 +85,6 @@ allow = [
     "meeting_recorder_list_devices",
     "meeting_recorder_start",
     "meeting_recorder_stop",
+    "meeting_recorder_probe_capture",
 ]
 deny = []

@@ -744,6 +744,10 @@ const roRO: TranslationMap = {
   'mic.tapAndSpeak': 'Atingeți și vorbiți',
   'mic.stopRecording': 'Opriți înregistrarea și trimiteți',
   'mic.startRecording': 'Începeți înregistrarea',
+  'mic.editTranscript': 'Editați transcrierea',
+  'mic.reviewHint': 'Introduceți pentru a trimite · Esc pentru a renunța',
+  'mic.discardTranscription': 'Aruncă',
+  'mic.sendTranscription': 'Trimite',
   'token.usageLimitReached': 'Limita de utilizare a fost atinsă',
   'token.approachingLimit': 'Se apropie de limită',
   'token.planClickForDetails': 'plan - faceți clic pentru detalii',
@@ -1266,7 +1270,7 @@ const roRO: TranslationMap = {
   'skills.create_modal.create_button': 'Creați abilitate',
   'skills.install_dialog.error_url_rejected_title': 'URL respins',
   'skills.install_dialog.error_url_rejected_hint':
-    'Sunt permise numai adrese URL publice HTTPS. Gazdele private, de loopback și de metadate sunt blocate.',
+    'Sunt permise numai adrese URL publice HTTPS. Gazdele private, loopback și metadate sunt blocate.',
   'skills.install_dialog.error_url_form_title': 'Formularul URL nu este acceptat',
   'skills.install_dialog.error_url_form_hint':
     'Funcționează numai linkurile directe `.md`. Pentru GitHub, link la un fișier (github.com/owner/repo/blob/…/SKILL.md) — rădăcinile arbore și repo nu sunt instalate.',

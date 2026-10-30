@@ -197,7 +197,12 @@ impl LocalAiService {
             "whisper.cpp binary not found. Set WHISPER_BIN or install whisper-cli.".to_string()
         })?;
         let model_path = resolve_stt_model_path(config)?;
-        let mut args = vec!["-m".to_string(), model_path, "-f".to_string(), audio_path.to_string()];
+        let mut args = vec![
+            "-m".to_string(),
+            model_path,
+            "-f".to_string(),
+            audio_path.to_string(),
+        ];
         if let Some(lang) = whisper_language_hint(config) {
             args.push("-l".to_string());
             args.push(lang);
@@ -291,7 +296,7 @@ impl LocalAiService {
 /// app's configured locale. Returns `None` when no locale is configured,
 /// letting whisper auto-detect instead of silently defaulting to English —
 /// see `whisper_engine::transcribe_pcm_f32`.
-fn whisper_language_hint(config: &Config) -> Option<String> {
+pub(crate) fn whisper_language_hint(config: &Config) -> Option<String> {
     let locale = config.locale.as_deref()?;
     let resolved = crate::aura::locale::resolve_supported_locale(Some(locale));
     resolved.split(['-', '_']).next().map(str::to_string)

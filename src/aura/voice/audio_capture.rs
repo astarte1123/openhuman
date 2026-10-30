@@ -18,8 +18,11 @@ const LOG_PREFIX: &str = "[voice_capture]";
 /// Target sample rate for whisper (16 kHz mono).
 const TARGET_SAMPLE_RATE: u32 = 16_000;
 
-/// RMS threshold below which audio is considered silence.
-const SILENCE_RMS_THRESHOLD: f32 = 0.002;
+/// Default RMS threshold below which audio is considered silence. Used when
+/// the caller does not override it (see [`start_recording_with_threshold`]);
+/// the voice server passes `config.voice_server.silence_threshold` so the
+/// gate and the post-recording silence check share one knob.
+pub(crate) const DEFAULT_SILENCE_RMS_THRESHOLD: f32 = 0.002;
 
 /// Duration of continuous silence before gating kicks in.
 const SILENCE_GATE_MS: usize = 500;
@@ -28,11 +31,13 @@ const SILENCE_GATE_MS: usize = 500;
 const LOOKAHEAD_MS: usize = 100;
 
 /// Tracks consecutive silent samples to gate silence from being sent to Whisper.
-/// When silence exceeds `SILENCE_GATE_SAMPLES`, new silent chunks are discarded
+/// When silence exceeds the gate duration, new silent chunks are discarded
 /// but a look-ahead ring buffer is maintained so speech onset isn't clipped.
 struct SilenceGate {
     /// Source sample rate used to convert ms thresholds to sample counts.
     source_sample_rate: u32,
+    /// RMS energy below which a chunk counts as silence.
+    silence_threshold: f32,
     /// Number of consecutive silent samples required to activate gating.
     gate_samples: usize,
     /// Maximum number of samples to keep in the look-ahead ring buffer.
@@ -46,11 +51,12 @@ struct SilenceGate {
 }
 
 impl SilenceGate {
-    fn new(source_sample_rate: u32) -> Self {
+    fn new(source_sample_rate: u32, silence_threshold: f32) -> Self {
         let gate_samples = ((source_sample_rate as usize * SILENCE_GATE_MS) / 1000).max(1);
         let lookahead_samples = ((source_sample_rate as usize * LOOKAHEAD_MS) / 1000).max(1);
         Self {
             source_sample_rate,
+            silence_threshold,
             gate_samples,
             lookahead_samples,
             silent_samples: 0,
@@ -63,7 +69,7 @@ impl SilenceGate {
     /// appended to the main buffer (may be empty during gated silence).
     fn process(&mut self, mono: &[f32]) -> Vec<f32> {
         let rms = chunk_rms(mono);
-        let is_silent = rms < SILENCE_RMS_THRESHOLD;
+        let is_silent = rms < self.silence_threshold;
 
         if is_silent {
             self.silent_samples += mono.len();
@@ -162,8 +168,16 @@ impl RecordingHandle {
 /// Returns a `RecordingHandle` that must be `.stop().await`-ed to get
 /// the captured audio. Recording runs on a dedicated OS thread because
 /// `cpal::Stream` is `!Send` (it must be created and dropped on the
-/// same thread).
+/// same thread). Uses the default silence-gate threshold.
 pub fn start_recording() -> Result<RecordingHandle, String> {
+    start_recording_with_threshold(DEFAULT_SILENCE_RMS_THRESHOLD)
+}
+
+/// Like [`start_recording`], with an explicit RMS silence threshold for the
+/// capture-time SilenceGate. The voice server passes
+/// `config.voice_server.silence_threshold` so the in-capture gate and the
+/// post-capture silence check use the same knob.
+pub fn start_recording_with_threshold(silence_threshold: f32) -> Result<RecordingHandle, String> {
     let stop_flag = Arc::new(AtomicBool::new(false));
     let stop_flag_clone = stop_flag.clone();
     let (result_tx, result_rx) = oneshot::channel();
@@ -175,7 +189,7 @@ pub fn start_recording() -> Result<RecordingHandle, String> {
         .name("voice-capture".into())
         .spawn(move || {
             // All cpal objects are created and used on this thread.
-            let result = record_on_thread(stop_flag_clone, setup_tx);
+            let result = record_on_thread(stop_flag_clone, setup_tx, silence_threshold);
             let _ = result_tx.send(result);
         })
         .map_err(|e| format!("failed to spawn capture thread: {e}"))?;
@@ -198,6 +212,7 @@ pub fn start_recording() -> Result<RecordingHandle, String> {
 fn record_on_thread(
     stop_flag: Arc<AtomicBool>,
     setup_tx: std::sync::mpsc::SyncSender<Result<(), String>>,
+    silence_threshold: f32,
 ) -> Result<RecordingResult, String> {
     // --- Cross-platform microphone permission pre-check ---
     use crate::aura::accessibility::{
@@ -314,6 +329,7 @@ fn record_on_thread(
         // Shared silence gate — suppresses sustained silence to reduce Whisper hallucinations.
         let silence_gate = Arc::new(parking_lot::Mutex::new(SilenceGate::new(
             source_sample_rate,
+            silence_threshold,
         )));
         match sample_format {
             SampleFormat::F32 => {
@@ -396,7 +412,10 @@ fn record_on_thread(
                     let fmt = default_cfg.sample_format();
                     info!("{LOG_PREFIX} fallback config: rate={sr} channels={ch} format={fmt:?}");
                     let sc: StreamConfig = default_cfg.into();
-                    let gate = Arc::new(parking_lot::Mutex::new(SilenceGate::new(sr)));
+                    let gate = Arc::new(parking_lot::Mutex::new(SilenceGate::new(
+                        sr,
+                        silence_threshold,
+                    )));
                     let sw = samples.clone();
                     let rt = peak_rms.clone();
                     let fallback_stream = match fmt {

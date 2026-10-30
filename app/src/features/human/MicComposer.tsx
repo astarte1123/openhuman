@@ -45,20 +45,23 @@ export interface MicComposerProps {
   showDeviceSelector?: boolean;
 }
 
-type RecordingState = 'idle' | 'recording' | 'transcribing';
+type RecordingState = 'idle' | 'recording' | 'transcribing' | 'review';
 
 /**
  * Tap-to-toggle mic composer for the mascot page. Captures audio via the
  * browser's `MediaRecorder`, hands the resulting Blob to the factory-
- * dispatched STT RPC (`aura.voice_stt_dispatch`), then forwards the
- * transcript through `onSubmit` so it joins the agent's normal send pipeline.
+ * dispatched STT RPC (`aura.voice_stt_dispatch`), then shows the transcript
+ * in an editable review state: the user can fix transcription mistakes
+ * before the text joins the agent's send pipeline via `onSubmit`.
  *
  * The provider (cloud vs local Whisper) is resolved server-side from
  * `config.local_ai.stt_provider`, so the renderer doesn't have to know
  * which backend ran — it only sees `{ text, provider }`.
  *
  * Single button, single decision: tap once to start recording, tap again to
- * stop and send. No textarea — that's the whole point of the mascot tab.
+ * stop. The transcript is only sent after an explicit confirm (button,
+ * Enter in the editor, or the spacebar-shortcut's send step) — a bad
+ * transcription is discarded with Esc instead of becoming a sent message.
  */
 export function MicComposer({
   disabled,
@@ -71,9 +74,11 @@ export function MicComposer({
   const [state, setState] = useState<RecordingState>('idle');
   const [devices, setDevices] = useState<AudioInputDevice[]>([]);
   const [selectedDeviceId, setSelectedDeviceId] = useState<string>('');
+  const [reviewText, setReviewText] = useState('');
   const recorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const reviewInputRef = useRef<HTMLTextAreaElement | null>(null);
   // Tracks unmount so async callbacks (recorder.onstop, finalizeRecording)
   // don't fire setState/onSubmit on a dead component — without this, the
   // user navigating away mid-recording can dispatch an unintended message.
@@ -185,7 +190,7 @@ export function MicComposer({
       // click activation (the user might be tabbed onto the mic button
       // itself, which would otherwise fire twice).
       event.preventDefault();
-      if (disabled || state === 'transcribing') {
+      if (disabled || state === 'transcribing' || state === 'review') {
         composerLog('spacebar ignored — disabled=%s state=%s', disabled, state);
         return;
       }
@@ -364,20 +369,62 @@ export function MicComposer({
 
     try {
       const transcript = await transcribeWithFallback(blob);
+      if (disposedRef.current) {
+        // Unmounted while transcribing — never touch state or submit.
+        return;
+      }
       if (!transcript) {
         onError?.(t('mic.noSpeechDetected'));
         setState('idle');
         return;
       }
-      await onSubmit(transcript);
+      // Land in the review state: the transcript is editable and only joins
+      // the send pipeline after an explicit confirm (button / Enter / Esc to
+      // discard). A mis-transcription must not become a sent message.
+      setReviewText(transcript);
+      setState('review');
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       composerLog('transcribe failed: %s', msg);
       onError?.(t('mic.transcriptionFailed').replace('{message}', msg));
-    } finally {
       setState('idle');
     }
   }
+
+  /** Push the reviewed (possibly edited) transcript into the send pipeline. */
+  function confirmReview() {
+    const text = reviewText.trim();
+    setReviewText('');
+    setState('idle');
+    if (text) {
+      void onSubmit(text);
+    }
+  }
+
+  /** Drop the transcript and return to idle without sending. */
+  function discardReview() {
+    setReviewText('');
+    setState('idle');
+  }
+
+  function onReviewKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      // Enter confirms (Shift+Enter inserts a newline).
+      event.preventDefault();
+      confirmReview();
+    } else if (event.key === 'Escape') {
+      event.preventDefault();
+      discardReview();
+    }
+  }
+
+  // Focus the review editor as soon as the transcript lands so the user can
+  // type corrections immediately (same gesture as confirming with Enter).
+  useEffect(() => {
+    if (state === 'review') {
+      reviewInputRef.current?.focus();
+    }
+  }, [state]);
 
   /**
    * Send the recorder's native blob first (Opus-in-WebM ~3KB/sec) — Scribe
@@ -446,51 +493,91 @@ export function MicComposer({
           ))}
         </select>
       )}
-      <div className="flex items-center justify-center gap-3">
-        <button
-          type="button"
-          aria-label={isRecording ? t('mic.stopRecording') : t('mic.startRecording')}
-          onClick={() => (isRecording ? stopRecording() : void startRecording())}
-          disabled={buttonDisabled}
-          className={`relative w-14 h-14 flex items-center justify-center rounded-full text-white shadow-soft transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
-            isRecording ? 'bg-coral-500 hover:bg-coral-400' : 'bg-primary-500 hover:bg-primary-600'
-          }`}>
-          {isRecording && (
-            <span className="absolute inset-0 rounded-full bg-coral-500/40 animate-ping" />
-          )}
-          {isBusy ? (
-            <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
+
+      {state === 'review' && (
+        <div className="w-full max-w-sm flex flex-col gap-2 rounded-xl border border-primary-200 bg-white p-3 shadow-soft">
+          <textarea
+            ref={reviewInputRef}
+            value={reviewText}
+            onChange={e => setReviewText(e.target.value)}
+            onKeyDown={onReviewKeyDown}
+            aria-label={t('mic.editTranscript')}
+            rows={Math.min(4, Math.max(2, reviewText.split('\n').length))}
+            className="w-full resize-none rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-primary-300"
+          />
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] uppercase tracking-wide text-stone-400 select-none">
+              {t('mic.reviewHint')}
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={discardReview}
+                aria-label={t('mic.discardTranscription')}
+                className="rounded-lg px-3 py-1.5 text-xs font-medium text-stone-500 hover:bg-stone-100 transition-colors">
+                {t('mic.discardTranscription')}
+              </button>
+              <button
+                type="button"
+                onClick={confirmReview}
+                aria-label={t('mic.sendTranscription')}
+                className="rounded-lg bg-primary-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary-600 transition-colors">
+                {t('mic.sendTranscription')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {state !== 'review' && (
+        <div className="flex items-center justify-center gap-3">
+          <button
+            type="button"
+            aria-label={isRecording ? t('mic.stopRecording') : t('mic.startRecording')}
+            onClick={() => (isRecording ? stopRecording() : void startRecording())}
+            disabled={buttonDisabled}
+            className={`relative w-14 h-14 flex items-center justify-center rounded-full text-white shadow-soft transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
+              isRecording
+                ? 'bg-coral-500 hover:bg-coral-400'
+                : 'bg-primary-500 hover:bg-primary-600'
+            }`}>
+            {isRecording && (
+              <span className="absolute inset-0 rounded-full bg-coral-500/40 animate-ping" />
+            )}
+            {isBusy ? (
+              <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
+              </svg>
+            ) : (
+              <svg
+                className="relative w-6 h-6"
+                fill="none"
                 stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-              />
-            </svg>
-          ) : (
-            <svg
-              className="relative w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.8}
-              viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"
-              />
-            </svg>
-          )}
-        </button>
-        <span className="text-xs text-stone-500 select-none">{label}</span>
-      </div>
+                strokeWidth={1.8}
+                viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"
+                />
+              </svg>
+            )}
+          </button>
+          <span className="text-xs text-stone-500 select-none">{label}</span>
+        </div>
+      )}
     </div>
   );
 }

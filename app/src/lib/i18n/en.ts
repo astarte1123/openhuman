@@ -831,6 +831,10 @@ const en: TranslationMap = {
   'mic.tapAndSpeak': 'Tap and speak',
   'mic.stopRecording': 'Stop recording and send',
   'mic.startRecording': 'Start recording',
+  'mic.editTranscript': 'Edit transcription',
+  'mic.reviewHint': 'Enter to send · Esc to discard',
+  'mic.discardTranscription': 'Discard',
+  'mic.sendTranscription': 'Send',
 
   // Token
   'token.usageLimitReached': 'Usage limit reached',

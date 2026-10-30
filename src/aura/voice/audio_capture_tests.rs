@@ -111,7 +111,7 @@ fn update_peak_rms_empty_is_noop() {
 
 #[test]
 fn silence_gate_keeps_audio_before_threshold() {
-    let mut gate = SilenceGate::new(16_000);
+    let mut gate = SilenceGate::new(16_000, DEFAULT_SILENCE_RMS_THRESHOLD);
     let near_silent = vec![0.0; 4_000];
     let out = gate.process(&near_silent);
     assert_eq!(out.len(), near_silent.len());
@@ -119,8 +119,30 @@ fn silence_gate_keeps_audio_before_threshold() {
 }
 
 #[test]
+fn silence_gate_uses_configured_threshold() {
+    // A higher threshold must gate audio that the default threshold passes
+    // (e.g. quiet speech in a noisy room the user configured away).
+    let mut default_gate = SilenceGate::new(16_000, DEFAULT_SILENCE_RMS_THRESHOLD);
+    let quiet = vec![0.001f32; 4_000];
+    assert_eq!(
+        default_gate.process(&quiet).len(),
+        quiet.len(),
+        "default gate keeps 0.001-RMS audio"
+    );
+
+    let mut strict_gate = SilenceGate::new(16_000, 0.01);
+    // The gate engages only after 500ms of sustained silence (8000 samples at
+    // 16kHz), so feed two 250ms chunks before asserting suppression.
+    let _ = strict_gate.process(&quiet);
+    assert!(
+        strict_gate.process(&quiet).is_empty(),
+        "strict gate (0.01) must gate 0.001-RMS audio"
+    );
+}
+
+#[test]
 fn silence_gate_drops_sustained_silence_and_flushes_on_speech() {
-    let mut gate = SilenceGate::new(16_000);
+    let mut gate = SilenceGate::new(16_000, DEFAULT_SILENCE_RMS_THRESHOLD);
     let silence = vec![0.0; 4_000];
 
     assert_eq!(gate.process(&silence).len(), silence.len());

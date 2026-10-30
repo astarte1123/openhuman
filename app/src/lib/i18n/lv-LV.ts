@@ -744,6 +744,10 @@ const lvLV: TranslationMap = {
   'mic.tapAndSpeak': 'Pieskarieties un runājiet',
   'mic.stopRecording': 'Pārtrauciet ierakstīšanu un nosūtiet',
   'mic.startRecording': 'Sāciet ierakstīšanu',
+  'mic.editTranscript': 'Rediģēt transkripciju',
+  'mic.reviewHint': 'Ievadiet, lai nosūtītu · Esc, lai atmestu',
+  'mic.discardTranscription': 'Izmest',
+  'mic.sendTranscription': 'Sūtīt',
   'token.usageLimitReached': 'Sasniegts lietošanas ierobežojums',
   'token.approachingLimit': 'Tuvojas robežai',
   'token.planClickForDetails': 'plāns - noklikšķiniet, lai iegūtu sīkāku informāciju',
@@ -1264,7 +1268,7 @@ const lvLV: TranslationMap = {
   'skills.create_modal.create_button': 'Izveidojiet prasmi',
   'skills.install_dialog.error_url_rejected_title': 'URL noraidīts',
   'skills.install_dialog.error_url_rejected_hint':
-    'Ir atļauti tikai publiski HTTPS URL. Privātie, cilpas un metadatu saimnieki ir bloķēti.',
+    'Ir atļauti tikai publiski HTTPS URL. Privātie, cilpas un metadatu saimniekdatori ir bloķēti.',
   'skills.install_dialog.error_url_form_title': 'URL forma netiek atbalstīta',
   'skills.install_dialog.error_url_form_hint':
     'Darbojas tikai tiešās `.md` saites. GitHub saiti uz failu (github.com/owner/repo/blob/…/SKILL.md) — koka un repo saknes nav instalētas.',

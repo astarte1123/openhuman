@@ -749,6 +749,10 @@ const huHU: TranslationMap = {
   'mic.tapAndSpeak': 'Koppintson és beszéljen',
   'mic.stopRecording': 'Állítsa le a felvételt és küldje el',
   'mic.startRecording': 'Indítsa el a felvételt',
+  'mic.editTranscript': 'Átírás szerkesztése',
+  'mic.reviewHint': 'Enter az elküldéshez · Esc az elvetéshez',
+  'mic.discardTranscription': 'Eldobni',
+  'mic.sendTranscription': 'Elküld',
   'token.usageLimitReached': 'Elérte a használati korlátot',
   'token.approachingLimit': 'Határhoz közeledik',
   'token.planClickForDetails': 'terv - kattintson a részletekért',
@@ -1268,7 +1272,7 @@ const huHU: TranslationMap = {
   'skills.create_modal.create_button': 'Készítsen készségeket',
   'skills.install_dialog.error_url_rejected_title': 'URL elutasítva',
   'skills.install_dialog.error_url_rejected_hint':
-    'Csak nyilvános HTTPS URL-ek engedélyezettek. A privát, visszahurkolt és metaadat gazdagépek blokkolva vannak.',
+    'Csak nyilvános HTTPS URL-ek engedélyezettek. A privát, loopback és metaadat gazdagépek blokkolva vannak.',
   'skills.install_dialog.error_url_form_title': 'URL űrlap nem támogatott',
   'skills.install_dialog.error_url_form_hint':
     'Csak a közvetlen `.md` hivatkozások működnek. GitHub esetén hivatkozzon egy fájlra (github.com/owner/repo/blob/…/SKILL.md) – a fa és a repo gyökerei nincsenek telepítve.',

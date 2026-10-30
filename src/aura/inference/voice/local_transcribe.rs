@@ -168,10 +168,69 @@ pub async fn transcribe_whisper(
     // through here the resolver would ignore the override and use whatever the
     // config default is, producing a mismatch between the returned model_id
     // and the model actually used for transcription.
-    let model_path =
-        crate::aura::inference::paths::resolve_stt_model_path_by_id(&model_id, config)
-            .map_err(|e| format!("{LOG_PREFIX} {e}"))?;
+    let model_path = crate::aura::inference::paths::resolve_stt_model_path_by_id(&model_id, config)
+        .map_err(|e| format!("{LOG_PREFIX} {e}"))?;
     debug!("{LOG_PREFIX} resolved STT model path={model_path}");
+
+    // Try the in-process whisper-rs engine first when it is enabled or
+    // already loaded: no subprocess spawn, lower latency, shared whisper-guard
+    // cleanup. Mirrors `LocalAiService::transcribe_with_prompt`. Any failure
+    // (engine not loadable, non-WAV input that the minimal decoder rejects,
+    // empty transcript) falls through to the whisper-cli subprocess below so
+    // correctness never regresses for the speed win.
+    let service = crate::aura::inference::local::global(config);
+    if config.local_ai.whisper_in_process
+        || crate::aura::inference::local::service::whisper_engine::is_loaded(&service.whisper)
+    {
+        if let Err(e) = service.ensure_whisper_loaded(config).await {
+            warn!("{LOG_PREFIX} in-process whisper load failed, falling back to CLI: {e}");
+        }
+        if crate::aura::inference::local::service::whisper_engine::is_loaded(&service.whisper) {
+            let handle = service.whisper.clone();
+            let path = file_path.to_string_lossy().to_string();
+            let lang = opts
+                .language
+                .as_deref()
+                .map(str::trim)
+                .filter(|s| !s.is_empty())
+                .map(str::to_string);
+            let in_process_started = std::time::Instant::now();
+            match tokio::task::spawn_blocking(move || {
+                crate::aura::inference::local::service::whisper_engine::transcribe_wav_file(
+                    &handle,
+                    std::path::Path::new(&path),
+                    lang.as_deref(),
+                    None,
+                )
+            })
+            .await
+            {
+                Ok(Ok(result)) => {
+                    let text = result.text.trim().to_string();
+                    if !text.is_empty() {
+                        debug!(
+                            "{LOG_PREFIX} in-process transcription complete (elapsed_ms={})",
+                            in_process_started.elapsed().as_millis()
+                        );
+                        return Ok(RpcOutcome::single_log(
+                            WhisperTranscribeResult { text, model_id },
+                            "local whisper in-process STT completed",
+                        ));
+                    }
+                    warn!(
+                        "{LOG_PREFIX} in-process engine returned empty transcript (avg_logprob={:.3}), falling back to CLI",
+                        result.avg_logprob.unwrap_or(0.0)
+                    );
+                }
+                Ok(Err(e)) => {
+                    warn!("{LOG_PREFIX} in-process transcription failed, falling back to CLI: {e}");
+                }
+                Err(e) => {
+                    warn!("{LOG_PREFIX} in-process transcription join error, falling back to CLI: {e}");
+                }
+            }
+        }
+    }
 
     let mut args: Vec<String> = vec![
         "-m".to_string(),

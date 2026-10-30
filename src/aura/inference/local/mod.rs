@@ -48,4 +48,5 @@ pub use schemas::{
     all_registered_controllers as all_local_ai_registered_controllers,
 };
 pub(crate) use service::whisper_engine;
+pub(crate) use service::whisper_language_hint;
 pub use service::LocalAiService;

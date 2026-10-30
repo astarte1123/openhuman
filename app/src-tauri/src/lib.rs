@@ -7,7 +7,6 @@ mod cef_preflight;
 mod cef_profile;
 mod core_process;
 mod core_rpc;
-mod dictation_hotkeys;
 mod discord_scanner;
 mod fake_camera;
 mod file_logging;
@@ -42,7 +41,6 @@ use tauri::{
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
 };
 use tauri::{AppHandle, Emitter, Manager, PhysicalPosition, RunEvent, WebviewWindow};
-use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
 
 #[cfg(any(windows, target_os = "linux"))]
 use tauri_plugin_deep_link::DeepLinkExt;
@@ -880,124 +878,6 @@ async fn install_app_update(
     app.restart();
 }
 
-/// Register (or re-register) the global dictation toggle hotkey.
-/// Emits `dictation://toggle` to all webviews when the shortcut is pressed.
-#[tauri::command]
-async fn register_dictation_hotkey(
-    app: AppHandle<AppRuntime>,
-    shortcut: String,
-) -> Result<(), String> {
-    log::info!("[dictation] register_dictation_hotkey: shortcut={shortcut}");
-
-    let old_shortcuts = {
-        let state = app.state::<dictation_hotkeys::DictationHotkeyState>();
-        let guard = state.0.lock().unwrap();
-        guard.clone()
-    };
-
-    let expanded_shortcuts = dictation_hotkeys::expand_dictation_shortcuts(&shortcut);
-    if expanded_shortcuts.is_empty() {
-        return Err("Shortcut cannot be empty".to_string());
-    }
-    log::info!(
-        "[dictation] expanded shortcuts: {}",
-        expanded_shortcuts.join(", ")
-    );
-
-    let register_shortcut = |shortcut_variant: &str| -> Result<(), String> {
-        let app_clone = app.clone();
-        app.global_shortcut()
-            .on_shortcut(shortcut_variant, move |_app, _sc, event| {
-                if event.state == ShortcutState::Pressed {
-                    log::debug!("[dictation] hotkey pressed — emitting dictation://toggle");
-                    if let Err(e) = app_clone.emit("dictation://toggle", ()) {
-                        log::warn!("[dictation] emit failed: {e}");
-                    }
-                }
-            })
-            .map_err(|e| format!("Failed to register shortcut '{shortcut_variant}': {e}"))
-    };
-
-    let mut unregistered_old: Vec<String> = Vec::new();
-    for old in &old_shortcuts {
-        log::debug!("[dictation] unregistering previous shortcut: {old}");
-        if let Err(e) = app.global_shortcut().unregister(old.as_str()) {
-            for restored in &unregistered_old {
-                if let Err(restore_err) = register_shortcut(restored.as_str()) {
-                    log::warn!(
-                        "[dictation] rollback failed while restoring old shortcut '{restored}': {restore_err}"
-                    );
-                }
-            }
-            return Err(format!(
-                "Failed to unregister previous shortcut '{old}': {e}"
-            ));
-        }
-        unregistered_old.push(old.clone());
-    }
-
-    let mut newly_registered: Vec<String> = Vec::new();
-    for shortcut_variant in &expanded_shortcuts {
-        if let Err(err) = register_shortcut(shortcut_variant.as_str()) {
-            log::error!("[dictation] failed to register shortcut '{shortcut_variant}': {err}");
-            for registered in &newly_registered {
-                if let Err(unregister_err) = app.global_shortcut().unregister(registered.as_str()) {
-                    log::warn!(
-                        "[dictation] rollback failed while unregistering '{registered}': {unregister_err}"
-                    );
-                }
-            }
-            for old in &old_shortcuts {
-                if let Err(restore_err) = register_shortcut(old.as_str()) {
-                    log::warn!(
-                        "[dictation] rollback failed while restoring old shortcut '{old}': {restore_err}"
-                    );
-                }
-            }
-            return Err(err);
-        }
-        newly_registered.push(shortcut_variant.clone());
-    }
-
-    // Persist all newly registered shortcuts.
-    {
-        let state = app.state::<dictation_hotkeys::DictationHotkeyState>();
-        let mut guard = state.0.lock().unwrap();
-        *guard = expanded_shortcuts.clone();
-    }
-
-    log::info!(
-        "[dictation] shortcuts registered: {}",
-        expanded_shortcuts.join(", ")
-    );
-    Ok(())
-}
-
-/// Unregister the global dictation hotkey (if any).
-#[tauri::command]
-async fn unregister_dictation_hotkey(app: AppHandle<AppRuntime>) -> Result<(), String> {
-    log::info!("[dictation] unregister_dictation_hotkey: called");
-    let state = app.state::<dictation_hotkeys::DictationHotkeyState>();
-    let mut guard = state.0.lock().unwrap();
-    if guard.is_empty() {
-        log::debug!("[dictation] no shortcut registered — nothing to unregister");
-    } else {
-        let old_shortcuts = guard.clone();
-        guard.clear();
-        for old in old_shortcuts {
-            log::debug!("[dictation] unregistering shortcut: {old}");
-            app.global_shortcut()
-                .unregister(old.as_str())
-                .map_err(|e| {
-                    log::warn!("[dictation] failed to unregister '{old}': {e}");
-                    format!("Failed to unregister shortcut '{old}': {e}")
-                })?;
-            log::info!("[dictation] shortcut unregistered: {old}");
-        }
-    }
-    Ok(())
-}
-
 fn is_daemon_mode() -> bool {
     std::env::args().any(|arg| arg == "daemon" || arg == "--daemon")
 }
@@ -1275,13 +1155,7 @@ fn setup_tray(app: &AppHandle<AppRuntime>) -> tauri::Result<()> {
 fn setup_tray(app: &AppHandle<AppRuntime>) -> tauri::Result<()> {
     log::info!("[tray] setting up tray icon");
 
-    let show_item = MenuItem::with_id(
-        app,
-        "tray_show_window",
-        "Open Youma",
-        true,
-        None::<&str>,
-    )?;
+    let show_item = MenuItem::with_id(app, "tray_show_window", "Open Youma", true, None::<&str>)?;
     let quit_item = MenuItem::with_id(app, "tray_quit", "Quit", true, None::<&str>)?;
     // The floating mascot has a native NSPanel + WKWebView host, so the
     // tray entry only does anything on macOS. Don't surface a menu item
@@ -2073,15 +1947,11 @@ pub fn run() {
         )
         .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_notification::init())
-        .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         // Auto-updater for the Tauri shell. Endpoint and minisign pubkey live
         // in `tauri.conf.json` under `plugins.updater`. Releases are signed at
         // build time with `TAURI_SIGNING_PRIVATE_KEY` (+ `_PASSWORD`); see
         // gitbooks/overview/auto-update.md for the full pipeline.
         .plugin(tauri_plugin_updater::Builder::new().build())
-        .manage(dictation_hotkeys::DictationHotkeyState(
-            std::sync::Mutex::new(Vec::new()),
-        ))
         .manage(webview_accounts::WebviewAccountsState::default())
         .manage(notification_settings::NotificationSettingsState::new())
         .manage(PendingAppUpdateState::default());
@@ -2712,8 +2582,6 @@ pub fn run() {
             restart_app,
             get_active_user_id,
             schedule_cef_profile_purge,
-            register_dictation_hotkey,
-            unregister_dictation_hotkey,
             webview_accounts::webview_account_open,
             webview_accounts::webview_account_prewarm,
             webview_accounts::webview_account_close,

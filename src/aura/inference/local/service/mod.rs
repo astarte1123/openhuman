@@ -10,6 +10,8 @@ mod speech;
 mod vision_embed;
 pub(crate) mod whisper_engine;
 
+pub(crate) use speech::whisper_language_hint;
+
 use crate::aura::inference::types::LocalAiStatus;
 use parking_lot::Mutex;
 

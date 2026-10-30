@@ -3,8 +3,7 @@
 //! Each public function follows the `RpcOutcome<T>` pattern used by other
 //! domain modules (billing, health, etc.).
 
-use chrono::Utc;
-use log::{debug, warn};
+use log::debug;
 use std::time::Instant;
 
 use crate::aura::config::Config;
@@ -16,6 +15,7 @@ use crate::aura::inference::local::paths::{
 use crate::aura::inference::local::whisper_engine;
 use crate::rpc::RpcOutcome;
 
+use super::factory::create_stt_provider;
 use super::hallucination::{is_hallucinated_output, HallucinationMode};
 use super::postprocess;
 use super::types::{VoiceSpeechResult, VoiceStatus, VoiceTtsResult};
@@ -83,10 +83,14 @@ pub async fn voice_status(config: &Config) -> Result<RpcOutcome<VoiceStatus>, St
     Ok(RpcOutcome::single_log(status, "voice status checked"))
 }
 
-/// Transcribe audio from a file path using whisper.cpp.
+/// Transcribe audio from a file path.
 ///
-/// If `context` is provided, the raw transcription is post-processed through
-/// a local LLM to fix grammar and disambiguate words using conversation history.
+/// The provider (cloud Whisper proxy vs local whisper) is resolved from
+/// `config.local_ai.stt_provider` through the STT factory — the same dispatch
+/// the renderer's `aura.voice_stt_dispatch` uses — so every caller sees one
+/// consistent provider selection. If `context` is provided, the raw
+/// transcription is post-processed through a local LLM to fix grammar and
+/// disambiguate words using conversation history.
 pub async fn voice_transcribe(
     config: &Config,
     audio_path: &str,
@@ -96,49 +100,39 @@ pub async fn voice_transcribe(
     let started = Instant::now();
     debug!("{LOG_PREFIX} transcribing audio_path={audio_path}");
 
-    let service = local_ai::global(config);
-    let transcribe_started = Instant::now();
-    // Pass context as initial_prompt to bias whisper toward known vocabulary.
-    let output = service
-        .transcribe_with_prompt(config, audio_path.trim(), context)
+    let audio_bytes = tokio::fs::read(audio_path.trim())
+        .await
+        .map_err(|e| format!("failed to read audio file {audio_path}: {e}"))?;
+    if audio_bytes.is_empty() {
+        return Err(format!("audio file {audio_path} is empty"));
+    }
+
+    let ext = std::path::Path::new(audio_path.trim())
+        .extension()
+        .and_then(|e| e.to_str())
+        .unwrap_or("")
+        .to_ascii_lowercase();
+    let mime = extension_to_mime(&ext);
+
+    let outcome = transcribe_bytes_dispatch(config, &audio_bytes, mime, context, skip_cleanup)
         .await
         .map_err(|e| e.to_string())?;
-    let transcribe_elapsed = transcribe_started.elapsed();
 
-    let raw_text = output.text.clone();
     debug!(
-        "{LOG_PREFIX} transcription completed, text length={}, stt_elapsed_ms={}",
-        raw_text.len(),
-        transcribe_elapsed.as_millis()
-    );
-
-    let cleanup_started = Instant::now();
-    let text = if skip_cleanup {
-        raw_text.clone()
-    } else {
-        postprocess::cleanup_transcription(config, &raw_text, context).await
-    };
-    let cleanup_elapsed = cleanup_started.elapsed();
-    debug!(
-        "{LOG_PREFIX} voice_transcribe complete (cleanup_elapsed_ms={}, total_elapsed_ms={})",
-        cleanup_elapsed.as_millis(),
+        "{LOG_PREFIX} voice_transcribe complete (total_elapsed_ms={})",
         started.elapsed().as_millis()
     );
-
-    Ok(RpcOutcome::single_log(
-        VoiceSpeechResult {
-            text,
-            raw_text,
-            model_id: output.model_id,
-        },
-        "voice transcription completed",
-    ))
+    Ok(outcome)
 }
 
-/// Transcribe audio from raw bytes. Writes to a temp file, transcribes, cleans up.
+/// Transcribe audio from raw bytes.
 ///
-/// If `context` is provided, the raw transcription is post-processed through
-/// a local LLM.
+/// Provider dispatch is identical to [`voice_transcribe`]: the bytes travel
+/// base64-encoded to the selected `SttProvider` (cloud proxy or local
+/// whisper — in-process engine preferred, CLI subprocess fallback), so the
+/// dictation hotkey path and the in-app mic composer honour the same
+/// `stt_provider` setting. No temp-file staging happens here anymore; each
+/// provider stages (or decodes) internally as its transport requires.
 pub async fn voice_transcribe_bytes(
     config: &Config,
     audio_bytes: &[u8],
@@ -153,48 +147,65 @@ pub async fn voice_transcribe_bytes(
         audio_bytes.len()
     );
 
-    let service = local_ai::global(config);
-
-    let voice_dir = std::env::temp_dir().join("aura_voice_input");
-    tokio::fs::create_dir_all(&voice_dir)
+    let mime = extension_to_mime(&ext);
+    let outcome = transcribe_bytes_dispatch(config, audio_bytes, mime, context, skip_cleanup)
         .await
-        .map_err(|e| format!("failed to create voice input directory: {e}"))?;
-
-    let filename = format!(
-        "voice-{}-{}.{}",
-        Utc::now().timestamp_millis(),
-        uuid::Uuid::new_v4(),
-        ext
-    );
-    let file_path = voice_dir.join(filename);
-    let write_started = Instant::now();
-    tokio::fs::write(&file_path, audio_bytes)
-        .await
-        .map_err(|e| format!("failed to write audio file: {e}"))?;
-    let write_elapsed = write_started.elapsed();
-
-    let transcribe_started = Instant::now();
-    // Pass context as initial_prompt to bias whisper toward known vocabulary.
-    let output = service
-        .transcribe_with_prompt(config, file_path.to_string_lossy().as_ref(), context)
-        .await;
-    let transcribe_elapsed = transcribe_started.elapsed();
-    if let Err(e) = tokio::fs::remove_file(&file_path).await {
-        warn!(
-            "{LOG_PREFIX} failed to clean up temp audio file {}: {e}",
-            file_path.display()
-        );
-    }
-
-    let output = output.map_err(|e| e.to_string())?;
-    let raw_text = output.text.clone();
+        .map_err(|e| e.to_string())?;
 
     debug!(
-        "{LOG_PREFIX} transcribe_bytes completed, text length={}, write_elapsed_ms={}, stt_elapsed_ms={}",
-        raw_text.len(),
-        write_elapsed.as_millis(),
-        transcribe_elapsed.as_millis()
+        "{LOG_PREFIX} transcribe_bytes pipeline complete (total_elapsed_ms={})",
+        started.elapsed().as_millis()
     );
+    Ok(outcome)
+}
+
+/// Shared provider-dispatched transcription core for `voice_transcribe*`:
+/// runs the STT factory (cloud/whisper per `config.local_ai.stt_provider`),
+/// then the hallucination gate and the optional LLM cleanup — so both gates
+/// apply identically regardless of which provider produced the text.
+async fn transcribe_bytes_dispatch(
+    config: &Config,
+    audio_bytes: &[u8],
+    mime: &'static str,
+    context: Option<&str>,
+    skip_cleanup: bool,
+) -> Result<RpcOutcome<VoiceSpeechResult>, String> {
+    let provider_name = {
+        let raw = config.local_ai.stt_provider.trim();
+        if raw.is_empty() {
+            "cloud"
+        } else {
+            raw
+        }
+    };
+    let model_id = model_ids::effective_stt_model_id(config);
+    let provider = create_stt_provider(provider_name, &model_id, config)
+        .map_err(|e| format!("failed to create STT provider '{provider_name}': {e}"))?;
+
+    // Language hint: derived from the app locale the user configured (e.g.
+    // 'it-IT' → 'it') so dictation transcribes in the user's actual language
+    // instead of relying on auto-detect, which degrades on short utterances.
+    let language = local_ai::whisper_language_hint(config);
+
+    use base64::{engine::general_purpose::STANDARD, Engine as _};
+    let audio_base64 = STANDARD.encode(audio_bytes);
+
+    let transcribe_started = Instant::now();
+    let outcome = provider
+        .transcribe(config, &audio_base64, Some(mime), None, language.as_deref())
+        .await?;
+    debug!(
+        "{LOG_PREFIX} provider={} transcription completed, language={:?}, stt_elapsed_ms={}",
+        provider.name(),
+        language,
+        transcribe_started.elapsed().as_millis()
+    );
+
+    let raw_text = outcome.value.text;
+    let result_model_id = match provider.name() {
+        "whisper" => model_id,
+        other => other.to_string(),
+    };
 
     // Filter hallucinated output before spending time on LLM cleanup.
     if is_hallucinated_output(&raw_text, HallucinationMode::Conversation) {
@@ -203,7 +214,7 @@ pub async fn voice_transcribe_bytes(
             VoiceSpeechResult {
                 text: String::new(),
                 raw_text,
-                model_id: output.model_id,
+                model_id: result_model_id,
             },
             "voice transcription filtered (hallucination)",
         ));
@@ -215,18 +226,16 @@ pub async fn voice_transcribe_bytes(
     } else {
         postprocess::cleanup_transcription(config, &raw_text, context).await
     };
-    let cleanup_elapsed = cleanup_started.elapsed();
     debug!(
-        "{LOG_PREFIX} transcribe_bytes pipeline complete (cleanup_elapsed_ms={}, total_elapsed_ms={})",
-        cleanup_elapsed.as_millis(),
-        started.elapsed().as_millis()
+        "{LOG_PREFIX} cleanup complete (cleanup_elapsed_ms={})",
+        cleanup_started.elapsed().as_millis()
     );
 
     Ok(RpcOutcome::single_log(
         VoiceSpeechResult {
             text,
             raw_text,
-            model_id: output.model_id,
+            model_id: result_model_id,
         },
         "voice transcription completed",
     ))
@@ -256,6 +265,20 @@ pub async fn voice_tts(
         VoiceTtsResult::from(output),
         "voice tts completed",
     ))
+}
+
+/// Map a normalized audio file extension to the MIME type handed to the STT
+/// factory. Unknown extensions fall back to `audio/webm` (the MediaRecorder
+/// default on Chromium), matching `local_transcribe::mime_to_extension`.
+fn extension_to_mime(ext: &str) -> &'static str {
+    match ext {
+        "wav" => "audio/wav",
+        "mp3" => "audio/mpeg",
+        "mp4" | "m4a" => "audio/mp4",
+        "ogg" => "audio/ogg",
+        "flac" => "audio/flac",
+        _ => "audio/webm",
+    }
 }
 
 /// Normalize an optional audio file extension. Returns a clean lowercase
@@ -405,25 +428,94 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn voice_transcribe_errors_when_local_ai_disabled() {
+    async fn voice_transcribe_routes_through_cloud_provider_without_local_ai() {
+        // Provider dispatch (P1): with the default cloud provider the local
+        // AI runtime being disabled must NOT matter — the call fails at the
+        // missing backend session token, not at "local ai is disabled".
         let mut config = Config::default();
         config.local_ai.runtime_enabled = false;
 
-        let err = voice_transcribe(&config, " /tmp/input.wav ", None, true)
+        let err = voice_transcribe(&config, "/nonexistent/input.wav", None, true)
             .await
-            .expect_err("disabled local ai should fail");
-        assert!(err.contains("local ai is disabled"));
+            .expect_err("missing file must fail");
+        assert!(
+            err.contains("failed to read audio file"),
+            "file read must fail before any provider call: {err}"
+        );
     }
 
     #[tokio::test]
-    async fn voice_transcribe_bytes_errors_when_local_ai_disabled() {
+    async fn voice_transcribe_bytes_uses_cloud_provider_by_default() {
         let mut config = Config::default();
         config.local_ai.runtime_enabled = false;
+        config.local_ai.stt_provider = "cloud".to_string();
 
         let err = voice_transcribe_bytes(&config, b"abc", Some("wav".to_string()), None, true)
             .await
-            .expect_err("disabled local ai should fail");
-        assert!(err.contains("local ai is disabled"));
+            .expect_err("no session token in tests");
+        assert!(
+            err.contains("session token"),
+            "cloud provider must fail at the auth gate, not at local ai: {err}"
+        );
+    }
+
+    #[tokio::test]
+    async fn voice_transcribe_bytes_whisper_provider_without_binary_errors_clearly() {
+        let _guard = unset_env_guard("WHISPER_BIN");
+        let mut config = Config::default();
+        config.local_ai.stt_provider = "whisper".to_string();
+
+        let err = voice_transcribe_bytes(&config, b"abc", Some("wav".to_string()), None, true)
+            .await
+            .expect_err("whisper without binary must fail");
+        assert!(
+            err.contains("whisper") || err.contains("STT model"),
+            "should mention whisper or STT model: {err}"
+        );
+    }
+
+    #[test]
+    fn extension_to_mime_maps_known_types() {
+        assert_eq!(extension_to_mime("wav"), "audio/wav");
+        assert_eq!(extension_to_mime("mp3"), "audio/mpeg");
+        assert_eq!(extension_to_mime("m4a"), "audio/mp4");
+        assert_eq!(extension_to_mime("unknown"), "audio/webm");
+    }
+
+    #[test]
+    fn language_hint_derives_from_configured_locale() {
+        // The dictation hotkey path must transcribe in the language the user
+        // configured: 'it-IT' → ISO-639-1 'it' whisper/cloud hint.
+        let mut config = Config::default();
+        config.locale = Some("it-IT".to_string());
+        assert_eq!(
+            local_ai::whisper_language_hint(&config).as_deref(),
+            Some("it")
+        );
+
+        let config = Config::default();
+        assert!(local_ai::whisper_language_hint(&config).is_none());
+    }
+
+    /// Drop guard that unsets an env var on construction and restores it on
+    /// drop (cargo runs tests in parallel; bare `remove_var` would leak).
+    fn unset_env_guard(key: &'static str) -> EnvUnsetGuard {
+        let prev = std::env::var_os(key);
+        std::env::remove_var(key);
+        EnvUnsetGuard { key, prev }
+    }
+
+    struct EnvUnsetGuard {
+        key: &'static str,
+        prev: Option<std::ffi::OsString>,
+    }
+    impl Drop for EnvUnsetGuard {
+        fn drop(&mut self) {
+            match &self.prev {
+                Some(v) => std::env::set_var(self.key, v),
+                None => std::env::remove_var(self.key),
+            }
+        }
     }
 
     #[tokio::test]

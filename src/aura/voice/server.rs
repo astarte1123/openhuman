@@ -286,9 +286,16 @@ impl VoiceServer {
 
                                 // Start recording on a blocking thread so the
                                 // event loop remains responsive to Release.
+                                // The SilenceGate threshold comes from the
+                                // server config so capture-time gating and the
+                                // post-capture silence check share one knob.
+                                let silence_threshold = self.config.silence_threshold;
                                 let (tx, rx) = tokio::sync::oneshot::channel();
                                 tokio::task::spawn_blocking(move || {
-                                    let result = audio_capture::start_recording();
+                                    let result =
+                                        audio_capture::start_recording_with_threshold(
+                                            silence_threshold,
+                                        );
                                     let _ = tx.send(result);
                                 });
                                 recording_pending_rx = Some(rx);
@@ -679,7 +686,25 @@ fn capture_expected_app_name() -> Option<String> {
     }
 }
 
-#[cfg(not(target_os = "macos"))]
+/// Capture the frontmost app name at hotkey press so insertion can be validated later.
+#[cfg(target_os = "windows")]
+fn capture_expected_app_name() -> Option<String> {
+    // The core runs in-process inside the Tauri host, so "our PID owns the
+    // foreground window" is equivalent to "Aura is focused". The transcript
+    // is then delivered via Socket.IO (see `is_self` in process_recording_bg)
+    // instead of being pasted into an external window. The literal "aura"
+    // value is only checked with `contains("aura")` downstream — on Windows
+    // there is no per-app focus validation for the paste path.
+    if super::focus::foreground_is_own_process() {
+        debug!("{LOG_PREFIX} foreground window belongs to this process (Aura focused)");
+        Some("aura".to_string())
+    } else {
+        debug!("{LOG_PREFIX} foreground window belongs to another process (external app)");
+        None
+    }
+}
+
+#[cfg(not(any(target_os = "macos", target_os = "windows")))]
 fn capture_expected_app_name() -> Option<String> {
     None
 }
@@ -885,18 +910,35 @@ async fn process_recording_bg(
                                 pipeline_started.elapsed().as_millis()
                             );
                         } else {
+                            // Paste off the async runtime: insert_text sleeps
+                            // (clipboard settle + restore) and drives enigo,
+                            // which must not block the core's executor.
+                            let text_owned = text.to_string();
+                            let expected_app_owned = expected_app.clone();
                             let insert_started = Instant::now();
-                            if let Err(e) = text_input::insert_text(text, expected_app.as_deref()) {
-                                error!("{LOG_PREFIX} [pipeline={pipeline_id}] stage=deliver_paste FAILED: {e}");
-                                *last_error.lock().await = Some(e);
-                            } else {
-                                let insert_elapsed = insert_started.elapsed();
-                                transcription_count.fetch_add(1, Ordering::Relaxed);
-                                info!(
-                                    "{LOG_PREFIX} [pipeline={pipeline_id}] stage=deliver_paste insert_ms={} total_pipeline_ms={}",
-                                    insert_elapsed.as_millis(),
-                                    pipeline_started.elapsed().as_millis()
-                                );
+                            let insert_result = tokio::task::spawn_blocking(move || {
+                                text_input::insert_text(&text_owned, expected_app_owned.as_deref())
+                            })
+                            .await;
+                            match insert_result {
+                                Ok(Ok(())) => {
+                                    let insert_elapsed = insert_started.elapsed();
+                                    transcription_count.fetch_add(1, Ordering::Relaxed);
+                                    info!(
+                                        "{LOG_PREFIX} [pipeline={pipeline_id}] stage=deliver_paste insert_ms={} total_pipeline_ms={}",
+                                        insert_elapsed.as_millis(),
+                                        pipeline_started.elapsed().as_millis()
+                                    );
+                                }
+                                Ok(Err(e)) => {
+                                    error!("{LOG_PREFIX} [pipeline={pipeline_id}] stage=deliver_paste FAILED: {e}");
+                                    *last_error.lock().await = Some(e);
+                                }
+                                Err(e) => {
+                                    error!("{LOG_PREFIX} [pipeline={pipeline_id}] stage=deliver_paste JOIN FAILED: {e}");
+                                    *last_error.lock().await =
+                                        Some(format!("paste task join error: {e}"));
+                                }
                             }
                         }
                     } else {

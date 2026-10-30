@@ -43,7 +43,6 @@ tauri = { version = "2.10", default-features = false, features = [
     "webview-data-url",
 ] }
 tauri-plugin-deep-link = "2.0.0"
-tauri-plugin-global-shortcut = "2"
 tauri-plugin-notification = { path = "vendor/tauri-plugin-notification" }
 tauri-plugin-opener = "2"
 # Prevents a second launch from racing into CEF init and hitting the
@@ -282,7 +281,6 @@ tauri-plugin = { path = "vendor/tauri-cef/crates/tauri-plugin" }
 # silently drift when upstream pushes to the branch.
 tauri-plugin-opener = { git = "https://github.com/tauri-apps/plugins-workspace", rev = "c6561ab6b4f9e7f650d4fc8c53fd8acc9b65b9b2" }
 tauri-plugin-deep-link = { git = "https://github.com/tauri-apps/plugins-workspace", rev = "c6561ab6b4f9e7f650d4fc8c53fd8acc9b65b9b2" }
-tauri-plugin-global-shortcut = { git = "https://github.com/tauri-apps/plugins-workspace", rev = "c6561ab6b4f9e7f650d4fc8c53fd8acc9b65b9b2" }
 tauri-plugin-single-instance = { git = "https://github.com/tauri-apps/plugins-workspace", rev = "c6561ab6b4f9e7f650d4fc8c53fd8acc9b65b9b2" }
 tauri-plugin-notification = { path = "vendor/tauri-plugin-notification" }
 
